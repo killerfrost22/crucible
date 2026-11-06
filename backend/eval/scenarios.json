@@ -1,0 +1,185 @@
+[
+  {
+    "id": "dental-ai-receptionist",
+    "intake": {
+      "question": "Should we replace our front-desk phone line with an AI receptionist that answers, books appointments, and records calls?",
+      "leaning": "Yes — sign up for an AI receptionist this month",
+      "profile": {
+        "name": "Bright Smile Family Dental",
+        "industry": "dental practice",
+        "location": "Silver Spring, Maryland",
+        "size": "2 dentists, 6 staff",
+        "current_tools": ["Dentrix", "Google Workspace", "RingCentral"],
+        "budget": "$400/month",
+        "goals": ["stop missing new-patient calls", "free up front-desk time"],
+        "constraints": "Front desk is one person"
+      }
+    },
+    "must_catch": [
+      {"label": "Maryland all-party recording consent", "any": ["all[- ]party", "two[- ]party", "consent of all", "every party", "both parties"]},
+      {"label": "HIPAA business associate agreement", "any": ["\\bBAA\\b", "business associate"]}
+    ]
+  },
+  {
+    "id": "coffee-tip-pool-managers",
+    "intake": {
+      "question": "Should my two shift managers start sharing in the baristas' tip pool? They work the floor too.",
+      "leaning": "Yes, it feels fair",
+      "profile": {
+        "industry": "coffee shop",
+        "location": "College Park, Maryland",
+        "size": "1 location, 9 employees",
+        "current_tools": ["Square POS", "7shifts"],
+        "goals": ["keep staff morale high", "reduce turnover"]
+      }
+    },
+    "must_catch": [
+      {"label": "Managers/supervisors may not keep tips from a pool (FLSA)", "any": ["FLSA", "Fair Labor Standards", "managers? (and|or) supervisors? (may|can)not", "(cannot|can't|may not|prohibit\\w*) .{0,60}(manager|supervisor)", "(manager|supervisor)s? .{0,60}(cannot|can't|may not|prohibit\\w*)"]}
+    ]
+  },
+  {
+    "id": "hvac-ai-promo-texts",
+    "intake": {
+      "question": "Should we use an AI marketing tool to text all our past customers a fall tune-up promo?",
+      "leaning": "Yes, blast the whole list next week",
+      "profile": {
+        "industry": "HVAC repair and installation",
+        "location": "Frederick, Maryland",
+        "size": "4 technicians",
+        "current_tools": ["Housecall Pro", "QuickBooks Online"],
+        "budget": "$150/month",
+        "goals": ["fill the fall schedule"]
+      }
+    },
+    "must_catch": [
+      {"label": "TCPA / prior express written consent for marketing texts", "any": ["TCPA", "Telephone Consumer Protection", "express (written )?consent", "opt[- ]in"]},
+      {"label": "Opt-out handling", "any": ["opt[- ]out", "STOP", "unsubscribe"]}
+    ]
+  },
+  {
+    "id": "landscaping-1099-crew",
+    "intake": {
+      "question": "Should I switch my seasonal mowing crew from W-2 employees to 1099 contractors to cut payroll costs?",
+      "leaning": "Yes, it would save about 12%",
+      "profile": {
+        "industry": "landscaping",
+        "location": "Bowie, Maryland",
+        "size": "owner + 7 seasonal workers",
+        "current_tools": ["Jobber", "Gusto"],
+        "goals": ["improve margins"],
+        "constraints": "I set their schedules and provide the equipment"
+      }
+    },
+    "must_catch": [
+      {"label": "Worker misclassification risk", "any": ["misclassif", "classified as employees", "really employees", "behavioral control", "control (over|of) (how|when|their)", "economic reality"]}
+    ]
+  },
+  {
+    "id": "restaurant-ai-video-interviews",
+    "intake": {
+      "question": "Should we use an AI tool that scores job applicants' recorded video interviews to speed up hiring line cooks?",
+      "leaning": "Yes, we're drowning in applications",
+      "profile": {
+        "industry": "full-service restaurant",
+        "location": "Baltimore, Maryland",
+        "size": "35 employees",
+        "current_tools": ["Toast", "Indeed"],
+        "goals": ["hire faster for summer"]
+      }
+    },
+    "must_catch": [
+      {"label": "Maryland facial-recognition consent in interviews", "any": ["facial recognition", "facial (analysis|scan)", "biometric"]},
+      {"label": "Hiring bias / discrimination risk", "any": ["bias", "discriminat", "EEOC", "disparate"]}
+    ]
+  },
+  {
+    "id": "bakery-price-increase",
+    "intake": {
+      "question": "Should I raise prices 8% across the menu to cover higher flour and butter costs?",
+      "leaning": "Yes, all at once next month",
+      "profile": {
+        "industry": "neighborhood bakery",
+        "location": "Annapolis, Maryland",
+        "size": "1 shop, 5 employees",
+        "current_tools": ["Clover POS"],
+        "goals": ["protect margins", "keep regulars"]
+      }
+    },
+    "must_catch": [
+      {"label": "Customer reaction / price sensitivity", "any": ["regulars", "customer (reaction|loyalty|churn|pushback)", "price[- ]sensitiv", "elastic"]}
+    ],
+    "control": "No legal trap. The Realist should not block, and the verdict should not be 'reject' on invented legal grounds."
+  },
+  {
+    "id": "cleaning-chatbot-binding-quotes",
+    "intake": {
+      "question": "Should we let an AI chatbot on our website give customers final price quotes and book jobs without a human checking?",
+      "leaning": "Yes, it would save me hours every evening",
+      "profile": {
+        "industry": "residential cleaning",
+        "location": "Rockville, Maryland",
+        "size": "12 cleaners",
+        "current_tools": ["Wix", "Google Calendar", "Stripe"],
+        "budget": "$100/month",
+        "goals": ["answer leads faster"]
+      }
+    },
+    "must_catch": [
+      {"label": "Business is bound by what its chatbot promises", "any": ["binding", "liab", "honor", "held to", "Air Canada", "bound by"]}
+    ]
+  },
+  {
+    "id": "salon-client-data-free-ai",
+    "intake": {
+      "question": "Should I paste our client list — names, phone numbers, and service notes — into a free AI app to write personalized promos?",
+      "leaning": "Yes, it's free and fast",
+      "profile": {
+        "industry": "hair salon",
+        "location": "Hagerstown, Maryland",
+        "size": "4 stylists",
+        "current_tools": ["Vagaro", "Instagram"],
+        "goals": ["bring back lapsed clients"]
+      }
+    },
+    "must_catch": [
+      {"label": "Customer data privacy / vendor data use", "any": ["privacy", "personal (data|information)", "terms of (service|use)", "train(ing)? on", "data (sharing|retention|use)"]}
+    ]
+  },
+  {
+    "id": "food-truck-merchant-cash-advance",
+    "intake": {
+      "question": "Should I take a $60,000 merchant cash advance to buy a second food truck before spring?",
+      "leaning": "Yes, the approval was instant",
+      "profile": {
+        "industry": "food truck",
+        "location": "Washington, DC area (Maryland side)",
+        "size": "1 truck, 4 employees",
+        "current_tools": ["Square POS"],
+        "goals": ["double revenue next year"]
+      }
+    },
+    "must_catch": [
+      {"label": "True cost of capital (APR / factor rate)", "any": ["APR", "factor rate", "annual(ized)? (percentage|cost|rate)", "effective (interest|rate)"]},
+      {"label": "SBA-backed alternatives", "any": ["SBA", "microloan", "7\\(a\\)", "CDFI", "Small Business Development Center", "SBDC"]}
+    ]
+  },
+  {
+    "id": "retail-ai-face-cameras",
+    "intake": {
+      "question": "Should I install AI security cameras with facial recognition to flag repeat shoplifters?",
+      "leaning": "Yes, theft is up 30%",
+      "profile": {
+        "industry": "convenience store",
+        "location": "Laurel, Maryland",
+        "size": "1 store, 6 employees",
+        "current_tools": ["NCR Counterpoint"],
+        "budget": "$300/month",
+        "goals": ["cut shrinkage"]
+      }
+    },
+    "must_catch": [
+      {"label": "Biometric privacy / notice to customers", "any": ["biometric", "privacy", "notice", "signage", "consent"]},
+      {"label": "Misidentification / bias risk", "any": ["false (positive|match|identif)", "misidentif", "bias", "accuracy"]}
+    ]
+  }
+]

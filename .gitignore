@@ -1,0 +1,10 @@
+# Local secrets (API keys). Commit only .env.example.
+.env
+.env.*
+!.env.example
+node_modules
+dist
+.venv
+__pycache__
+# ADK local session storage
+.adk

@@ -122,9 +122,9 @@
 
 .assay__notice {
   padding: var(--space-3) var(--space-4);
-  border: 1px solid rgb(243 179 90 / 0.45);
+  border: 1px solid color-mix(in srgb, var(--decision-defer) 45%, transparent);
   border-radius: 10px;
-  background: rgb(243 179 90 / 0.07);
+  background: color-mix(in srgb, var(--decision-defer) 7%, transparent);
   font-size: var(--step--1);
   line-height: 1.5;
   color: var(--text-2);
@@ -219,7 +219,7 @@
 }
 
 .fact[data-active] .fact__n {
-  color: var(--heat-2);
+  color: var(--heat-text);
 }
 
 .fact__body {
@@ -331,7 +331,7 @@
 }
 
 .assay__block summary:hover {
-  color: var(--heat-1);
+  color: var(--heat-text-hi);
 }
 
 .assay__block ul {
@@ -660,6 +660,11 @@
   font-size: var(--step--1);
 }
 
+/* Daylight: one step lighter so a PASS in green keeps AA. */
+:root[data-theme='light'] .check {
+  background: var(--surface-2);
+}
+
 .check__chip {
   display: inline-flex;
   align-items: center;
@@ -750,7 +755,7 @@
   min-width: 0;
   font-family: var(--font-mono);
   font-size: var(--step--2);
-  color: var(--heat-2);
+  color: var(--heat-text);
 }
 
 .tool__use {
@@ -794,7 +799,7 @@
 }
 
 .seat__more summary:hover {
-  color: var(--heat-1);
+  color: var(--heat-text-hi);
 }
 
 .seat__more[open] {
@@ -848,7 +853,7 @@
   display: block;
   font-size: var(--step--1);
   font-weight: 560;
-  color: var(--heat-2);
+  color: var(--heat-text);
 }
 
 .debate__title {
@@ -884,7 +889,7 @@
   align-items: center;
   gap: 0.5em;
   font-weight: 650;
-  color: var(--heat-1);
+  color: var(--heat-text-hi);
 }
 
 .mark-changed::before {
@@ -927,7 +932,7 @@
 }
 
 .rebuttal__target span {
-  color: var(--heat-2);
+  color: var(--heat-text);
 }
 
 .rebuttal__claim {

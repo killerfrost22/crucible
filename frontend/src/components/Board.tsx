@@ -12,6 +12,7 @@ import { ErrorNotice, FactPeek } from './Notices'
 import { PHASE_STEPS, PhaseRail } from './PhaseRail'
 import { SeatCard } from './SeatCard'
 import { DECISION_COPY, VerdictCard, YourCall } from './Verdict'
+import { ThemeToggle } from './ThemeToggle'
 import { Wordmark } from './Wordmark'
 
 interface BoardProps {
@@ -105,27 +106,30 @@ export function Board({ source, onNew, onEdit, onRetry, onReplay }: BoardProps) 
                 </span>
               </button>
               <Wordmark />
-              {replay ? (
-                <div className="replay" role="group" aria-label="Recorded session controls">
-                  <span className="replay__badge" title={replayInfo?.label}>
-                    Recorded
-                  </span>
-                  <div className="replay__speeds" role="group" aria-label="Playback speed">
-                    {REPLAY_SPEEDS.map((s) => (
-                      <button key={s} type="button" aria-pressed={run.speed === s} onClick={() => run.setSpeed(s)} disabled={transport === 'done'}>
-                        {s}×<span className="visually-hidden"> speed</span>
-                      </button>
-                    ))}
+              <div className="frame__end">
+                {replay ? (
+                  <div className="replay" role="group" aria-label="Recorded session controls">
+                    <span className="replay__badge" title={replayInfo?.label}>
+                      Recorded
+                    </span>
+                    <div className="replay__speeds" role="group" aria-label="Playback speed">
+                      {REPLAY_SPEEDS.map((s) => (
+                        <button key={s} type="button" aria-pressed={run.speed === s} onClick={() => run.setSpeed(s)} disabled={transport === 'done'}>
+                          {s}×<span className="visually-hidden"> speed</span>
+                        </button>
+                      ))}
+                    </div>
+                    <button type="button" className="replay__skip" onClick={run.skipToEnd} disabled={transport === 'done'}>
+                      Skip<span className="frame__long"> to end</span>
+                    </button>
                   </div>
-                  <button type="button" className="replay__skip" onClick={run.skipToEnd} disabled={transport === 'done'}>
-                    Skip<span className="frame__long"> to end</span>
-                  </button>
-                </div>
-              ) : (
-                <span className="replay__badge replay__badge--live" data-live={transport !== 'done' || undefined}>
-                  {transport === 'done' ? 'Session ended' : 'Live'}
-                </span>
-              )}
+                ) : (
+                  <span className="replay__badge replay__badge--live" data-live={transport !== 'done' || undefined}>
+                    {transport === 'done' ? 'Session ended' : 'Live'}
+                  </span>
+                )}
+                <ThemeToggle />
+              </div>
             </div>
             <PhaseRail phase={board.phase} seatsIn={seatsIn} ratified={Boolean(run.ratification)} stalled={stopped} />
           </header>

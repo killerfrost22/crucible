@@ -1,3 +1,94 @@
+/* ── Meeting palette ──────────────────────────────────────────────────── */
+
+/*
+ * The foundry's own materials, on top of the theme tokens. Dark is the furnace at night: molten light on black iron.
+ * Light is the foundry by daylight: ash and paper around a graphite crucible, the melt still the hottest thing on
+ * the page, heat colours deepened wherever they carry words.
+ */
+.page--board {
+  /* Heat as text: the readings, counts and cues that glow. `-hi` is the hottest. */
+  --heat-text: var(--heat-2);
+  --heat-text-hi: var(--heat-1);
+  /* The forge panel and the floating fact strip. */
+  --forge-panel: radial-gradient(120% 60% at 50% 25%, rgb(212 66 31 / 0.08), transparent 70%), var(--sunk);
+  --forge-panel-edge: none;
+  --float-shadow: 0 24px 60px -20px rgb(0 0 0 / 0.85);
+  /* The crucible: walls lit from the left, its rim, its shadowed interior. */
+  --wall-0: #2b2520;
+  --wall-1: #5a5045;
+  --wall-2: #3d352e;
+  --wall-3: #221d19;
+  --vessel-rim: #7d7164;
+  --hollow-0: var(--sunk);
+  --hollow-1: var(--sunk);
+  /* The charge (the question, before heat), the crust under the melt, the slag skimmed off it. */
+  --charge: #4b4239;
+  --charge-edge: #6b5f52;
+  --crust-0: #5a4b3f;
+  --crust-1: #3a3029;
+  --crust-2: #211b17;
+  --slag: #2d2620;
+  --slag-edge: #6b5f52;
+  /* The cast ingot once it has cooled, and the hallmark struck into it. */
+  --cast-0: #8a7f72;
+  --cast-1: #5c534a;
+  --cast-2: #38312b;
+  --mold-edge: #6b5f52;
+  --hallmark-ink: var(--text);
+  --hallmark-shade: #1a1512;
+  --hallmark-emboss: 0 1px 0 rgb(0 0 0 / 0.55);
+  /* Rebuttal filaments and the sparks a concession throws. */
+  --filament-glow: var(--heat-3);
+  --filament-core: var(--heat-2);
+  --filament-lit: var(--heat-1);
+  --spark: var(--heat-1);
+  /* The verdict bar: cooled cast metal. */
+  --ingot-face:
+    linear-gradient(180deg, rgb(255 240 215 / 0.14), transparent 38%), linear-gradient(100deg, #4a4139, #3a322b 45%, #2f2924);
+  --ingot-edge: inset 0 1px 0 rgb(255 240 215 / 0.18), inset 0 -2px 0 rgb(0 0 0 / 0.35);
+  --ingot-emboss: 0 1px 0 rgb(0 0 0 / 0.5);
+}
+
+:root[data-theme='light'] .page--board {
+  --heat-text: #b4450f;
+  --heat-text-hi: #9a3412;
+  /* Bottom stop stays at --surface-2 so the stance colours keep AA where the standings sit. */
+  --forge-panel:
+    radial-gradient(110% 45% at 50% 28%, rgb(246 163 43 / 0.16), transparent 70%),
+    linear-gradient(180deg, #faf7f2, var(--surface-2) 60%);
+  --forge-panel-edge: inset 0 1px 0 rgb(255 255 255 / 0.85), 0 1px 2px rgb(60 40 20 / 0.06), 0 18px 40px -28px rgb(60 40 20 / 0.3);
+  --float-shadow: 0 1px 2px rgb(60 40 20 / 0.08), 0 24px 56px -24px rgb(60 40 20 / 0.35);
+  --wall-0: #4a4139;
+  --wall-1: #8f8374;
+  --wall-2: #665b4f;
+  --wall-3: #3d352e;
+  --vessel-rim: #b9ad9d;
+  --hollow-0: #5a4f45;
+  --hollow-1: #2a241f;
+  --charge: #8a7e70;
+  --charge-edge: #a89c8c;
+  --crust-0: #8a7d6e;
+  --crust-1: #6b5f52;
+  --crust-2: #4f463d;
+  --slag: #4f463d;
+  --slag-edge: #2f2924;
+  --cast-0: #e9e2d7;
+  --cast-1: #cfc4b5;
+  --cast-2: #a99d8c;
+  --mold-edge: var(--metal);
+  --hallmark-ink: #2a2018;
+  --hallmark-shade: rgb(255 255 255 / 0.75);
+  --hallmark-emboss: 0 1px 0 rgb(255 255 255 / 0.6);
+  --filament-glow: var(--heat-2);
+  --filament-core: var(--heat-3);
+  --filament-lit: #b8360f;
+  --spark: var(--heat-2);
+  --ingot-face:
+    linear-gradient(180deg, rgb(255 255 255 / 0.7), transparent 45%), linear-gradient(100deg, #e6ded2, #d8cec0 45%, #cbbfae);
+  --ingot-edge: inset 0 1px 0 rgb(255 255 255 / 0.9), inset 0 -2px 0 rgb(60 40 20 / 0.14), 0 1px 2px rgb(60 40 20 / 0.1);
+  --ingot-emboss: 0 1px 0 rgb(255 255 255 / 0.6);
+}
+
 /* ── Frame header ─────────────────────────────────────────────────────── */
 
 .frame {
@@ -9,7 +100,7 @@
   /* Content lines up with the board, which stops growing at 2000px. */
   padding: var(--space-2) max(var(--gutter), calc((100% - 2000px) / 2 + var(--gutter))) var(--space-3);
   color: var(--text);
-  background: rgb(19 16 13 / 0.86);
+  background: color-mix(in srgb, var(--bg) 86%, transparent);
   -webkit-backdrop-filter: saturate(140%) blur(14px);
   backdrop-filter: saturate(140%) blur(14px);
   border-bottom: 1px solid var(--line);
@@ -20,6 +111,13 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-3);
+}
+
+/* Playback controls (or the live badge) and the theme toggle sit together at the right. */
+.frame__end {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
 }
 
 .frame__back {
@@ -68,12 +166,49 @@
   }
 }
 
+/* Phones: back, playback and the theme toggle share one tight row. */
+@media (max-width: 419px) {
+  .frame__row,
+  .frame__end {
+    gap: var(--space-2);
+  }
+
+  .frame__end .replay {
+    gap: 6px;
+  }
+
+  .frame__back {
+    padding-inline: var(--space-3);
+  }
+}
+
+/* The narrowest phones: back and the toggle on top, playback across its own row. */
+@media (max-width: 359px) {
+  .frame__row:has(.replay) {
+    flex-wrap: wrap;
+  }
+
+  .frame__end:has(.replay) {
+    display: contents;
+  }
+
+  .frame__end .theme-toggle {
+    order: 1;
+  }
+
+  .frame__end .replay {
+    order: 2;
+    flex: 1 1 100%;
+    justify-content: space-between;
+  }
+}
+
 /* One row once the rail, wordmark and playback controls all fit; below that the rail takes its own row. */
 @media (min-width: 1400px) {
   .frame {
     grid-template-columns: auto auto 1fr auto;
     align-items: center;
-    gap: var(--space-5);
+    gap: var(--space-4);
     padding-block: var(--space-3);
   }
 
@@ -97,11 +232,15 @@
     grid-row: 1;
   }
 
-  .frame .replay,
-  .frame .replay__badge--live {
+  .frame .frame__end {
     grid-column: 4;
     grid-row: 1;
     justify-self: end;
+  }
+
+  /* Shorter connectors so the whole header holds one row down to 1400px. */
+  .frame .rail__step + .rail__step::before {
+    width: clamp(0.75rem, 2.2vw - 0.5rem, 2.5rem);
   }
 }
 
@@ -321,7 +460,7 @@
   font-family: var(--font-mono);
   font-size: 0.8em;
   font-weight: 500;
-  color: var(--heat-2);
+  color: var(--heat-text);
 }
 
 @media (max-width: 767px) {
@@ -437,16 +576,15 @@
 
 /* ── The crucible (signature) ─────────────────────────────────────────── */
 
-/* The panel: a dark instrument housing the crucible, its readout, and where each seat stands. */
+/* The panel: an instrument housing the crucible, its readout, and where each seat stands. */
 .board__forge {
   display: grid;
   gap: var(--space-5);
   padding: var(--space-5) var(--space-4);
   border: 1px solid var(--line);
   border-radius: var(--radius-card);
-  background:
-    radial-gradient(120% 60% at 50% 25%, rgb(212 66 31 / 0.08), transparent 70%),
-    var(--sunk);
+  background: var(--forge-panel);
+  box-shadow: var(--forge-panel-edge);
 }
 
 .forge {
@@ -475,7 +613,7 @@
   font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--heat-2);
+  color: var(--heat-text);
 }
 
 .forge[data-stage='cold'] .forge__reading,
@@ -575,7 +713,7 @@
 }
 
 .standings__moved {
-  color: var(--heat-1);
+  color: var(--heat-text-hi);
 }
 
 /* Phone: the crucible shrinks beside its caption; the seat cards follow right below. */
@@ -721,7 +859,7 @@
 
 .vessel__rim {
   fill: none;
-  stroke: #7d7164;
+  stroke: var(--vessel-rim);
   stroke-width: 1.5;
   stroke-linecap: round;
   opacity: 0.8;
@@ -729,8 +867,8 @@
 
 /* Raw charge: the owner's question, solid, before any heat. */
 .forge__charge path {
-  fill: #4b4239;
-  stroke: #6b5f52;
+  fill: var(--charge);
+  stroke: var(--charge-edge);
   stroke-width: 1;
 }
 
@@ -787,8 +925,8 @@
 }
 
 .melt__slag path {
-  fill: #2d2620;
-  stroke: #6b5f52;
+  fill: var(--slag);
+  stroke: var(--slag-edge);
   stroke-width: 0.8;
   animation: skim 900ms var(--ease-out) both;
   animation-delay: calc(var(--i) * 60ms);
@@ -821,19 +959,19 @@
 }
 
 .filament__glow {
-  stroke: var(--heat-3);
+  stroke: var(--filament-glow);
   stroke-width: 6;
   opacity: 0.22;
   transition: opacity var(--dur-base) var(--ease-out);
 }
 
 .filament__core {
-  stroke: var(--heat-2);
+  stroke: var(--filament-core);
   stroke-width: 1.4;
 }
 
 .filament__tip {
-  fill: var(--heat-1);
+  fill: var(--spark);
 }
 
 .filament[data-state='lit'] {
@@ -845,7 +983,7 @@
 }
 
 .filament[data-state='lit'] .filament__core {
-  stroke: var(--heat-1);
+  stroke: var(--filament-lit);
 }
 
 .filament[data-state='off'] {
@@ -980,7 +1118,7 @@
 
 .forge[data-stage='pour'] .mold__bed,
 .forge[data-stage='cast'] .mold__bed {
-  stroke: #6b5f52;
+  stroke: var(--mold-edge);
   stroke-dasharray: none;
 }
 
@@ -1034,11 +1172,11 @@
 }
 
 .hallmark__text {
-  fill: var(--text);
+  fill: var(--hallmark-ink);
 }
 
 .hallmark__shade {
-  fill: #1a1512;
+  fill: var(--hallmark-shade);
 }
 
 /* The owner's seal, struck beside the Chairman's hallmark. */
@@ -1064,7 +1202,7 @@
 
 .seal[data-action='override'] circle,
 .seal[data-action='override'] path {
-  stroke: var(--heat-2);
+  stroke: var(--heat-text);
 }
 
 @keyframes strike {
@@ -1138,7 +1276,7 @@
 }
 
 .chair-wait[data-active] {
-  border-color: rgb(246 163 43 / 0.45);
+  border-color: color-mix(in srgb, var(--heat-2) 45%, transparent);
 }
 
 .chair-wait[data-active] .chair-wait__mold path {
@@ -1247,7 +1385,7 @@
   border-left: 2px solid var(--heat-2);
   border-radius: 12px;
   background: var(--surface-2);
-  box-shadow: 0 24px 60px -20px rgb(0 0 0 / 0.85);
+  box-shadow: var(--float-shadow);
   font-size: var(--step--1);
   line-height: 1.5;
 }
@@ -1255,7 +1393,7 @@
 .peek__n {
   font-family: var(--font-mono);
   font-weight: 600;
-  color: var(--heat-2);
+  color: var(--heat-text);
 }
 
 .peek__close {

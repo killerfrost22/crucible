@@ -8,33 +8,38 @@
 | Ruijie | Tester |
 | Tiffany | Video producer |
 
-## 🚧 Blocker — do first (Yizhan)
-- [ ] **Enable billing on the Google AI Studio project behind `GEMINI_API_KEY`** and set a budget alert. The free tier allows ~20 requests/day/model (one board run = 12) and has **zero** quota for `gemini-4-argon` and for Google Search grounding. Until this is done, testing and judging will run out of quota within a run or two.
-- [ ] After billing: set `CRUCIBLE_CHAIR_MODEL=gemini-4-argon` and `CRUCIBLE_WEB_SEARCH=true`, run one board, and confirm the Researcher returns `verified: true` facts with URLs. (This web-search code path has **not** been exercised yet because the free tier blocks it.)
+## ✅ Quota blocker resolved: OpenRouter ($25 prepaid)
+- [x] The board now runs through OpenRouter: Claude Haiku 5.5 for the five seats, and Claude Sonnet 5.5 with web search for the Researcher and Chairman. Measured runs cost $0.06–0.12 and take 50–85 s, so $25 covers roughly 200–400 runs. The credit is a hard cap, so a public demo link can't overspend.
+- [x] Web search works: Researcher facts come back marked `verified` with source links. Current dental recording: 9 of 13 facts verified; the board and the verdict both name Maryland's all-party recording consent and the HIPAA BAA, and the verdict requires a signed BAA and counsel-approved recording notice before the first live call. Leaked prompt tags (Claude Haiku once wrote `</reasoning_effort>` into an answer) are now stripped from every model answer before anyone sees it.
+- [ ] Watch the balance at https://openrouter.ai/settings/credits before filming and judging. When the credit is gone the board shows "out of AI credit".
 
 ## ✅ Done (Fri)
 - [x] Backend: ADK 2.13 graph workflow — Researcher → 5 seats (Round 1) → 5 rebuttals (Round 2) → Chairman, all with structured output; FastAPI app with CORS; owner ratification stored via session PATCH. Full run verified end to end (~20–65 s on flash-lite models).
 - [x] Eval harness `backend/eval/run_eval.py` + 10 trap scenarios (`backend/eval/scenarios.json`), board vs. single-prompt baseline. Smoke-run on one scenario.
 - [x] Replay recorder `backend/eval/record_replay.py`; real runs in `frontend/public/replays/`: dental receptionist, HVAC promo texts, plus a real quota-failure run for testing the error screen.
 - [x] Cloud Run `Dockerfile` (not built yet — no Docker locally).
-- [x] Frontend (`frontend/`): Crucible front page in the prototype's style. On first visit it builds itself with six named advisor cursors, then shows a real recorded HVAC session, the seats, the rounds, a verdict, and the intake form. The meeting page is in the same dark Crucible style: the melt rises as each seat's opening position lands, rebuttals refine it (glowing lines between seats, sparks for concessions), and the verdict pours out as a cast bar stamped with the decision. Seat cards, fact cross-highlighting, replay and live modes, accept/override, quota and network error screens, phone-to-1920 layouts, and reduced motion all work. Checked in a browser with replays and a live run (form → session → `/run_sse` → verdict → PATCH ratify).
+- [x] Frontend (`frontend/`), three pages with light and dark modes (toggle in every header; follows the OS setting until you pick):
+  - **Home `/`**: GitHub-style layout with the hero question box, a tabbed walkthrough of the real HVAC meeting, the six advisors, an example verdict, recorded sessions, and the full question form.
+  - **How it's built `/under-the-hood`**: the "built by many hands" page (six advisor cursors assemble it), now explaining the pipeline, models, structured outputs, streaming, evaluation, frontend, and deploy, using real data from the recordings.
+  - **Meeting**: the crucible (melt, refining, pour, cast verdict, the owner's hallmark), now also in a daylight theme.
+  - Replay and live modes, accept/override, error screens, phone-to-1920 layouts, and reduced motion all work. Checked in a browser in both themes.
 - [x] Renamed Corkboard → Crucible across the backend (`agents/crucible`, `CRUCIBLE_*` env vars, `/apps/crucible/...`), frontend, and docs. The repo folder is still `hacks2026-Corkboard`.
 
 ## Yizhan — developer
 **Fri**
-- [ ] Billing blocker above.
+- [ ] Optional: try a different company per seat for the pitch ("five different AIs argue it out"). It's one `.env` line per seat; see `.env.example`.
 - [ ] Optional: reloading the page loses the board, and the owner's ratification is saved but never shown again. A "My decisions" list (`GET /apps/crucible/users/{user}/sessions`) would fix both.
 **Sat**
 - [ ] Deploy backend to Cloud Run: `gcloud run deploy crucible-api --source backend --region us-east1 --min-instances 1 --max-instances 1 --set-env-vars ...` (one instance keeps sessions consistent; see README).
 - [ ] Deploy frontend to Vercel with `VITE_API_BASE=<Cloud Run URL>`; add the Vercel origin to `CRUCIBLE_ALLOW_ORIGINS`.
-- [ ] Prompt fixes from Ruijie's eval report. Known gap: Maryland's all-party call-recording consent (dental scenario) is caught inconsistently. On `gemini-3.1-flash-lite` after the Researcher was told to check state rules separately, it was caught in 1 of 2 runs (the single-prompt baseline: 0 of 1). The current dental replay misses it. Re-test on the billed models with web search before re-recording.
-- [ ] Re-record the demo replays with the final models: `python eval/record_replay.py <scenario-id>`.
+- [ ] Prompt fixes from Ruijie's eval report.
+- [ ] Re-record the HVAC replay with the final models. The home page and `src/content.ts` quote the current HVAC recording word for word, so update them together: `python eval/record_replay.py hvac-ai-promo-texts`. The dental recording is also quoted on `/under-the-hood` (`src/underthehood/recorded.ts`); update that file whenever you re-record dental.
 **Sun**
 - [ ] Feature freeze at noon; final `AGENTS.md` review pass at 375/768/1440/1920.
 - [ ] Put the public prototype link in the submission.
 
 ## Ruijie — tester
-- [ ] Once billing is on: `python eval/run_eval.py` on all 10 scenarios; commit `eval/results/<timestamp>/report.md` (Tiffany needs this table for the video).
+- [ ] `python eval/run_eval.py` on all 10 scenarios (about $1–1.50); commit `eval/results/<timestamp>/report.md` (Tiffany needs this table for the video). The verdict check matches exact wording ("all-party"), so a verdict that says "attorney-approved recording notice" scores as a miss; read the transcripts before quoting numbers.
 - [ ] Read every transcript (`eval/results/<timestamp>/<scenario>.json`) and log problems for Yizhan with scenario id + quote:
   - invented laws or wrong legal claims; legal claims without a fact ID that are not marked "(unverified)"
   - fact IDs (F1…) that don't match the claim
@@ -57,6 +62,6 @@ The challenge requires: MVP proof of concept · how we built it · how we'd use 
   - 7:45–9:15 16-week plan: outcome tracking, real business data (QuickBooks/Square), live Maryland SBDC hand-off, verified AI-tool catalog, multilingual intake
   - 9:15–10:00 Team and close
 - [ ] Screen-record the replay mode (identical every take) plus one live run as proof.
-- [ ] Open on the front page building itself (the six advisor cursors). Use the "Replay effect" button (bottom right) for retakes. It only plays when the OS "reduce motion" setting is off.
+- [ ] For the "how we built it" part, film `/under-the-hood` building itself (the six advisor cursors). Use the "Replay effect" button (bottom right) for retakes; it only plays when the OS "reduce motion" setting is off. Pick light or dark with the header toggle and use the same theme throughout the video.
 - [ ] Credits slide: acknowledge any coaching (rules require it) and the AI tools used to build Crucible.
 - [ ] Export and upload to the designated Google Drive before Sun 11:59 pm.

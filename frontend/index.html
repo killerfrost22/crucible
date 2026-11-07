@@ -10,6 +10,17 @@
       content="Crucible: a board of AI advisors that researches your business decision, argues it out in two rounds, and recommends. You make the final call."
     />
     <title>Crucible — your decision, argued from five sides</title>
+    <script>
+      // Theme before first paint: the owner's saved choice, else the OS setting (see src/lib/theme.ts).
+      ;(function () {
+        var theme = null
+        try {
+          theme = localStorage.getItem('crucible.theme')
+        } catch (e) {}
+        if (theme !== 'light' && theme !== 'dark') theme = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'
+        document.documentElement.dataset.theme = theme
+      })()
+    </script>
   </head>
   <body>
     <div id="root"></div>

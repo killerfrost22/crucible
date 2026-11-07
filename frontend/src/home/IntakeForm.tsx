@@ -1,4 +1,4 @@
-import { useId, useRef, useState, type FormEvent } from 'react'
+import { useId, useRef, useState, type CSSProperties, type FormEvent } from 'react'
 import { draftFromIntake, intakeFromDraft, type IntakeDraft } from '../lib/intakeDraft'
 import { SCENARIOS } from '../scenarios'
 import type { Intake } from '../types'
@@ -22,6 +22,9 @@ const PROFILE_FIELDS: { key: ProfileKey; label: string; placeholder: string; hin
   { key: 'constraints', label: 'Anything the board should know', placeholder: 'e.g. I work the morning shift six days a week', wide: true, multiline: true },
 ]
 
+/** One seat colour per example chip, so the three read as distinct at a glance. */
+const CHIP_COLORS = ['var(--seat-industry_expert)', 'var(--seat-realist)', 'var(--seat-ai_tools_expert)']
+
 /** The real intake: an example to start from, the question, the leaning, and the optional business profile. */
 export function IntakeForm({ draft, onChange, onSubmit }: IntakeFormProps) {
   const ids = useId()
@@ -43,17 +46,18 @@ export function IntakeForm({ draft, onChange, onSubmit }: IntakeFormProps) {
   }
 
   return (
-    <form className="lp-form" onSubmit={submit} noValidate aria-labelledby="convene-title">
-      <div className="lp-examples" data-part role="group" aria-labelledby={`${ids}-examples`}>
-        <p className="lp-examples__label" id={`${ids}-examples`}>
+    <form className="hm-form" onSubmit={submit} noValidate aria-labelledby="convene-title">
+      <div className="hm-examples" role="group" aria-labelledby={`${ids}-examples`}>
+        <p className="hm-examples__label" id={`${ids}-examples`}>
           Start from an example
         </p>
-        <ul className="lp-examples__list">
-          {SCENARIOS.map((s) => (
+        <ul className="hm-examples__list">
+          {SCENARIOS.map((s, i) => (
             <li key={s.id}>
               <button
                 type="button"
-                className="lp-chip"
+                className="hm-chip"
+                style={{ '--k': CHIP_COLORS[i % CHIP_COLORS.length] } as CSSProperties}
                 aria-pressed={draft.question === s.intake.question}
                 onClick={() => {
                   onChange(draftFromIntake(s.intake))
@@ -67,7 +71,7 @@ export function IntakeForm({ draft, onChange, onSubmit }: IntakeFormProps) {
         </ul>
       </div>
 
-      <div className="lp-field lp-field--question" data-part>
+      <div className="hm-field hm-field--question">
         <label htmlFor="question">What are you deciding?</label>
         <textarea
           id="question"
@@ -81,12 +85,12 @@ export function IntakeForm({ draft, onChange, onSubmit }: IntakeFormProps) {
           onChange={(e) => set('question', e.target.value)}
         />
         {questionError && (
-          <p className="lp-field__error" id={`${ids}-question-error`}>
+          <p className="hm-field__error" id={`${ids}-question-error`}>
             Write the decision as a question, like &ldquo;Should we hire a second technician?&rdquo;
           </p>
         )}
       </div>
-      <div className="lp-field" data-part>
+      <div className="hm-field">
         <label htmlFor={`${ids}-leaning`}>Which way are you leaning?</label>
         <input
           id={`${ids}-leaning`}
@@ -96,15 +100,15 @@ export function IntakeForm({ draft, onChange, onSubmit }: IntakeFormProps) {
         />
       </div>
 
-      <fieldset className="lp-profile" data-part>
+      <fieldset className="hm-profile">
         <legend>About your business</legend>
-        <p className="lp-profile__hint">Optional, but the board gives sharper advice when it knows who you are.</p>
-        <div className="lp-profile__grid">
+        <p className="hm-profile__hint">Optional, but the board gives sharper advice when it knows who you are.</p>
+        <div className="hm-profile__grid">
           {PROFILE_FIELDS.map((f) => {
             const id = `${ids}-${f.key}`
             const hintId = f.hint ? `${id}-hint` : undefined
             return (
-              <div key={f.key} className={f.wide ? 'lp-field lp-field--wide' : 'lp-field'}>
+              <div key={f.key} className={f.wide ? 'hm-field hm-field--wide' : 'hm-field'}>
                 <label htmlFor={id}>{f.label}</label>
                 {f.multiline ? (
                   <textarea id={id} rows={2} value={draft[f.key]} placeholder={f.placeholder} onChange={(e) => set(f.key, e.target.value)} />
@@ -112,7 +116,7 @@ export function IntakeForm({ draft, onChange, onSubmit }: IntakeFormProps) {
                   <input id={id} value={draft[f.key]} placeholder={f.placeholder} aria-describedby={hintId} onChange={(e) => set(f.key, e.target.value)} />
                 )}
                 {f.hint && (
-                  <p className="lp-field__hint" id={hintId}>
+                  <p className="hm-field__hint" id={hintId}>
                     {f.hint}
                   </p>
                 )}
@@ -122,14 +126,14 @@ export function IntakeForm({ draft, onChange, onSubmit }: IntakeFormProps) {
         </div>
       </fieldset>
 
-      <div className="lp-form__submit" data-part>
-        <button type="submit" className="lp-btn lp-btn--primary lp-btn--big">
+      <div className="hm-form__submit">
+        <button type="submit" className="hm-btn hm-btn--primary hm-btn--lg">
           Convene the board
-          <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
             <path d="M2.5 8h10M8.5 4l4 4-4 4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </button>
-        <p className="lp-form__note">A live meeting takes about a minute: research, two rounds of debate, then a recommendation.</p>
+        <p className="hm-form__note">A live meeting takes about a minute: research, two rounds of debate, then a recommendation.</p>
       </div>
     </form>
   )

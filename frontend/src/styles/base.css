@@ -10,10 +10,6 @@ html {
   scroll-padding-top: calc(var(--frame-h) + var(--space-5));
 }
 
-html:has(.page--board) {
-  color-scheme: dark;
-}
-
 html.fonts-pending body {
   opacity: 0;
 }
@@ -129,8 +125,73 @@ a:hover {
 .wordmark {
   display: block;
   flex: none;
-  width: auto;
   height: 1.375rem;
+}
+
+.wordmark__img {
+  display: block;
+  width: auto;
+  height: 100%;
+}
+
+:root[data-theme='light'] .wordmark__img--on-dark,
+:root:not([data-theme='light']) .wordmark__img--on-light {
+  display: none;
+}
+
+/* ── Theme toggle ─────────────────────────────────────────────────────── */
+
+.theme-toggle {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  transition:
+    background-color var(--dur-quick) var(--ease-out),
+    border-color var(--dur-quick) var(--ease-out);
+}
+
+.theme-toggle:hover {
+  border-color: var(--text-3);
+  background: var(--surface-2);
+}
+
+.theme-toggle:active {
+  transform: translateY(1px);
+}
+
+.theme-toggle svg {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+/* ── Seat illustrations (components/SeatArt.tsx) ─────────────────────── */
+
+.seat-art path {
+  fill: var(--bg);
+  stroke: var(--line-strong);
+  stroke-width: 1.2;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+:root[data-theme='light'] .seat-art path:not(.a, .m) {
+  stroke: var(--text-3);
+}
+
+.seat-art .a {
+  stroke: var(--k);
+}
+
+.seat-art .m {
+  fill: url(#seat-art-molten);
+  stroke: var(--heat-2);
 }
 
 /* ── Labels ───────────────────────────────────────────────────────────── */
@@ -186,7 +247,7 @@ a:hover {
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--hm);
-  text-shadow: 0 1px 0 rgb(0 0 0 / 0.55);
+  text-shadow: var(--hallmark-emboss, 0 1px 0 rgb(0 0 0 / 0.55));
 }
 
 /* ── Buttons ──────────────────────────────────────────────────────────── */
@@ -230,6 +291,10 @@ a:hover {
 
 .btn--primary:hover:not(:disabled) {
   background: #fffaf0;
+}
+
+:root[data-theme='light'] .btn--primary:hover:not(:disabled) {
+  background: #46382b;
 }
 
 .btn--secondary {

@@ -172,9 +172,9 @@ export function Crucible(props: CrucibleProps) {
             <stop offset="1" stopColor="var(--heat-3)" />
           </linearGradient>
           <linearGradient id={`${ids}-crust`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="#5a4b3f" />
-            <stop offset="0.25" stopColor="#3a3029" />
-            <stop offset="1" stopColor="#211b17" />
+            <stop offset="0" stopColor="var(--crust-0)" />
+            <stop offset="0.25" stopColor="var(--crust-1)" />
+            <stop offset="1" stopColor="var(--crust-2)" />
           </linearGradient>
           <radialGradient id={`${ids}-glow`}>
             <stop offset="0" stopColor="var(--heat-2)" stopOpacity="0.55" />
@@ -182,19 +182,23 @@ export function Crucible(props: CrucibleProps) {
             <stop offset="1" stopColor="var(--heat-3)" stopOpacity="0" />
           </radialGradient>
           <linearGradient id={`${ids}-wall`} x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0" stopColor="#2b2520" />
-            <stop offset="0.3" stopColor="#5a5045" />
-            <stop offset="0.55" stopColor="#3d352e" />
-            <stop offset="1" stopColor="#221d19" />
+            <stop offset="0" stopColor="var(--wall-0)" />
+            <stop offset="0.3" stopColor="var(--wall-1)" />
+            <stop offset="0.55" stopColor="var(--wall-2)" />
+            <stop offset="1" stopColor="var(--wall-3)" />
           </linearGradient>
           <linearGradient id={`${ids}-wallheat`} x1="0" y1="0" x2="0" y2="1">
             <stop offset="0" stopColor="var(--heat-2)" />
             <stop offset="1" stopColor="var(--heat-3)" stopOpacity="0.2" />
           </linearGradient>
           <linearGradient id={`${ids}-cool`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="#8a7f72" />
-            <stop offset="0.18" stopColor="#5c534a" />
-            <stop offset="1" stopColor="#38312b" />
+            <stop offset="0" stopColor="var(--cast-0)" />
+            <stop offset="0.18" stopColor="var(--cast-1)" />
+            <stop offset="1" stopColor="var(--cast-2)" />
+          </linearGradient>
+          <linearGradient id={`${ids}-hollow`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor="var(--hollow-0)" />
+            <stop offset="1" stopColor="var(--hollow-1)" />
           </linearGradient>
           <clipPath id={`${ids}-in`}>
             <path d={INTERIOR} />
@@ -234,7 +238,7 @@ export function Crucible(props: CrucibleProps) {
           <path d={OUTER} fill={`url(#${ids}-wall)`} />
           <path className="vessel__heat" d={OUTER} fill={`url(#${ids}-wallheat)`} />
           <g clipPath={`url(#${ids}-in)`}>
-            <path d={INTERIOR} fill="var(--sunk)" />
+            <path d={INTERIOR} fill={`url(#${ids}-hollow)`} />
             <g className="forge__charge">
               {CHARGE.map((d) => (
                 <path key={d} d={d} />
@@ -340,7 +344,7 @@ export function Crucible(props: CrucibleProps) {
                 cy="0"
                 rx="34"
                 ry="7"
-                fill="var(--heat-1)"
+                fill="var(--spark)"
                 initial={{ x: 200, y: surfaceY, scale: 0.3, opacity: 0.9 }}
                 animate={{ scale: 1.6, opacity: 0 }}
                 transition={{ duration: 0.7, ease: EASE_OUT }}
@@ -351,7 +355,7 @@ export function Crucible(props: CrucibleProps) {
                   r={i % 3 === 0 ? 3.6 : 2.6}
                   cx="0"
                   cy="0"
-                  fill={i % 2 ? 'var(--heat-1)' : `var(--seat-${b.seat})`}
+                  fill={i % 2 ? 'var(--spark)' : `var(--seat-${b.seat})`}
                   initial={{ x: 200, y: surfaceY, opacity: 0 }}
                   animate={{ x: [200, 200 + dx * 0.75, 200 + dx * 1.1], y: [surfaceY, surfaceY + dy * 1.1, surfaceY + dy * 0.6], opacity: [0, 1, 0] }}
                   transition={{ duration: 1.05, delay: i * 0.03, ease: EASE_OUT }}

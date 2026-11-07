@@ -4,12 +4,18 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { App } from './App'
 import { whenFontsReady } from './lib/fonts'
+import { initTheme } from './lib/theme'
 import './styles/tokens.css'
 import './styles/base.css'
-import './styles/landing.css'
+import './styles/home.css'
+import './styles/underthehood.css'
 import './styles/board.css'
 import './styles/cards.css'
 import './styles/verdict.css'
+
+initTheme()
+// Every view sets its own scroll (top, or the home form after a meeting); the browser's restore would fight it.
+window.history.scrollRestoration = 'manual'
 
 // Hold the first paint until the faces are ready (capped), so text never reflows.
 const root = document.documentElement

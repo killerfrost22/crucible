@@ -1,26 +1,29 @@
 /**
- * "Built by many hands": the landing page assembles itself the way a team builds a page in a design tool.
+ * "Built by many hands": the under-the-hood page assembles itself the way a team builds a page in a design tool.
  *
  * React owns the markup and marks it up for this module:
  * - `data-part` blocks (and `data-part="text"` runs of text, `data-part="art"` illustrations) start hidden and are
  *   built the first time they scroll into view: guide lines, a selection box with its W × H readout, a skeleton, a
  *   text-selection sweep with an I-beam, red spacing to the previous part, a crosshair, and one of the advisors'
- *   named cursors flying over to do the work.
+ *   named cursors flying over to do the work. `data-cursor="<advisor id>"` makes that advisor build the part.
  * - `data-rail="v|h|vh"` elements throw red alignment rails while the page scrolls down, and scrolling down sets off
  *   ambient "editing" bursts on parts already built. Scrolling back up stays quiet: no rails, no bursts, and parts
  *   not built yet simply appear.
  *
- * Everything moves with transform and opacity. Sizes are written only when a target's size changes.
+ * Everything moves with transform and opacity. Sizes are written only when a target's size changes. Colours come
+ * from the theme tokens in CSS, so the overlay follows the light and dark themes.
  * `startBuildFx` returns a cleanup that cancels the frame loop, timers and listeners, removes the overlay, and leaves
  * every part visible.
  */
 
 export interface FxAdvisor {
+  /** Matched against a part's `data-cursor`. */
+  id: string
   name: string
   /** CSS color for the cursor and its name tag. */
   color: string
-  /** Optional CSS background for the name tag (the Chairman's is molten). */
-  tag?: string
+  /** The Chairman's name tag is molten. */
+  molten?: boolean
 }
 
 interface FxObject {
@@ -43,9 +46,9 @@ const CYAN = 'var(--guide)'
 const RED = 'var(--measure)'
 
 const BEAM =
-  '<svg width="9" height="18" viewBox="0 0 9 18" aria-hidden="true"><path d="M1 1.5c2 0 3.5.6 3.5 2.2v10.6c0 1.6-1.5 2.2-3.5 2.2M8 1.5c-2 0-3.5.6-3.5 2.2v10.6c0 1.6 1.5 2.2 3.5 2.2" fill="none" stroke="#fff" stroke-width="1.3"/></svg>'
+  '<svg width="9" height="18" viewBox="0 0 9 18" aria-hidden="true"><path d="M1 1.5c2 0 3.5.6 3.5 2.2v10.6c0 1.6-1.5 2.2-3.5 2.2M8 1.5c-2 0-3.5.6-3.5 2.2v10.6c0 1.6 1.5 2.2 3.5 2.2" fill="none" stroke-width="1.3"/></svg>'
 const ARROW =
-  '<svg width="16" height="20" viewBox="0 0 16 20" aria-hidden="true"><path d="M1.2 1.2v15l4-3.5 2.8 6.1 2.7-1.2-2.7-6 5.4-.2z" fill="currentColor" stroke="#13100d" stroke-width="1.2" stroke-linejoin="round"/></svg>'
+  '<svg width="16" height="20" viewBox="0 0 16 20" aria-hidden="true"><path d="M1.2 1.2v15l4-3.5 2.8 6.1 2.7-1.2-2.7-6 5.4-.2z" fill="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>'
 
 const clamp = (v: number, a = 0, b = 1) => (v < a ? a : v > b ? b : v)
 const easeOut = (t: number) => 1 - Math.pow(1 - t, 3)
@@ -73,7 +76,7 @@ export function startBuildFx(root: HTMLElement, advisors: FxAdvisor[]): () => vo
   const built = new WeakSet<Element>()
 
   const layer = document.createElement('div')
-  layer.className = 'lp-insp'
+  layer.className = 'uth-insp'
   layer.setAttribute('aria-hidden', 'true')
   document.body.appendChild(layer)
 
@@ -328,6 +331,7 @@ export function startBuildFx(root: HTMLElement, advisors: FxAdvisor[]): () => vo
 
   /** The board, as multiplayer cursors with a short motion trail. */
   class Cursor {
+    id: string
     n: HTMLElement
     ghosts: HTMLElement[]
     x: number
@@ -346,10 +350,10 @@ export function startBuildFx(root: HTMLElement, advisors: FxAdvisor[]): () => vo
     arc = 0
 
     constructor(def: FxAdvisor, i: number) {
-      this.n = node('cur', ARROW + '<span></span>')
+      this.id = def.id
+      this.n = node(def.molten ? 'cur molten' : 'cur', ARROW + '<span></span>')
       const tag = this.n.lastChild as HTMLElement
       tag.textContent = def.name
-      if (def.tag) tag.style.background = def.tag
       this.n.style.setProperty('--k', def.color)
       this.ghosts = [0, 1, 2].map(() => {
         const g = node('cur ghost', ARROW)
@@ -414,8 +418,11 @@ export function startBuildFx(root: HTMLElement, advisors: FxAdvisor[]): () => vo
 
   const cursors = advisors.map((d, i) => new Cursor(d, i))
   let ci = 0
+  /** A part inside a `data-cursor` block is built by that advisor; otherwise the board takes turns. */
   const cursorTo = (p: Element, dur: number) => {
-    const c = cursors[(ci++ + (Math.random() < 0.3 ? 1 : 0)) % cursors.length]
+    const id = p.closest<HTMLElement>('[data-cursor]')?.dataset.cursor
+    const own = id ? cursors.find((c) => c.id === id) : undefined
+    const c = own ?? cursors[(ci++ + (Math.random() < 0.3 ? 1 : 0)) % cursors.length]
     c.go(p, 0.16 + Math.random() * 0.66, 0.2 + Math.random() * 0.6, dur)
   }
 

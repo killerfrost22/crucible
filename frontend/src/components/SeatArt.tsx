@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react'
-import type { MemberId } from './content'
+import type { MemberId } from '../content'
 
 // Isometric line drawings, one per member, on a 240 × 170 grid (30° axes). Faces are listed back to front so
 // each one covers the lines behind it. 'a' strokes a face in the member's color; 'm' fills it with molten metal.
@@ -95,12 +95,12 @@ const ART: Record<MemberId, readonly Face[]> = {
 }
 
 /** A member's illustration. Each face carries its order in `--i` so the build effect can set blocks in place one by one. */
-export function SeatArt({ id }: { id: MemberId }) {
+export function SeatArt({ id, className }: { id: MemberId; className?: string }) {
   return (
-    <svg className="lp-art" data-part="art" viewBox="0 0 240 170" aria-hidden="true" focusable="false">
+    <svg className={className ? `seat-art ${className}` : 'seat-art'} data-part="art" viewBox="0 0 240 170" aria-hidden="true" focusable="false">
       {id === 'chairman' && (
         <defs>
-          <linearGradient id="lp-molten" x1="0" y1="0" x2="0" y2="1">
+          <linearGradient id="seat-art-molten" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0" stopColor="#ffe7a3" />
             <stop offset=".45" stopColor="#f6a32b" />
             <stop offset="1" stopColor="#d4421f" />

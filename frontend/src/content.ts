@@ -1,6 +1,7 @@
-// Landing copy taken from the recorded HVAC session (public/replays/hvac-ai-promo-texts.sse), shortened but not reworded.
-import { SEATS } from '../seats'
-import type { SeatId, Stance } from '../types'
+// Real session content, taken from the recorded HVAC meeting (public/replays/hvac-ai-promo-texts.sse), shortened
+// but not reworded. Shared by the home page and the under-the-hood page.
+import { SEATS } from './seats'
+import type { SeatId, Stance } from './types'
 
 export type MemberId = SeatId | 'chairman'
 

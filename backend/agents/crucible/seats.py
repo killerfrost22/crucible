@@ -178,8 +178,10 @@ def seat_instruction(seat: Seat) -> Callable[[ReadonlyContext], str]:
 
 def researcher_instruction(web_search: bool) -> Callable[[ReadonlyContext], str]:
     sourcing = (
-        "Use Google Search to verify each fact; set verified=true and give the URL only for "
-        "facts a search result supports."
+        "Web search results are available to you. Set verified=true and give the result's URL "
+        "only for facts a search result supports; facts from general knowledge get verified=false "
+        "and an empty source. Put URLs only in `source`: the claim is plain text with no links or "
+        "citation markup."
         if web_search
         else "You have no web access in this session: draw on general knowledge, set "
         "verified=false and leave source empty on every fact, and prefer well-established facts."

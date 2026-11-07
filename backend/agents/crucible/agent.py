@@ -10,10 +10,13 @@ Session state written along the way (read by the frontend from each event's stat
 from __future__ import annotations
 
 import json
+import re
 from typing import Any
 
 from google.adk import Event
 from google.adk.agents import LlmAgent
+from google.adk.agents.callback_context import CallbackContext
+from google.adk.models.llm_response import LlmResponse
 from google.adk.tools import google_search
 from google.adk.workflow import JoinNode, Workflow
 from google.genai import types
@@ -31,6 +34,20 @@ from .seats import (
     researcher_instruction,
     seat_instruction,
 )
+
+# Some models leak prompt-format tags into their answers (seen: `</reasoning_effort>` from Claude Haiku 5.5 via
+# OpenRouter). Our answers are plain text, so any bare XML-like tag is an artifact the owner should never see.
+_LEAKED_TAG = re.compile(r"</?[a-z][a-z_]*>")
+
+
+def strip_leaked_tags(callback_context: CallbackContext, llm_response: LlmResponse) -> LlmResponse | None:
+    parts = llm_response.content.parts if llm_response.content else None
+    if not parts:
+        return None
+    for part in parts:
+        if part.text:
+            part.text = _LEAKED_TAG.sub("", part.text)
+    return llm_response
 
 
 def _message_text(node_input: Any) -> str:
@@ -52,7 +69,9 @@ def intake(ctx, node_input: Any) -> Event:
         raise ValueError(f"Invalid intake: {e}") from e
     ctx.state["intake"] = parsed.model_dump()
     ctx.state["evidence_mode"] = "web" if config.WEB_SEARCH else "model_knowledge"
-    return Event(output="Assemble the shared evidence for this decision.")
+    # With OpenRouter's web search this message is also the search query, so it names the decision.
+    where = ", ".join(v for v in (parsed.profile.industry, parsed.profile.location) if v)
+    return Event(output=f"Assemble the shared evidence for this decision: {parsed.question}" + (f" ({where})" if where else ""))
 
 
 def convene(node_input: Any) -> Event:
@@ -76,22 +95,24 @@ def _seat_agent(seat: Seat, round_no: int) -> LlmAgent:
     return LlmAgent(
         name=f"{seat.id}_r{round_no}",
         description=f"{seat.title}, round {round_no}",
-        model=config.model(config.SEAT_MODEL),
+        model=config.model(config.seat_model_name(seat.id)),
         instruction=seat_instruction(seat),
         include_contents="none",
         output_schema=seat.round1_schema if round_no == 1 else seat.round2_schema,
+        after_model_callback=strip_leaked_tags,
     )
 
 
 researcher = LlmAgent(
     name="researcher",
     description="Assembles the evidence every seat argues from.",
-    model=config.model(config.SEAT_MODEL),
+    model=config.model(config.researcher_model_name()),
     instruction=researcher_instruction(config.WEB_SEARCH),
-    tools=[google_search] if config.WEB_SEARCH else [],
+    tools=[google_search] if config.GEMINI_SEARCH_TOOL else [],
     include_contents="none",
     output_schema=Evidence,
     output_key="evidence",
+    after_model_callback=strip_leaked_tags,
 )
 
 chairman = LlmAgent(
@@ -102,6 +123,7 @@ chairman = LlmAgent(
     include_contents="none",
     output_schema=Verdict,
     output_key="verdict",
+    after_model_callback=strip_leaked_tags,
 )
 
 root_agent = Workflow(

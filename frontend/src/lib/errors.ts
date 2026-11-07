@@ -32,6 +32,16 @@ export function humanizeErrors(errors: BoardError[]): HumanError | null {
   const failed = errors.find((e) => e.node)
   const seat = who(failed?.node ?? null)
 
+  const credit = errors.find((e) => /\b402\b|insufficient.?credits?/i.test(`${e.code} ${e.message}`))
+  if (credit) {
+    return {
+      kind: 'quota',
+      title: 'The board is out of AI credit.',
+      body: `${seat ? `${seat} couldn't finish because the` : 'The'} AI account behind Crucible has run out of credit. Everything the board finished is still here. Watch a recorded session to see a full debate.`,
+      detail,
+    }
+  }
+
   const quota = errors.find((e) => /\b429\b|RESOURCE_EXHAUSTED|quota|rate.?limit/i.test(`${e.code} ${e.message}`))
   if (quota) {
     const perMinute = /per minute/i.test(quota.message) && !/per day/i.test(quota.message)

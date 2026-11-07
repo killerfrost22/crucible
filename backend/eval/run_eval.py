@@ -7,7 +7,7 @@ the full board in-process, then check which `must_catch` risks each one surfaced
     .venv/Scripts/python.exe eval/run_eval.py --only dental-ai-receptionist,bakery-price-increase
     .venv/Scripts/python.exe eval/run_eval.py --skip-baseline
 
-Cost: 13 model calls per scenario (1 baseline + 12 board). Free-tier keys allow ~20/day/model.
+Cost: 13 model calls per scenario (1 baseline + 12 board), about $0.10–0.15 with the default OpenRouter models.
 Writes eval/results/<timestamp>/{report.md,<scenario>.json}.
 """
 
@@ -26,7 +26,7 @@ from typing import Any
 EVAL_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(EVAL_DIR.parent / "agents"))
 
-from google import genai  # noqa: E402
+import litellm  # noqa: E402
 from google.adk.runners import InMemoryRunner  # noqa: E402
 from google.genai import types  # noqa: E402
 
@@ -45,12 +45,13 @@ def caught(text: str, item: dict[str, Any]) -> bool:
     return any(re.search(pattern, text, re.IGNORECASE) for pattern in item["any"])
 
 
-async def run_baseline(client: genai.Client, intake: dict[str, Any]) -> str:
-    response = await client.aio.models.generate_content(
-        model=config.CHAIR_MODEL,
-        contents=BASELINE_PROMPT.format(briefing=render_intake(intake)),
+async def run_baseline(intake: dict[str, Any]) -> str:
+    response = await litellm.acompletion(
+        model=config.litellm_name(config.CHAIR_MODEL),
+        messages=[{"role": "user", "content": BASELINE_PROMPT.format(briefing=render_intake(intake))}],
+        num_retries=config.RETRY.attempts,
     )
-    return response.text or ""
+    return response.choices[0].message.content or ""
 
 
 async def run_board(intake: dict[str, Any]) -> tuple[dict[str, Any], str | None]:
@@ -99,19 +100,19 @@ async def main() -> None:
 
     out_dir = EVAL_DIR / "results" / datetime.now().strftime("%Y%m%d-%H%M%S")
     out_dir.mkdir(parents=True)
-    client = genai.Client(http_options=types.HttpOptions(retry_options=config.RETRY))
     rows = []
 
     for s in scenarios:
         print(f"▶ {s['id']}", flush=True)
         record: dict[str, Any] = {"scenario": s, "seat_model": config.SEAT_MODEL,
+                                  "researcher_model": config.researcher_model_name(),
                                   "chair_model": config.CHAIR_MODEL, "web_search": config.WEB_SEARCH}
         row = {"id": s["id"], "baseline": "—", "board": "—", "verdict": "—",
                "decision": "—", "blocks": "—", "seconds": "—", "error": ""}
 
         if not args.skip_baseline:
             try:
-                record["baseline"] = await run_baseline(client, s["intake"])
+                record["baseline"] = await run_baseline(s["intake"])
                 row["baseline"] = score(s["must_catch"], record["baseline"])
             except Exception as e:
                 row["error"] = f"baseline {type(e).__name__}"
@@ -138,8 +139,9 @@ async def main() -> None:
               f" · {row['decision']} · {row['seconds']}s {row['error']}", flush=True)
 
     header = (
-        f"# Eval {out_dir.name}\n\nSeat model `{config.SEAT_MODEL}`, chair model "
-        f"`{config.CHAIR_MODEL}`, web search {'on' if config.WEB_SEARCH else 'off'}.\n"
+        f"# Eval {out_dir.name}\n\nSeat model `{config.SEAT_MODEL}`, researcher "
+        f"`{config.researcher_model_name()}`, chair `{config.CHAIR_MODEL}`, web search "
+        f"{'on' if config.WEB_SEARCH else 'off'}.\n"
         "Columns count `must_catch` risks surfaced: baseline = one plain prompt; board = anywhere "
         "in evidence or debate; verdict = in the Chairman's final recommendation.\n\n"
         "| Scenario | Baseline | Board | Verdict | Decision | Realist blocks (R2) | Seconds | Error |\n"

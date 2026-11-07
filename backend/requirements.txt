@@ -1,3 +1,4 @@
 google-adk==2.13.0
+litellm==1.108.2
 python-dotenv==1.2.4
 uvicorn==0.54.0

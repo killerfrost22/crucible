@@ -1,10 +1,10 @@
-import { AnimatePresence, motion } from 'motion/react'
+import { AnimatePresence, motion, useReducedMotion, type Transition } from 'motion/react'
 import { useEffect, useId, useRef, useState, type CSSProperties, type FormEvent } from 'react'
 import type { RatifyStatus } from '../lib/useBoardRun'
 import { SEAT_BY_ID } from '../seats'
 import type { Decision, EscalateTo, Ratification, SeatPoint, StepWhen, Verdict } from '../types'
 import { FactText } from './facts'
-import { EASE_OUT, EASE_PIN, EASE_STAMP } from './motion'
+import { EASE_IN_OUT, EASE_OUT, EASE_STRIKE } from './motion'
 
 export const DECISION_COPY: Record<Decision, { stamp: string; gloss: string }> = {
   proceed: { stamp: 'Proceed', gloss: 'Go ahead.' },
@@ -22,11 +22,17 @@ const ESCALATION: Record<Exclude<EscalateTo, 'none'>, string> = {
 
 const WHEN_ORDER: StepWhen[] = ['this week', 'next 30 days', 'next 90 days']
 
+/** Reduced motion lands every animation on its final frame at once: static, but complete. */
+function useTiming() {
+  const reduce = useReducedMotion()
+  return (t: Transition): Transition => (reduce ? { duration: 0 } : t)
+}
+
 function Points({ points }: { points: SeatPoint[] }) {
   return (
     <ul className="points">
       {points.map((p, i) => (
-        <li key={i} style={{ '--pin': `var(--pin-${p.seat})` } as CSSProperties}>
+        <li key={i} style={{ '--c': `var(--seat-${p.seat})` } as CSSProperties}>
           <span className="points__seat">{SEAT_BY_ID[p.seat]?.title ?? p.seat}</span>
           <span>
             <FactText text={p.point} />
@@ -39,38 +45,60 @@ function Points({ points }: { points: SeatPoint[] }) {
 
 export function VerdictCard({ verdict }: { verdict: Verdict }) {
   const copy = DECISION_COPY[verdict.decision]
+  const timing = useTiming()
   const steps = WHEN_ORDER.map((when) => ({ when, items: verdict.next_steps.filter((s) => s.when === when) })).filter((g) => g.items.length)
+  const confidence = Math.round(verdict.confidence)
   return (
     <motion.article
       className="verdict"
       data-decision={verdict.decision}
       aria-labelledby="verdict-title"
-      initial={{ opacity: 0, y: -48, scale: 1.05, rotate: 1.5 }}
-      // Lands once it is on screen, so the scroll to it never swallows the moment.
-      whileInView={{ opacity: 1, y: 0, scale: 1, rotate: -0.4 }}
+      initial={{ opacity: 0, y: 24 }}
+      // Arrives once it is on screen, so the scroll to it never swallows the moment.
+      whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '0px 0px -15% 0px' }}
-      transition={{ duration: 0.7, ease: EASE_PIN }}
+      transition={timing({ duration: 0.6, ease: EASE_OUT })}
     >
-      <span className="pin pin--chairman" aria-hidden="true" />
       <header className="verdict__head">
-        <p className="verdict__kicker">The Chairman recommends</p>
-        <motion.p
-          className="stamp stamp--verdict"
-          initial={{ opacity: 0, scale: 2.6, rotate: -22 }}
-          whileInView={{ opacity: 1, scale: 1, rotate: -8 }}
-          viewport={{ once: true, amount: 0.5 }}
-          transition={{ duration: 0.32, delay: 0.55, ease: EASE_STAMP }}
-        >
-          {copy.stamp}
-          <span className="visually-hidden">: {copy.gloss}</span>
-        </motion.p>
+        <p className="kicker">The Chairman recommends</p>
+        {/* The cast ingot: poured glowing, it cools to metal and the decision is struck into it. */}
+        <div className="ingot-bar">
+          <motion.span
+            className="ingot-bar__hot"
+            aria-hidden="true"
+            initial={{ opacity: 1 }}
+            whileInView={{ opacity: 0 }}
+            viewport={{ once: true, amount: 0.6 }}
+            transition={timing({ duration: 2.4, delay: 0.5, ease: EASE_IN_OUT })}
+          />
+          <motion.p
+            className="hallmark-mark hallmark-mark--verdict"
+            initial={{ opacity: 0, scale: 1.35 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true, amount: 0.6 }}
+            transition={timing({ duration: 0.26, delay: 1.5, ease: EASE_STRIKE })}
+          >
+            {copy.stamp}
+            <span className="visually-hidden">: {copy.gloss}</span>
+          </motion.p>
+          <motion.p
+            className="ingot-bar__reading"
+            aria-hidden="true"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true, amount: 0.6 }}
+            transition={timing({ duration: 0.5, delay: 1.9, ease: EASE_OUT })}
+          >
+            {confidence}%
+          </motion.p>
+        </div>
         <h2 id="verdict-title" className="verdict__headline">
           {verdict.headline}
         </h2>
         <p className="verdict__meta">
           <span>{copy.gloss}</span>
           <span aria-hidden="true"> · </span>
-          <span>{Math.round(verdict.confidence)}% confident</span>
+          <span>{confidence}% confident</span>
         </p>
       </header>
 
@@ -178,6 +206,7 @@ export function YourCall({ decision, ratification, status, error, local, onSubmi
   const [note, setNote] = useState('')
   const [noteError, setNoteError] = useState(false)
   const noteRef = useRef<HTMLTextAreaElement>(null)
+  const timing = useTiming()
   useEffect(() => {
     if (mode === 'override') noteRef.current?.focus()
   }, [mode, editingAt])
@@ -199,16 +228,16 @@ export function YourCall({ decision, ratification, status, error, local, onSubmi
     const accepted = ratification.action === 'accept'
     return (
       <section className="yourcall yourcall--done" aria-labelledby={`${ids}-title`}>
-        <span className="pin pin--owner" aria-hidden="true" />
         <h2 className="yourcall__title" id={`${ids}-title`}>
           Your call
         </h2>
+        {/* The owner's own hallmark, struck beside the Chairman's. */}
         <motion.p
-          className="stamp stamp--owner"
+          className="hallmark-mark hallmark-mark--owner"
           data-action={ratification.action}
-          initial={{ opacity: 0, scale: 2.4, rotate: 14 }}
-          animate={{ opacity: 1, scale: 1, rotate: 6 }}
-          transition={{ duration: 0.3, ease: EASE_STAMP }}
+          initial={{ opacity: 0, scale: 1.4 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={timing({ duration: 0.26, ease: EASE_STRIKE })}
         >
           {accepted ? 'Accepted' : 'Overridden'}
         </motion.p>
@@ -239,12 +268,11 @@ export function YourCall({ decision, ratification, status, error, local, onSubmi
     <motion.section
       className="yourcall"
       aria-labelledby={`${ids}-title`}
-      initial={{ opacity: 0, y: -20, rotate: 3 }}
-      whileInView={{ opacity: 1, y: 0, rotate: 1.4 }}
+      initial={{ opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.3 }}
-      transition={{ duration: 0.5, delay: 0.8, ease: EASE_PIN }}
+      transition={timing({ duration: 0.5, delay: 0.6, ease: EASE_OUT })}
     >
-      <span className="pin pin--owner" aria-hidden="true" />
       <h2 className="yourcall__title" id={`${ids}-title`}>
         Your call
       </h2>
@@ -276,7 +304,7 @@ export function YourCall({ decision, ratification, status, error, local, onSubmi
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.22, ease: EASE_OUT }}
+            transition={timing({ duration: 0.22, ease: EASE_OUT })}
           >
             <label htmlFor={`${ids}-note`}>What will you do instead, and why?</label>
             <textarea

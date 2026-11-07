@@ -4,16 +4,7 @@ import type { Phase } from '../lib/board'
 import { SEAT_BY_ID, STANCE_LABEL, type SeatMeta } from '../seats'
 import type { Round1Opinion, Round2Opinion, SeatId } from '../types'
 import { FactText } from './facts'
-import { EASE_OUT, EASE_PIN } from './motion'
-
-/** Fixed per-seat tilt so the board looks hand-pinned but never reshuffles between renders. */
-const TILT: Record<SeatId, number> = {
-  industry_expert: -1.4,
-  ai_tools_expert: 1.1,
-  realist: -0.6,
-  strategist: 1.5,
-  devils_advocate: -1.1,
-}
+import { EASE_OUT, EASE_SNAP } from './motion'
 
 interface SeatCardProps {
   seat: SeatMeta
@@ -21,9 +12,21 @@ interface SeatCardProps {
   r2: Round2Opinion | undefined
   phase: Phase
   stopped: boolean
+  /** Another seat is lit and this one is not connected to it. */
   dimmed: boolean
+  /** This seat's filaments are lit (hovered, focused, or its rebuttal just landed). */
+  lit: boolean
   onFocusSeat: (seat: SeatId | null) => void
-  pinRef: (el: HTMLSpanElement | null) => void
+}
+
+function Dots() {
+  return (
+    <span className="dots" aria-hidden="true">
+      <span />
+      <span />
+      <span />
+    </span>
+  )
 }
 
 function Confidence({ value }: { value: number }) {
@@ -83,9 +86,7 @@ function Opinion({ seat, opinion }: { seat: SeatId; opinion: Round1Opinion }) {
         </div>
       )}
       <details className="seat__more">
-        <summary>
-          <span>Full reasoning</span>
-        </summary>
+        <summary>Full reasoning</summary>
         {opinion.key_points.length > 0 && (
           <>
             <h4 className="seat__sub">Key points</h4>
@@ -132,19 +133,20 @@ function Opinion({ seat, opinion }: { seat: SeatId; opinion: Round1Opinion }) {
   )
 }
 
-function RebuttalSlip({ r2, seat }: { r2: Round2Opinion; seat: SeatId }) {
+function Rebuttals({ r2 }: { r2: Round2Opinion }) {
   return (
     <motion.div
-      className="slip"
-      initial={{ opacity: 0, y: -14, rotate: 0 }}
-      animate={{ opacity: 1, y: 0, rotate: TILT[seat] > 0 ? -1.2 : 1.2 }}
-      transition={{ duration: 0.45, ease: EASE_PIN }}
+      className="debate"
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: EASE_OUT }}
     >
-      <span className="tape" aria-hidden="true" />
-      <h4 className="slip__title">Round 2</h4>
+      <h4 className="debate__title">
+        Rebuttals <span>Round 2</span>
+      </h4>
       {r2.changed_position && (
-        <div className="slip__changed">
-          <span className="stamp stamp--changed">Changed position</span>
+        <div className="debate__changed">
+          <p className="mark-changed">Changed position</p>
           {r2.changed_because && (
             <p>
               <FactText text={r2.changed_because} />
@@ -152,9 +154,9 @@ function RebuttalSlip({ r2, seat }: { r2: Round2Opinion; seat: SeatId }) {
           )}
         </div>
       )}
-      <ul className="slip__rebuttals">
+      <ul className="debate__rebuttals">
         {r2.rebuttals.map((r, i) => (
-          <li key={i} className="rebuttal" style={{ '--pin': `var(--pin-${r.target})` } as CSSProperties}>
+          <li key={i} className="rebuttal" style={{ '--c': `var(--seat-${r.target})` } as CSSProperties}>
             <p className="rebuttal__target">
               <span aria-hidden="true">↳</span> rebuts {SEAT_BY_ID[r.target]?.title ?? r.target}
             </p>
@@ -166,8 +168,10 @@ function RebuttalSlip({ r2, seat }: { r2: Round2Opinion; seat: SeatId }) {
         ))}
       </ul>
       {r2.concessions.length > 0 && (
-        <div className="slip__concessions">
-          <h5>Concedes</h5>
+        <div className="debate__concessions">
+          <h5>
+            Concedes <span>Slag: points dropped</span>
+          </h5>
           <ul>
             {r2.concessions.map((c) => (
               <li key={c}>
@@ -181,26 +185,32 @@ function RebuttalSlip({ r2, seat }: { r2: Round2Opinion; seat: SeatId }) {
   )
 }
 
-export function SeatCard({ seat, r1, r2, phase, stopped, dimmed, onFocusSeat, pinRef }: SeatCardProps) {
+export function SeatCard({ seat, r1, r2, phase, stopped, dimmed, lit, onFocusSeat }: SeatCardProps) {
   const [view, setView] = useState<'r1' | 'r2'>('r2')
-  const style = { '--pin': `var(--pin-${seat.id})`, '--tilt': `${TILT[seat.id]}deg` } as CSSProperties
+  const style = { '--c': `var(--seat-${seat.id})` } as CSSProperties
+  const initial = seat.title[0]
 
   if (!r1) {
-    const status = stopped ? "Didn't finish" : phase === 'round1' ? 'Thinking' : 'Waiting for the research'
+    const thinking = phase === 'round1' && !stopped
+    const status = stopped ? "Didn't finish" : thinking ? 'Thinking' : 'Waiting for the research'
     return (
-      <article className="seat seat--pending" style={style} aria-label={`${seat.title}: ${status}`} data-thinking={phase === 'round1' && !stopped}>
-        <span className="pin pin--ghost" ref={pinRef} aria-hidden="true" />
-        <p className="seat__name">{seat.title}</p>
+      <article
+        id={`seat-card-${seat.id}`}
+        className="seat seat--pending"
+        style={style}
+        aria-label={`${seat.title}: ${status}`}
+        data-thinking={thinking || undefined}
+      >
+        <header className="seat__head">
+          <span className="seat__avatar" aria-hidden="true">
+            {initial}
+          </span>
+          <p className="seat__name">{seat.title}</p>
+        </header>
         <p className="seat__role">{seat.role}</p>
         <p className="seat__status">
           {status}
-          {phase === 'round1' && !stopped && (
-            <span className="dots" aria-hidden="true">
-              <span />
-              <span />
-              <span />
-            </span>
-          )}
+          {thinking && <Dots />}
         </p>
       </article>
     )
@@ -211,27 +221,24 @@ export function SeatCard({ seat, r1, r2, phase, stopped, dimmed, onFocusSeat, pi
   const awaitingRebuttal = !r2 && phase === 'rebuttals' && !stopped
   return (
     <motion.article
+      id={`seat-card-${seat.id}`}
       className="seat"
       style={style}
       aria-labelledby={`seat-${seat.id}`}
-      data-dimmed={dimmed || undefined}
-      initial={{ opacity: 0, y: -30, scale: 1.04, rotate: TILT[seat.id] + 4 }}
-      animate={{ opacity: 1, y: 0, scale: 1, rotate: TILT[seat.id] }}
-      transition={{ duration: 0.55, ease: EASE_PIN }}
+      data-lit={lit || undefined}
+      initial={{ opacity: 0, y: 18 }}
+      // Motion owns the inline opacity, so the dimming for an unrelated seat runs through it too.
+      animate={{ opacity: dimmed ? 0.4 : 1, y: 0 }}
+      transition={{ y: { duration: 0.55, ease: EASE_SNAP }, opacity: { duration: dimmed ? 0.24 : 0.4, ease: EASE_OUT } }}
       onMouseEnter={() => onFocusSeat(seat.id)}
       onMouseLeave={() => onFocusSeat(null)}
       onFocus={() => onFocusSeat(seat.id)}
       onBlur={() => onFocusSeat(null)}
     >
-      <motion.span
-        className="pin"
-        ref={pinRef}
-        aria-hidden="true"
-        initial={{ opacity: 0, scale: 1.8, y: -10 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        transition={{ duration: 0.28, delay: 0.32, ease: EASE_OUT }}
-      />
       <header className="seat__head">
+        <span className="seat__avatar" aria-hidden="true">
+          {initial}
+        </span>
         <h2 className="seat__name" id={`seat-${seat.id}`}>
           {seat.title}
         </h2>
@@ -262,15 +269,11 @@ export function SeatCard({ seat, r1, r2, phase, stopped, dimmed, onFocusSeat, pi
         </motion.div>
       </AnimatePresence>
       {r2 ? (
-        <RebuttalSlip r2={r2} seat={seat.id} />
+        <Rebuttals r2={r2} />
       ) : awaitingRebuttal ? (
-        <p className="slip slip--pending">
+        <p className="debate debate--pending">
           Drafting a rebuttal
-          <span className="dots" aria-hidden="true">
-            <span />
-            <span />
-            <span />
-          </span>
+          <Dots />
         </p>
       ) : null}
     </motion.article>

@@ -82,7 +82,7 @@ export function ProductMock() {
         </div>
         <div className="lp-mock__foot" data-part>
           <span>
-            <span className="lp-dot" style={dot('var(--lp-text-2)')} />
+            <span className="lp-dot" style={dot('var(--text-2)')} />
             Researcher · {HVAC_FACTS} facts on file, cited F1–F{HVAC_FACTS}
           </span>
         </div>

@@ -1,10 +1,8 @@
 // Every face either page sets in its first view. Loading them up front keeps text from reflowing after paint.
 const FACES = [
-  '600 1em "Fraunces Variable"',
-  '400 1em "Instrument Sans Variable"',
-  '400 1em "Courier Prime"',
   '400 1em "Schibsted Grotesk Variable"',
   '600 1em "Schibsted Grotesk Variable"',
+  '500 1em "Geist Mono Variable"',
 ]
 const CAP_MS = 900
 

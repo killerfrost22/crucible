@@ -1,7 +1,7 @@
 import { PHASE_ORDER, type Phase } from '../lib/board'
 
 export const PHASE_STEPS: { phase: Phase; label: string; status: string }[] = [
-  { phase: 'researching', label: 'Researching', status: 'The Researcher is gathering facts about your question.' },
+  { phase: 'researching', label: 'Research', status: 'The Researcher is gathering facts about your question.' },
   { phase: 'round1', label: 'Round 1', status: 'Round 1: each advisor is forming an opening position.' },
   { phase: 'rebuttals', label: 'Rebuttals', status: 'Round 2: the advisors are answering each other.' },
   { phase: 'chairman', label: 'Chairman', status: 'The Chairman is weighing the debate.' },

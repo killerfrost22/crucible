@@ -6,8 +6,9 @@
  *   built the first time they scroll into view: guide lines, a selection box with its W × H readout, a skeleton, a
  *   text-selection sweep with an I-beam, red spacing to the previous part, a crosshair, and one of the advisors'
  *   named cursors flying over to do the work.
- * - `data-rail="v|h|vh"` elements throw red alignment rails while the page scrolls, and scrolling sets off
- *   ambient "editing" bursts on parts already built.
+ * - `data-rail="v|h|vh"` elements throw red alignment rails while the page scrolls down, and scrolling down sets off
+ *   ambient "editing" bursts on parts already built. Scrolling back up stays quiet: no rails, no bursts, and parts
+ *   not built yet simply appear.
  *
  * Everything moves with transform and opacity. Sizes are written only when a target's size changes.
  * `startBuildFx` returns a cleanup that cancels the frame loop, timers and listeners, removes the overlay, and leaves
@@ -38,8 +39,8 @@ interface Rail {
   o: number
 }
 
-const CYAN = 'var(--lp-cyan)'
-const RED = 'var(--lp-red)'
+const CYAN = 'var(--guide)'
+const RED = 'var(--measure)'
 
 const BEAM =
   '<svg width="9" height="18" viewBox="0 0 9 18" aria-hidden="true"><path d="M1 1.5c2 0 3.5.6 3.5 2.2v10.6c0 1.6-1.5 2.2-3.5 2.2M8 1.5c-2 0-3.5.6-3.5 2.2v10.6c0 1.6 1.5 2.2 3.5 2.2" fill="none" stroke="#fff" stroke-width="1.3"/></svg>'
@@ -439,6 +440,7 @@ export function startBuildFx(root: HTMLElement, advisors: FxAdvisor[]): () => vo
   let actTarget = 0
   let lastScroll = -1e9
   let lastAmb = 0
+  let scrollingUp = false
 
   function updRail(rl: Rail, t: number) {
     const r = R(rl.target)
@@ -514,9 +516,17 @@ export function startBuildFx(root: HTMLElement, advisors: FxAdvisor[]): () => vo
     pending = pending.filter((p) => {
       const r = R(p)
       const visible = r.width > 0 && r.height > 0 && r.top < VH * 0.98 && r.bottom > VH * 0.02
-      if (visible) enqueue(p)
+      if (visible) {
+        if (scrollingUp) revealQuietly(p)
+        else enqueue(p)
+      }
       return !visible
     })
+  }
+  /** Parts reached by scrolling back up are shown as they are, without the build. */
+  function revealQuietly(p: HTMLElement) {
+    p.classList.add('quiet')
+    markBuilt(p)
   }
 
   function neighborBelow(p: Element) {
@@ -598,11 +608,13 @@ export function startBuildFx(root: HTMLElement, advisors: FxAdvisor[]): () => vo
     const t = now()
     const y = scrollY
     const dt = Math.max(16, t - lastT)
-    const v = (Math.abs(y - lastY) / dt) * 1000
+    const dy = y - lastY
     lastY = y
     lastT = t
-    actTarget = Math.max(actTarget * 0.6, clamp(v / 1400))
     lastScroll = t
+    if (dy !== 0) scrollingUp = dy < 0
+    if (scrollingUp) act = actTarget = 0
+    else actTarget = Math.max(actTarget * 0.6, clamp(((Math.abs(dy) / dt) * 1000) / 1400))
     kick()
   }
   const onResize = () => {
@@ -632,6 +644,6 @@ export function startBuildFx(root: HTMLElement, advisors: FxAdvisor[]): () => vo
     removeEventListener('resize', onResize)
     layer.remove()
     root.classList.remove('fx', 'fx-reset')
-    for (const p of parts) p.classList.remove('built', 'done')
+    for (const p of parts) p.classList.remove('built', 'done', 'quiet')
   }
 }

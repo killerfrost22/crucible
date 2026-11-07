@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
 import type { HumanError } from '../lib/errors'
 import { factId, useFacts } from './facts'
-import { EASE_OUT, EASE_PIN } from './motion'
+import { EASE_OUT } from './motion'
 
 interface ErrorNoticeProps {
   error: HumanError
@@ -24,12 +24,11 @@ export function ErrorNotice({ error, onRetry, onEdit, onReplay }: ErrorNoticePro
       data-kind={error.kind}
       role="alert"
       aria-labelledby="notice-title"
-      initial={{ opacity: 0, y: -20, rotate: -2.5 }}
-      animate={{ opacity: 1, y: 0, rotate: -0.8 }}
-      transition={{ duration: 0.5, ease: EASE_PIN }}
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: EASE_OUT }}
     >
-      <span className="tape tape--red" aria-hidden="true" />
-      <p className="notice__kicker">{error.kind === 'quota' ? 'Meeting paused' : 'Meeting interrupted'}</p>
+      <p className="kicker notice__kicker">{error.kind === 'quota' ? 'Meeting paused' : 'Meeting interrupted'}</p>
       <h2 id="notice-title" className="notice__title">
         {error.title}
       </h2>

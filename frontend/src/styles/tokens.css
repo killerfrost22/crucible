@@ -1,8 +1,7 @@
 :root {
-  /* Type: Fraunces for voice, Instrument Sans for reading, Courier Prime for the research printout. */
-  --font-display: 'Fraunces Variable', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
-  --font-body: 'Instrument Sans Variable', 'Segoe UI', system-ui, sans-serif;
-  --font-type: 'Courier Prime', 'Courier New', ui-monospace, monospace;
+  /* Type: Schibsted Grotesk for everything; Geist Mono for fact IDs, readings and the research sheet. */
+  --font-sans: 'Schibsted Grotesk Variable', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'Geist Mono Variable', ui-monospace, 'Cascadia Mono', Consolas, monospace;
 
   /* Modular scale, ratio ~1.25, fluid between 320px and 1920px. */
   --step--2: 0.75rem;
@@ -24,96 +23,66 @@
   --space-7: 3rem;
   --space-8: 4rem;
   --space-9: 6rem;
-  --gutter: clamp(1rem, 0.6rem + 2vw, 3rem);
+  --gutter: clamp(1.25rem, 0.6rem + 2vw, 3rem);
 
-  /* Surfaces */
-  --cork: #a8754a;
-  --cork-shade: #8a5c37;
-  --wood: #3b2516;
-  --wood-edge: #2a190e;
-  --paper: #fbf7ee;
-  --paper-white: #fffdf8;
-  --paper-receipt: #f4f1e8;
-  --paper-manila: #e8d29f;
-  --paper-note: #fbefb1;
-  --paper-kraft: #d9bf8f;
-
-  /* Ink (AA on every paper above) */
-  --ink: #221a12;
-  --ink-soft: #594c3f;
-  --ink-on-wood: #f6ecd9;
-  --ink-on-wood-soft: #d9c7a8;
-  --rule-blue: #b7d0e8;
-  --rule-red: #e39b98;
-
-  /* Accent: the red of yarn and the owner's pin. Used sparingly. */
-  --yarn: #b3261e;
-  --yarn-deep: #7d1711;
-  --marker: #ffe36e;
-  --focus: #0a58ca;
-
-  /* Pins: one colour per seat */
-  --pin-owner: #c8322a;
-  --pin-researcher: #e9e6de;
-  --pin-chairman: #c49a2c;
-  --pin-industry_expert: #2c6cb5;
-  --pin-ai_tools_expert: #7a4cc2;
-  --pin-realist: #2e8457;
-  --pin-strategist: #e2a019;
-  --pin-devils_advocate: #262626;
-
-  /* Verdict stamps */
-  --decision-proceed: #23683a;
-  --decision-pilot: #1f4f94;
-  --decision-defer: #9a4f00;
-  --decision-reject: #a11f18;
-
-  /* Check status */
-  --check-pass: #23683a;
-  --check-flag: #8f5300;
-  --check-block: #a11f18;
-
-  --shadow-paper: 0 1px 1px rgb(45 24 8 / 0.2), 0 3px 6px -1px rgb(45 24 8 / 0.25), 0 14px 26px -12px rgb(45 24 8 / 0.55);
-  --shadow-lift: 0 2px 2px rgb(45 24 8 / 0.18), 0 10px 18px -4px rgb(45 24 8 / 0.3), 0 28px 44px -18px rgb(45 24 8 / 0.6);
-
-  --radius-paper: 2px;
-  --radius-control: 6px;
-
-  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-  --ease-pin: cubic-bezier(0.2, 0.9, 0.3, 1.12);
-  --dur-quick: 140ms;
-  --dur-base: 240ms;
-
-  /* ── Landing (dark) ─────────────────────────────────────────────────── */
-  --font-landing: 'Schibsted Grotesk Variable', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-
-  /* Warm near-black, brand cream text; AA verified on --lp-bg and both surfaces. */
-  --lp-bg: #13100d;
-  --lp-surface: #1a1612;
-  --lp-surface-2: #231d18;
-  --lp-line: #2c251f;
-  --lp-line-strong: #4a3f35;
+  /* Warm near-black, brand cream text; AA verified on --bg and both surfaces. Shared by both pages. */
+  --bg: #13100d;
+  --sunk: #0f0d0a;
+  --surface: #1a1612;
+  --surface-2: #231d18;
+  --line: #2c251f;
+  --line-strong: #4a3f35;
   /* Form control borders: 3:1 against the surfaces. */
-  --lp-field-line: #7a6c5d;
-  --lp-text: #f6ecd9;
-  --lp-text-2: #c5b8a5;
-  --lp-text-3: #9d8f7d;
+  --field-line: #7a6c5d;
+  --text: #f6ecd9;
+  --text-2: #c5b8a5;
+  --text-3: #9d8f7d;
 
-  /* Brand molten (the metal inside the C). Sparingly: the Chairman, the verdict rule, the convene glow. */
-  --molten: linear-gradient(180deg, #ffe7a3, #f6a32b 45%, #d4421f);
-  --molten-across: linear-gradient(90deg, #ffe7a3, #f6a32b 45%, #d4421f);
+  /* Brand molten (the metal inside the C). Heat is the hierarchy: what is active or decided glows. */
+  --heat-1: #ffe7a3;
+  --heat-2: #f6a32b;
+  --heat-3: #d4421f;
+  --molten: linear-gradient(180deg, var(--heat-1), var(--heat-2) 45%, var(--heat-3));
+  --molten-across: linear-gradient(90deg, var(--heat-1), var(--heat-2) 45%, var(--heat-3));
+  /* Ink on molten surfaces. */
+  --on-molten: #2a190e;
 
-  /* Inspector layer: design-tool guides (cyan) and measurements (red). */
-  --lp-cyan: #3fb8f0;
-  --lp-red: #f0525a;
+  /* Cooled metal: crucible walls, the cast ingot once it has set. */
+  --metal-hi: #8a7f72;
+  --metal: #554c42;
+  --metal-lo: #2f2924;
 
-  /* Seats on dark: the pin hue families above, lightened. Devil's Advocate (black pin) reads as bone. */
+  /* Landing inspector layer: design-tool guides (cyan) and measurements (red). */
+  --guide: #3fb8f0;
+  --measure: #f0525a;
+
+  /* One colour per advisor across the whole product (landing cursors, meeting seats). Devil's Advocate reads as bone. */
   --seat-industry_expert: #6f9cf2;
   --seat-ai_tools_expert: #b392f5;
   --seat-realist: #6fcf8f;
   --seat-strategist: #f0cd5c;
   --seat-devils_advocate: #ddd2bf;
   --seat-chairman: #f59a3c;
+
+  /* Verdict hallmarks and Realist checks, lifted for dark surfaces (AA on --surface). */
+  --decision-proceed: #7fd69b;
+  --decision-pilot: #8fb6ff;
+  --decision-defer: #f3b35a;
+  --decision-reject: #ff8a78;
+  --check-pass: #7fd69b;
+  --check-flag: #f3b35a;
+  --check-block: #ff8a78;
+
+  --focus: var(--text);
+
+  --radius-control: 9px;
+  --radius-card: 14px;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-snap: cubic-bezier(0.2, 0.9, 0.3, 1.12);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-quick: 140ms;
+  --dur-base: 240ms;
 
   --frame-h: 0px;
 }

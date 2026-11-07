@@ -5,14 +5,14 @@ import { REPLAYS } from '../lib/replay'
 import { REPLAY_SPEEDS, useBoardRun, type RunSource } from '../lib/useBoardRun'
 import { SEATS } from '../seats'
 import type { SeatId } from '../types'
+import { EvidenceSheet, QuestionCard } from './Brief'
+import { Crucible, Standings, type Filament } from './Crucible'
 import { FactProvider } from './facts'
 import { ErrorNotice, FactPeek } from './Notices'
-import { EvidenceReceipt, QuestionCard } from './Paper'
 import { PHASE_STEPS, PhaseRail } from './PhaseRail'
 import { SeatCard } from './SeatCard'
 import { DECISION_COPY, VerdictCard, YourCall } from './Verdict'
 import { Wordmark } from './Wordmark'
-import { Yarn, type YarnLink } from './Yarn'
 
 interface BoardProps {
   source: RunSource
@@ -29,8 +29,6 @@ export function Board({ source, onNew, onEdit, onRetry, onReplay }: BoardProps) 
   const error = humanizeErrors(board.errors)
   const stopped = !board.verdict && (board.errors.length > 0 || transport === 'done')
   const [activeSeat, setActiveSeat] = useState<SeatId | null>(null)
-  const seatsRef = useRef<HTMLDivElement>(null)
-  const pins = useRef<Partial<Record<SeatId, HTMLElement | null>>>({})
   const outcomeRef = useRef<HTMLElement>(null)
   const frameRef = useRef<HTMLElement>(null)
 
@@ -47,7 +45,7 @@ export function Board({ source, onNew, onEdit, onRetry, onReplay }: BoardProps) 
     }
   }, [])
 
-  // When a seat's rebuttal lands, bring its strings forward for a moment to show who it answered.
+  // When a seat's rebuttal lands, light its filaments for a moment to show who it answered.
   const [flashSeat, setFlashSeat] = useState<SeatId | null>(null)
   const seenRebuttals = useRef<Set<SeatId>>(new Set())
   useEffect(() => {
@@ -62,13 +60,18 @@ export function Board({ source, onNew, onEdit, onRetry, onReplay }: BoardProps) 
     }
   }, [board.round2])
 
-  const links = useMemo<YarnLink[]>(
+  const filaments = useMemo<Filament[]>(
     () =>
       SEATS.flatMap((s) =>
         (board.round2[s.id]?.rebuttals ?? []).filter((r) => r.target !== s.id && board.round1[r.target]).map((r) => ({ from: s.id, to: r.target })),
       ),
     [board.round1, board.round2],
   )
+  const litSeat = activeSeat ?? flashSeat
+  const dimmed = (seat: SeatId) =>
+    activeSeat !== null &&
+    activeSeat !== seat &&
+    !filaments.some((l) => (l.from === activeSeat && l.to === seat) || (l.to === activeSeat && l.from === seat))
 
   const seatsIn = Object.keys(board.phase === 'rebuttals' ? board.round2 : board.round1).length
   const announcement = board.verdict
@@ -84,6 +87,7 @@ export function Board({ source, onNew, onEdit, onRetry, onReplay }: BoardProps) 
 
   const replayInfo = replay ? REPLAYS.find((r) => r.name === source.name) : undefined
   const otherReplay = REPLAYS.find((r) => r.name !== (replay ? source.name : ''))
+  const twoRounds = board.phase === 'rebuttals' || Object.keys(board.round2).length > 0
 
   return (
     <MotionConfig reducedMotion="user">
@@ -131,39 +135,57 @@ export function Board({ source, onNew, onEdit, onRetry, onReplay }: BoardProps) 
           </p>
 
           <main id="board-main" className="board" tabIndex={-1}>
-            <div className="board__top">
-              <aside className="board__brief" aria-label="The question and the research">
-                <QuestionCard intake={board.intake} />
-                <EvidenceReceipt evidence={board.evidence} mode={board.evidenceMode} stopped={stopped} />
-              </aside>
+            <QuestionCard intake={board.intake} />
 
-              <section className="board__seats" aria-labelledby="seats-label">
-                <h2 className="label-tape" id="seats-label">
-                  The board <span>{board.phase === 'rebuttals' || Object.keys(board.round2).length ? 'Two rounds' : 'Round 1'}</span>
-                </h2>
-                <div className="seats" ref={seatsRef}>
-                  {SEATS.map((seat) => (
-                    <SeatCard
-                      key={seat.id}
-                      seat={seat}
-                      r1={board.round1[seat.id]}
-                      r2={board.round2[seat.id]}
-                      phase={board.phase}
-                      stopped={stopped}
-                      dimmed={activeSeat !== null && activeSeat !== seat.id && !links.some((l) => (l.from === activeSeat && l.to === seat.id) || (l.to === activeSeat && l.from === seat.id))}
-                      onFocusSeat={setActiveSeat}
-                      pinRef={(el) => {
-                        pins.current[seat.id] = el
-                      }}
-                    />
-                  ))}
-                  <Yarn container={seatsRef} pins={pins} links={links} activeSeat={activeSeat ?? flashSeat} />
-                </div>
-              </section>
-            </div>
+            <aside className="board__forge" aria-label="Meeting progress at a glance">
+              <Crucible
+                phase={board.phase}
+                hasIntake={Boolean(board.intake)}
+                round1={board.round1}
+                round2={board.round2}
+                decision={board.verdict?.decision ?? null}
+                hallmark={board.verdict ? DECISION_COPY[board.verdict.decision].stamp : null}
+                ratification={run.ratification}
+                error={error}
+                stopped={stopped}
+                filaments={filaments}
+                activeSeat={litSeat}
+                onHoverSeat={setActiveSeat}
+              />
+              <Standings
+                round1={board.round1}
+                round2={board.round2}
+                thinking={board.phase === 'round1' && !stopped}
+                dimmed={dimmed}
+                onHoverSeat={setActiveSeat}
+              />
+            </aside>
+
+            <EvidenceSheet evidence={board.evidence} mode={board.evidenceMode} stopped={stopped} />
+
+            <section className="board__seats" aria-labelledby="seats-label">
+              <h2 className="section-label" id="seats-label">
+                The board <span>{twoRounds ? 'Two rounds' : 'Round 1'}</span>
+              </h2>
+              <div className="seats">
+                {SEATS.map((seat) => (
+                  <SeatCard
+                    key={seat.id}
+                    seat={seat}
+                    r1={board.round1[seat.id]}
+                    r2={board.round2[seat.id]}
+                    phase={board.phase}
+                    stopped={stopped}
+                    dimmed={dimmed(seat.id)}
+                    lit={litSeat === seat.id}
+                    onFocusSeat={setActiveSeat}
+                  />
+                ))}
+              </div>
+            </section>
 
             <section className="board__outcome" ref={outcomeRef} aria-labelledby="outcome-label">
-              <h2 className="label-tape" id="outcome-label">
+              <h2 className="section-label" id="outcome-label">
                 The verdict
               </h2>
               {board.verdict ? (
@@ -181,8 +203,10 @@ export function Board({ source, onNew, onEdit, onRetry, onReplay }: BoardProps) 
               ) : error ? (
                 <ErrorNotice error={error} onRetry={onRetry} onEdit={onEdit} onReplay={() => onReplay(otherReplay?.name ?? REPLAYS[0].name)} />
               ) : (
-                <div className="chair-wait" data-active={board.phase === 'chairman' || undefined} aria-busy={board.phase === 'chairman'}>
-                  <span className="pin pin--ghost" aria-hidden="true" />
+                <div className="chair-wait" data-active={(board.phase === 'chairman' && !stopped) || undefined} aria-busy={board.phase === 'chairman'}>
+                  <svg className="chair-wait__mold" viewBox="0 0 120 40" aria-hidden="true" focusable="false">
+                    <path d="M2 4H118L110 36H10Z" />
+                  </svg>
                   <p className="chair-wait__title">
                     {stopped ? 'No recommendation in this session.' : board.phase === 'chairman' ? 'The Chairman is weighing the debate' : 'The Chairman speaks last.'}
                     {board.phase === 'chairman' && !stopped && (

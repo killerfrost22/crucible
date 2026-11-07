@@ -31,7 +31,7 @@ flowchart LR
 - `backend/main.py` — ADK's FastAPI app; all routes come from ADK (sessions, `/run_sse`, session PATCH).
 - One run = 12 model calls (Researcher + 5 + 5 + Chairman).
 - `frontend/src/landing/` — the front page. `buildFx.ts` is the "built by many hands" effect: one cursor per advisor assembles the page on first visit. It is skipped under reduced motion.
-- `frontend/src/components/Board.tsx` — the meeting room: seat cards pinned to a cork board as each SSE event arrives, the rebuttal string, the Chairman's stamp, and the owner's call.
+- `frontend/src/components/Board.tsx` and `Crucible.tsx`: the meeting room. Seat cards arrive as each SSE event lands. In the crucible, each opening position adds to the melt and rebuttals refine it (glowing lines connect seats; concessions throw sparks). The Chairman's verdict pours out as a cast bar stamped with the decision, and the owner's call is stamped next to it.
 
 ## Run locally (Windows)
 

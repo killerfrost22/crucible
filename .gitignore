@@ -8,3 +8,19 @@ dist
 __pycache__
 # ADK local session storage
 .adk
+# Local SQLite session stores (CRUCIBLE_SESSION_DB=sqlite:///...)
+*.db
+# Vercel CLI project link
+.vercel
+# Logs and OS clutter
+*.log
+.DS_Store
+Thumbs.db
+desktop.ini
+# Video footage, renders and audio: GitHub rejects files over 100 MB.
+# Captions, scripts, PDFs and the thumbnail stay tracked.
+videos/Retakes/
+videos/**/*.[mM][pP]4
+videos/**/*.[mM][oO][vV]
+videos/**/*.[mM]4[aA]
+videos/**/*.[mM][pP]3

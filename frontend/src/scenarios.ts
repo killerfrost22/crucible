@@ -6,8 +6,28 @@ export interface Scenario {
   intake: Intake
 }
 
-// Same intakes as backend/eval/scenarios.json so live answers can be compared with the eval set.
+// Same intakes as backend/eval/scenarios.json (and, for the bakery, backend/eval/demos/) so live answers can be
+// compared with the recorded ones.
 export const SCENARIOS: Scenario[] = [
+  {
+    id: 'bakery-second-location',
+    label: 'Bakery · second location',
+    intake: {
+      question: 'Should I open a second location for my bakery, or invest in delivery first?',
+      leaning: 'Open the second location. A storefront just came up for lease on Route 1.',
+      profile: {
+        name: 'Rise & Shine Bakery',
+        industry: 'neighborhood bakery and cafe',
+        location: 'College Park, Maryland',
+        size: '1 location, 7 employees',
+        current_tools: ['Square POS', 'Instagram', 'Google Business Profile'],
+        budget: '$90,000 in savings',
+        goals: ['grow revenue', "don't put the first store at risk"],
+        constraints:
+          'Revenue is about $42,000 a month. Savings cover six months of runway. I bake every morning myself and have no manager yet.',
+      },
+    },
+  },
   {
     id: 'dental-ai-receptionist',
     label: 'Dental office · AI receptionist',

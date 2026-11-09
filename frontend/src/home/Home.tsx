@@ -1,5 +1,5 @@
 import { memo, useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type MouseEvent } from 'react'
-import { CHAIRMAN, HVAC_REPLAY, MEMBERS, MOCK_STANCES, VERDICT } from '../content'
+import { CHAIRMAN, FEATURED, MEMBERS, type FeaturedSession } from '../content'
 import { SeatArt } from '../components/SeatArt'
 import { ThemeToggle } from '../components/ThemeToggle'
 import { Wordmark } from '../components/Wordmark'
@@ -9,7 +9,7 @@ import { REPLAYS } from '../lib/replay'
 import { SEAT_BY_ID, STANCE_LABEL } from '../seats'
 import type { Intake } from '../types'
 import { BrandMark, SeatRule } from './BrandMark'
-import { MEMBER_LINE, STATS } from './homeContent'
+import { STATS } from './homeContent'
 import { IntakeForm } from './IntakeForm'
 import { Showcase } from './Showcase'
 import { Arrow, Chevron, Play } from './icons'
@@ -40,6 +40,9 @@ function goToForm(behavior: ScrollBehavior) {
 
 export function Home({ arrival, draft, onChange, onSubmit, onReplay }: HomeProps) {
   const rootRef = useRef<HTMLDivElement>(null)
+  // The recorded meeting the page shows: the showcase switches it, and the board cards, verdict and watch buttons follow.
+  const [featured, setFeatured] = useState(0)
+  const session = FEATURED[featured]
 
   // `/#convene` (from other pages) and a return from a meeting both land on the form.
   useLayoutEffect(() => {
@@ -70,7 +73,7 @@ export function Home({ arrival, draft, onChange, onSubmit, onReplay }: HomeProps
     event?.preventDefault()
     goToForm(scrollBehavior())
   }, [])
-  const watch = useCallback(() => onReplay(HVAC_REPLAY), [onReplay])
+  const watch = useCallback(() => onReplay(session.replay), [onReplay, session.replay])
 
   return (
     <div ref={rootRef} className="hm">
@@ -85,8 +88,8 @@ export function Home({ arrival, draft, onChange, onSubmit, onReplay }: HomeProps
               <span className="hm-pill__dot" aria-hidden="true" />
               <span className="hm-pill__text">
                 <span className="hm-pill__tag">Recorded</span>
-                <span className="hm-pill__long">An HVAC shop takes AI promo texts to the board</span>
-                <span className="hm-pill__short">HVAC shop · AI promo texts</span>
+                <span className="hm-pill__long">{session.pill.long}</span>
+                <span className="hm-pill__short">{session.pill.short}</span>
               </span>
               <span className="hm-pill__go" aria-hidden="true">
                 <Chevron />
@@ -139,15 +142,15 @@ export function Home({ arrival, draft, onChange, onSubmit, onReplay }: HomeProps
             <div className="hm-head-block" data-reveal>
               <p className="hm-eyebrow">How it works</p>
               <h2 id="how-title">How a session runs</h2>
-              <p>One real recorded meeting, step by step: you bring the question, the board works through it in rounds, and every round stays on the table.</p>
+              <p>Real recorded meetings, step by step: you bring the question, the board works through it in rounds, and every round stays on the table.</p>
             </div>
-            <Showcase />
+            <Showcase featured={featured} onFeature={setFeatured} />
           </div>
         </section>
 
         <Stats />
-        <Board />
-        <VerdictSection onWatch={watch} onConvene={convene} />
+        <Board session={session} />
+        <VerdictSection session={session} onWatch={watch} onConvene={convene} />
         <Sessions onReplay={onReplay} onConvene={convene} />
 
         <section className="hm-sec hm-convene" id="convene" aria-labelledby="convene-title">
@@ -308,9 +311,9 @@ const Stats = memo(function Stats() {
   )
 })
 
-const STANCE_BY_SEAT = Object.fromEntries(MOCK_STANCES.map((s) => [s.seat, STANCE_LABEL[s.stance]]))
-
-const Board = memo(function Board() {
+const Board = memo(function Board({ session }: { session: FeaturedSession }) {
+  const stanceBySeat = Object.fromEntries(session.stances.map((s) => [s.seat, STANCE_LABEL[s.stance]]))
+  const v = session.verdict
   return (
     <section className="hm-sec" id="board" aria-labelledby="board-title">
       <div className="hm-col hm-band hm-band--head">
@@ -319,7 +322,7 @@ const Board = memo(function Board() {
           <h2 id="board-title">Five seats. One chair.</h2>
           <p>
             Each advisor argues from one job, so every side of your decision has someone committed to it. The lines on each card are theirs,
-            from the recorded HVAC meeting.
+            from the recorded {session.noun} meeting.
           </p>
         </div>
       </div>
@@ -333,9 +336,9 @@ const Board = memo(function Board() {
                 <div className="hm-thumb__card">
                   <p className="hm-thumb__who">
                     <span className="hm-who">{m.title}</span>
-                    <span className="hm-thumb__stance">{isChair ? `${VERDICT.decision} · ${VERDICT.confidence}%` : STANCE_BY_SEAT[m.id]}</span>
+                    <span className="hm-thumb__stance">{isChair ? `${v.decision} · ${v.confidence}%` : stanceBySeat[m.id]}</span>
                   </p>
-                  <p className="hm-thumb__line">{MEMBER_LINE[m.id]}</p>
+                  <p className="hm-thumb__line">{session.lines[m.id]}</p>
                 </div>
               </div>
               <h3>{m.title}</h3>
@@ -348,7 +351,16 @@ const Board = memo(function Board() {
   )
 })
 
-const VerdictSection = memo(function VerdictSection({ onWatch, onConvene }: { onWatch: () => void; onConvene: (e?: MouseEvent) => void }) {
+const VerdictSection = memo(function VerdictSection({
+  session,
+  onWatch,
+  onConvene,
+}: {
+  session: FeaturedSession
+  onWatch: () => void
+  onConvene: (e?: MouseEvent) => void
+}) {
+  const v = session.verdict
   return (
     <section className="hm-sec" id="verdict" aria-labelledby="verdict-title">
       <div className="hm-col hm-split">
@@ -370,35 +382,35 @@ const VerdictSection = memo(function VerdictSection({ onWatch, onConvene }: { on
           </div>
         </div>
         <div className="hm-split__art hm-paper">
-          <figure className="hm-vcard" aria-label="Example verdict from the recorded HVAC session" data-reveal>
+          <figure className="hm-vcard" aria-label={`Example verdict from the recorded ${session.noun} session`} data-reveal>
             <div className="hm-vcard__top">
-              <span className="hallmark-mark hm-vcard__mark">{VERDICT.decision}</span>
+              <span className="hallmark-mark hm-vcard__mark">{v.decision}</span>
               <span className="hm-vcard__meta">
-                {VERDICT.confidence}% confident
+                {v.confidence}% confident
                 <br />
-                HVAC · Frederick, MD
+                {session.place}
               </span>
             </div>
-            <p className="hm-vcard__call">{VERDICT.headline}</p>
+            <p className="hm-vcard__call">{v.headline}</p>
             <dl className="hm-vcard__dl">
               <div>
                 <dt>Why</dt>
-                <dd>{VERDICT.why}</dd>
+                <dd>{v.why}</dd>
               </div>
               <div>
                 <dt>Dissent</dt>
                 <dd>
-                  <span className="hm-who" style={k('var(--seat-devils_advocate)')}>
-                    {SEAT_BY_ID.devils_advocate.title}
+                  <span className="hm-who" style={k(`var(--seat-${v.dissent.seat})`)}>
+                    {SEAT_BY_ID[v.dissent.seat].title}
                   </span>{' '}
-                  “{VERDICT.dissent}”
+                  “{v.dissent.text}”
                 </dd>
               </div>
               <div>
                 <dt>Only if</dt>
                 <dd>
                   <ul>
-                    {VERDICT.conditions.map((c) => (
+                    {v.conditions.map((c) => (
                       <li key={c}>{c}</li>
                     ))}
                   </ul>
@@ -408,7 +420,7 @@ const VerdictSection = memo(function VerdictSection({ onWatch, onConvene }: { on
                 <dt>Next steps</dt>
                 <dd>
                   <ul>
-                    {VERDICT.steps.map((s) => (
+                    {v.steps.map((s) => (
                       <li key={s.when}>
                         <b>{s.when}.</b> {s.action}
                       </li>
@@ -418,7 +430,7 @@ const VerdictSection = memo(function VerdictSection({ onWatch, onConvene }: { on
               </div>
               <div>
                 <dt>Ask</dt>
-                <dd>{VERDICT.escalate}</dd>
+                <dd>{v.escalate}</dd>
               </div>
             </dl>
             <div className="hm-vcard__foot">

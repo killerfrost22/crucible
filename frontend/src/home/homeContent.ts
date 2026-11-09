@@ -1,34 +1,4 @@
-// Copy and data for the home page. Session data comes from the recorded HVAC meeting
-// (public/replays/hvac-ai-promo-texts.sse) via content.ts and scenarios.ts; nothing here is invented.
-import { MOCK_THREAD, REBUTTALS, VERDICT, type MemberId } from '../content'
-import { SCENARIOS } from '../scenarios'
-import type { Intake } from '../types'
-
-export const HVAC_INTAKE: Intake = SCENARIOS.find((s) => s.id === 'hvac-ai-promo-texts')!.intake
-
-/**
- * The first four of the seven facts the Researcher gathered in the HVAC recording, shortened but not reworded.
- * That recording ran without web access, so every fact is marked unverified and has no source link.
- */
-export const HVAC_FACT_EXCERPTS: string[] = [
-  'Under the TCPA, sending marketing text messages requires prior express written consent; violations carry penalties up to $500 to $1,500 per message.',
-  'Housecall Pro, the company’s current software, includes built-in customer marketing and automated text messaging.',
-  'A sudden mass text blast to an entire customer list could generate a surge in demand that exceeds a 4-technician schedule, leading to missed calls.',
-  'Dedicated AI marketing and SMS automation tools typically range from $50 to over $200 per month, within or slightly over the $150/month budget.',
-]
-
-export const HVAC_OPEN_QUESTION =
-  'What percentage of the past customer database has provided explicit written consent to receive marketing text messages?'
-
-/** One real line per member from the HVAC session, for the board cards. */
-export const MEMBER_LINE: Record<MemberId, string> = {
-  industry_expert: MOCK_THREAD.find((m) => m.seat === 'industry_expert')!.text,
-  ai_tools_expert: REBUTTALS.find((r) => r.seat === 'ai_tools_expert')!.text,
-  realist: MOCK_THREAD.find((m) => m.seat === 'realist')!.text,
-  strategist: REBUTTALS.find((r) => r.seat === 'strategist')!.text,
-  devils_advocate: MOCK_THREAD.find((m) => m.seat === 'devils_advocate')!.text,
-  chairman: VERDICT.headline,
-}
+// Copy for the home page. Recorded session content lives in ../content.ts.
 
 export interface Step {
   id: string

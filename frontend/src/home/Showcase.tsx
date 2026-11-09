@@ -1,8 +1,8 @@
 import { memo, useEffect, useRef, useState, type CSSProperties, type KeyboardEvent, type ReactNode } from 'react'
-import { CHAIRMAN, HVAC_FACTS, MEMBERS, MOCK_STANCES, MOCK_THREAD, REBUTTALS, VERDICT } from '../content'
+import { CHAIRMAN, FEATURED, MEMBERS, type FeaturedSession } from '../content'
 import { SEAT_BY_ID, STANCE_LABEL } from '../seats'
 import type { SeatId, Stance } from '../types'
-import { HVAC_FACT_EXCERPTS, HVAC_INTAKE, HVAC_OPEN_QUESTION, STEPS } from './homeContent'
+import { STEPS } from './homeContent'
 import { Arrow } from './icons'
 import { prefersReducedMotion, useReducedMotion } from './useReducedMotion'
 
@@ -37,20 +37,22 @@ function PanelHead({ title, meta }: { title: string; meta?: ReactNode }) {
   )
 }
 
-function AskPanel() {
-  const p = HVAC_INTAKE.profile
+type PanelProps = { s: FeaturedSession }
+
+function AskPanel({ s }: PanelProps) {
+  const p = s.intake.profile
   const profile = [p.industry, p.location, p.size, p.current_tools.join(' + '), p.budget, ...p.goals].filter(Boolean)
   return (
     <>
-      <PanelHead title="New decision" meta="HVAC · Frederick, MD" />
+      <PanelHead title="New decision" meta={s.place} />
       <div className="hm-ask-mock">
         <p className="hm-mlabel">What are you deciding?</p>
         <p className="hm-mbox hm-mbox--q">
-          {HVAC_INTAKE.question}
+          {s.intake.question}
           <span className="hm-caret" />
         </p>
         <p className="hm-mlabel">Which way are you leaning?</p>
-        <p className="hm-mbox">{HVAC_INTAKE.leaning}</p>
+        <p className="hm-mbox">{s.intake.leaning}</p>
         <p className="hm-mlabel">About your business</p>
         <ul className="hm-mchips">
           {profile.map((v) => (
@@ -66,42 +68,52 @@ function AskPanel() {
   )
 }
 
-function ResearchPanel() {
+function ResearchPanel({ s }: PanelProps) {
+  const { total, verified, excerpts } = s.facts
   return (
     <>
-      <PanelHead title="Evidence" meta={`${HVAC_FACTS} facts · general knowledge`} />
+      <PanelHead title="Evidence" meta={verified ? `${total} facts · ${verified} with a source` : `${total} facts · general knowledge`} />
       <ol className="hm-facts">
-        {HVAC_FACT_EXCERPTS.map((claim, i) => (
-          <li key={claim}>
-            <span className="hm-fid">F{i + 1}</span>
-            <p>{claim}</p>
+        {excerpts.map((f) => (
+          <li key={f.id}>
+            <span className="hm-fid">{f.id}</span>
+            <p>
+              {f.claim}
+              {f.source && (
+                <span className="hm-src">
+                  <b>Verified</b> {f.source}
+                </span>
+              )}
+            </p>
           </li>
         ))}
       </ol>
-      <p className="hm-more">+ {HVAC_FACTS - HVAC_FACT_EXCERPTS.length} more facts. This recording ran without web access, so none carry a source link.</p>
+      <p className="hm-more">
+        + {total - excerpts.length} more facts.{!verified && ' This recording ran without web access, so none carry a source link.'}
+      </p>
       <div className="hm-openq">
         <p className="hm-mlabel">Open question</p>
-        <p>{HVAC_OPEN_QUESTION}</p>
+        <p>{s.openQuestion}</p>
       </div>
     </>
   )
 }
 
-function PositionsPanel() {
+function PositionsPanel({ s }: PanelProps) {
   return (
     <>
       <PanelHead title="Round 1 · Opening positions" meta="Written blind, in parallel" />
       <div className="hm-pos">
         <ul className="hm-tally">
-          {MOCK_STANCES.map((s) => (
-            <li key={s.seat}>
-              <Who seat={s.seat} />
-              <StanceTag stance={s.stance} />
+          {s.stances.map((st) => (
+            <li key={st.seat}>
+              <Who seat={st.seat} />
+              <StanceTag stance={st.stance} />
             </li>
           ))}
         </ul>
         <ul className="hm-thread">
-          {MOCK_THREAD.map((m) => (
+          {s.openings.map((m) => (
             <li key={m.seat} className="hm-msg" style={k(seatColor(m.seat))}>
               <p className="hm-msg__who">
                 <Who seat={m.seat} />
@@ -115,12 +127,12 @@ function PositionsPanel() {
   )
 }
 
-function RebuttalsPanel() {
+function RebuttalsPanel({ s }: PanelProps) {
   return (
     <>
       <PanelHead title="Round 2 · Rebuttals" meta="Seats answer each other by name" />
       <ul className="hm-thread hm-thread--wide">
-        {REBUTTALS.map((r) => (
+        {s.rebuttals.map((r) => (
           <li key={r.seat} className="hm-msg" style={k(seatColor(r.seat))}>
             <p className="hm-msg__who">
               <Who seat={r.seat} />
@@ -137,7 +149,8 @@ function RebuttalsPanel() {
   )
 }
 
-function VerdictPanel() {
+function VerdictPanel({ s }: PanelProps) {
+  const v = s.verdict
   return (
     <>
       <PanelHead
@@ -150,22 +163,22 @@ function VerdictPanel() {
       />
       <div className="hm-vmock">
         <div className="hm-vmock__top">
-          <span className="hallmark-mark hm-vmock__mark">{VERDICT.decision}</span>
+          <span className="hallmark-mark hm-vmock__mark">{v.decision}</span>
           <div className="hm-conf">
-            <span>{VERDICT.confidence}% confident</span>
-            <span className="hm-conf__bar" style={{ '--v': VERDICT.confidence / 100 } as CSSProperties} />
+            <span>{v.confidence}% confident</span>
+            <span className="hm-conf__bar" style={{ '--v': v.confidence / 100 } as CSSProperties} />
           </div>
         </div>
-        <p className="hm-vmock__headline">{VERDICT.headline}</p>
+        <p className="hm-vmock__headline">{v.headline}</p>
         <div className="hm-vmock__cols">
           <div>
             <p className="hm-mlabel">Why</p>
-            <p>{VERDICT.why}</p>
+            <p>{v.why}</p>
           </div>
           <div>
             <p className="hm-mlabel">Dissent</p>
             <p>
-              <Who seat="devils_advocate" /> “{VERDICT.dissent}”
+              <Who seat={v.dissent.seat} /> “{v.dissent.text}”
             </p>
           </div>
         </div>
@@ -174,7 +187,8 @@ function VerdictPanel() {
   )
 }
 
-function CallPanel() {
+function CallPanel({ s }: PanelProps) {
+  const v = s.verdict
   return (
     <>
       <PanelHead title="Your call" meta="The board advises. You decide." />
@@ -182,7 +196,7 @@ function CallPanel() {
         <div>
           <p className="hm-mlabel">Only if</p>
           <ul className="hm-checks">
-            {VERDICT.conditions.map((c) => (
+            {v.conditions.map((c) => (
               <li key={c}>{c}</li>
             ))}
           </ul>
@@ -190,17 +204,17 @@ function CallPanel() {
         <div>
           <p className="hm-mlabel">Next steps</p>
           <ul className="hm-steps-mock">
-            {VERDICT.steps.map((s) => (
-              <li key={s.when}>
-                <span>{s.when}</span>
-                {s.action}
+            {v.steps.map((st) => (
+              <li key={st.when}>
+                <span>{st.when}</span>
+                {st.action}
               </li>
             ))}
           </ul>
         </div>
         <div>
           <p className="hm-mlabel">Ask</p>
-          <p>{VERDICT.escalate}</p>
+          <p>{v.escalate}</p>
         </div>
         <div className="hm-call__btns">
           <span className="hm-mbtn">Accept</span>
@@ -211,7 +225,7 @@ function CallPanel() {
   )
 }
 
-const PANELS: Record<string, () => ReactNode> = {
+const PANELS: Record<string, (props: PanelProps) => ReactNode> = {
   ask: AskPanel,
   research: ResearchPanel,
   positions: PositionsPanel,
@@ -221,10 +235,11 @@ const PANELS: Record<string, () => ReactNode> = {
 }
 
 /**
- * The product showcase: one recorded session, step by step, in a mock of the meeting room. An auto-advancing tab
- * bar walks through it; any interaction with the tabs stops the tour, and it never starts under reduced motion.
+ * The product showcase: a recorded session, step by step, in a mock of the meeting room. The window's title bar switches
+ * between the featured recordings. An auto-advancing tab bar walks through the steps; any interaction with the tabs or
+ * the session switch stops the tour, and it never starts under reduced motion.
  */
-export const Showcase = memo(function Showcase() {
+export const Showcase = memo(function Showcase({ featured, onFeature }: { featured: number; onFeature: (index: number) => void }) {
   const reduced = useReducedMotion()
   const [active, setActive] = useState(0)
   const [playing, setPlaying] = useState(() => !prefersReducedMotion())
@@ -290,6 +305,12 @@ export const Showcase = memo(function Showcase() {
     if (focus) tabRefs.current[i]?.focus()
   }
 
+  const pick = (i: number) => {
+    elapsed.current = 0
+    setPlaying(false)
+    onFeature(i)
+  }
+
   const onKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
     const n = STEPS.length
     const next: Record<string, number> = { ArrowRight: (active + 1) % n, ArrowLeft: (active - 1 + n) % n, Home: 0, End: n - 1 }
@@ -299,6 +320,7 @@ export const Showcase = memo(function Showcase() {
   }
 
   const step = STEPS[active]
+  const session = FEATURED[featured]
 
   return (
     <div className="hm-show" style={{ '--accent': step.accent } as CSSProperties}>
@@ -308,13 +330,20 @@ export const Showcase = memo(function Showcase() {
         onPointerEnter={(e) => e.pointerType === 'mouse' && setHovered(true)}
         onPointerLeave={() => setHovered(false)}
       >
-        <div className="hm-win__bar" aria-hidden="true">
-          <span className="hm-win__lights">
+        <div className="hm-win__bar">
+          <span className="hm-win__lights" aria-hidden="true">
             <i />
             <i />
             <i />
           </span>
-          <span className="hm-win__title">HVAC company · AI promo texts</span>
+          <div className="hm-win__sessions" role="group" aria-label="Recorded meeting">
+            {FEATURED.map((f, i) => (
+              <button key={f.replay} type="button" className="hm-win__session" aria-pressed={i === featured} onClick={() => pick(i)}>
+                <span className="hm-win__long">{f.label}</span>
+                <span className="hm-win__short">{f.short}</span>
+              </button>
+            ))}
+          </div>
           <span className="hm-win__badge">Recorded session</span>
         </div>
         <div className="hm-win__body">
@@ -336,7 +365,7 @@ export const Showcase = memo(function Showcase() {
               ))}
             </ul>
           </aside>
-          <div className="hm-win__main">
+          <div key={session.replay} className="hm-win__main">
             {STEPS.map((s, i) => {
               const Panel = PANELS[s.id]
               const on = i === active
@@ -350,7 +379,7 @@ export const Showcase = memo(function Showcase() {
                   data-active={on}
                   tabIndex={on ? 0 : -1}
                 >
-                  <Panel />
+                  <Panel s={session} />
                 </div>
               )
             })}

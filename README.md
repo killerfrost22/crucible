@@ -66,7 +66,7 @@ ADK's developer UI (inspect single runs, events, state): `cd backend && .venv/Sc
 | `CRUCIBLE_CHAIR_MODEL` | `openrouter/anthropic/claude-sonnet-5.5` | |
 | `CRUCIBLE_WEB_SEARCH` | `true` | OpenRouter web search (~$0.007/run) or, for Gemini names, Google Search (billed key only) |
 | `CRUCIBLE_ALLOW_ORIGINS` | `http://localhost:5173` | comma-separated frontend origins |
-| `CRUCIBLE_SESSION_DB` | ADK local store | `sqlite:///sessions.db`, `postgresql://…` |
+| `CRUCIBLE_SESSION_DB` | ADK local store | `sqlite:///sessions.db`, `postgresql+asyncpg://…?ssl=require` |
 
 **Cost:** with the defaults, measured runs cost $0.06–0.12 and take 50–85 s, mostly the Researcher's web search and the Chairman. `openrouter/...` names go through LiteLLM; bare Gemini names go to Google directly. The free Gemini tier allows about 20 requests a day per model and has no web search, so it suits local experiments only.
 
@@ -87,22 +87,36 @@ Replays are real runs saved as SSE. The frontend plays them back with the origin
 ```bash
 cd backend
 .venv/Scripts/python.exe eval/record_replay.py dental-ai-receptionist     # API must be running
+.venv/Scripts/python.exe eval/record_replay.py demos/bakery-second-location.json --out bakery-take-2
 ```
 
-Output: `frontend/public/replays/<scenario>.sse`, or `<scenario>-error.sse` if the run failed. To show a new replay under "Watch a recorded session", add it to `REPLAYS` in `frontend/src/lib/replay.ts`. Any replay can be opened directly with `http://localhost:5173/?replay=<name>`. `dental-ai-receptionist-error` is a real failed run, where the Chairman hit a quota limit; use it to test the error screen.
+The intake is a scenario id from `eval/scenarios.json` or a demo intake file under `eval/demos/`. Output: `frontend/public/replays/<name>.sse`, or `<name>-error.sse` if the run failed. To show a new replay under "Watch a recorded session", add it to `REPLAYS` in `frontend/src/lib/replay.ts`. Any replay can be opened directly with `http://localhost:5173/?replay=<name>`. Replays have pause, 1×/2×/4× and skip-to-end controls in the meeting header. `dental-ai-receptionist-error` is a real failed run, where the Chairman hit a quota limit; use it to test the error screen.
+
+`bakery-second-location` is the demo-video meeting (best of three real takes; the board disagreed most in that one). The finished video is `videos/crucible-demo.mp4` (burned-in captions); `videos/` also has a no-caption cut, `crucible-demo.srt`, the team credits as their own clip (`crucible-credits.mp4`), the YouTube thumbnail (`crucible-thumbnail.jpg`, 1280×720), per-scene clips in `segments/`, voice and music stems in `stems/`, and the voiceover with its timed edit script in `voiceover/`. Music: Kevin MacLeod (incompetech.com), licensed under CC BY 4.0.
+
+The video and audio files themselves are not in git (GitHub rejects files over 100 MB); only the captions, scripts, scene PDFs and thumbnail are committed.
 
 ## Deploy
+
+**Backend → Vercel** (each request can land on a different function instance, so sessions must live in Postgres):
+
+1. New Vercel project from this repo, Root Directory `backend`. Vercel detects FastAPI from `requirements.txt` and serves `app` from `main.py`; `.python-version` selects Python 3.14.
+2. Storage → Neon Postgres. Take the **unpooled** connection string (asyncpg's prepared-statement cache doesn't mix with transaction pooling) and rewrite it as `postgresql+asyncpg://USER:PASSWORD@HOST/DB?ssl=require`: ADK needs the `+asyncpg` driver, and asyncpg rejects `sslmode` and `channel_binding`.
+3. Environment variables: `OPENROUTER_API_KEY`, `CRUCIBLE_SESSION_DB` (that URL), `CRUCIBLE_ALLOW_ORIGINS=https://<your-app>.vercel.app`. Tables are created on first use.
+4. Check: `curl https://<backend>.vercel.app/list-apps` returns `["crucible"]`.
 
 **Backend → Cloud Run** (builds `backend/Dockerfile` remotely; one instance keeps ADK's sessions consistent):
 
 ```bash
-gcloud secrets create openrouter-key --data-file=-   # paste the key, then Ctrl-D
+printf %s "sk-or-..." | gcloud secrets create openrouter-key --data-file=-   # printf: no trailing newline in the key
+gcloud secrets add-iam-policy-binding openrouter-key --role roles/secretmanager.secretAccessor \
+  --member serviceAccount:<PROJECT_NUMBER>-compute@developer.gserviceaccount.com
 gcloud run deploy crucible-api --source backend --region us-east1 --allow-unauthenticated \
   --min-instances 1 --max-instances 1 \
   --set-secrets OPENROUTER_API_KEY=openrouter-key:latest \
   --set-env-vars CRUCIBLE_ALLOW_ORIGINS=https://<your-app>.vercel.app
 ```
 
-**Frontend → Vercel:** root directory `frontend`, env `VITE_API_BASE=<Cloud Run URL>`.
+Without `CRUCIBLE_SESSION_DB`, ADK detects Cloud Run and keeps sessions in memory, so they reset on redeploy.
 
-Sessions live in the container's local store and reset on redeploy. Set `CRUCIBLE_SESSION_DB` to a Postgres URL for durable decision history.
+**Frontend → Vercel:** root directory `frontend`, env `VITE_API_BASE=<backend URL>`. Vite inlines it at build time, so redeploy after changing it.

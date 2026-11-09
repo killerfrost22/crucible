@@ -1,10 +1,12 @@
 """Record a live board run from the running API into a replay file the frontend can play.
 
     .venv/Scripts/python.exe eval/record_replay.py dental-ai-receptionist
-    .venv/Scripts/python.exe eval/record_replay.py bakery-price-increase --api http://127.0.0.1:8000
+    .venv/Scripts/python.exe eval/record_replay.py demos/bakery-second-location.json --out bakery-take-2
 
-Runs the scenario's intake (from scenarios.json) through POST /run_sse and writes the raw SSE
-stream to frontend/public/replays/<scenario>.sse. Costs one board run (12 model calls).
+Runs an intake through POST /run_sse and writes the raw SSE stream to
+frontend/public/replays/<name>.sse. The intake is either a scenario id from scenarios.json or the
+path (relative to eval/) of a demo intake JSON file; the replay is named after the id or the file
+stem unless --out is given. Costs one board run (12 model calls).
 """
 
 from __future__ import annotations
@@ -29,14 +31,20 @@ def post(url: str, body: dict) -> urllib.request.Request:
 def main() -> None:
     sys.stdout.reconfigure(encoding="utf-8")
     parser = argparse.ArgumentParser()
-    parser.add_argument("scenario", help="scenario id from scenarios.json")
+    parser.add_argument("intake", help="scenario id from scenarios.json, or a demo intake .json path")
+    parser.add_argument("--out", help="replay name (default: the scenario id or file stem)")
     parser.add_argument("--api", default="http://127.0.0.1:8000")
     args = parser.parse_args()
 
-    scenarios = {s["id"]: s for s in json.loads((EVAL_DIR / "scenarios.json").read_text("utf-8"))}
-    if args.scenario not in scenarios:
-        raise SystemExit(f"Unknown scenario. Choose from: {', '.join(scenarios)}")
-    intake = scenarios[args.scenario]["intake"]
+    if args.intake.endswith(".json"):
+        path = EVAL_DIR / args.intake
+        intake, name = json.loads(path.read_text("utf-8")), path.stem
+    else:
+        scenarios = {s["id"]: s for s in json.loads((EVAL_DIR / "scenarios.json").read_text("utf-8"))}
+        if args.intake not in scenarios:
+            raise SystemExit(f"Unknown scenario. Choose from: {', '.join(scenarios)}")
+        intake, name = scenarios[args.intake]["intake"], args.intake
+    name = args.out or name
 
     with urllib.request.urlopen(post(f"{args.api}/apps/crucible/users/replay/sessions", {})) as r:
         session_id = json.load(r)["id"]
@@ -59,7 +67,7 @@ def main() -> None:
                       + (f"  ERROR {str(error).strip()[:160]}" if error else ""), flush=True)
 
     REPLAYS_DIR.mkdir(parents=True, exist_ok=True)
-    out = REPLAYS_DIR / f"{args.scenario}{'-error' if failed else ''}.sse"
+    out = REPLAYS_DIR / f"{name}{'-error' if failed else ''}.sse"
     out.write_text("\n".join(lines) + "\n", encoding="utf-8")
     print(f"Saved {out}")
 

@@ -1,0 +1,14 @@
+{
+  "question": "Should I open a second location for my bakery, or invest in delivery first?",
+  "leaning": "Open the second location. A storefront just came up for lease on Route 1.",
+  "profile": {
+    "name": "Rise & Shine Bakery",
+    "industry": "neighborhood bakery and cafe",
+    "location": "College Park, Maryland",
+    "size": "1 location, 7 employees",
+    "current_tools": ["Square POS", "Instagram", "Google Business Profile"],
+    "budget": "$90,000 in savings",
+    "goals": ["grow revenue", "don't put the first store at risk"],
+    "constraints": "Revenue is about $42,000 a month. Savings cover six months of runway. I bake every morning myself and have no manager yet."
+  }
+}

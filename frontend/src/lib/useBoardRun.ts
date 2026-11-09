@@ -18,6 +18,8 @@ export interface BoardRun {
   speed: ReplaySpeed
   setSpeed: (speed: ReplaySpeed) => void
   skipToEnd: () => void
+  paused: boolean
+  togglePause: () => void
   ratification: Ratification | null
   ratifyStatus: RatifyStatus
   ratifyError: string | null
@@ -42,6 +44,8 @@ export function useBoardRun(source: RunSource): BoardRun {
   const [ratification, setRatification] = useState<Ratification | null>(null)
   const [ratifyStatus, setRatifyStatus] = useState<RatifyStatus>('idle')
   const [ratifyError, setRatifyError] = useState<string | null>(null)
+  const [paused, setPaused] = useState(false)
+  const pausedRef = useRef(false)
   const player = useRef<ReplayPlayer | null>(null)
   const session = useRef<{ user: string; id: string } | null>(null)
   const speedRef = useRef(speed)
@@ -109,7 +113,18 @@ export function useBoardRun(source: RunSource): BoardRun {
     player.current?.setSpeed(next)
   }, [])
 
-  const skipToEnd = useCallback(() => player.current?.skipToEnd(), [])
+  const skipToEnd = useCallback(() => {
+    player.current?.skipToEnd()
+    pausedRef.current = false
+    setPaused(false)
+  }, [])
+
+  const togglePause = useCallback(() => {
+    pausedRef.current = !pausedRef.current
+    if (pausedRef.current) player.current?.pause()
+    else player.current?.resume()
+    setPaused(pausedRef.current)
+  }, [])
 
   const submitRatification = useCallback(
     async (action: Ratification['action'], note: string) => {
@@ -137,5 +152,5 @@ export function useBoardRun(source: RunSource): BoardRun {
     [source.mode],
   )
 
-  return { board, transport, speed, setSpeed, skipToEnd, ratification, ratifyStatus, ratifyError, submitRatification }
+  return { board, transport, speed, setSpeed, skipToEnd, paused, togglePause, ratification, ratifyStatus, ratifyError, submitRatification }
 }

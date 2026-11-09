@@ -860,15 +860,79 @@ html:has(.hm) {
   background: var(--line-strong);
 }
 
-.hm-win__title {
+/* The session switch: one tab per recorded meeting, full bar height for touch, the visible chip drawn behind the label. */
+.hm-win__sessions {
+  display: flex;
   flex: 1;
+  align-self: stretch;
   min-width: 0;
-  overflow: hidden;
+  gap: 0.25rem;
+}
+
+.hm-win__session {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  min-height: 44px;
+  padding: 0 0.7rem;
+  border: 0;
+  background: none;
   font-family: var(--font-mono);
   font-size: 0.75rem;
   white-space: nowrap;
+  color: var(--text-3);
+  cursor: pointer;
+  transition: color var(--dur-quick) var(--ease-out);
+}
+
+.hm-win__session::before {
+  content: '';
+  position: absolute;
+  inset: 0.45rem 0;
+  z-index: -1;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  transition:
+    background-color var(--dur-quick) var(--ease-out),
+    border-color var(--dur-quick) var(--ease-out),
+    transform var(--dur-quick) var(--ease-out);
+}
+
+.hm-win__session:hover {
+  color: var(--text);
+}
+
+.hm-win__session:hover::before {
+  background: color-mix(in srgb, var(--surface) 60%, transparent);
+}
+
+.hm-win__session:active::before {
+  transform: scale(0.96);
+}
+
+.hm-win__session:focus-visible {
+  outline-offset: -4px;
+}
+
+.hm-win__session[aria-pressed='true'] {
+  color: var(--text);
+}
+
+.hm-win__session[aria-pressed='true']::before {
+  border-color: var(--line-strong);
+  background: var(--surface);
+}
+
+.hm-win__long,
+.hm-win__short {
+  overflow: hidden;
   text-overflow: ellipsis;
-  color: var(--text-2);
+}
+
+.hm-win__short {
+  display: none;
 }
 
 .hm-win__badge {
@@ -1006,8 +1070,13 @@ html:has(.hm) {
     height: 38rem;
   }
 
-  .hm-win__badge {
+  .hm-win__badge,
+  .hm-win__long {
     display: none;
+  }
+
+  .hm-win__short {
+    display: inline;
   }
 }
 
@@ -1179,6 +1248,19 @@ html:has(.hm) {
   margin-top: var(--space-3);
   font-size: 0.8125rem;
   color: var(--text-3);
+}
+
+.hm-src {
+  margin-left: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  white-space: nowrap;
+  color: var(--text-3);
+}
+
+.hm-src b {
+  font-weight: 500;
+  color: var(--check-pass);
 }
 
 .hm-openq {

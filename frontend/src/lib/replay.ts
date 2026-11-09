@@ -11,6 +11,11 @@ export interface ReplayInfo {
 /** Recorded real runs shipped in public/replays/. */
 export const REPLAYS: ReplayInfo[] = [
   {
+    name: 'bakery-second-location',
+    label: 'Bakery · second location',
+    blurb: 'A College Park bakery owner asks whether to open a second store on Route 1 or invest in delivery first.',
+  },
+  {
     name: 'dental-ai-receptionist',
     label: 'Dental office · AI receptionist',
     blurb: 'A two-dentist practice in Silver Spring asks whether an AI should answer and record its calls.',
@@ -76,6 +81,7 @@ export class ReplayPlayer {
   private lastTick = 0
   private timer: number | undefined
   private speed: number
+  private paused = false
   private readonly events: AdkEvent[]
   private readonly schedule: number[]
   private readonly onEvent: (event: AdkEvent) => void
@@ -100,6 +106,19 @@ export class ReplayPlayer {
     this.arm()
   }
 
+  /** Freezes the recording's clock; nothing new arrives until `resume`. */
+  pause() {
+    this.advanceClock()
+    this.paused = true
+    clearTimeout(this.timer)
+  }
+
+  resume() {
+    this.lastTick = performance.now()
+    this.paused = false
+    this.arm()
+  }
+
   skipToEnd() {
     clearTimeout(this.timer)
     this.virtual = Infinity
@@ -113,7 +132,7 @@ export class ReplayPlayer {
 
   private advanceClock() {
     const now = performance.now()
-    this.virtual += (now - this.lastTick) * this.speed
+    if (!this.paused) this.virtual += (now - this.lastTick) * this.speed
     this.lastTick = now
   }
 
@@ -128,7 +147,7 @@ export class ReplayPlayer {
 
   private arm() {
     clearTimeout(this.timer)
-    if (this.index >= this.events.length) return
+    if (this.paused || this.index >= this.events.length) return
     const wait = (this.schedule[this.index] - this.virtual) / this.speed
     this.timer = window.setTimeout(() => this.tick(), Math.max(0, wait))
   }

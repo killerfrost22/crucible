@@ -112,6 +112,23 @@ export function Board({ source, onNew, onEdit, onRetry, onReplay }: BoardProps) 
                     <span className="replay__badge" title={replayInfo?.label}>
                       Recorded
                     </span>
+                    <button
+                      type="button"
+                      className="replay__skip replay__pause"
+                      onClick={run.togglePause}
+                      disabled={transport === 'done'}
+                      aria-pressed={run.paused}
+                      aria-label={run.paused ? 'Resume the recording' : 'Pause the recording'}
+                      title={run.paused ? 'Resume' : 'Pause'}
+                    >
+                      <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false">
+                        {run.paused ? (
+                          <path d="M4.5 2.8v10.4L13 8z" fill="currentColor" />
+                        ) : (
+                          <path d="M4.5 3h2.4v10H4.5zM9.1 3h2.4v10H9.1z" fill="currentColor" />
+                        )}
+                      </svg>
+                    </button>
                     <div className="replay__speeds" role="group" aria-label="Playback speed">
                       {REPLAY_SPEEDS.map((s) => (
                         <button key={s} type="button" aria-pressed={run.speed === s} onClick={() => run.setSpeed(s)} disabled={transport === 'done'}>

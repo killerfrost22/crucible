@@ -1,6 +1,11 @@
 # Crucible — team TODO
 
-**Video + prototype link due Sun Nov 8, 11:59 pm** (designated Google Drive). Finalists notified Mon Nov 16; in-person finals Tue Nov 17, 5–8 pm.
+**Submitted Sun Nov 8** (video and prototype link on the designated Google Drive). **Next:** finalists are notified Mon Nov 16, and the in-person finals are Tue Nov 17, 5–8 pm. The Fri/Sat/Sun items below that are still open carry over to the finals.
+
+| Live | URL | Checked Nov 10 |
+|---|---|---|
+| Frontend | https://smith26-crucible.vercel.app | auto-deploys from `main`; the live bundle already has the `4335f71` changes (not-found page, practice-signature wording) |
+| Backend | https://hacks2026-corkboard-api.vercel.app | the frontend's `VITE_API_BASE`. `/list-apps` → `["crucible"]`, `/docs` → 404 `CRUCIBLE_NOT_FOUND` (the guard is live), and CORS allows the frontend origin. `smith26-crucible-api.vercel.app` answers `DEPLOYMENT_NOT_FOUND`, so don't hand that one out. |
 
 | Who | Role |
 |---|---|
@@ -28,18 +33,18 @@
 ## Yizhan — developer
 **Fri**
 - [ ] Optional: try a different company per seat for the pitch ("five different AIs argue it out"). It's one `.env` line per seat; see `.env.example`.
-- [ ] Optional: reloading the page loses the board, and the owner's ratification is saved but never shown again. A "My decisions" list (`GET /apps/crucible/users/{user}/sessions`) would fix both.
+- [ ] Optional: reloading the page loses the board, and the owner's ratification is saved but never shown again. A "My decisions" list would fix both. The session list route is now closed by the guard; see "decision history" in the website backlog.
 **Sat**
-- [ ] Deploy backend to Cloud Run: `gcloud run deploy crucible-api --source backend --region us-east1 --min-instances 1 --max-instances 1 --set-env-vars ...` (one instance keeps sessions consistent; see README).
-- [ ] Deploy frontend to Vercel with `VITE_API_BASE=<Cloud Run URL>`; add the Vercel origin to `CRUCIBLE_ALLOW_ORIGINS`.
+- [x] Deploy the backend. It went to Vercel instead of Cloud Run: https://hacks2026-corkboard-api.vercel.app.
+- [x] Deploy the frontend to Vercel: https://smith26-crucible.vercel.app, with `VITE_API_BASE` pointing at the backend above.
 - [ ] Prompt fixes from Ruijie's eval report.
-- [ ] Re-record the HVAC replay with the final models. The home page quotes the HVAC and bakery recordings in `src/content.ts` (`FEATURED`), shortened but not reworded, so update that file whenever you re-record either: `python eval/record_replay.py hvac-ai-promo-texts`. The dental recording is also quoted on `/under-the-hood` (`src/underthehood/recorded.ts`); update that file whenever you re-record dental.
+- [ ] Re-record the HVAC replay with the final models. As of Nov 10, `hvac-ai-promo-texts.sse` is still the Gemini run without web search. The home page quotes the HVAC and bakery recordings in `src/content.ts` (`FEATURED`), shortened but not reworded, so update that file whenever you re-record either: `python eval/record_replay.py hvac-ai-promo-texts`. The dental recording is also quoted on `/under-the-hood` (`src/underthehood/recorded.ts`); update that file whenever you re-record dental.
 **Sun**
 - [ ] Feature freeze at noon; final `AGENTS.md` review pass at 375/768/1440/1920.
-- [ ] Put the public prototype link in the submission.
+- [x] Put the public prototype link in the submission.
 
 ## Ruijie — tester
-- [ ] `python eval/run_eval.py` on all 10 scenarios (about $1–1.50); commit `eval/results/<timestamp>/report.md` (Tiffany needs this table for the video). The verdict check matches exact wording ("all-party"), so a verdict that says "attorney-approved recording notice" scores as a miss; read the transcripts before quoting numbers.
+- [ ] `python eval/run_eval.py` on all 10 scenarios (about $1–1.50); commit `eval/results/<timestamp>/report.md`. Not run yet as of Nov 10: there is no `backend/eval/results/`, and `/under-the-hood` says "Not run yet" until there is. The verdict check matches exact wording ("all-party"), so a verdict that says "attorney-approved recording notice" scores as a miss; read the transcripts before quoting numbers.
 - [ ] Read every transcript (`eval/results/<timestamp>/<scenario>.json`) and log problems for Yizhan with scenario id + quote:
   - invented laws or wrong legal claims; legal claims without a fact ID that are not marked "(unverified)"
   - fact IDs (F1…) that don't match the claim
@@ -64,15 +69,15 @@ The challenge requires: MVP proof of concept · how we built it · how we'd use 
 - [x] 9:08 cut in `videos/`: `crucible-demo.mp4` (burned-in captions), `crucible-demo-no-captions.mp4`, `crucible-demo.srt`, 16 per-scene clips in `videos/segments/` (voice only), `videos/stems/` (voice + music), and the voiceover with a timed edit/voice script in `videos/voiceover/script.md`. Narrator is a bright female ElevenLabs voice (Jessica); other candidates are in `videos/voiceover/narrator-samples/`. App scenes are recorded at 2560×1440 with a larger UI and reframed in post: push-ins on the card, fact or form field being discussed, a visible cursor for clicks and hovers, and each advisor's spoken sentence highlighted on its card in its seat color. Yizhan's on-camera scenes are the Nov 8 retakes in `videos/Retakes/`: scene2 (the problem) with the full-screen comparison/chatbot graphic over the middle, scene3 (meet Crucible, cutting to the crucible melt during the metaphor), Scene4 (meet the board, each advisor's card cut in as he names it, then the advisor materializes as a hologram in one of the empty chairs, tracked to the handheld camera; the narrator then adds the AI-Tools Expert and the Researcher), back-to-maria (Maria at the iPad, opening "Ask the board"), how it works (whiteboard, now including the OpenRouter line) and why it matters and what's next. scene1 (Maria at 2 a.m.) from `Crucible-videos/` stays under the cold open. Crossfades, chapter labels, a "Yizhan Ao" lower third when he introduces himself, and Kevin MacLeod music (CC BY 4.0) ducked about 16 dB under speech; soundtrack at −16 LUFS. Build scripts: `.videobuild/rt/` next to the repo (`holo.py` draws the board holograms).
 - [x] The close now says "Built by Yizhan, Tiffany and Ruijie": narrator line re-voiced (Jessica, spelled "Yee-jahn" so it matches his own pronunciation), close card and captions updated. No "Joseph" is left on screen, in the audio or in the captions.
 - [ ] Still needed: one live run as proof (the cut only shows a live meeting starting), owner quotes, Tiffany and Ruijie on camera for their parts. `videos/segments/` are clean, so cut new footage in wherever it fits.
-- [ ] Team credits are a separate video, `videos/crucible-credits.mp4` (16.8 s, also appended to the end of the main cut): team cards, then music, voice and tech credits. Yizhan's card is the photo `videos/Retakes/Yizhan.HEIC`; Tiffany and Ruijie show letter tiles until we have their photos or a short clip of each. Still to add: any coaching acknowledgement (rules require it) and the AI tools used to build Crucible.
-- [ ] Export and upload to the designated Google Drive before Sun 11:59 pm.
+- [ ] Team credits are a separate video, `videos/crucible-credits.mp4` (16.8 s, also appended to the end of the main cut): team cards, then music, voice and tech credits. Yizhan's card is the photo `videos/Retakes/Yizhan.HEIC`; Tiffany and Ruijie show letter tiles until we have their photos or a short clip of each. Still to add: any coaching acknowledgement (rules require it) and the AI tools used to build Crucible. On Nov 10, neither `crucible-credits.mp4` nor `videos/Retakes/` was in the `videos/` folder of the copy that was checked; find them before re-cutting for the finals.
+- [x] Export and upload to the designated Google Drive before Sun 11:59 pm.
 
 ## After submission: website backlog (review of Mon Nov 9)
 Browser review of local `main` (`42c49c4`) at 320, 375, 768, 1440 and 1920 px, both themes. Numbers (G1, #5…) point to [`WEBSITE_REVIEW.md`](WEBSITE_REVIEW.md), which has the reasoning and full acceptance criteria; **New** items aren't in it.
-- Re-checked in the browser and still broken: G1, #1, #2, #4, #12, #16, #18. Still in the source: G2, G3, G4, #3 wording, #10.
+- On Nov 9 these were still broken in the browser: G1, #1, #2, #4, #12, #16, #18. These were still broken in the source: G2, G3, G4, #3 wording, #10. All but #12 and G4 were fixed on Nov 10 (see below).
 - Fixed since the review: the Postgres driver (#3 storage note). `backend/requirements.txt` has `asyncpg` and `sqlalchemy[asyncio]`, and the README documents `postgresql+asyncpg://`.
 - Good baseline to keep: axe-core 4.10 finds 0 WCAG 2.2 A/AA violations on `/`, `/under-the-hood` and a finished dental replay, in both themes. No page scrolls sideways at any width.
-- **Nov 10:** the "Before finals" list below is done in code, except the live URLs and what still has to be checked on a real deploy or an older iPhone. Each item says where it was checked (Chromium, both themes). axe-core is still at 0 violations, now also on the not-found page and the "can't reach the server" screen. No credit was spent: the meetings were replays, and the one live run was refused by the guard before any model call.
+- **Nov 10:** the "Before finals" list below is done in code, except what still has to be checked on the live deploy or an older iPhone. It was committed as `4335f71`, pushed, and Vercel deployed both projects (see the Live table at the top). Each item says where it was checked (Chromium, both themes). axe-core is still at 0 violations, now also on the not-found page and the "can't reach the server" screen. No credit was spent: the meetings were replays, and the one live run was refused by the guard before any model call.
 
 ### Before finals (Tue Nov 17): anything a judge can click
 - [x] **G1: advisor links no longer restart the meeting.** `App.tsx` now compares path and query only, so a `#fragment` never remounts the board. Checked on a finished dental replay: the standings links, the skip link and Back ×2 keep the verdict and a practice signature, and the recording isn't fetched again.
@@ -93,12 +98,14 @@ Browser review of local `main` (`42c49c4`) at 320, 375, 768, 1440 and 1920 px, b
   - **Input checks:** a body cap (413) and strict intake and ratification checks (422). The server sets the ratification time.
   - **Limits:** per IP, 10 runs and 30 sessions an hour; 100 runs a day in total; at most 3 runs at once. All are set in `.env` (see the README table).
   - **Frontend:** it shows the server's sentence, e.g. "That's a lot of meetings from one network." The form's `maxLength` values match the caps.
-  - [ ] **On deploy:** set `CRUCIBLE_CLIENT_IP_HEADER` (README, "Limits and client IPs"), then check that two networks get separate limits. The Cloud Run header choice is inferred from docs, not observed.
+  - [ ] **Now, the guard is live on Vercel:** in the API project, set `CRUCIBLE_CLIENT_IP_HEADER=x-vercel-forwarded-for` and redeploy. Without it the limits key on the socket peer, which on Vercel is probably the platform's proxy rather than the visitor. If so, the 10-runs-an-hour limit is shared by everyone. Then check that two networks get separate limits. Also remember that Vercel counts limits per function instance.
   - [ ] **Before finals:** decide whether 10 runs an hour per IP is enough for a room of judges behind one venue IP.
   - [ ] **Still open from G3:** server-issued ownership of sessions. Today, anyone holding both IDs can PATCH a session. This belongs with decision history below.
-- [ ] **New: one hosting story, written down.** Done: the README diagram now shows OpenRouter → Claude, and `npm run build` fails without `VITE_API_BASE` (`vite.config.ts`).
-  - [ ] Write the live frontend and backend URLs in the README.
-  - [ ] Pick Vercel + Neon or Cloud Run, and make the Deploy section of `/under-the-hood` (it says Cloud Run + Secret Manager) and the Sat items above match.
+- [ ] **New: one hosting story, written down.** Done: hosting is Vercel for both projects, the README diagram shows OpenRouter → Claude, and `npm run build` fails without `VITE_API_BASE` (`vite.config.ts`).
+  - [ ] Confirm `CRUCIBLE_SESSION_DB` (Neon, `postgresql+asyncpg://…`) is set on the API project. Without it, a session created on one function instance may be missing on the one that runs the meeting.
+  - [ ] Run one paid live meeting on https://smith26-crucible.vercel.app before the finals. No live meeting has been run through the deployed guard yet.
+  - [ ] Write the live URLs (Live table above) in the README.
+  - [ ] Make the Deploy section of `/under-the-hood` match Vercel (it still says Cloud Run + Secret Manager), and list Cloud Run in the README as the alternative.
 
 ### Next: a decision worth coming back to
 - [ ] **#3 + #19: decision history.** A stable URL per decision that reopens it read-only, with no new paid run; the signed ratification shown again; a "My decisions" list (the optional Fri item above). The Postgres driver is already installed.

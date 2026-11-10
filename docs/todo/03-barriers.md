@@ -82,7 +82,10 @@ Items marked **Before Sun Nov 8** matter for the submission. Everything else is 
 - The OpenRouter prepaid credit caps what the public demo can spend.
 
 - [ ] Keep scenarios, the rule base, the catalog and the prompts on the server. Never bundle them into the frontend.
-- [ ] Rate-limit the public demo link so nobody can scrape verdicts in bulk.
+- [x] Rate-limit the public demo link so nobody can scrape verdicts in bulk. `backend/guard.py` (live since Nov 10):
+  - per IP, 10 runs and 30 sessions an hour; 100 runs a day in total; at most 3 at once
+  - routes that would list or read sessions are closed
+  - the per-IP part needs `CRUCIBLE_CLIENT_IP_HEADER` on Vercel; see `TODO.md`
 - [ ] Before the finals, decide with the organizers what the team can show publicly, given that UMD owns the submission.
 
 ## One line for the video

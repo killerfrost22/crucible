@@ -104,7 +104,7 @@ Browser review of local `main` (`42c49c4`) at 320, 375, 768, 1440 and 1920 px, b
 - [ ] **New: one hosting story, written down.** Done: hosting is Vercel for both projects, the README diagram shows OpenRouter → Claude, and `npm run build` fails without `VITE_API_BASE` (`vite.config.ts`).
   - [ ] Confirm `CRUCIBLE_SESSION_DB` (Neon, `postgresql+asyncpg://…`) is set on the API project. Without it, a session created on one function instance may be missing on the one that runs the meeting.
   - [ ] Run one paid live meeting on https://smith26-crucible.vercel.app before the finals. No live meeting has been run through the deployed guard yet.
-  - [ ] Write the live URLs (Live table above) in the README.
+  - [x] Write the live URLs (Live table above) in the README.
   - [ ] Make the Deploy section of `/under-the-hood` match Vercel (it still says Cloud Run + Secret Manager), and list Cloud Run in the README as the alternative.
 
 ### Next: a decision worth coming back to

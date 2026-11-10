@@ -27,8 +27,8 @@
 
 ## Yizhan — developer
 **Fri**
-- [ ] Optional: try a different company per seat for the pitch ("five different AIs argue it out"). It's one `.env` line per seat; see `.env.example`.
-- [ ] Optional: reloading the page loses the board, and the owner's ratification is saved but never shown again. A "My decisions" list (`GET /apps/crucible/users/{user}/sessions`) would fix both.
+- [ ] Optional: try a different company per seat for the pitch ("five different AIs argue it out"). Already wired — set one `CRUCIBLE_<SEAT>_MODEL` line per seat (see `.env.example`). Defaults stay on the shared OpenRouter seat model, so a run does not change until those lines are set. Do not invent provider keys.
+- [x] Reloading keeps the board, and a saved ratification shows again. **My decisions** lists this browser's meetings from `GET /apps/crucible/users/{user}/sessions`. Opening one, or reloading `/?decision=<id>`, restores the saved board and signature without a new model run. A live meeting's URL becomes that id once the session exists. A practice signature on a recorded meeting stays in this browser.
 **Sat**
 - [ ] Deploy backend to Cloud Run: `gcloud run deploy crucible-api --source backend --region us-east1 --min-instances 1 --max-instances 1 --set-env-vars ...` (one instance keeps sessions consistent; see README).
 - [ ] Deploy frontend to Vercel with `VITE_API_BASE=<Cloud Run URL>`; add the Vercel origin to `CRUCIBLE_ALLOW_ORIGINS`.

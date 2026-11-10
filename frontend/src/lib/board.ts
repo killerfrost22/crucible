@@ -43,6 +43,9 @@ export const initialBoard: BoardState = {
   errors: [],
 }
 
+/** Replace the whole board. Used when a saved session is opened without replaying its events. */
+export type BoardAction = AdkEvent | { restore: BoardState }
+
 /** `crucible@1/realist_r1@1` → `realist_r1`. */
 export function nodeName(event: AdkEvent): string | null {
   const path = event.nodeInfo?.path
@@ -85,8 +88,10 @@ function addError(errors: BoardError[], error: BoardError): BoardError[] {
   return errors.some((e) => e.message === error.message && e.node === error.node) ? errors : [...errors, error]
 }
 
-/** The single pure reducer shared by live and replay mode. */
-export function reduceBoard(state: BoardState, event: AdkEvent): BoardState {
+/** The single pure reducer shared by live, replay, and restored sessions. */
+export function reduceBoard(state: BoardState, action: BoardAction): BoardState {
+  if ('restore' in action) return action.restore
+  const event = action
   const node = nodeName(event)
   const next: BoardState = { ...state }
 

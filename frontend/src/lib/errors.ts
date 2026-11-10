@@ -6,6 +6,7 @@ import type { BoardError } from './board'
 export const CLIENT_NETWORK = 'CLIENT_NETWORK'
 export const CLIENT_INCOMPLETE = 'CLIENT_INCOMPLETE'
 export const CLIENT_REPLAY = 'CLIENT_REPLAY'
+export const CLIENT_DECISION = 'CLIENT_DECISION'
 
 export type ErrorKind = 'quota' | 'network' | 'incomplete' | 'failed'
 
@@ -57,6 +58,14 @@ export function humanizeErrors(errors: BoardError[]): HumanError | null {
       kind: 'failed',
       title: "That recorded session couldn't be opened.",
       body: 'The recording is missing or damaged. Head back and pick another one.',
+      detail,
+    }
+  }
+  if (errors.some((e) => e.code === CLIENT_DECISION)) {
+    return {
+      kind: 'failed',
+      title: "That decision isn't here anymore.",
+      body: 'This browser still has a link to it, but the server no longer has the meeting. That happens when the server restarts without a saved session store. Convene the board again and the new meeting is kept.',
       detail,
     }
   }

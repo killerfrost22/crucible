@@ -111,7 +111,8 @@ const STEPS: Step[] = [
     type: 'after the run',
     note: (
       <>
-        Not a node. The owner accepts or overrides the verdict, and the app saves that choice to the session with a <code>PATCH</code>.
+        Not a node. The owner accepts or overrides the verdict, and the app saves that choice to the session with a <code>PATCH</code>. My
+        decisions reads the session back, so a reload shows the board and that signature again.
       </>
     ),
   },

@@ -22,6 +22,7 @@ flowchart LR
   end
   W -- "SSE events: one per finished node" --> UI
   UI -- "PATCH session stateDelta.ratification" --> API
+  UI -- "GET sessions: restore the board" --> API
   W --> G[(Gemini API)]
 ```
 
@@ -30,10 +31,11 @@ flowchart LR
 - `backend/agents/crucible/seats.py` — seat charges and the briefings each seat sees. Seats cite shared evidence as F1, F2…
 - `backend/main.py` — ADK's FastAPI app; all routes come from ADK (sessions, `/run_sse`, session PATCH).
 - One run = 12 model calls (Researcher + 5 + 5 + Chairman).
-- `frontend/src/home/` — the home page (`/`): the product, the five seats, an example verdict, recorded sessions, and the question form (`#convene`).
+- `frontend/src/home/` — the home page (`/`): the product, the five seats, an example verdict, recorded sessions, **My decisions** (meetings saved for this browser), and the question form (`#convene`).
 - `frontend/src/underthehood/` — `/under-the-hood`, the technical explainer. `buildFx.ts` is the "built by many hands" effect: one cursor per advisor assembles the page. It is skipped under reduced motion.
 - Themes: every colour is a token in `frontend/src/styles/tokens.css`, defined once for dark and once for light. `index.html` picks the theme before first paint (saved choice, else the OS setting), and `ThemeToggle` switches it on every page.
 - `frontend/src/components/Board.tsx` and `Crucible.tsx`: the meeting room. Seat cards arrive as each SSE event lands. In the crucible, each opening position adds to the melt and rebuttals refine it (glowing lines connect seats; concessions throw sparks). The Chairman's verdict pours out as a cast bar stamped with the decision, and the owner's call is stamped next to it.
+- **My decisions.** An anonymous id lives in `localStorage` (`crucible.userId`). Live meetings are ADK sessions. Once a session exists, its URL is `/?decision=<id>`. Reloading that URL, or opening it from the list on the home page (`GET /apps/crucible/users/{user}/sessions`), restores the saved board and ratification and does not start a model run. Recorded meetings (`?replay=`) keep a practice signature in `localStorage` for that recording only. Sessions still disappear on redeploy unless `CRUCIBLE_SESSION_DB` is set.
 
 ## Run locally (Windows)
 

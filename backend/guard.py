@@ -8,10 +8,14 @@ scripts use:
   POST  /apps/crucible/users/{user}/sessions           body ignored (no client-chosen ids or state)
   POST  /run_sse                                       one Intake, validated before any model call
   PATCH /apps/crucible/users/{user}/sessions/{session} ratification only; `at` is set by the server
+  GET   /apps/crucible/users/{user}/sessions/{session} reopen one decision (ADK's route, unchanged)
+  GET   /apps/crucible/users/{user}/decisions          the user's decisions, summarised (served here)
 
-plus OPTIONS on those paths. Rejections are JSON `{"code", "detail"}` (and `retry_after_s` with a
-`Retry-After` header on 429s). `Guard` is pure ASGI, so SSE streams pass through unbuffered, and it
-must sit inside ADK's CORS middleware so that browsers can read its errors (see main.py).
+plus OPTIONS on those paths. The user id is a random UUID kept in the owner's browser and acts as
+its secret; ADK's raw session listing stays closed and `decisions` returns only small summaries.
+Rejections are JSON `{"code", "detail"}` (and `retry_after_s` with a `Retry-After` header on 429s).
+`Guard` is pure ASGI, so SSE streams pass through unbuffered, and it must sit inside ADK's CORS
+middleware so that browsers can read its errors (see main.py).
 
 Limits live in this process's memory: they are exact only with a single instance.
 """
@@ -50,6 +54,10 @@ SWEEP_EVERY = 300.0
 _ID = r"[^/]{1,128}"
 _SESSIONS_PATH = re.compile(rf"/apps/{APP_NAME}/users/{_ID}/sessions")
 _SESSION_PATH = re.compile(rf"/apps/{APP_NAME}/users/{_ID}/sessions/{_ID}")
+_DECISIONS_PATH = re.compile(rf"/apps/{APP_NAME}/users/{_ID}/decisions")
+MAX_DECISIONS = 50
+_DECISION_KINDS = ("proceed", "pilot", "defer", "reject")
+_HISTORY_UNAVAILABLE = "Crucible couldn't load your past decisions. Try again in a minute."
 
 
 @dataclass(frozen=True)
@@ -330,6 +338,8 @@ class Guard:
             await self._create_session(scope, receive, send, now)
         elif route == "ratify":
             await self._ratify(scope, receive, send, body)
+        elif route == "decisions":
+            await self._decisions(scope, receive, send)
         else:
             await self._run(scope, receive, send, body, now)
 
@@ -381,6 +391,37 @@ class Guard:
             {"stateDelta": {"ratification": {"action": ratification.action, "note": ratification.note, "at": at}}}
         ).encode()
         await self.app(_with_body(scope, forwarded), _replay(forwarded, receive), send)
+
+    async def _decisions(self, scope: Scope, receive: Receive, send: Send) -> None:
+        """Lists the user's sessions through ADK's own route, then answers with one summary per decision."""
+        listing: Scope = {**scope, "path": scope["path"].removesuffix("/decisions") + "/sessions", "query_string": b""}
+        if scope.get("raw_path"):
+            listing["raw_path"] = scope["raw_path"].removesuffix(b"/decisions") + b"/sessions"
+        status = 500
+        chunks: list[bytes] = []
+
+        async def capture(message: Message) -> None:
+            nonlocal status
+            if message["type"] == "http.response.start":
+                status = message["status"]
+            elif message["type"] == "http.response.body":
+                chunks.append(message.get("body", b""))
+
+        try:
+            await self.app(listing, _replay(b"", receive), capture)
+        except Exception:
+            log.exception("listing sessions failed")
+            await _reject(send, 500, "CRUCIBLE_HISTORY_UNAVAILABLE", _HISTORY_UNAVAILABLE)
+            return
+        if status != 200:
+            log.warning("listing sessions answered %d", status)
+            await _reject(send, status if status >= 400 else 502, "CRUCIBLE_HISTORY_UNAVAILABLE", _HISTORY_UNAVAILABLE)
+            return
+        sessions = _parse_json(b"".join(chunks))
+        if not isinstance(sessions, list):
+            await _reject(send, 502, "CRUCIBLE_HISTORY_UNAVAILABLE", _HISTORY_UNAVAILABLE)
+            return
+        await _send_json(send, 200, {"decisions": _summarise(sessions)})
 
     async def _run(self, scope: Scope, receive: Receive, send: Send, body: bytes, now: float) -> None:
         try:
@@ -490,7 +531,7 @@ class Guard:
 
 
 def _route(method: str, path: str) -> str | None:
-    """"pass", "session", "ratify" or "run" for an allowlisted request, else None."""
+    """"pass", "session", "ratify", "decisions" or "run" for an allowlisted request, else None."""
     if path == "/list-apps":
         kinds = {"GET": "pass"}
     elif path == "/run_sse":
@@ -498,10 +539,41 @@ def _route(method: str, path: str) -> str | None:
     elif _SESSIONS_PATH.fullmatch(path):
         kinds = {"POST": "session"}
     elif _SESSION_PATH.fullmatch(path):
-        kinds = {"PATCH": "ratify"}
+        kinds = {"GET": "pass", "PATCH": "ratify"}
+    elif _DECISIONS_PATH.fullmatch(path):
+        kinds = {"GET": "decisions"}
     else:
         return None
     return "pass" if method == "OPTIONS" else kinds.get(method)
+
+
+def _summarise(sessions: list[Any]) -> list[dict[str, Any]]:
+    """One entry per session that holds an intake, newest first, at most MAX_DECISIONS."""
+    entries: list[tuple[float, dict[str, Any]]] = []
+    for session in sessions:
+        state = session.get("state") if isinstance(session, dict) else None
+        intake = state.get("intake") if isinstance(state, dict) else None
+        if not isinstance(intake, dict) or not isinstance(session.get("id"), str):
+            continue
+        verdict = state.get("verdict") if isinstance(state.get("verdict"), dict) else None
+        ratification = state.get("ratification") if isinstance(state.get("ratification"), dict) else {}
+        updated = session.get("lastUpdateTime")
+        updated = float(updated) if isinstance(updated, (int, float)) else 0.0
+        decision = verdict.get("decision") if verdict else None
+        headline = verdict.get("headline") if verdict else None
+        signed = ratification.get("action")
+        question = intake.get("question")
+        entries.append((updated, {
+            "id": session["id"],
+            "updated_at": datetime.fromtimestamp(updated, UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "question": question if isinstance(question, str) else "",
+            "decision": decision if decision in _DECISION_KINDS else None,
+            "headline": headline if isinstance(headline, str) else None,
+            "signed": signed if signed in ("accept", "override") else None,
+            "finished": verdict is not None,
+        }))
+    entries.sort(key=lambda entry: entry[0], reverse=True)
+    return [summary for _, summary in entries[:MAX_DECISIONS]]
 
 
 def _header(scope: Scope, name: bytes) -> str | None:
@@ -534,12 +606,21 @@ def _replay(body: bytes, receive: Receive) -> Receive:
 
 async def _reject(send: Send, status: int, code: str, detail: str, retry_after: float | None = None) -> None:
     payload: dict[str, Any] = {"code": code, "detail": detail}
-    headers = [(b"content-type", b"application/json"), (b"cache-control", b"no-store")]
+    headers: list[tuple[bytes, bytes]] = []
     if retry_after is not None:
         seconds = max(1, math.ceil(retry_after))
         payload["retry_after_s"] = seconds
         headers.append((b"retry-after", str(seconds).encode()))
+    await _send_json(send, status, payload, headers)
+
+
+async def _send_json(send: Send, status: int, payload: Any, extra_headers: list[tuple[bytes, bytes]] | None = None) -> None:
     body = json.dumps(payload).encode()
-    headers.append((b"content-length", str(len(body)).encode()))
+    headers = [
+        (b"content-type", b"application/json"),
+        (b"cache-control", b"no-store"),
+        *(extra_headers or ()),
+        (b"content-length", str(len(body)).encode()),
+    ]
     await send({"type": "http.response.start", "status": status, "headers": headers})
     await send({"type": "http.response.body", "body": body})

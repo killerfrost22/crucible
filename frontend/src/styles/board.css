@@ -376,7 +376,7 @@
 }
 
 @media (max-width: 559px) {
-  .replay__badge:not(.replay__badge--live) {
+  .replay__badge:not(.replay__badge--live, .replay__badge--saved) {
     display: none;
   }
 }
@@ -558,6 +558,60 @@
   grid-area: seats;
 }
 
+.board > .brief {
+  grid-area: brief;
+}
+
+.board__seats-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.board__seats-head .section-label {
+  flex: 1;
+}
+
+/* Show/hide for research and debate (components/Fold.tsx). */
+.fold {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 0.4em;
+  min-height: 44px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-2);
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    color var(--dur-quick) var(--ease-out),
+    border-color var(--dur-quick) var(--ease-out);
+}
+
+.fold:hover {
+  border-color: var(--text-3);
+  color: var(--text);
+}
+
+.fold svg {
+  transition: transform var(--dur-base) var(--ease-out);
+}
+
+.fold[aria-expanded='true'] svg {
+  transform: rotate(180deg);
+}
+
+.assay__head .fold {
+  margin-left: auto;
+}
+
 .board__outcome {
   grid-area: outcome;
 }
@@ -584,6 +638,17 @@
   justify-content: center;
 }
 
+/* Finished: the brief (decision, reasons, objection, gates, next step, your call) comes straight after the question. */
+.board[data-finished] {
+  grid-template-areas:
+    'question'
+    'brief'
+    'forge'
+    'assay'
+    'seats'
+    'outcome';
+}
+
 /* Tablet: the question and the crucible share the opening row. */
 @media (min-width: 768px) {
   .board {
@@ -595,6 +660,15 @@
       'outcome outcome';
     column-gap: var(--space-6);
     align-items: start;
+  }
+
+  .board[data-finished] {
+    grid-template-areas:
+      'question forge'
+      'brief brief'
+      'assay assay'
+      'seats seats'
+      'outcome outcome';
   }
 }
 
@@ -610,6 +684,17 @@
     column-gap: clamp(2rem, 1rem + 2vw, 4rem);
     row-gap: var(--space-8);
     padding-top: var(--space-7);
+  }
+
+  /* The question, then the brief across both columns (it splits itself into decision + reasons), then the research. */
+  .board[data-finished] {
+    grid-template-areas:
+      'forge question question'
+      'forge brief brief'
+      'forge assay assay'
+      'forge seats seats'
+      'forge outcome outcome';
+    grid-template-rows: auto auto auto auto 1fr;
   }
 
   .board__forge {
@@ -781,6 +866,19 @@
   .forge__filaments,
   .standings {
     display: none;
+  }
+}
+
+/* Below 360px "Recommendation: Pilot" no longer fits beside the crucible, so the caption goes under it. */
+@media (max-width: 359px) {
+  .forge {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+  }
+
+  .forge__caption {
+    justify-items: center;
+    text-align: center;
   }
 }
 
@@ -1335,6 +1433,14 @@
   text-wrap: balance;
 }
 
+.chair-wait__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+}
+
 .chair-wait__body {
   max-width: 46ch;
   font-size: var(--step--1);
@@ -1439,6 +1545,37 @@
   font-family: var(--font-mono);
   font-weight: 600;
   color: var(--heat-text);
+}
+
+.peek__body {
+  display: grid;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.peek__src {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-3);
+  font-size: var(--step--2);
+}
+
+.peek__src a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin-block: -12px;
+  font-weight: 600;
+  color: var(--text);
+  text-underline-offset: 3px;
+}
+
+.peek__src .fact__host {
+  margin-left: 0.4em;
+  font-family: var(--font-mono);
+  font-weight: 400;
+  color: var(--text-3);
 }
 
 .peek__close {

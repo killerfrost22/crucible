@@ -36,10 +36,15 @@ def render_evidence(evidence: dict[str, Any]) -> str:
     lines = [f"Decision: {evidence['decision']}", "Options:"]
     lines += [f"  - {o}" for o in evidence["options"]]
     lines.append("Facts (cite by ID):")
+    any_broken = False
     for i, f in enumerate(evidence["facts"], 1):
         tag = "verified" if f["verified"] else "unverified"
         src = f" — {f['source']}" if f.get("source") else ""
-        lines.append(f"  F{i} [{tag}] {f['claim']}{src}")
+        broken = (f.get("check") or {}).get("status") == "broken"
+        any_broken |= broken
+        lines.append(f"  F{i} [{tag}] {f['claim']}{src}{' (link broken)' if broken else ''}")
+    if any_broken:
+        lines.append("A fact marked (link broken) cites a page that no longer exists; treat it as unverified.")
     if evidence["open_questions"]:
         lines.append("Open questions:")
         lines += [f"  - {q}" for q in evidence["open_questions"]]
@@ -61,7 +66,13 @@ def render_round(round_no: int, opinions: dict[str, dict[str, Any]]) -> str:
         for c in o.get("checks", []):
             lines.append(f"Check [{c['area']}: {c['status']}] {c['note']}")
         for t in o.get("tools", []):
-            lines.append(f"Tool: {t['name']} ({t['monthly_cost']}) — {t['use']} Caveat: {t['caveat']}")
+            price = f"{t['monthly_cost']}, per {t['price_fact']}" if t.get("price_fact") else t["monthly_cost"]
+            line = f"Tool: {t['name']} ({price}) — {t['use']} Caveat: {t['caveat']}"
+            if t.get("pilot_test"):
+                line += f" Pilot test: {t['pilot_test']}"
+            if t.get("url"):
+                line += f" Site: {t['url']}"
+            lines.append(line)
         if round_no == 2:
             if o["changed_position"]:
                 lines.append(f"CHANGED POSITION because: {o['changed_because']}")
@@ -109,7 +120,16 @@ You are the AI-TOOLS EXPERT: you know the market of AI products small businesses
 today. Name 0-3 real, currently sold AI tools that would help carry out or de-risk this \
 decision, with realistic monthly cost and how each connects to the owner's current tools. \
 Prefer month-to-month plans and free tiers. If no AI tool genuinely helps, return no tools \
-and say so — never force one. Your stance is on the decision itself, not on AI."""
+and say so — never force one. Your stance is on the decision itself, not on AI.
+For each tool:
+- url: the product's official site or pricing page, only if you are sure of it; otherwise \
+leave it empty. Never invent a URL.
+- price_fact: the fact ID (e.g. F4) only when that fact states this tool's price, with \
+monthly_cost as the fact states it. Otherwise leave price_fact empty and give monthly_cost \
+as a range.
+- pilot_test: always give one measurable result that decides keep-or-stop, and when to \
+decide, e.g. "Keep it if after-hours bookings rise by 5 in 4 weeks; cancel before the \
+second invoice otherwise"."""
 
 
 def _realist_charge(_: dict[str, Any]) -> str:
@@ -181,7 +201,8 @@ def researcher_instruction(web_search: bool) -> Callable[[ReadonlyContext], str]
         "Web search results are available to you. Set verified=true and give the result's URL "
         "only for facts a search result supports; facts from general knowledge get verified=false "
         "and an empty source. Put URLs only in `source`: the claim is plain text with no links or "
-        "citation markup."
+        "citation markup. Take software prices from the vendor's own pricing page and cite that "
+        "page's URL."
         if web_search
         else "You have no web access in this session: draw on general knowledge, set "
         "verified=false and leave source empty on every fact, and prefer well-established facts."
@@ -193,7 +214,9 @@ You are the board's RESEARCHER. Before the board debates, assemble the shared ev
 every seat will argue from. Cover: the realistic options; costs and price ranges; laws, \
 licensing and compliance rules that apply in the owner's location and industry — check \
 state and local rules separately, since they are often stricter than federal ones; relevant \
-AI tools on the market; and industry benchmarks. Do not restate the owner briefing as facts; \
+AI tools on the market; and industry benchmarks. When the decision may involve buying software \
+or an AI tool, include current pricing for the leading options as facts, one per product: \
+the product, its plan and its monthly price. Do not restate the owner briefing as facts; \
 the board already has it. Be neutral — do not recommend. {sourcing}
 
 OWNER BRIEFING
@@ -215,7 +238,14 @@ conditions remove it.
 information first), or reject.
 - Record the strongest surviving dissent honestly.
 - Next steps must be things this owner can actually do, starting this week.
-- Carry forward only the AI tools you endorse from the AI-Tools Expert.
+- Carry forward only the AI tools you endorse from the AI-Tools Expert, keeping their url \
+and price_fact exactly as the expert gave them (never add a URL or fact ID of your own). Give \
+each endorsed tool a pilot_test fitted to your recommendation.
+- would_change: 1-3 specific findings that would change this recommendation, e.g. a quote, \
+a rule, or a test result.
+- no_new_tool: when an AI tool is in play, what the owner could do instead with the tools \
+they already have, or by hand, and what that costs; empty if no AI tool is in play.
+- confidence is your own estimate of how likely this recommendation is right.
 - Escalate to a human professional when legal, tax, or financing stakes exist. For general \
 business help, point to the local Small Business Development Center (free, confidential, \
 SBA-funded; in Maryland, the Maryland SBDC).

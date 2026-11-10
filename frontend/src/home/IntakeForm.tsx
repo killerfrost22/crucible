@@ -136,7 +136,7 @@ export function IntakeForm({ draft, onChange, onSubmit }: IntakeFormProps) {
             <path d="M2.5 8h10M8.5 4l4 4-4 4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </button>
-        <p className="hm-form__note">A live meeting takes about a minute: research, two rounds of debate, then a recommendation.</p>
+        <p className="hm-form__note">A live meeting takes about 90 seconds: research, two rounds of debate, then a recommendation.</p>
       </div>
     </form>
   )

@@ -33,6 +33,56 @@ export const useFacts = () => useContext(FactContext)
 
 export const factId = (n: number) => `fact-${n}`
 
+/** `https://www.example.gov/x` → `example.gov`; anything that isn't an http(s) URL → null, shown as plain text. */
+export function hostOf(source: string): string | null {
+  if (!/^https?:\/\//.test(source)) return null
+  try {
+    return new URL(source).hostname.replace(/^www\./, '')
+  } catch {
+    return null
+  }
+}
+
+const DAY = new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric' })
+
+type Tone = 'ok' | 'warn' | 'bad' | 'none'
+
+/**
+ * What Crucible can honestly say about where a fact came from. "Link checked" means the page opened when the server
+ * tried it (backend `check_sources`); nobody has checked that the page says what the claim says.
+ */
+function sourceStatus(fact: Fact): { tag: string; tone: Tone } {
+  if (!fact.source) return { tag: 'No source', tone: 'none' }
+  if (!hostOf(fact.source)) return { tag: 'Named source', tone: 'none' }
+  const check = fact.check
+  if (!check) return { tag: 'Source found', tone: 'none' }
+  if (check.status === 'ok') return { tag: `Link checked ${DAY.format(new Date(check.checked_at))}`, tone: 'ok' }
+  if (check.status === 'broken') return { tag: 'Link broken', tone: 'bad' }
+  return { tag: 'Couldn’t open link', tone: 'warn' }
+}
+
+export function SourceTag({ fact }: { fact: Fact }) {
+  const { tag, tone } = sourceStatus(fact)
+  return (
+    <span className="fact__tag" data-tone={tone}>
+      {tag}
+    </span>
+  )
+}
+
+/** The fact's source as a link (host only) when it is a URL, else as the publication's name. */
+export function SourceLink({ source, label }: { source: string; label?: string }) {
+  const host = hostOf(source)
+  if (!host) return <>{source}</>
+  return (
+    <a href={source} target="_blank" rel="noreferrer">
+      {label ?? host}
+      {label && <span className="fact__host"> {host}</span>}
+      <span className="visually-hidden"> (opens in a new tab)</span>
+    </a>
+  )
+}
+
 function FactRef({ n, label }: { n: number; label: string }) {
   const { active, pinned, setActive } = useFacts()
   const on = active === n

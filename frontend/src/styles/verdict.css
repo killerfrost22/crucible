@@ -1,34 +1,181 @@
-/* ── Outcome layout ───────────────────────────────────────────────────── */
+/* ── The brief: the decision on one card, right after the question ───── */
 
-.outcome {
-  display: grid;
-  gap: var(--space-5);
-  width: 100%;
-  align-items: start;
+.brief {
+  --decision: var(--decision-defer);
+  container: brief / inline-size;
+  min-width: 0;
+  padding: var(--space-6) clamp(1.25rem, 0.8rem + 1.8vw, 2.25rem);
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--decision);
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  scroll-margin-top: calc(var(--frame-h) + var(--space-4));
 }
 
-/* From 1180px the verdict and "Your call" share the outcome row; the section label spans both. */
-@media (min-width: 1180px) {
-  .board__outcome {
-    grid-template-columns: minmax(0, 1fr) minmax(18rem, 22rem);
-    column-gap: var(--space-5);
-    align-items: start;
+.brief__in,
+.brief__lead {
+  display: grid;
+  gap: var(--space-5);
+  align-content: start;
+  min-width: 0;
+}
+
+.brief__lead {
+  gap: var(--space-4);
+}
+
+/* From tablet width: the decision and your call on the left, the reasons beside them, so signing never waits behind
+   the transcript. */
+@container brief (min-width: 40rem) {
+  .brief__in {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    grid-template-rows: auto auto 1fr;
+    column-gap: var(--space-7);
   }
 
-  .board__outcome > .section-label,
-  .board__outcome > .notice,
-  .board__outcome > .chair-wait {
-    grid-column: 1 / -1;
+  .brief__lead {
+    grid-column: 1;
+    grid-row: 1;
   }
 
-  .outcome {
-    display: contents;
+  .brief__rows {
+    grid-column: 2;
+    grid-row: 1 / span 3;
   }
 
-  .yourcall {
-    position: sticky;
-    top: calc(var(--frame-h) + var(--space-5));
+  .brief .yourcall {
+    grid-column: 1;
+    grid-row: 2;
   }
+
+  .brief__more {
+    grid-column: 1;
+    grid-row: 3;
+    align-self: start;
+  }
+}
+
+.brief[data-decision='proceed'] {
+  --decision: var(--decision-proceed);
+}
+
+.brief[data-decision='pilot'] {
+  --decision: var(--decision-pilot);
+}
+
+.brief[data-decision='reject'] {
+  --decision: var(--decision-reject);
+}
+
+.brief__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-4);
+}
+
+/* The Chairman's hallmark, small: the full cast ingot is in the verdict below. */
+.brief__stamp {
+  padding: 0.25em 0.7em;
+  border: 1.5px solid var(--decision);
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--decision);
+}
+
+.brief__headline {
+  max-width: 30ch;
+  font-size: clamp(1.375rem, 1.1rem + 1.2vw, 2.125rem);
+  font-weight: 620;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+.brief__estimate {
+  max-width: 60ch;
+  font-size: var(--step--1);
+  color: var(--text-3);
+}
+
+.brief__estimate b {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--text);
+}
+
+.brief__rows {
+  display: grid;
+  border-top: 1px solid var(--line);
+}
+
+.brief__rows > div {
+  display: grid;
+  gap: var(--space-2);
+  padding-block: var(--space-4);
+  border-bottom: 1px solid var(--line);
+}
+
+.brief__rows dt {
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.brief__rows dd {
+  display: grid;
+  gap: var(--space-2);
+  min-width: 0;
+  color: var(--text-2);
+}
+
+.brief__rows dd > b {
+  color: var(--text);
+}
+
+/* Labels beside their rows when there's room: a one-column brief from 34rem, or a two-column one from 60rem. */
+@container brief (34rem <= width < 40rem) or (min-width: 60rem) {
+  .brief__rows > div {
+    grid-template-columns: 9rem minmax(0, 1fr);
+    gap: var(--space-4);
+  }
+}
+
+.brief__block {
+  color: var(--check-block);
+}
+
+.brief__block b {
+  font-weight: 600;
+}
+
+.brief__more-link,
+.brief__more {
+  justify-self: start;
+  font-size: var(--step--1);
+  font-weight: 600;
+  color: var(--text);
+  text-underline-offset: 3px;
+}
+
+.brief__more {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  min-height: 44px;
+}
+
+/* "Your call" sits inside the brief: a raised panel, no longer a sticky column. */
+.brief .yourcall {
+  padding: var(--space-5);
 }
 
 /* ── Verdict card: the cast ingot ─────────────────────────────────────── */
@@ -196,6 +343,12 @@
   border-radius: 2px;
 }
 
+/* "What would change this": open circles, not the checkboxes of "only holds if". */
+.conditions--change li::before {
+  border-radius: 50%;
+  border-color: var(--text-3);
+}
+
 .steps {
   display: grid;
   gap: var(--space-5);
@@ -245,53 +398,90 @@
   color: var(--text-3);
 }
 
-.endorsed {
+/* ── AI tools, side by side ───────────────────────────────────────────── */
+
+.compare {
   display: grid;
   gap: var(--space-3);
 }
 
 @media (min-width: 900px) {
-  .endorsed {
-    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  .compare {
+    grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
   }
 }
 
-.endorsed__tool {
+.compare__opt {
+  container: opt / inline-size;
   display: grid;
-  gap: var(--space-2);
+  gap: var(--space-3);
   align-content: start;
-  padding: var(--space-4);
+  min-width: 0;
+  padding: var(--space-4) var(--space-5);
   border: 1px solid var(--line);
   border-radius: 10px;
-  background: var(--sunk);
+  /* --bg, not --sunk: the link-check colours are only AA on --bg and --surface (tokens.css). */
+  background: var(--bg);
   font-size: var(--step--1);
   color: var(--text-2);
 }
 
-.endorsed__name {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--space-2);
+/* Doing nothing new is an option the owner can weigh, so it sits in the same row. */
+.compare__opt--none {
+  border-style: dashed;
+  background: transparent;
+}
+
+.compare__name {
   font-size: var(--step-0);
   font-weight: 650;
   color: var(--text);
 }
 
-.endorsed__name span {
+.compare__name a {
+  color: inherit;
+  text-underline-offset: 3px;
+}
+
+.compare__dl {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.compare__dl > div {
+  display: grid;
+  gap: var(--space-1);
+}
+
+@container opt (min-width: 22rem) {
+  .compare__dl > div {
+    grid-template-columns: 6.5rem minmax(0, 1fr);
+    gap: var(--space-3);
+  }
+}
+
+.compare__dl dt {
   font-family: var(--font-mono);
   font-size: var(--step--2);
+  line-height: 1.9;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.compare__price {
+  font-family: var(--font-mono);
   font-weight: 500;
   color: var(--heat-text);
 }
 
-.endorsed__fine {
+.compare__basis {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.3em 0.5em;
+  font-size: var(--step--2);
   color: var(--text-3);
-}
-
-.endorsed__fine strong {
-  color: var(--text-2);
 }
 
 .escalate {

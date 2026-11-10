@@ -15,12 +15,18 @@ type View =
   | { kind: 'board'; source: RunSource; run: number }
 
 /**
- * `/` is the home page, `/under-the-hood` the technical explainer, and `?replay=<name>` deep-links a recorded meeting.
- * Live meetings are never restored from the URL: that would spend AI credit on reload.
+ * `/` is the home page, `/under-the-hood` the technical explainer, `?replay=<name>` a recorded meeting, and
+ * `?decision=<id>` a decision this browser made, reopened from its saved state. A live meeting (`?meeting`) is never
+ * restarted from the URL: that would spend AI credit on reload. Once its session exists the URL becomes its
+ * `?decision=` link, so a reload reopens what was saved instead.
  */
 function viewFromUrl(prev: View | null): View {
-  const name = new URLSearchParams(window.location.search).get('replay')
-  if (name) return { kind: 'board', source: { mode: 'replay', name }, run: prev?.kind === 'board' ? prev.run + 1 : 0 }
+  const params = new URLSearchParams(window.location.search)
+  const run = prev?.kind === 'board' ? prev.run + 1 : 0
+  const name = params.get('replay')
+  if (name) return { kind: 'board', source: { mode: 'replay', name }, run }
+  const id = params.get('decision')
+  if (id) return { kind: 'board', source: { mode: 'saved', id }, run }
   const path = window.location.pathname.replace(/\/+$/, '') || '/'
   if (path === UNDER_THE_HOOD) return { kind: 'under-the-hood' }
   if (path !== '/') return { kind: 'not-found' }
@@ -83,6 +89,12 @@ export function App() {
     [push],
   )
 
+  // The live meeting's session exists: its URL becomes the decision's link, without a remount or a history entry.
+  const rememberSession = useCallback((id: string) => {
+    window.history.replaceState(null, '', `/?decision=${encodeURIComponent(id)}`)
+    route.current = routeOf()
+  }, [])
+
   if (view.kind === 'home') {
     return <Home arrival={view.arrival} draft={draft} onChange={setDraft} onSubmit={startLive} onReplay={openReplay} />
   }
@@ -90,7 +102,7 @@ export function App() {
     return <UnderTheHood onReplay={openReplay} />
   }
   if (view.kind === 'not-found') {
-    return <NotFound />
+    return <NotFound missing={{ kind: 'page' }} />
   }
 
   const { source } = view
@@ -100,15 +112,24 @@ export function App() {
       source={source}
       onNew={() => navigate('/')}
       onReplay={openReplay}
+      onSession={source.mode === 'live' ? rememberSession : undefined}
       onEdit={
-        source.mode === 'live'
-          ? () => {
-              setDraft(draftFromIntake(source.intake))
+        source.mode === 'replay'
+          ? undefined
+          : (intake) => {
+              setDraft(draftFromIntake(intake))
               navigate('/')
             }
-          : undefined
       }
-      onRetry={source.mode === 'live' ? () => startLive(source.intake) : undefined}
+      // Live: a new (paid) meeting on the same question. Saved: fetch it again; nothing reruns.
+      onRetry={
+        source.mode === 'live'
+          ? () => startLive(source.intake)
+          : source.mode === 'saved'
+            ? () => setView((v) => (v.kind === 'board' ? { ...v, run: v.run + 1 } : v))
+            : undefined
+      }
+      onAskAgain={source.mode === 'saved' ? startLive : undefined}
     />
   )
 }

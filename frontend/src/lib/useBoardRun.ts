@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useReducer, useRef, useState } from 'react'
 import type { AdkEvent, Intake, Ratification } from '../types'
-import { ApiError, createSession, ratify, runBoard, userId } from './api'
-import { initialBoard, reduceBoard, type BoardState } from './board'
-import { CLIENT_INCOMPLETE, CLIENT_NETWORK, CLIENT_REPLAY, CLIENT_REPLAY_MISSING } from './errors'
+import { ApiError, createSession, existingUserId, getSessionState, ratify, runBoard, userId } from './api'
+import { boardFromState, initialBoard, isObject, reduceBoard, type BoardState } from './board'
+import { CLIENT_DECISION_MISSING, CLIENT_INCOMPLETE, CLIENT_NETWORK, CLIENT_REPLAY, CLIENT_REPLAY_MISSING } from './errors'
 import { loadReplay, ReplayMissingError, ReplayPlayer } from './replay'
 
-export type RunSource = { mode: 'live'; intake: Intake } | { mode: 'replay'; name: string }
+/** `saved` reopens a decision this browser already made, from its stored state: it never runs the board again. */
+export type RunSource = { mode: 'live'; intake: Intake } | { mode: 'replay'; name: string } | { mode: 'saved'; id: string }
 export type Transport = 'connecting' | 'streaming' | 'done'
 export type RatifyStatus = 'idle' | 'saving' | 'error'
 
@@ -31,14 +32,26 @@ function transportError(error: unknown): AdkEvent {
   return { errorCode: CLIENT_NETWORK, errorMessage: error instanceof Error ? error.message : String(error) }
 }
 
+/** A saved decision arrives whole; everything else arrives event by event. */
+type BoardAction = AdkEvent | { restore: BoardState }
+const boardReducer = (state: BoardState, action: BoardAction) => ('restore' in action ? action.restore : reduceBoard(state, action))
+
+function savedRatification(value: unknown): Ratification | null {
+  if (!isObject(value) || (value.action !== 'accept' && value.action !== 'override')) return null
+  return { action: value.action, note: typeof value.note === 'string' ? value.note : '', at: typeof value.at === 'string' ? value.at : '' }
+}
+
 /**
- * Drives one board meeting from either transport into the shared reducer.
- * Mount a fresh instance (React `key`) per meeting.
+ * Drives one board meeting from any source into the shared reducer.
+ * Mount a fresh instance (React `key`) per meeting. `onSession` hears a live meeting's session id as soon as it
+ * exists, so the page URL can point at the decision before the board finishes.
  */
-export function useBoardRun(source: RunSource): BoardRun {
-  const [board, dispatch] = useReducer(reduceBoard, source, (s) =>
+export function useBoardRun(source: RunSource, onSession?: (id: string) => void): BoardRun {
+  const [board, dispatch] = useReducer(boardReducer, source, (s) =>
     s.mode === 'live' ? { ...initialBoard, intake: s.intake } : initialBoard,
   )
+  const onSessionRef = useRef(onSession)
+  onSessionRef.current = onSession
   const [transport, setTransport] = useState<Transport>('connecting')
   const [speed, setSpeedState] = useState<ReplaySpeed>(2)
   const [ratification, setRatification] = useState<Ratification | null>(null)
@@ -77,6 +90,31 @@ export function useBoardRun(source: RunSource): BoardRun {
       }
     }
 
+    if (source.mode === 'saved') {
+      const missing: AdkEvent = { errorCode: CLIENT_DECISION_MISSING, errorMessage: `Decision "${source.id}" is not saved in this browser.` }
+      // Only the browser that made the decision holds its owner id; anywhere else it is simply not found.
+      const user = existingUserId()
+      if (!user) {
+        dispatch(missing)
+        setTransport('done')
+        return () => abort.abort()
+      }
+      getSessionState(user, source.id, signal)
+        .then((state) => {
+          if (signal.aborted) return
+          session.current = { user, id: source.id }
+          dispatch({ restore: boardFromState(state) })
+          setRatification(savedRatification(state.ratification))
+          setTransport('done')
+        })
+        .catch((error: unknown) => {
+          if (signal.aborted) return
+          dispatch(error instanceof ApiError && error.status === 404 ? missing : transportError(error))
+          setTransport('done')
+        })
+      return () => abort.abort()
+    }
+
     const intake = source.intake
     void (async () => {
       let sawVerdict = false
@@ -87,6 +125,7 @@ export function useBoardRun(source: RunSource): BoardRun {
         // Never start a (quota-spending) run for a meeting that was already torn down.
         if (signal.aborted) return
         session.current = { user, id }
+        onSessionRef.current?.(id)
         setTransport('streaming')
         for await (const event of runBoard(user, id, intake, signal)) {
           if (signal.aborted) return

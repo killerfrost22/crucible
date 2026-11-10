@@ -33,6 +33,11 @@ svg {
   display: block;
 }
 
+/* Folded sections (components/Fold.tsx) stay in the DOM; author `display` rules must not un-hide them. */
+[hidden] {
+  display: none !important;
+}
+
 h1,
 h2,
 h3,

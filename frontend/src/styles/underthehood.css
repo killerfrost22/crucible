@@ -1426,12 +1426,12 @@ body:has(.uth) {
   font-size: 0.8125rem;
 }
 
-.uth-facts .is-verified span {
+.uth-facts .is-checked span {
   color: var(--check-pass);
   font-weight: 600;
 }
 
-.uth-facts .is-verified span::before {
+.uth-facts .is-checked span::before {
   content: '✓ ';
 }
 
@@ -1444,7 +1444,7 @@ body:has(.uth) {
   white-space: nowrap;
 }
 
-.uth-facts .is-verified small {
+.uth-facts .is-checked small {
   color: var(--text-2);
 }
 

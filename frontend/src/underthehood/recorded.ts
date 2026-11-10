@@ -1,66 +1,61 @@
 // Real data behind the under-the-hood page, copied from the recorded dental meeting
-// (public/replays/dental-ai-receptionist.sse, run on the current Claude setup) and from backend/eval/scenarios.json.
-import type { SeatId } from '../types'
+// (public/replays/dental-ai-receptionist.sse, re-recorded Nov 10 on the current Claude setup) and from backend/eval/scenarios.json.
+import type { SeatId, SourceCheck } from '../types'
 
 export const DENTAL_REPLAY = 'dental-ai-receptionist'
 
-/** The Researcher's facts in the dental meeting: verified ones carry the host of their source URL. */
-export const DENTAL_FACTS: { id: string; source: string | null }[] = [
-  { id: 'F1', source: null },
-  { id: 'F2', source: 'legendnt.com' },
-  { id: 'F3', source: 'legendnt.com' },
-  { id: 'F4', source: 'legendnt.com' },
-  { id: 'F5', source: 'legendnt.com' },
-  { id: 'F6', source: 'legendnt.com' },
-  { id: 'F7', source: 'themorninggrind.com' },
-  { id: 'F8', source: 'hillflare.com' },
-  { id: 'F9', source: 'getviva.ai' },
-  { id: 'F10', source: 'legendnt.com' },
-  { id: 'F11', source: null },
-  { id: 'F12', source: null },
-  { id: 'F13', source: null },
+/** The Researcher's facts in the dental meeting: the host of each source link and what the link check found. */
+export const DENTAL_FACTS: { id: string; source: string | null; status: SourceCheck['status'] | null }[] = [
+  { id: 'F1', source: 'dentalbase.ai', status: 'ok' },
+  { id: 'F2', source: 'dentalbase.ai', status: 'ok' },
+  { id: 'F3', source: 'dentalbase.ai', status: 'ok' },
+  { id: 'F4', source: 'legendnt.com', status: 'ok' },
+  { id: 'F5', source: 'legendnt.com', status: 'ok' },
+  { id: 'F6', source: 'legendnt.com', status: 'ok' },
+  { id: 'F7', source: 'legendnt.com', status: 'ok' },
+  { id: 'F8', source: 'hillflare.com', status: 'ok' },
+  { id: 'F9', source: 'agentzap.ai', status: 'ok' },
+  { id: 'F10', source: null, status: null },
+  { id: 'F11', source: null, status: null },
+  { id: 'F12', source: null, status: null },
 ]
 
-export const DENTAL_VERIFIED = DENTAL_FACTS.filter((f) => f.source).length
+export const DENTAL_CHECKED = DENTAL_FACTS.filter((f) => f.status === 'ok').length
 
-/** The Realist's Round 1 checks in the dental meeting; blocking notes verbatim. */
+/** The Realist's Round 1 checks in the dental meeting; the blocking note verbatim. */
 export const DENTAL_CHECKS: { area: string; status: 'pass' | 'flag' | 'block'; note?: string }[] = [
   {
     area: 'legal',
     status: 'block',
-    note: "Recording consent under Maryland's all-party rule (F1, unverified) must be confirmed by Maryland counsel for every call route before go-live.",
-  },
-  {
-    area: 'compliance',
-    status: 'block',
-    note: 'A signed BAA covering the exact purchased plan is required before live calls if the vendor hears or stores patient information (F3); state health-data rules also need review (F12, unverified; counsel to confirm).',
+    note: 'Maryland all-party consent (F1) and a signed BAA on the exact purchased plan (F2, F4) must be in place before recording or patient data flows; have a healthcare attorney confirm, and check any Montgomery County or Maryland Board of Dental Examiners rules (unverified).',
   },
   { area: 'compliance', status: 'flag' },
   { area: 'financial', status: 'flag' },
-  { area: 'operational', status: 'flag' },
   { area: 'goals', status: 'pass' },
+  { area: 'operational', status: 'flag' },
 ]
 
 /** Whom the Realist rebutted in Round 2. */
-export const REALIST_R2_TARGETS: SeatId[] = ['devils_advocate', 'industry_expert', 'strategist']
+export const REALIST_R2_TARGETS: SeatId[] = ['ai_tools_expert', 'strategist', 'devils_advocate']
 
 /** The dental meeting's stream: node name and the session state it wrote, in arrival order. */
 export const DENTAL_STREAM: { node: string; state?: string }[] = [
   { node: 'intake', state: 'intake, evidence_mode' },
   { node: 'researcher', state: 'evidence' },
+  { node: 'check_sources', state: 'evidence' },
   { node: 'convene' },
-  { node: 'ai_tools_expert_r1' },
-  { node: 'industry_expert_r1' },
   { node: 'devils_advocate_r1' },
-  { node: 'strategist_r1' },
   { node: 'realist_r1' },
+  { node: 'strategist_r1' },
+  { node: 'industry_expert_r1' },
+  { node: 'ai_tools_expert_r1' },
   { node: 'round1' },
   { node: 'open_rebuttal', state: 'round1' },
-  { node: 'strategist_r2' },
-  { node: 'devils_advocate_r2' },
-  { node: 'industry_expert_r2' },
-  { node: 'ai_tools_expert_r2' },
   { node: 'realist_r2' },
+  { node: 'industry_expert_r2' },
+  { node: 'strategist_r2' },
+  { node: 'ai_tools_expert_r2' },
+  { node: 'devils_advocate_r2' },
   { node: 'round2' },
   { node: 'close_debate', state: 'round2' },
   { node: 'chairman', state: 'verdict' },

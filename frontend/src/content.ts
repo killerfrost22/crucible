@@ -1,5 +1,7 @@
-// Real session content for the home page, shortened from the recorded meetings in public/replays/ but not reworded.
+// Real session content for the home page, shortened from the recorded meetings in public/replays/ but not reworded:
+// whole sentences are kept or dropped, and (Fn) citations are dropped from the verdict excerpts. Re-recorded Nov 10.
 // MEMBERS is also used by the under-the-hood page.
+import type { SourceCheck } from './types'
 import { SCENARIOS } from './scenarios'
 import { SEATS } from './seats'
 import type { Intake, SeatId, Stance } from './types'
@@ -40,10 +42,12 @@ export interface FeaturedSession {
   intake: Intake
   facts: {
     total: number
-    /** How many facts came back verified with a source. */
-    verified: number
-    /** A few of the Researcher's facts; `source` is the host of a verified fact's source. */
-    excerpts: { id: string; claim: string; source: string | null }[]
+    /** How many facts carry a source link. */
+    sourced: number
+    /** How many of those links opened when Crucible checked them (backend `check_sources`). */
+    checked: number
+    /** A few of the Researcher's facts; `source` is the host of the fact's source link. */
+    excerpts: { id: string; claim: string; source: string | null; status: SourceCheck['status'] | null }[]
   }
   openQuestion: string
   /** Round 1 stance of every seat. */
@@ -68,23 +72,23 @@ export interface FeaturedSession {
 
 const said = (list: Said[], seat: SeatId) => list.find((m) => m.seat === seat)!.text
 
-/** public/replays/bakery-second-location.sse: the demo-video meeting. */
+/** public/replays/bakery-second-location.sse, recorded Nov 10. */
 const BAKERY_OPENINGS: Said[] = [
   {
     seat: 'industry_expert',
-    text: 'A second store needs far more than $90,000 (F1), and your first store has no manager while you bake every morning.',
+    text: 'Opening now would put most of your $90,000 savings into build-out and rent before you know the first store’s real profit. Your first store also has no manager while you bake every morning.',
   },
   {
     seat: 'realist',
-    text: 'A second store would likely cost far more than your $90,000 (F1), and you would need a certified food manager on site at both places (F5).',
+    text: 'Opening a second store now would use most of your $90,000 savings, which is the cushion protecting your first store. You also have no manager, and a second store needs its own permit and certified manager coverage (F7).',
   },
   {
     seat: 'devils_advocate',
-    text: 'Opening a second store with $90,000 risks your first store, which pays for everything.',
+    text: 'Opening a second store now would put most of your $90,000 cushion at risk. Your first store’s real profit after your own pay is unknown.',
   },
 ]
 
-const BAKERY_HEADLINE = 'Don’t sign Route 1 now; hire a manager and test Square delivery.'
+const BAKERY_HEADLINE = 'Don’t sign Route 1 now; run a 90-day manager and delivery test first.'
 
 const BAKERY: FeaturedSession = {
   replay: 'bakery-second-location',
@@ -96,34 +100,39 @@ const BAKERY: FeaturedSession = {
   intake: SCENARIOS.find((s) => s.id === 'bakery-second-location')!.intake,
   facts: {
     total: 13,
-    verified: 12,
+    sourced: 13,
+    checked: 12,
     excerpts: [
       {
         id: 'F1',
         claim:
-          'Startup-cost estimates for a new bakery or cafe site are large compared with $90,000. One 2026 guide puts a roughly 1,400 sq ft second-generation bakery at about $498,000 total.',
-        source: 'wilsonklee.com',
+          'A second retail bakery location is commonly estimated at $75K to $200K, and bakery startup costs overall at $50K to $250K. The lower end of that range is close to the owner’s $90,000 in savings.',
+        source: 'primerates.com',
+        status: 'ok',
       },
       {
-        id: 'F5',
+        id: 'F4',
         claim:
-          'Prince George’s County requires a County-certified Food Service Manager on duty at all times for restaurant-type operators. A second site would therefore need its own certified manager coverage.',
-        source: 'princegeorgescountymd.gov',
+          'A LoopNet listing for a 1,425 SF retail suite on Route 1 (Baltimore Ave) in College Park asks $25/SF/yr plus all utilities. That is roughly $35,600 a year, or about $2,970 a month, in base rent.',
+        source: 'loopnet.com',
+        status: 'unreachable',
       },
       {
         id: 'F7',
-        claim: 'Marketplace delivery commissions are about 15%-30% per delivery order. Pickup orders cost about 6%-7%.',
-        source: 'blenderdigital.co',
+        claim:
+          'A certified food service manager must be on duty during all hours of operation. A second storefront would need its own permit and certified manager coverage, which matters because the owner has no manager.',
+        source: 'dcfoodhandlers.com',
+        status: 'ok',
       },
     ],
   },
   openQuestion:
-    'What are the Route 1 space’s size, asking rent, lease type (NNN or gross), term, personal-guarantee requirement and tenant-improvement allowance?',
+    'What are the Route 1 space’s square footage, rent type (NNN or gross), lease term, personal guarantee, rent-free build-out period and landlord tenant-improvement allowance?',
   stances: [
     { seat: 'industry_expert', stance: 'oppose' },
     { seat: 'ai_tools_expert', stance: 'oppose' },
     { seat: 'realist', stance: 'conditional' },
-    { seat: 'strategist', stance: 'oppose' },
+    { seat: 'strategist', stance: 'conditional' },
     { seat: 'devils_advocate', stance: 'oppose' },
   ],
   openings: BAKERY_OPENINGS,
@@ -131,93 +140,93 @@ const BAKERY: FeaturedSession = {
     {
       seat: 'devils_advocate',
       target: 'strategist',
-      text: 'The Route 1 space may be leased quickly (unverified), and nothing shows a comparable space will appear in 6-12 months. Waiting trades a known option for a guess.',
+      text: 'Those three conditions may never line up, and the space may leave while you wait. A bar that may never be met is a quiet no, not a plan.',
     },
     {
       seat: 'strategist',
       target: 'devils_advocate',
-      text: 'Right, and the lock-in is the real cost. But a Route 1 lease might be negotiable on term or guarantee, which an attorney should test (F12).',
+      text: 'At $150K the savings math fails, so the cost cap matters most. Get the landlord’s allowance and the total five-year cost in writing before deciding (open question; attorney to confirm).',
     },
     {
       seat: 'ai_tools_expert',
       target: 'industry_expert',
-      text: 'Own-channel delivery still costs the $6.99 courier fee and 2.9% plus $0.30 card fees (F8, F9). Charge the customer the delivery fee, or small orders lose money.',
+      text: 'Right that Square online avoids commissions, but a third-party courier still charges per delivery (F13). Run both channels side by side to learn real demand and margin, not just cost.',
     },
     {
       seat: 'realist',
-      target: 'strategist',
-      text: 'A lost lease is recoverable. A personal guarantee on a 5-10 year NNN lease (F12) is not. Protecting the first store comes first.',
+      target: 'industry_expert',
+      text: 'Agreed, but make it a hard gate. Do not sign until profit after owner pay and a cash cushion are documented, using real numbers from the first store.',
     },
   ],
   verdict: {
     decision: 'Pilot',
-    confidence: 78,
+    confidence: 72,
     headline: BAKERY_HEADLINE,
-    why: 'A second site likely costs $150,000-$500,000 against your $90,000, and it would need its own certified food manager. A 5-10 year lease may carry personal guarantees. Own-channel Square delivery is cheap and reversible.',
+    why: 'A second store could take most of your $90,000 savings and add about $2,970 a month in rent. You have no manager, and a second store needs its own permit and a certified manager on duty. Test delivery cheaply, put a manager in place, and learn the first store’s true profit.',
     dissent: {
       seat: 'devils_advocate',
-      text: 'Waiting may lose Route 1 for good, and nothing shows a comparable space will appear in 6-12 months.',
+      text: 'Waiting 90 days may lose the Route 1 space, and a Square-only test mostly reaches existing customers. It shows little about whether a second store would work.',
     },
     conditions: [
-      'Route 1 terms are learned before any commitment: size, rent, NNN or gross, term, personal guarantee, allowance and build-out status.',
-      'The six-month runway is not spent on a build-out or lease deposit before a manager is in place.',
+      'First store nets positive after your own pay for about three months running, with a documented cash cushion.',
+      'An attorney reviews the lease, including any personal guarantee, deposit and five-year term, before you sign.',
     ],
     steps: [
-      { when: 'This week', action: 'Turn on Square Online on the Free tier ($0/mo) for pickup. Set delivery with the courier fee passed to the customer.' },
-      { when: 'Next 30 days', action: 'Book a free, confidential session with the Maryland SBDC to review your cash, the Route 1 numbers and financing options.' },
+      { when: 'This week', action: 'Pull the last 12 months of sales from Square and your costs. Book a free session with the Maryland SBDC to review the numbers.' },
+      { when: 'Next 30 days', action: 'Start finding a manager or head baker. Enroll a current employee in the 16-hour certified food service manager course.' },
     ],
-    escalate: 'An attorney, to review any Route 1 lease before you sign.',
+    escalate: 'An attorney, to review the lease terms before you sign.',
   },
   lines: {
-    industry_expert: 'A second store needs far more than $90,000, and your first store has no manager while you bake every morning.',
-    ai_tools_expert: 'Add commission-free Square Online delivery now, then reconsider a smaller or second-generation space in 6-12 months.',
-    realist: 'Your six months of savings is your safety net, and a new lease could use it up fast.',
-    strategist: 'Delivery volume may pull the same owner-baker away from the ovens. Hire before any channel scales.',
-    devils_advocate: said(BAKERY_OPENINGS, 'devils_advocate'),
+    industry_expert: 'Opening now would put most of your $90,000 savings into build-out and rent before you know the first store’s real profit.',
+    ai_tools_expert: 'Run both channels side by side to learn real demand and margin, not just cost.',
+    realist: 'Opening a second store now would use most of your $90,000 savings, which is the cushion protecting your first store.',
+    strategist: 'Signing now would commit most of your $90K savings and a multi-year lease before you know if the first store can run without you.',
+    devils_advocate: 'Waiting risks the Route 1 space and buys little real information.',
     chairman: BAKERY_HEADLINE,
   },
 }
 
-/** public/replays/hvac-ai-promo-texts.sse. Recorded without web access, so no fact has a source. */
+/** public/replays/hvac-ai-promo-texts.sse, recorded Nov 10 with web search on. */
 const HVAC_OPENINGS: Said[] = [
   {
     seat: 'industry_expert',
-    text: 'A four-tech shop cannot handle a massive influx of calls from a total list blast. Segment your list and roll out texts in phases.',
+    text: 'A one-week text blast to every past customer is risky. It can overbook your 4 technicians, creates legal exposure if consent is unclear, and can trigger carrier filtering.',
   },
   {
     seat: 'realist',
-    text: 'You must verify written consent before sending texts. An unverified TCPA violation carries steep fines.',
+    text: 'A whole-list text blast carries real legal and capacity risk. Texting needs documented consent (F1), and a full-list send can overbook four technicians (F4).',
   },
   {
     seat: 'devils_advocate',
-    text: 'Blasting your entire customer list next week will overwhelm your four technicians. You risk compliance fines, missed calls, and angry customers.',
+    text: 'A one-week text blast to every past customer risks legal trouble, carrier blocking, and overbooking your four technicians. Consent records are unknown.',
   },
 ]
 
 const HVAC_REBUTTALS: FeaturedSession['rebuttals'] = [
   {
     seat: 'devils_advocate',
-    target: 'strategist',
-    text: 'Phasing still fails if your consent rate is zero. If you text unconsented numbers, phasing just spreads out your legal liability instead of curing it.',
+    target: 'industry_expert',
+    text: 'The trickle is the problem. Up to 10 texts a day is about 50 a week, and it is SMS-only (F3). That cannot fill a schedule before the season turns.',
   },
   {
     seat: 'strategist',
-    target: 'realist',
-    text: 'Correct. Verifying consent today prevents a legal bottleneck tomorrow. Next week’s move must be a test batch of 50 compliant contacts, not a raw list blast.',
+    target: 'devils_advocate',
+    text: 'Unverified and uncited. The sharper margin risk is the offer itself: generic discounts train customers to wait for sales (F8).',
   },
   {
     seat: 'ai_tools_expert',
-    target: 'realist',
-    text: 'Spot on. That is why we must use built-in tools like Housecall Pro rather than buying expensive new platforms that break our $150 budget (F4).',
+    target: 'devils_advocate',
+    text: 'Those controls do not check marketing consent. The tool helps with pacing, not with the legal gate.',
   },
   {
-    seat: 'industry_expert',
-    target: 'ai_tools_expert',
-    text: 'Housecall Pro is already in our stack, so let us use it to pace the drop.',
+    seat: 'realist',
+    target: 'industry_expert',
+    text: 'Agreed on the substance. I still hold block on whole-list texting until consent is shown, because the legal exposure (F1, F11) comes before capacity.',
   },
 ]
 
-const HVAC_HEADLINE = 'Pilot a small, segmented text campaign using Housecall Pro after verifying customer consent.'
+const HVAC_HEADLINE = 'Don’t blast the list; pilot consented, capacity-sized waves using Housecall Pro first.'
 
 const HVAC: FeaturedSession = {
   replay: 'hvac-ai-promo-texts',
@@ -228,68 +237,75 @@ const HVAC: FeaturedSession = {
   pill: { long: 'An HVAC shop takes AI promo texts to the board', short: 'HVAC shop · AI promo texts' },
   intake: SCENARIOS.find((s) => s.id === 'hvac-ai-promo-texts')!.intake,
   facts: {
-    total: 7,
-    verified: 0,
+    total: 12,
+    sourced: 9,
+    checked: 5,
     excerpts: [
       {
         id: 'F1',
         claim:
-          'Under the TCPA, sending marketing text messages requires prior express written consent; violations carry penalties up to $500 to $1,500 per message.',
-        source: null,
-      },
-      {
-        id: 'F2',
-        claim: 'Housecall Pro, the company’s current software, includes built-in customer marketing and automated text messaging.',
-        source: null,
+          'Marketing texts generally require prior express written consent under TCPA rules. A TCPA violation is a legal risk for a whole-list blast to an older list.',
+        source: 'usemetron.com',
+        status: 'unreachable',
       },
       {
         id: 'F3',
         claim:
-          'A sudden mass text blast to an entire customer list could generate a surge in demand that exceeds a 4-technician schedule, leading to missed calls.',
-        source: null,
+          'Housecall Pro, which the owner already uses, has an Automated Texts feature in its Marketing Center. It is built for a steady trickle rather than a one-week blast of the whole list.',
+        source: 'help.housecallpro.com',
+        status: 'ok',
       },
       {
         id: 'F4',
-        claim: 'Dedicated AI marketing and SMS automation tools typically range from $50 to over $200 per month, within or slightly over the $150/month budget.',
+        claim: 'Reactivation guidance is to send 2-3 weeks before the slow period, in small waves sized to open capacity. A full-list blast risks overbooking a 4-technician team.',
+        source: 'usemetron.com',
+        status: 'unreachable',
+      },
+      {
+        id: 'F10',
+        claim:
+          'No vendor pricing page was retrieved in this session for Housecall Pro, ServiceTitan, Ignitvio or others, so no current plan or monthly price is verified.',
         source: null,
+        status: null,
       },
     ],
   },
-  openQuestion: 'What percentage of the past customer database has provided explicit written consent to receive marketing text messages?',
+  openQuestion:
+    'How many customers are on the list, and how was each phone number collected? Is there documented consent to receive marketing texts, or only service-related contact?',
   stances: [
-    { seat: 'industry_expert', stance: 'conditional' },
-    { seat: 'ai_tools_expert', stance: 'conditional' },
+    { seat: 'industry_expert', stance: 'oppose' },
+    { seat: 'ai_tools_expert', stance: 'oppose' },
     { seat: 'realist', stance: 'conditional' },
-    { seat: 'strategist', stance: 'conditional' },
+    { seat: 'strategist', stance: 'oppose' },
     { seat: 'devils_advocate', stance: 'oppose' },
   ],
   openings: HVAC_OPENINGS,
   rebuttals: HVAC_REBUTTALS,
   verdict: {
     decision: 'Pilot',
-    confidence: 90,
+    confidence: 76,
     headline: HVAC_HEADLINE,
-    why: 'Blasting the whole list next week would overwhelm four technicians and risk TCPA penalties. Housecall Pro can send a small, phased test batch to customers who have opted in.',
+    why: 'Every seat opposed the whole-list blast, and the reasons held up. Marketing texts need documented consent, and a blast can overbook four technicians. Housecall Pro already has a paced, reviewed text tool you may not need to pay extra for.',
     dissent: {
       seat: 'devils_advocate',
-      text: 'Even a phased campaign violates federal law and risks bankruptcy if you text customers who have not provided explicit written consent.',
+      text: 'The safe plan may be too slow. Waiting on audits could leave slots empty.',
     },
     conditions: [
-      'Your Housecall Pro tier includes automated SMS without fees beyond the $150 monthly budget.',
-      'Everyone in the test batch has given express consent to marketing texts.',
+      'Each number texted has documented consent to receive marketing texts. Anyone without it gets email only.',
+      'Dispatch confirms the open tune-up slots before each wave, and each wave is sized to them.',
     ],
     steps: [
-      { when: 'This week', action: 'Check your Housecall Pro tier for automated SMS. Have an attorney review consent for TCPA compliance.' },
-      { when: 'Next 30 days', action: 'Pilot the text to a phased batch of 50 past customers.' },
+      { when: 'This week', action: 'Export the customer list from Housecall Pro. Mark anyone without proof as email-only.' },
+      { when: 'Next 30 days', action: 'Send wave one to consented agreement members with unused visits, with a specific reason to book. Email the non-consented customers in a separate wave.' },
     ],
-    escalate: 'An attorney, to confirm prior express written consent under the TCPA.',
+    escalate: 'An attorney, to confirm text-marketing consent and whether Maryland rules are stricter.',
   },
   lines: {
-    industry_expert: said(HVAC_OPENINGS, 'industry_expert'),
-    ai_tools_expert: said(HVAC_REBUTTALS, 'ai_tools_expert'),
+    industry_expert: 'Use small segmented waves to customers with documented consent, email the rest, and size each wave to open tune-up slots.',
+    ai_tools_expert: 'The tool helps with pacing, not with the legal gate.',
     realist: said(HVAC_OPENINGS, 'realist'),
-    strategist: said(HVAC_REBUTTALS, 'strategist'),
-    devils_advocate: said(HVAC_OPENINGS, 'devils_advocate'),
+    strategist: 'Start with a small segment that has documented consent, sized to open slots, and use Housecall Pro’s built-in tools.',
+    devils_advocate: 'Staged waves may arrive too late to fill fall slots.',
     chairman: HVAC_HEADLINE,
   },
 }

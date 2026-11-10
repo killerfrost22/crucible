@@ -1,9 +1,9 @@
 import { AnimatePresence, motion, useReducedMotion, type Transition } from 'motion/react'
-import { useEffect, useId, useRef, useState, type CSSProperties, type FormEvent } from 'react'
+import { useEffect, useId, useRef, useState, type CSSProperties, type FormEvent, type ReactNode, type Ref } from 'react'
 import type { RatifyStatus } from '../lib/useBoardRun'
 import { SEAT_BY_ID } from '../seats'
-import type { Decision, EscalateTo, Ratification, SeatPoint, StepWhen, Verdict } from '../types'
-import { FactText } from './facts'
+import type { Check, Decision, EscalateTo, Ratification, SeatPoint, StepWhen, ToolPick, Verdict } from '../types'
+import { FactText, hostOf, SourceTag, useFacts } from './facts'
 import { EASE_IN_OUT, EASE_OUT, EASE_STRIKE } from './motion'
 
 export const DECISION_COPY: Record<Decision, { stamp: string; gloss: string }> = {
@@ -98,7 +98,7 @@ export function VerdictCard({ verdict }: { verdict: Verdict }) {
         <p className="verdict__meta">
           <span>{copy.gloss}</span>
           <span aria-hidden="true"> · </span>
-          <span>{confidence}% confident</span>
+          <span>Chairman’s own estimate: {confidence}%</span>
         </p>
       </header>
 
@@ -132,6 +132,19 @@ export function VerdictCard({ verdict }: { verdict: Verdict }) {
         </section>
       )}
 
+      {verdict.would_change && verdict.would_change.length > 0 && (
+        <section className="verdict__section">
+          <h3>What would change this</h3>
+          <ul className="conditions conditions--change">
+            {verdict.would_change.map((c) => (
+              <li key={c}>
+                <FactText text={c} />
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
       {steps.length > 0 && (
         <section className="verdict__section">
           <h3>Next steps</h3>
@@ -152,24 +165,7 @@ export function VerdictCard({ verdict }: { verdict: Verdict }) {
         </section>
       )}
 
-      {verdict.ai_tools.length > 0 && (
-        <section className="verdict__section">
-          <h3>AI tools the board endorses</h3>
-          <ul className="endorsed">
-            {verdict.ai_tools.map((t) => (
-              <li key={t.name} className="endorsed__tool">
-                <p className="endorsed__name">
-                  {t.name} <span>{t.monthly_cost}</span>
-                </p>
-                <p>{t.use}</p>
-                <p className="endorsed__fine">
-                  Works with {t.works_with}. <strong>Watch out:</strong> {t.caveat}
-                </p>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
+      <ToolComparison tools={verdict.ai_tools} noNewTool={verdict.no_new_tool?.trim() ?? ''} />
 
       {verdict.escalate_to !== 'none' && (
         <section className="escalate" aria-labelledby="escalate-title">
@@ -184,6 +180,180 @@ export function VerdictCard({ verdict }: { verdict: Verdict }) {
         </section>
       )}
     </motion.article>
+  )
+}
+
+/** Where a tool's price came from: a fact the Researcher found (with its link check), or the AI's own estimate. */
+function PriceBasis({ tool }: { tool: ToolPick }) {
+  const { facts } = useFacts()
+  const n = /^F(\d{1,2})$/.exec(tool.price_fact?.trim() ?? '')
+  const fact = n ? facts[Number(n[1]) - 1] : undefined
+  if (fact && n) {
+    return (
+      <span className="compare__basis">
+        from <FactText text={`F${n[1]}`} /> <SourceTag fact={fact} />
+      </span>
+    )
+  }
+  // The seats have no web search: a price without a fact behind it is the model's own estimate.
+  if (/unknown|quote/i.test(tool.monthly_cost)) return null
+  return <span className="compare__basis">AI estimate, not from a source</span>
+}
+
+/** The endorsed tools side by side, and the option of buying nothing new. */
+function ToolComparison({ tools, noNewTool }: { tools: ToolPick[]; noNewTool: string }) {
+  if (!tools.length && !noNewTool) return null
+  return (
+    <section className="verdict__section">
+      <h3>{tools.length ? 'AI tools, side by side' : 'Without a new tool'}</h3>
+      <ul className="compare">
+        {tools.map((t) => (
+          <li key={t.name} className="compare__opt">
+            <p className="compare__name">
+              {t.url && hostOf(t.url) ? (
+                <a href={t.url} target="_blank" rel="noreferrer">
+                  {t.name}
+                  <span aria-hidden="true"> ↗</span>
+                  <span className="visually-hidden"> (official site, opens in a new tab)</span>
+                </a>
+              ) : (
+                t.name
+              )}
+            </p>
+            <p className="compare__use">{t.use}</p>
+            <dl className="compare__dl">
+              <div>
+                <dt>Cost</dt>
+                <dd>
+                  <span className="compare__price">{t.monthly_cost}</span> <PriceBasis tool={t} />
+                </dd>
+              </div>
+              <div>
+                <dt>Works with</dt>
+                <dd>{t.works_with}</dd>
+              </div>
+              <div>
+                <dt>Watch out</dt>
+                <dd>{t.caveat}</dd>
+              </div>
+              {t.pilot_test && (
+                <div>
+                  <dt>Pilot test</dt>
+                  <dd>
+                    <FactText text={t.pilot_test} />
+                  </dd>
+                </div>
+              )}
+            </dl>
+          </li>
+        ))}
+        {noNewTool && (
+          <li className="compare__opt compare__opt--none">
+            <p className="compare__name">No new tool</p>
+            <p className="compare__use">
+              <FactText text={noNewTool} />
+            </p>
+          </li>
+        )}
+      </ul>
+    </section>
+  )
+}
+
+interface DecisionBriefProps {
+  verdict: Verdict
+  /** The Realist's latest checks; any still at "block" is an open gate. */
+  checks: Check[]
+  /** "Your call": the owner signs here, at the top, not after the transcript. */
+  call: ReactNode
+  ref?: Ref<HTMLElement>
+}
+
+/** The decision on one card: what to do, why, the strongest objection, what must hold, the next step, and the call. */
+export function DecisionBrief({ verdict, checks, call, ref }: DecisionBriefProps) {
+  const copy = DECISION_COPY[verdict.decision]
+  const reasons = verdict.decisive_arguments.slice(0, 3)
+  const objection = verdict.dissent[0]
+  const gates = verdict.conditions.slice(0, 3)
+  const moreGates = verdict.conditions.length - gates.length
+  const blocks = checks.filter((c) => c.status === 'block').map((c) => c.area)
+  const next = WHEN_ORDER.flatMap((when) => verdict.next_steps.filter((s) => s.when === when))[0]
+  return (
+    <section ref={ref} className="brief" data-decision={verdict.decision} aria-labelledby="brief-title">
+      <div className="brief__in">
+        <div className="brief__lead">
+          <header className="brief__head">
+            <p className="kicker">The decision, on one card</p>
+            <p className="brief__stamp">
+              {copy.stamp}
+              <span className="visually-hidden">: {copy.gloss}</span>
+            </p>
+          </header>
+          <h2 id="brief-title" className="brief__headline">
+            {verdict.headline}
+          </h2>
+          <p className="brief__estimate">
+            The Chairman puts its own confidence at <b>{Math.round(verdict.confidence)}%</b>. That’s the AI’s estimate, not a measured
+            probability.
+          </p>
+        </div>
+        <dl className="brief__rows">
+          {reasons.length > 0 && (
+            <div>
+              <dt>Why</dt>
+              <dd>
+                <Points points={reasons} />
+              </dd>
+            </div>
+          )}
+          <div>
+            <dt>Strongest objection</dt>
+            <dd>{objection ? <Points points={[objection]} /> : <p className="seat__muted">No seat is still objecting.</p>}</dd>
+          </div>
+          {(gates.length > 0 || blocks.length > 0) && (
+            <div>
+              <dt>Open gates</dt>
+              <dd>
+                {blocks.length > 0 && (
+                  <p className="brief__block">
+                    The Realist still blocks on <b>{blocks.join(', ')}</b>.
+                  </p>
+                )}
+                {gates.length > 0 && (
+                  <ul className="conditions">
+                    {gates.map((c) => (
+                      <li key={c}>
+                        <FactText text={c} />
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                {moreGates > 0 && (
+                  <a className="brief__more-link" href="#verdict-title">
+                    {moreGates} more in the full verdict
+                  </a>
+                )}
+              </dd>
+            </div>
+          )}
+          {next && (
+            <div>
+              <dt>Next step</dt>
+              <dd>
+                <p>
+                  <b>{next.when.charAt(0).toUpperCase() + next.when.slice(1)}.</b> <FactText text={next.action} />
+                </p>
+              </dd>
+            </div>
+          )}
+        </dl>
+        {call}
+        <a className="brief__more" href="#verdict-title">
+          Read the full verdict
+          <span aria-hidden="true">↓</span>
+        </a>
+      </div>
+    </section>
   )
 }
 
@@ -271,7 +441,7 @@ export function YourCall({ decision, ratification, status, error, local, onSubmi
       initial={{ opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.3 }}
-      transition={timing({ duration: 0.5, delay: 0.6, ease: EASE_OUT })}
+      transition={timing({ duration: 0.4, delay: 0.15, ease: EASE_OUT })}
     >
       <h2 className="yourcall__title" id={`${ids}-title`}>
         Your call

@@ -1,17 +1,8 @@
 import { motion } from 'motion/react'
 import type { Evidence, EvidenceMode, Intake } from '../types'
-import { factId, useFacts } from './facts'
+import { factId, SourceLink, SourceTag, useFacts } from './facts'
+import { FoldToggle } from './Fold'
 import { EASE_OUT } from './motion'
-
-/** `https://www.example.gov/x` → `example.gov`; anything that isn't an http(s) URL → null, shown as plain text. */
-function hostOf(source: string): string | null {
-  if (!/^https?:\/\//.test(source)) return null
-  try {
-    return new URL(source).hostname.replace(/^www\./, '')
-  } catch {
-    return null
-  }
-}
 
 export function QuestionCard({ intake }: { intake: Intake | null }) {
   if (!intake) {
@@ -73,10 +64,12 @@ interface EvidenceProps {
   mode: EvidenceMode | null
   /** The meeting ended without research; stops the "working" animation. */
   stopped: boolean
+  open: boolean
+  onToggle: () => void
 }
 
 /** The Researcher's assay: every fact numbered F1… so the seats and the verdict can cite it. */
-export function EvidenceSheet({ evidence, mode, stopped }: EvidenceProps) {
+export function EvidenceSheet({ evidence, mode, stopped, open, onToggle }: EvidenceProps) {
   const { active, setActive } = useFacts()
   if (!evidence) {
     return (
@@ -113,70 +106,71 @@ export function EvidenceSheet({ evidence, mode, stopped }: EvidenceProps) {
         <p className="assay__meta">
           Assay · {evidence.facts.length} facts · F1–F{evidence.facts.length}
         </p>
+        <FoldToggle open={open} onToggle={onToggle} controls="assay-body" label="the research" />
       </header>
-      {mode === 'model_knowledge' && (
-        <p className="assay__notice">
-          <strong>Evidence not web-verified.</strong> These facts come from the AI&rsquo;s general knowledge, not a live web search. Confirm anything
-          important before you act on it.
-        </p>
-      )}
-      <p className="assay__decision">{evidence.decision}</p>
-      <ol className="assay__facts">
-        {evidence.facts.map((fact, i) => {
-          const n = i + 1
-          const host = fact.source ? hostOf(fact.source) : null
-          return (
-            <li
-              key={n}
-              id={factId(n)}
-              className="fact"
-              data-active={active === n || undefined}
-              onMouseEnter={() => setActive(n)}
-              onMouseLeave={() => setActive(null)}
-            >
-              <span className="fact__n">F{n}</span>
-              <span className="fact__body">
-                <span className="fact__claim">{fact.claim}</span>
-                <span className="fact__foot">
-                  <span className={fact.verified ? 'fact__tag fact__tag--ok' : 'fact__tag'}>{fact.verified ? 'Verified' : 'Unverified'}</span>
-                  {fact.source && (
-                    <span className="fact__source">
-                      {host ? (
-                        <a href={fact.source} target="_blank" rel="noreferrer">
-                          {host}
-                          <span className="visually-hidden"> (opens in a new tab)</span>
-                        </a>
-                      ) : (
-                        fact.source
-                      )}
-                    </span>
-                  )}
+      <div id="assay-body" className="assay__body" hidden={!open}>
+        {mode === 'model_knowledge' && (
+          <p className="assay__notice">
+            <strong>Evidence not web-verified.</strong> These facts come from the AI&rsquo;s general knowledge, not a live web search. Confirm
+            anything important before you act on it.
+          </p>
+        )}
+        <p className="assay__decision">{evidence.decision}</p>
+        {evidence.facts.some((f) => f.check) && (
+          <p className="assay__legend">
+            <b>Link checked</b> means the page opened when Crucible tried it. Nobody has checked that it says what the fact says, so open it
+            before you rely on it.
+          </p>
+        )}
+        <ol className="assay__facts">
+          {evidence.facts.map((fact, i) => {
+            const n = i + 1
+            return (
+              <li
+                key={n}
+                id={factId(n)}
+                className="fact"
+                data-active={active === n || undefined}
+                onMouseEnter={() => setActive(n)}
+                onMouseLeave={() => setActive(null)}
+              >
+                <span className="fact__n">F{n}</span>
+                <span className="fact__body">
+                  <span className="fact__claim">{fact.claim}</span>
+                  <span className="fact__foot">
+                    <SourceTag fact={fact} />
+                    {fact.source && (
+                      <span className="fact__source">
+                        <SourceLink source={fact.source} />
+                      </span>
+                    )}
+                  </span>
                 </span>
-              </span>
-            </li>
-          )
-        })}
-      </ol>
-      {(
-        [
-          ['Options on the table', evidence.options],
-          ['What nobody knows yet', evidence.open_questions],
-        ] as const
-      ).map(
-        ([title, items]) =>
-          items.length > 0 && (
-            <details key={title} className="assay__block">
-              <summary>
-                {title} <span>{items.length}</span>
-              </summary>
-              <ul>
-                {items.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            </details>
-          ),
-      )}
+              </li>
+            )
+          })}
+        </ol>
+        {(
+          [
+            ['Options on the table', evidence.options],
+            ['What nobody knows yet', evidence.open_questions],
+          ] as const
+        ).map(
+          ([title, items]) =>
+            items.length > 0 && (
+              <details key={title} className="assay__block">
+                <summary>
+                  {title} <span>{items.length}</span>
+                </summary>
+                <ul>
+                  {items.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </details>
+            ),
+        )}
+      </div>
     </motion.section>
   )
 }

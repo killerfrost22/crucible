@@ -14,7 +14,7 @@ import {
   DENTAL_FACTS,
   DENTAL_REPLAY,
   DENTAL_STREAM,
-  DENTAL_VERIFIED,
+  DENTAL_CHECKED,
   EVAL_SCENARIOS,
   REALIST_R2_TARGETS,
 } from './recorded'
@@ -412,7 +412,7 @@ function Models() {
               </div>
               <div>
                 <dt>Time per meeting, measured</dt>
-                <dd>50–85 s</dd>
+                <dd>75–100 s</dd>
               </div>
             </dl>
             <p className="uth-meter__cap">
@@ -423,11 +423,11 @@ function Models() {
 
         <div className="uth-notes">
           <div className="uth-note" data-part>
-            <h3>Web search with sources</h3>
+            <h3>Web search, then a link check</h3>
             <p>
               With search on, the Researcher’s model name gets OpenRouter’s <code>:online</code> suffix, which runs an Exa web search and
-              adds the results to its prompt. A fact is marked <code>verified</code> only when a search result from this session backs it,
-              and it keeps the source URL.
+              adds the results to its prompt, and each fact keeps its source URL. The next node, <code>check_sources</code>, opens every
+              link and records whether it loaded and when. That proves the page exists, not that it says what the fact says.
             </p>
           </div>
           <div className="uth-note" data-part>
@@ -468,20 +468,20 @@ function Outputs() {
           <div className="uth-spec__text" data-part="text">
             <h3>Facts with IDs</h3>
             <p>
-              The Researcher is asked for 6–12 facts, each a claim, a source and a <code>verified</code> flag. The seats see them numbered
-              F1…{'\u2060'}Fn and cite those IDs, and anything they assert beyond the evidence has to say “unverified”, so every argument can be
-              traced to a fact and you can see whether that fact was checked.
+              The Researcher is asked for 6–12 facts, each a claim and a source. The seats see them numbered F1…{'\u2060'}Fn and cite those
+              IDs, and anything they assert beyond the evidence has to say “unverified”, so every argument can be traced to a fact and you can
+              open the page it came from.
             </p>
           </div>
           <figure className="uth-panel" data-part data-rail="h">
             <figcaption className="uth-panel__head">
-              <span>Researcher output</span> Dental office meeting · {DENTAL_VERIFIED} of {DENTAL_FACTS.length} verified
+              <span>Researcher output</span> Dental office meeting · {DENTAL_CHECKED} of {DENTAL_FACTS.length} links checked
             </figcaption>
             <ul className="uth-facts">
               {DENTAL_FACTS.map((f) => (
-                <li key={f.id} className={f.source ? 'is-verified' : undefined}>
+                <li key={f.id} className={f.status === 'ok' ? 'is-checked' : undefined}>
                   <code>{f.id}</code>
-                  <span>{f.source ? 'verified' : 'unverified'}</span>
+                  <span>{f.status === 'ok' ? 'link checked' : f.status ? 'link failed' : 'no source'}</span>
                   <small>{f.source ?? 'model knowledge'}</small>
                 </li>
               ))}
@@ -622,6 +622,14 @@ function Streaming() {
               <code>PATCH /apps/crucible/users/…/sessions/…</code>
               <code className="uth-box__body">{'{ "stateDelta": { "ratification": … } }'}</code>
             </div>
+            <div className="uth-box uth-box--patch" data-part>
+              <span className="uth-box__kicker">Reopened later</span>
+              <code>GET /apps/crucible/users/…/sessions/…</code>
+              <p>
+                <code>?decision=&lt;id&gt;</code> rebuilds the board from saved state. Nothing reruns, and only the browser holding the
+                owner id can read it.
+              </p>
+            </div>
           </div>
 
           <figure className="uth-panel uth-log" data-part data-rail="h">
@@ -688,13 +696,13 @@ function Evaluation({ onReplay }: { onReplay: (name: string) => void }) {
             <figcaption>Current Claude setup · recorded dental meeting</figcaption>
             <p className="uth-result__big">
               <b>
-                {DENTAL_VERIFIED} of {DENTAL_FACTS.length}
+                {DENTAL_CHECKED} of {DENTAL_FACTS.length}
               </b>{' '}
-              facts verified, each with its source.
+              facts with a source link that opened.
             </p>
             <p>
-              The verdict was to pilot, and only once a signed HIPAA BAA and an attorney-approved recording notice are in hand, before any
-              live call.
+              The verdict was to pilot after-hours and overflow calls only, once Maryland’s all-party recording consent and a signed BAA on
+              the exact plan are in place.
             </p>
             <button type="button" className="uth-link" onClick={() => onReplay(DENTAL_REPLAY)}>
               Watch that meeting

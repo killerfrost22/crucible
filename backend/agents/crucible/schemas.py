@@ -90,9 +90,26 @@ class RealistOpinion(SeatOpinion):
 class ToolPick(BaseModel):
     name: str = Field(description="Real, currently sold product name.")
     use: str = Field(description="What it would do for this decision, in one sentence.")
-    monthly_cost: str = Field(description="Realistic price range, e.g. '$0-49/mo', or 'unknown'.")
+    monthly_cost: str = Field(
+        description="The price as the cited fact states it when price_fact is set; otherwise your own "
+        "realistic range, e.g. '$0-49/mo', or 'unknown'."
+    )
     works_with: str = Field(description="How it connects to the owner's current tools, or 'standalone'.")
     caveat: str = Field(description="The main limitation or risk of this tool.")
+    url: str = Field(
+        default="",
+        description="The product's official site or pricing page; empty if unsure. Never invent a URL.",
+    )
+    price_fact: str = Field(
+        default="",
+        description="ID of the fact whose source states this price, e.g. 'F4'; empty when the price is "
+        "your own estimate.",
+    )
+    pilot_test: str = Field(
+        default="",
+        description="One measurable result that decides keep-or-stop, and when to decide, e.g. 'Keep it "
+        "if after-hours bookings rise by 5 in 4 weeks; cancel before the second invoice otherwise'.",
+    )
 
 
 class ToolsOpinion(SeatOpinion):
@@ -141,7 +158,7 @@ class Step(BaseModel):
 class Verdict(BaseModel):
     decision: Literal["proceed", "pilot", "defer", "reject"]
     headline: str = Field(description="The recommendation in at most 15 words.")
-    confidence: int = Field(description="0-100.")
+    confidence: int = Field(description="0-100: your own estimate of how likely this recommendation is right.")
     rationale: str = Field(description="At most 100 words, plain language.")
     decisive_arguments: list[SeatPoint] = Field(description="2-4 arguments that carried the decision.")
     dissent: list[SeatPoint] = Field(description="Strongest surviving objections; empty only if none.")
@@ -150,3 +167,12 @@ class Verdict(BaseModel):
     ai_tools: list[ToolPick] = Field(description="AI tools the board endorses; empty if none.")
     escalate_to: Literal["none", "attorney", "accountant", "sbdc_advisor", "regulator"]
     escalation_reason: str = Field(description="Why a human professional is needed; empty if none.")
+    would_change: list[str] = Field(
+        default_factory=list,
+        description="1-3 specific findings that would change this recommendation.",
+    )
+    no_new_tool: str = Field(
+        default="",
+        description="What the owner could do instead of a new AI tool, with the tools they already have "
+        "or by hand, and what that costs; empty if no AI tool is in play.",
+    )

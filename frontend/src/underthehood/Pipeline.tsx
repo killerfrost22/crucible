@@ -45,6 +45,17 @@ const STEPS: Step[] = [
   },
   {
     kind: 'fn',
+    name: 'check_sources',
+    type: 'function',
+    note: (
+      <>
+        Opens every source link (public addresses only, 8 s cap) and stamps each fact <code>ok</code>, <code>broken</code> or{' '}
+        <code>unreachable</code> with the date. It checks that the page loads, not what it says. Rewrites <code>state.evidence</code>.
+      </>
+    ),
+  },
+  {
+    kind: 'fn',
     name: 'convene',
     type: 'function',
     note: 'Hands all five seats the same Round 1 brief.',

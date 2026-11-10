@@ -68,31 +68,31 @@ function AskPanel({ s, onNext }: PanelProps) {
   )
 }
 
+/** The walkthrough's link labels; the same words as the meeting room's (components/facts.tsx SourceTag). */
+const SRC_LABEL = { ok: 'Link checked', broken: 'Link broken', unreachable: 'Couldn’t open link' } as const
+
 function ResearchPanel({ s }: PanelProps) {
-  const { total, verified, excerpts } = s.facts
+  const { total, sourced, checked, excerpts } = s.facts
   return (
     <>
-      <PanelHead title="Evidence" meta={verified ? `${total} facts · ${verified} with a source` : `${total} facts · general knowledge`} />
+      <PanelHead title="Evidence" meta={`${total} facts · ${checked} of ${sourced} links checked`} />
       <ol className="hm-facts">
         {excerpts.map((f) => (
           <li key={f.id}>
             <span className="hm-fid">{f.id}</span>
             <p>
-              {f.claim}
-              {f.source && (
-                <>
-                  {' '}
-                  <span className="hm-src">
-                    <b>Verified</b> {f.source}
-                  </span>
-                </>
-              )}
+              {f.claim}{' '}
+              <span className="hm-src" data-status={f.status ?? 'none'}>
+                <b>{f.status ? SRC_LABEL[f.status] : 'No source'}</b>
+                {f.source && ` ${f.source}`}
+              </span>
             </p>
           </li>
         ))}
       </ol>
       <p className="hm-more">
-        + {total - excerpts.length} more facts.{!verified && ' This recording ran without web access, so none carry a source link.'}
+        + {total - excerpts.length} more facts. Crucible opens every source link to see that it loads; it doesn’t check that the page says
+        what the fact says.
       </p>
       <div className="hm-openq">
         <p className="hm-mlabel">Open question</p>
@@ -168,7 +168,7 @@ function VerdictPanel({ s }: PanelProps) {
         <div className="hm-vmock__top">
           <span className="hallmark-mark hm-vmock__mark">{v.decision}</span>
           <div className="hm-conf">
-            <span>{v.confidence}% confident</span>
+            <span>Chairman’s estimate: {v.confidence}%</span>
             <span className="hm-conf__bar" style={{ '--v': v.confidence / 100 } as CSSProperties} />
           </div>
         </div>

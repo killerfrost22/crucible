@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
 import type { HumanError } from '../lib/errors'
-import { factId, useFacts } from './facts'
+import { factId, hostOf, SourceLink, SourceTag, useFacts } from './facts'
 import { EASE_OUT } from './motion'
 
 interface ErrorNoticeProps {
@@ -99,9 +99,13 @@ export function FactPeek() {
           transition={{ duration: 0.22, ease: EASE_OUT }}
         >
           <p className="peek__n">F{active}</p>
-          <p className="peek__claim">
-            {fact.claim} <span className={fact.verified ? 'fact__tag fact__tag--ok' : 'fact__tag'}>{fact.verified ? 'Verified' : 'Unverified'}</span>
-          </p>
+          <div className="peek__body">
+            <p className="peek__claim">{fact.claim}</p>
+            <p className="peek__src">
+              <SourceTag fact={fact} />
+              {hostOf(fact.source) && <SourceLink source={fact.source} label="Open source" />}
+            </p>
+          </div>
           {pinned && (
             <button type="button" className="peek__close" onClick={() => setActive(null)} aria-label="Close fact">
               ✕

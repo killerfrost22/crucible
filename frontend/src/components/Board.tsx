@@ -1,40 +1,55 @@
 import { MotionConfig } from 'motion/react'
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import { CLIENT_REPLAY_MISSING, humanizeErrors } from '../lib/errors'
+import { CLIENT_DECISION_MISSING, CLIENT_REPLAY_MISSING, humanizeErrors } from '../lib/errors'
 import { REPLAYS } from '../lib/replay'
 import { REPLAY_SPEEDS, useBoardRun, type RunSource } from '../lib/useBoardRun'
 import { SEATS } from '../seats'
-import type { SeatId } from '../types'
+import type { Intake, SeatId } from '../types'
 import { EvidenceSheet, QuestionCard } from './Brief'
 import { Crucible, Standings, type Filament } from './Crucible'
 import { FactProvider } from './facts'
-import { NotFound } from './NotFound'
+import { FoldToggle } from './Fold'
+import { NotFound, type Missing } from './NotFound'
 import { ErrorNotice, FactPeek } from './Notices'
 import { PHASE_STEPS, PhaseRail } from './PhaseRail'
 import { SeatCard } from './SeatCard'
-import { DECISION_COPY, VerdictCard, YourCall } from './Verdict'
+import { DECISION_COPY, DecisionBrief, VerdictCard, YourCall } from './Verdict'
 import { ThemeToggle } from './ThemeToggle'
 import { Wordmark } from './Wordmark'
 
 interface BoardProps {
   source: RunSource
   onNew: () => void
-  onEdit?: () => void
+  /** Back to the form with this meeting's question filled in. */
+  onEdit?: (intake: Intake) => void
   onRetry?: () => void
+  /** A saved meeting that stopped early: convene a new (paid) meeting on the same question. */
+  onAskAgain?: (intake: Intake) => void
   onReplay: (name: string) => void
+  /** A live meeting's session id, as soon as it exists. */
+  onSession?: (id: string) => void
 }
 
-export function Board({ source, onNew, onEdit, onRetry, onReplay }: BoardProps) {
-  const run = useBoardRun(source)
+export function Board({ source, onNew, onEdit, onRetry, onAskAgain, onReplay, onSession }: BoardProps) {
+  const run = useBoardRun(source, onSession)
   const { board, transport } = run
   const replay = source.mode === 'replay'
+  const saved = source.mode === 'saved'
   const error = humanizeErrors(board.errors)
   const stopped = !board.verdict && (board.errors.length > 0 || transport === 'done')
-  const missing = replay && board.errors.some((e) => e.code === CLIENT_REPLAY_MISSING)
+  const missing: Missing | null =
+    source.mode === 'replay' && board.errors.some((e) => e.code === CLIENT_REPLAY_MISSING)
+      ? { kind: 'recording', name: source.name }
+      : board.errors.some((e) => e.code === CLIENT_DECISION_MISSING)
+        ? { kind: 'decision' }
+        : null
   // Nothing came back at all (server unreachable, bad recording): show the question and the notice, not five empty seats.
   const empty = stopped && !board.evidence && Object.keys(board.round1).length === 0
   const [activeSeat, setActiveSeat] = useState<SeatId | null>(null)
-  const outcomeRef = useRef<HTMLElement>(null)
+  const [researchOpen, setResearchOpen] = useState(true)
+  const [debateOpen, setDebateOpen] = useState(true)
+  const briefRef = useRef<HTMLElement>(null)
+  const intake = board.intake
   const frameRef = useRef<HTMLElement>(null)
 
   // Sticky elements below the header offset themselves by its live height.
@@ -88,26 +103,28 @@ export function Board({ source, onNew, onEdit, onRetry, onReplay }: BoardProps) 
   // The tab says how the meeting ended, so a finished decision is findable among open tabs and in history.
   const question = board.intake?.question
   useEffect(() => {
-    if (missing) document.title = 'Recording not found — Crucible'
+    if (missing) document.title = `${missing.kind === 'decision' ? 'Decision' : 'Recording'} not found — Crucible`
     else if (board.verdict) {
       const asked = question && question.length > 60 ? `${question.slice(0, 59).trimEnd()}…` : question
       document.title = `${DECISION_COPY[board.verdict.decision].stamp}${asked ? `: ${asked}` : ''} — Crucible`
     } else if (stopped) document.title = 'Meeting stopped — Crucible'
-  }, [missing, board.verdict, question, stopped])
+  }, [missing?.kind, board.verdict, question, stopped])
 
+  // When the verdict lands mid-meeting, bring the owner to the brief. A reopened decision already starts there.
   const hasVerdict = Boolean(board.verdict)
   useEffect(() => {
-    if (!hasVerdict) return
+    if (!hasVerdict || saved) return
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    outcomeRef.current?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' })
-  }, [hasVerdict])
+    briefRef.current?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' })
+  }, [hasVerdict, saved])
 
   const replayInfo = replay ? REPLAYS.find((r) => r.name === source.name) : undefined
   const otherReplay = REPLAYS.find((r) => r.name !== (replay ? source.name : ''))
   const twoRounds = board.phase === 'rebuttals' || Object.keys(board.round2).length > 0
   const nextSpeed = REPLAY_SPEEDS[(REPLAY_SPEEDS.indexOf(run.speed) + 1) % REPLAY_SPEEDS.length]
+  const realist = board.round2.realist ?? board.round1.realist
 
-  if (missing) return <NotFound recording={source.name} />
+  if (missing) return <NotFound missing={missing} />
 
   return (
     <MotionConfig reducedMotion="user">
@@ -169,6 +186,10 @@ export function Board({ source, onNew, onEdit, onRetry, onReplay }: BoardProps) 
                       Skip<span className="frame__long"> to end</span>
                     </button>
                   </div>
+                ) : saved ? (
+                  <span className="replay__badge replay__badge--saved" title="Reopened from what was saved. Nothing reruns.">
+                    Saved
+                  </span>
                 ) : (
                   <span className="replay__badge replay__badge--live" data-live={transport !== 'done' || undefined}>
                     {transport === 'done' ? 'Session ended' : 'Live'}
@@ -184,8 +205,26 @@ export function Board({ source, onNew, onEdit, onRetry, onReplay }: BoardProps) 
             {announcement}
           </p>
 
-          <main id="board-main" className="board" tabIndex={-1} data-empty={empty || undefined}>
+          <main id="board-main" className="board" tabIndex={-1} data-empty={empty || undefined} data-finished={hasVerdict || undefined}>
             <QuestionCard intake={board.intake} />
+
+            {board.verdict && (
+              <DecisionBrief
+                ref={briefRef}
+                verdict={board.verdict}
+                checks={realist?.checks ?? []}
+                call={
+                  <YourCall
+                    decision={board.verdict.decision}
+                    ratification={run.ratification}
+                    status={run.ratifyStatus}
+                    error={run.ratifyError}
+                    local={replay}
+                    onSubmit={run.submitRatification}
+                  />
+                }
+              />
+            )}
 
             {!empty && (
               <>
@@ -213,13 +252,22 @@ export function Board({ source, onNew, onEdit, onRetry, onReplay }: BoardProps) 
                   />
                 </aside>
 
-                <EvidenceSheet evidence={board.evidence} mode={board.evidenceMode} stopped={stopped} />
+                <EvidenceSheet
+                  evidence={board.evidence}
+                  mode={board.evidenceMode}
+                  stopped={stopped}
+                  open={researchOpen}
+                  onToggle={() => setResearchOpen((o) => !o)}
+                />
 
                 <section className="board__seats" aria-labelledby="seats-label">
-                  <h2 className="section-label" id="seats-label">
-                    The board <span>{twoRounds ? 'Two rounds' : 'Round 1'}</span>
-                  </h2>
-                  <div className="seats">
+                  <div className="board__seats-head">
+                    <h2 className="section-label" id="seats-label">
+                      The board <span>{twoRounds ? 'Two rounds' : 'Round 1'}</span>
+                    </h2>
+                    <FoldToggle open={debateOpen} onToggle={() => setDebateOpen((o) => !o)} controls="board-seats" label="the debate" />
+                  </div>
+                  <div className="seats" id="board-seats" hidden={!debateOpen}>
                     {SEATS.map((seat) => (
                       <SeatCard
                         key={seat.id}
@@ -238,28 +286,18 @@ export function Board({ source, onNew, onEdit, onRetry, onReplay }: BoardProps) 
               </>
             )}
 
-            <section className="board__outcome" ref={outcomeRef} aria-labelledby="outcome-label">
+            <section className="board__outcome" aria-labelledby="outcome-label">
               <h2 className="section-label" id="outcome-label">
                 {empty ? 'The meeting' : 'The verdict'}
               </h2>
               {board.verdict ? (
-                <div className="outcome">
-                  <VerdictCard verdict={board.verdict} />
-                  <YourCall
-                    decision={board.verdict.decision}
-                    ratification={run.ratification}
-                    status={run.ratifyStatus}
-                    error={run.ratifyError}
-                    local={replay}
-                    onSubmit={run.submitRatification}
-                  />
-                </div>
+                <VerdictCard verdict={board.verdict} />
               ) : error ? (
                 <ErrorNotice
                   error={error}
                   kept={!empty}
                   onRetry={onRetry}
-                  onEdit={onEdit}
+                  onEdit={onEdit && intake ? () => onEdit(intake) : undefined}
                   onReplay={() => onReplay(otherReplay?.name ?? REPLAYS[0].name)}
                 />
               ) : (
@@ -278,8 +316,22 @@ export function Board({ source, onNew, onEdit, onRetry, onReplay }: BoardProps) 
                     )}
                   </p>
                   <p className="chair-wait__body">
-                    After both rounds, the Chairman weighs every argument and recommends: proceed, pilot, defer, or reject.
+                    {saved && stopped
+                      ? 'This meeting stopped before the Chairman spoke. Everything the board finished is above.'
+                      : 'After both rounds, the Chairman weighs every argument and recommends: proceed, pilot, defer, or reject.'}
                   </p>
+                  {saved && stopped && intake && onAskAgain && (
+                    <div className="chair-wait__actions">
+                      <button type="button" className="btn btn--primary" onClick={() => onAskAgain(intake)}>
+                        Convene a new meeting on this question
+                      </button>
+                      {onEdit && (
+                        <button type="button" className="btn btn--quiet" onClick={() => onEdit(intake)}>
+                          Edit the question first
+                        </button>
+                      )}
+                    </div>
+                  )}
                 </div>
               )}
             </section>

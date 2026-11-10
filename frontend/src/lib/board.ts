@@ -50,7 +50,8 @@ export function nodeName(event: AdkEvent): string | null {
   return event.author ?? null
 }
 
-const isObject = (value: unknown): value is Record<string, unknown> =>
+/** The app's one plain-object guard; fields stay `unknown` until checked. */
+export const isObject = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value)
 
 const isSeat = (value: string): value is SeatId => (SEAT_IDS as readonly string[]).includes(value)
@@ -62,7 +63,7 @@ function seatRound(node: string): { seat: SeatId; round: 1 | 2 } | null {
 }
 
 function impliedPhase(node: string): Phase | null {
-  if (node === 'intake' || node === 'researcher') return 'researching'
+  if (node === 'intake' || node === 'researcher' || node === 'check_sources') return 'researching'
   if (node === 'convene') return 'round1'
   if (node === 'round1' || node === 'open_rebuttal') return 'rebuttals'
   if (node === 'round2' || node === 'close_debate') return 'chairman'
@@ -91,19 +92,13 @@ export function reduceBoard(state: BoardState, event: AdkEvent): BoardState {
   const next: BoardState = { ...state }
 
   const delta = event.actions?.stateDelta
-  if (isObject(delta)) {
-    if (isObject(delta.intake)) next.intake = delta.intake as unknown as Intake
-    if (delta.evidence_mode === 'web' || delta.evidence_mode === 'model_knowledge') next.evidenceMode = delta.evidence_mode
-    if (isObject(delta.evidence)) next.evidence = delta.evidence as unknown as Evidence
-    if (delta.round1) next.round1 = { ...next.round1, ...seatMap<Round1Opinion>(delta.round1) }
-    if (delta.round2) next.round2 = { ...next.round2, ...seatMap<Round2Opinion>(delta.round2) }
-    if (isObject(delta.verdict)) next.verdict = delta.verdict as unknown as Verdict
-  }
+  if (isObject(delta)) Object.assign(next, fromState(delta, next))
 
   if (node && isObject(event.output)) {
     const output = event.output
     const seat = seatRound(node)
-    if (node === 'researcher') next.evidence = output as unknown as Evidence
+    // check_sources re-emits the evidence with each source link's check result.
+    if (node === 'researcher' || node === 'check_sources') next.evidence = output as unknown as Evidence
     else if (node === 'chairman') next.verdict = output as unknown as Verdict
     else if (seat?.round === 1) next.round1 = { ...next.round1, [seat.seat]: output as unknown as Round1Opinion }
     else if (seat?.round === 2) next.round2 = { ...next.round2, [seat.seat]: output as unknown as Round2Opinion }
@@ -124,4 +119,34 @@ export function reduceBoard(state: BoardState, event: AdkEvent): BoardState {
   }
   if (next.verdict) next.phase = 'ratify'
   return next
+}
+
+/** Session state keys (agent.py) → board fields; anything missing keeps `base`'s value. */
+function fromState(state: Record<string, unknown>, base: BoardState): Partial<BoardState> {
+  const out: Partial<BoardState> = {}
+  if (isObject(state.intake)) out.intake = state.intake as unknown as Intake
+  if (state.evidence_mode === 'web' || state.evidence_mode === 'model_knowledge') out.evidenceMode = state.evidence_mode
+  if (isObject(state.evidence)) out.evidence = state.evidence as unknown as Evidence
+  if (state.round1) out.round1 = { ...base.round1, ...seatMap<Round1Opinion>(state.round1) }
+  if (state.round2) out.round2 = { ...base.round2, ...seatMap<Round2Opinion>(state.round2) }
+  if (isObject(state.verdict)) out.verdict = state.verdict as unknown as Verdict
+  return out
+}
+
+/**
+ * A saved decision, rebuilt from its session state alone: no events, no model calls. The phase is the furthest
+ * one the state proves; a meeting that stopped early shows what it finished.
+ */
+export function boardFromState(state: Record<string, unknown>): BoardState {
+  const board: BoardState = { ...initialBoard, ...fromState(state, initialBoard) }
+  board.phase = board.verdict
+    ? 'ratify'
+    : Object.keys(board.round2).length
+      ? 'chairman'
+      : Object.keys(board.round1).length
+        ? 'rebuttals'
+        : board.evidence
+          ? 'round1'
+          : 'researching'
+  return board
 }

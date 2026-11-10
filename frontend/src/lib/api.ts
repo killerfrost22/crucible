@@ -1,11 +1,15 @@
-import type { AdkEvent, Intake, Ratification } from '../types'
+import type { AdkEvent, DecisionSummary, Intake, Ratification } from '../types'
+import { isObject } from './board'
 import { SseParser, toAdkEvent } from './sse'
 
 export const API_BASE = (import.meta.env.VITE_API_BASE ?? 'http://localhost:8000').replace(/\/+$/, '')
 const APP = 'crucible'
 const USER_KEY = 'crucible.userId'
 
-/** Anonymous owner id, stable per browser. */
+/**
+ * Anonymous owner id, stable per browser. It is the only key to this browser's decisions: never put it in a URL the
+ * owner might share (decision links carry the session id alone).
+ */
 export function userId(): string {
   let id = localStorage.getItem(USER_KEY)
   if (!id) {
@@ -14,6 +18,17 @@ export function userId(): string {
   }
   return id
 }
+
+/** This browser's owner id, without minting one: a browser that never convened the board owns no decisions. */
+export function existingUserId(): string | null {
+  try {
+    return localStorage.getItem(USER_KEY)
+  } catch {
+    return null
+  }
+}
+
+const sessionsUrl = (user: string) => `${API_BASE}/apps/${APP}/users/${encodeURIComponent(user)}/sessions`
 
 /** HTTP failure with the server's body kept for error classification. */
 export class ApiError extends Error {
@@ -37,13 +52,28 @@ export class ApiError extends Error {
   }
 }
 
+/** A saved decision's session state (intake, evidence, round1, round2, verdict, ratification). No model runs. */
+export async function getSessionState(user: string, sessionId: string, signal?: AbortSignal): Promise<Record<string, unknown>> {
+  const response = await fetch(`${sessionsUrl(user)}/${encodeURIComponent(sessionId)}`, { signal }).then(expectOk)
+  const session: unknown = await response.json()
+  return isObject(session) && isObject(session.state) ? session.state : {}
+}
+
+/** This owner's decisions, newest first. Summaries are written by backend/guard.py, so their shape is ours. */
+export async function listDecisions(user: string, signal?: AbortSignal): Promise<DecisionSummary[]> {
+  const response = await fetch(`${API_BASE}/apps/${APP}/users/${encodeURIComponent(user)}/decisions`, { signal }).then(expectOk)
+  const body: unknown = await response.json()
+  const decisions: DecisionSummary[] = isObject(body) && Array.isArray(body.decisions) ? body.decisions : []
+  return decisions
+}
+
 async function expectOk(response: Response): Promise<Response> {
   if (!response.ok) throw new ApiError(response.status, await response.text().catch(() => ''))
   return response
 }
 
 export async function createSession(user: string, signal?: AbortSignal): Promise<string> {
-  const response = await fetch(`${API_BASE}/apps/${APP}/users/${encodeURIComponent(user)}/sessions`, {
+  const response = await fetch(sessionsUrl(user), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: '{}',
@@ -89,7 +119,7 @@ export async function* runBoard(
 }
 
 export async function ratify(user: string, sessionId: string, ratification: Ratification): Promise<void> {
-  await fetch(`${API_BASE}/apps/${APP}/users/${encodeURIComponent(user)}/sessions/${encodeURIComponent(sessionId)}`, {
+  await fetch(`${sessionsUrl(user)}/${encodeURIComponent(sessionId)}`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ stateDelta: { ratification } }),

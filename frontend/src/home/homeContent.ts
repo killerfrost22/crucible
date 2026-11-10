@@ -19,7 +19,7 @@ export const STEPS: Step[] = [
   {
     id: 'research',
     label: 'Research',
-    caption: 'The Researcher gathers the facts every seat argues from, numbered F1, F2… In live meetings it searches the web and cites its sources.',
+    caption: 'The Researcher gathers the facts every seat argues from, numbered F1, F2… In live meetings it searches the web, cites its sources, and Crucible opens each link to see that it loads.',
     accent: 'var(--seat-ai_tools_expert)',
   },
   {
@@ -53,6 +53,6 @@ export const STATS: { value: string; label: string; color: string }[] = [
   { value: '5 + 1', label: 'advisors and a Chairman', color: 'var(--seat-industry_expert)' },
   { value: '2', label: 'rounds of debate', color: 'var(--seat-ai_tools_expert)' },
   { value: '12', label: 'AI calls per decision', color: 'var(--seat-realist)' },
-  { value: '~1 min', label: 'per meeting', color: 'var(--seat-strategist)' },
-  { value: 'F1, F2…', label: 'numbered facts, checked against the web with sources', color: 'var(--seat-chairman)' },
+  { value: '~90 s', label: 'per meeting', color: 'var(--seat-strategist)' },
+  { value: 'F1, F2…', label: 'numbered facts, each source link opened and dated', color: 'var(--seat-chairman)' },
 ]

@@ -9,6 +9,7 @@ import { REPLAYS } from '../lib/replay'
 import { SEAT_BY_ID, STANCE_LABEL } from '../seats'
 import type { Intake } from '../types'
 import { BrandMark, SeatRule } from './BrandMark'
+import { Decisions } from './Decisions'
 import { STATS } from './homeContent'
 import { IntakeForm } from './IntakeForm'
 import { Showcase } from './Showcase'
@@ -139,10 +140,12 @@ export function Home({ arrival, draft, onChange, onSubmit, onReplay }: HomeProps
                 Watch a session
               </button>
             </div>
-            <p className="hm-hero__fine">About a minute per meeting. No account needed.</p>
+            <p className="hm-hero__fine">About 90 seconds per meeting. No account needed.</p>
           </div>
           <BrandMark hot={draft.question.trim().length > 0} />
         </section>
+
+        <Decisions />
 
         <section className="hm-sec hm-sec--show" id="how" aria-labelledby="how-title">
           <div className="hm-col hm-band hm-band--head hm-band--paper">
@@ -393,7 +396,7 @@ const VerdictSection = memo(function VerdictSection({
             <div className="hm-vcard__top">
               <span className="hallmark-mark hm-vcard__mark">{v.decision}</span>
               <span className="hm-vcard__meta">
-                {v.confidence}% confident
+                Chairman’s estimate: {v.confidence}%
                 <br />
                 {session.place}
               </span>
@@ -495,7 +498,7 @@ const Sessions = memo(function Sessions({ onReplay, onConvene }: { onReplay: (na
               <span className="hm-replay__q">?</span>
             </span>
             <span className="hm-replay__label">Your business · your question</span>
-            <span className="hm-replay__blurb">Bring a decision of your own. The board meets live and reaches a recommendation in about a minute.</span>
+            <span className="hm-replay__blurb">Bring a decision of your own. The board meets live and reaches a recommendation in about 90 seconds.</span>
             <span className="hm-replay__cta">
               Convene your board
               <Arrow />

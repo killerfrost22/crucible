@@ -259,13 +259,45 @@
   border-radius: 50%;
 }
 
-.fact__tag--ok {
+/* Tones from SourceTag (components/facts.tsx): a checked link is solid, a broken one struck, the rest dashed. */
+.fact__tag[data-tone='ok'] {
   color: var(--check-pass);
 }
 
-.fact__tag--ok::before {
+.fact__tag[data-tone='ok']::before {
   border-style: solid;
   background: currentColor;
+}
+
+.fact__tag[data-tone='warn'] {
+  color: var(--check-flag);
+}
+
+.fact__tag[data-tone='bad'] {
+  color: var(--check-block);
+}
+
+.fact__tag[data-tone='bad']::before {
+  height: 2px;
+  border: 0;
+  border-radius: 1px;
+  background: currentColor;
+}
+
+.assay__body {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.assay__legend {
+  font-size: var(--step--2);
+  line-height: 1.5;
+  color: var(--text-3);
+}
+
+.assay__legend b {
+  font-weight: 600;
+  color: var(--check-pass);
 }
 
 .fact__source {

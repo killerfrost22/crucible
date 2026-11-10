@@ -5,6 +5,8 @@ Public routes (everything else answers 404 CRUCIBLE_NOT_FOUND):
   POST  /apps/crucible/users/{user}/sessions                  create a decision session
   POST  /run_sse                                              run the board, stream events
   PATCH /apps/crucible/users/{user}/sessions/{session}        owner ratification (stateDelta)
+  GET   /apps/crucible/users/{user}/sessions/{session}        reopen one decision (full session)
+  GET   /apps/crucible/users/{user}/decisions                 the user's decisions, summarised by guard.py
 """
 
 from __future__ import annotations

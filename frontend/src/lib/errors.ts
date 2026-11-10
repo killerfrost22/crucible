@@ -8,6 +8,8 @@ export const CLIENT_INCOMPLETE = 'CLIENT_INCOMPLETE'
 export const CLIENT_REPLAY = 'CLIENT_REPLAY'
 /** `?replay=<name>` names a recording we don't ship: Board shows the not-found page, not a meeting. */
 export const CLIENT_REPLAY_MISSING = 'CLIENT_REPLAY_MISSING'
+/** `?decision=<id>` that this browser doesn't own (or that no longer exists): Board shows the not-found page. */
+export const CLIENT_DECISION_MISSING = 'CLIENT_DECISION_MISSING'
 
 export type ErrorKind = 'quota' | 'network' | 'incomplete' | 'failed'
 

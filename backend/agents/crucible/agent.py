@@ -1,15 +1,18 @@
 """The board as an ADK graph workflow.
 
-START → intake → researcher → convene → 5 seats (Round 1) → round1 join → open_rebuttal
+START → intake → researcher → check_sources → convene → 5 seats (Round 1) → round1 join → open_rebuttal
       → 5 seats (Round 2) → round2 join → close_debate → chairman
 
 Session state written along the way (read by the frontend from each event's stateDelta):
   intake, evidence_mode, evidence, round1, round2, verdict; the owner later adds ratification.
+check_sources rewrites `evidence`, adding `check` = {status, checked_at, http_status} to every fact
+whose source is an http(s) URL (see sources.py).
 """
 
 from __future__ import annotations
 
 import json
+import logging
 import re
 from typing import Any
 
@@ -22,7 +25,7 @@ from google.adk.workflow import JoinNode, Workflow
 from google.genai import types
 from pydantic import ValidationError
 
-from . import config
+from . import config, sources
 from .schemas import Evidence, Intake, Verdict
 from .seats import (
     ROUND1_PROMPT,
@@ -38,6 +41,8 @@ from .seats import (
 # Some models leak prompt-format tags into their answers (seen: `</reasoning_effort>` from Claude Haiku 5.5 via
 # OpenRouter). Our answers are plain text, so any bare XML-like tag is an artifact the owner should never see.
 _LEAKED_TAG = re.compile(r"</?[a-z][a-z_]*>")
+
+log = logging.getLogger(__name__)
 
 
 def strip_leaked_tags(callback_context: CallbackContext, llm_response: LlmResponse) -> LlmResponse | None:
@@ -72,6 +77,18 @@ def intake(ctx, node_input: Any) -> Event:
     # With OpenRouter's web search this message is also the search query, so it names the decision.
     where = ", ".join(v for v in (parsed.profile.industry, parsed.profile.location) if v)
     return Event(output=f"Assemble the shared evidence for this decision: {parsed.question}" + (f" ({where})" if where else ""))
+
+
+async def check_sources(ctx, node_input: Any) -> Event:
+    """Opens every fact's source link; on any internal error the evidence passes through unchanged."""
+    evidence = node_input if isinstance(node_input, dict) else ctx.state.get("evidence")
+    try:
+        checked = await sources.check_evidence(evidence)
+    except Exception:
+        log.exception("source check failed; passing the evidence through unchecked")
+        return Event(output=evidence)
+    ctx.state["evidence"] = checked
+    return Event(output=checked)
 
 
 def convene(node_input: Any) -> Event:
@@ -133,6 +150,7 @@ root_agent = Workflow(
             "START",
             intake,
             researcher,
+            check_sources,
             convene,
             tuple(_seat_agent(s, 1) for s in SEATS),
             JoinNode(name="round1"),

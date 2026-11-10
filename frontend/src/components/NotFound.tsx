@@ -1,10 +1,43 @@
+import type { ReactNode } from 'react'
 import { navigateOnClick } from '../lib/nav'
 import { REPLAYS } from '../lib/replay'
 import { ThemeToggle } from './ThemeToggle'
 import { Wordmark } from './Wordmark'
 
-/** An unknown path, or `?replay=<name>` for a recording we don't ship: an empty, cold mould and the way back. */
-export function NotFound({ recording }: { recording?: string }) {
+export type Missing = { kind: 'page' } | { kind: 'recording'; name: string } | { kind: 'decision' }
+
+const COPY: Record<Missing['kind'], { kicker: string; title: string; body: (m: Missing) => ReactNode }> = {
+  page: {
+    kicker: '404 · Not found',
+    title: 'Nothing was cast here.',
+    body: () => (
+      <>
+        There is no page at <code>{window.location.pathname}</code>. Start from the home page, or watch the board work through a real
+        decision.
+      </>
+    ),
+  },
+  recording: {
+    kicker: 'Recording not found',
+    title: 'That meeting was never recorded.',
+    body: (m) => (
+      <>
+        There is no recorded session called <code>{m.kind === 'recording' ? m.name : ''}</code>. Check the link, or pick one of the real
+        meetings below.
+      </>
+    ),
+  },
+  decision: {
+    kicker: 'Decision not found',
+    title: 'This decision isn’t saved in this browser.',
+    body: () =>
+      'A decision opens only in the browser that made it, so nobody else can read it from the link. If you made it on another device, or cleared this browser’s data, it can’t be opened here.',
+  },
+}
+
+/** An unknown path, recording or decision: an empty, cold mould and the way back. */
+export function NotFound({ missing }: { missing: Missing }) {
+  const copy = COPY[missing.kind]
   return (
     <div className="page lost">
       <a className="skip" href="#lost-main">
@@ -22,21 +55,9 @@ export function NotFound({ recording }: { recording?: string }) {
           <path d="M4 6H156L144 50H16Z" />
           <path className="lost__seam" d="M22 40H138" />
         </svg>
-        <p className="lost__kicker">{recording === undefined ? '404 · Not found' : 'Recording not found'}</p>
-        <h1 className="lost__title">{recording === undefined ? 'Nothing was cast here.' : 'That meeting was never recorded.'}</h1>
-        <p className="lost__body">
-          {recording === undefined ? (
-            <>
-              There is no page at <code>{window.location.pathname}</code>. Start from the home page, or watch the board work
-              through a real decision.
-            </>
-          ) : (
-            <>
-              There is no recorded session called <code>{recording}</code>. Check the link, or pick one of the real meetings
-              below.
-            </>
-          )}
-        </p>
+        <p className="lost__kicker">{copy.kicker}</p>
+        <h1 className="lost__title">{copy.title}</h1>
+        <p className="lost__body">{copy.body(missing)}</p>
         <a className="btn btn--primary lost__cta" href="/" onClick={navigateOnClick('/')}>
           Go to the home page
         </a>

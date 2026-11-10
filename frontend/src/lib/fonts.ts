@@ -10,11 +10,11 @@ let ready: Promise<void> | undefined
 
 /** Resolves once the faces have loaded, or after 900 ms, whichever comes first. Never rejects. */
 export function whenFontsReady(): Promise<void> {
-  if (!ready) {
-    const { promise, resolve } = Promise.withResolvers<void>()
+  // Executor form on purpose: this runs before React mounts, and `Promise.withResolvers` (Safari 17.4+) would blank the
+  // page on older iPhones.
+  ready ??= new Promise<void>((resolve) => {
     setTimeout(resolve, CAP_MS)
     Promise.all(FACES.map((font) => document.fonts.load(font))).then(() => resolve(), () => resolve())
-    ready = promise
-  }
+  })
   return ready
 }

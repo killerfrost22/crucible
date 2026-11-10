@@ -704,8 +704,8 @@ function Evaluation({ onReplay }: { onReplay: (name: string) => void }) {
         </div>
 
         <p className="uth-status" data-part="text">
-          <span className="uth-status__pill">Running</span>
-          The full ten-scenario eval is being run now. Until it finishes, these are the only results we quote.
+          <span className="uth-status__pill">Not run yet</span>
+          The full ten-scenario eval hasn’t been run yet. Until it has, these two results are the only ones we quote.
         </p>
 
         <div className="uth-table-wrap" data-part>

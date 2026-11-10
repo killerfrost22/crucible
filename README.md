@@ -22,13 +22,13 @@ flowchart LR
   end
   W -- "SSE events: one per finished node" --> UI
   UI -- "PATCH session stateDelta.ratification" --> API
-  W --> G[(Gemini API)]
+  W --> G[("OpenRouter → Claude")]
 ```
 
 - `backend/agents/crucible/agent.py` — the workflow graph (ADK 2.x `Workflow` + `JoinNode`; seats in a round run in parallel).
 - `backend/agents/crucible/schemas.py` — every model output is schema-constrained (Pydantic); the frontend mirrors these in `frontend/src/types.ts`.
 - `backend/agents/crucible/seats.py` — seat charges and the briefings each seat sees. Seats cite shared evidence as F1, F2…
-- `backend/main.py` — ADK's FastAPI app; all routes come from ADK (sessions, `/run_sse`, session PATCH).
+- `backend/main.py` — ADK's FastAPI app; all routes come from ADK (sessions, `/run_sse`, session PATCH). `backend/guard.py` sits in front of it: only the four routes the frontend and `record_replay.py` use are public, intakes and ratifications are validated, and runs are rate-limited before any model is called. Rejections are JSON `{"code": "CRUCIBLE_…", "detail": "…"}`.
 - One run = 12 model calls (Researcher + 5 + 5 + Chairman).
 - `frontend/src/home/` — the home page (`/`): the product, the five seats, an example verdict, recorded sessions, and the question form (`#convene`).
 - `frontend/src/underthehood/` — `/under-the-hood`, the technical explainer. `buildFx.ts` is the "built by many hands" effect: one cursor per advisor assembles the page. It is skipped under reduced motion.
@@ -67,6 +67,13 @@ ADK's developer UI (inspect single runs, events, state): `cd backend && .venv/Sc
 | `CRUCIBLE_WEB_SEARCH` | `true` | OpenRouter web search (~$0.007/run) or, for Gemini names, Google Search (billed key only) |
 | `CRUCIBLE_ALLOW_ORIGINS` | `http://localhost:5173` | comma-separated frontend origins |
 | `CRUCIBLE_SESSION_DB` | ADK local store | `sqlite:///sessions.db`, `postgresql+asyncpg://…?ssl=require` |
+| `CRUCIBLE_RUNS_PER_IP_PER_HOUR` | `10` | board runs per client IP in any 60 minutes (429 `CRUCIBLE_RATE_LIMIT`); `0` = off |
+| `CRUCIBLE_SESSIONS_PER_IP_PER_HOUR` | `30` | new sessions per client IP in any 60 minutes (429 `CRUCIBLE_RATE_LIMIT`); `0` = off |
+| `CRUCIBLE_RUNS_PER_DAY` | `100` | board runs in any 24 hours, all clients together (429 `CRUCIBLE_DAILY_LIMIT`); `0` = off |
+| `CRUCIBLE_MAX_CONCURRENT_RUNS` | `3` | runs streaming at once (503 `CRUCIBLE_BUSY`); a slot frees when the stream ends, fails or the client leaves; `0` = off |
+| `CRUCIBLE_MAX_BODY_BYTES` | `16384` | request body cap (413 `CRUCIBLE_INTAKE_TOO_LARGE`); `0` = off |
+| `CRUCIBLE_CLIENT_IP_HEADER` | — (socket peer) | header the per-IP limits read, e.g. `x-forwarded-for`; see Deploy for the value per host |
+| `CRUCIBLE_CLIENT_IP_HOP` | `1` | which entry of that header, counted from the right (`1` = last) |
 
 **Cost:** with the defaults, measured runs cost $0.06–0.12 and take 50–85 s, mostly the Researcher's web search and the Chairman. `openrouter/...` names go through LiteLLM; bare Gemini names go to Google directly. The free Gemini tier allows about 20 requests a day per model and has no web search, so it suits local experiments only.
 
@@ -102,7 +109,7 @@ The video and audio files themselves are not in git (GitHub rejects files over 1
 
 1. New Vercel project from this repo, Root Directory `backend`. Vercel detects FastAPI from `requirements.txt` and serves `app` from `main.py`; `.python-version` selects Python 3.14.
 2. Storage → Neon Postgres. Take the **unpooled** connection string (asyncpg's prepared-statement cache doesn't mix with transaction pooling) and rewrite it as `postgresql+asyncpg://USER:PASSWORD@HOST/DB?ssl=require`: ADK needs the `+asyncpg` driver, and asyncpg rejects `sslmode` and `channel_binding`.
-3. Environment variables: `OPENROUTER_API_KEY`, `CRUCIBLE_SESSION_DB` (that URL), `CRUCIBLE_ALLOW_ORIGINS=https://<your-app>.vercel.app`. Tables are created on first use.
+3. Environment variables: `OPENROUTER_API_KEY`, `CRUCIBLE_SESSION_DB` (that URL), `CRUCIBLE_ALLOW_ORIGINS=https://<your-app>.vercel.app`, `CRUCIBLE_CLIENT_IP_HEADER=x-vercel-forwarded-for`. Tables are created on first use.
 4. Check: `curl https://<backend>.vercel.app/list-apps` returns `["crucible"]`.
 
 **Backend → Cloud Run** (builds `backend/Dockerfile` remotely; one instance keeps ADK's sessions consistent):
@@ -114,9 +121,18 @@ gcloud secrets add-iam-policy-binding openrouter-key --role roles/secretmanager.
 gcloud run deploy crucible-api --source backend --region us-east1 --allow-unauthenticated \
   --min-instances 1 --max-instances 1 \
   --set-secrets OPENROUTER_API_KEY=openrouter-key:latest \
-  --set-env-vars CRUCIBLE_ALLOW_ORIGINS=https://<your-app>.vercel.app
+  --set-env-vars CRUCIBLE_ALLOW_ORIGINS=https://<your-app>.vercel.app,CRUCIBLE_CLIENT_IP_HEADER=x-forwarded-for
 ```
 
 Without `CRUCIBLE_SESSION_DB`, ADK detects Cloud Run and keeps sessions in memory, so they reset on redeploy.
 
-**Frontend → Vercel:** root directory `frontend`, env `VITE_API_BASE=<backend URL>`. Vite inlines it at build time, so redeploy after changing it.
+**Limits and client IPs.** The guard's limits are kept in memory per process: they are exact on Cloud Run with `--max-instances 1`, but on Vercel each function instance counts separately, so the real ceilings are a multiple of the settings. At a venue, many visitors can share one public IP (NAT), so keep `CRUCIBLE_RUNS_PER_IP_PER_HOUR` loose for demos and rely on `CRUCIBLE_RUNS_PER_DAY` and `CRUCIBLE_MAX_CONCURRENT_RUNS` as the spend cap. The client IP must come from a header your host sets, never from a value the caller can choose:
+
+| Host | `CRUCIBLE_CLIENT_IP_HEADER` | `CRUCIBLE_CLIENT_IP_HOP` | Why |
+|---|---|---|---|
+| Local / direct | — | — | the socket peer is the caller |
+| Cloud Run (`*.run.app`) | `x-forwarded-for` | `1` | Google's front end appears to append the address it saw to whatever the caller sent, so only the last entry is trustworthy. This is inferred from the docs and an [example request](https://issuetracker.google.com/issues/239503543), not yet confirmed on our deploy: after deploying, check that two different networks get separate limits. The leftmost entry, "generally the client" ([Cloud Run functions headers](https://docs.cloud.google.com/functions/docs/reference/headers)), is spoofable. Without this setting every request shares the front end's address, so per-IP limits act as global limits. |
+| Cloud Run behind an external Application Load Balancer | `x-forwarded-for` | `2` | the LB appends `CLIENT_IP,LOAD_BALANCER_IP` and does not verify earlier entries ([LB docs](https://docs.cloud.google.com/load-balancing/docs/https#x-forwarded-for_header)) |
+| Vercel | `x-vercel-forwarded-for` | `1` | Vercel overwrites `x-forwarded-for` "to prevent IP spoofing"; `x-vercel-forwarded-for` has the same value even if another proxy sits in front ([Vercel request headers](https://vercel.com/docs/headers/request-headers#x-forwarded-for)) |
+
+**Frontend → Vercel:** root directory `frontend`, env `VITE_API_BASE=<backend URL>`. Vite inlines it at build time, so redeploy after changing it; `npm run build` fails when it is unset, so a deploy can't silently point visitors at `localhost`.

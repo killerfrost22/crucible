@@ -8,7 +8,7 @@ export interface SeatMeta {
 }
 
 export const SEATS: SeatMeta[] = [
-  { id: 'industry_expert', title: 'Industry Expert', role: 'Has run a business like yours for twenty years.' },
+  { id: 'industry_expert', title: 'Industry Expert', role: 'Judges it the way a seasoned operator in your trade would.' },
   { id: 'ai_tools_expert', title: 'AI-Tools Expert', role: 'Knows which AI products are real, what they cost, and what they plug into.' },
   { id: 'realist', title: 'Realist', role: 'Checks the legal, compliance, money and goal fit before anything else.' },
   { id: 'strategist', title: 'Strategist', role: 'Looks at what this commits you to next week, next quarter, next year.' },

@@ -37,9 +37,9 @@ function PanelHead({ title, meta }: { title: string; meta?: ReactNode }) {
   )
 }
 
-type PanelProps = { s: FeaturedSession }
+type PanelProps = { s: FeaturedSession; onNext: () => void }
 
-function AskPanel({ s }: PanelProps) {
+function AskPanel({ s, onNext }: PanelProps) {
   const p = s.intake.profile
   const profile = [p.industry, p.location, p.size, p.current_tools.join(' + '), p.budget, ...p.goals].filter(Boolean)
   return (
@@ -59,10 +59,10 @@ function AskPanel({ s }: PanelProps) {
             <li key={v}>{v}</li>
           ))}
         </ul>
-        <span className="hm-mbtn">
+        <button type="button" className="hm-mbtn" onClick={onNext}>
           Convene the board
           <Arrow />
-        </span>
+        </button>
       </div>
     </>
   )
@@ -80,9 +80,12 @@ function ResearchPanel({ s }: PanelProps) {
             <p>
               {f.claim}
               {f.source && (
-                <span className="hm-src">
-                  <b>Verified</b> {f.source}
-                </span>
+                <>
+                  {' '}
+                  <span className="hm-src">
+                    <b>Verified</b> {f.source}
+                  </span>
+                </>
               )}
             </p>
           </li>
@@ -216,10 +219,9 @@ function CallPanel({ s }: PanelProps) {
           <p className="hm-mlabel">Ask</p>
           <p>{v.escalate}</p>
         </div>
-        <div className="hm-call__btns">
-          <span className="hm-mbtn">Accept</span>
-          <span className="hm-mbtn hm-mbtn--ghost">Override</span>
-        </div>
+        <p className="hm-call__how">
+          <b>Accept</b> it, or <b>override</b> it with a note. Nothing is decided until you sign.
+        </p>
       </div>
     </>
   )
@@ -379,7 +381,7 @@ export const Showcase = memo(function Showcase({ featured, onFeature }: { featur
                   data-active={on}
                   tabIndex={on ? 0 : -1}
                 >
-                  <Panel s={session} />
+                  <Panel s={session} onNext={() => choose((i + 1) % STEPS.length, true)} />
                 </div>
               )
             })}

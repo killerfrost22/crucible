@@ -12,6 +12,7 @@ import './styles/underthehood.css'
 import './styles/board.css'
 import './styles/cards.css'
 import './styles/verdict.css'
+import './styles/notfound.css'
 
 initTheme()
 // Every view sets its own scroll (top, or the home form after a meeting); the browser's restore would fight it.

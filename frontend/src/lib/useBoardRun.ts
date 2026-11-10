@@ -2,8 +2,8 @@ import { useCallback, useEffect, useReducer, useRef, useState } from 'react'
 import type { AdkEvent, Intake, Ratification } from '../types'
 import { ApiError, createSession, ratify, runBoard, userId } from './api'
 import { initialBoard, reduceBoard, type BoardState } from './board'
-import { CLIENT_INCOMPLETE, CLIENT_NETWORK, CLIENT_REPLAY } from './errors'
-import { loadReplay, ReplayPlayer } from './replay'
+import { CLIENT_INCOMPLETE, CLIENT_NETWORK, CLIENT_REPLAY, CLIENT_REPLAY_MISSING } from './errors'
+import { loadReplay, ReplayMissingError, ReplayPlayer } from './replay'
 
 export type RunSource = { mode: 'live'; intake: Intake } | { mode: 'replay'; name: string }
 export type Transport = 'connecting' | 'streaming' | 'done'
@@ -27,7 +27,7 @@ export interface BoardRun {
 }
 
 function transportError(error: unknown): AdkEvent {
-  if (error instanceof ApiError) return { errorCode: `HTTP_${error.status}`, errorMessage: error.message }
+  if (error instanceof ApiError) return { errorCode: error.code ?? `HTTP_${error.status}`, errorMessage: error.detail ?? error.message }
   return { errorCode: CLIENT_NETWORK, errorMessage: error instanceof Error ? error.message : String(error) }
 }
 
@@ -64,7 +64,10 @@ export function useBoardRun(source: RunSource): BoardRun {
         })
         .catch((error: unknown) => {
           if (signal.aborted) return
-          dispatch({ errorCode: CLIENT_REPLAY, errorMessage: error instanceof Error ? error.message : String(error) })
+          dispatch({
+            errorCode: error instanceof ReplayMissingError ? CLIENT_REPLAY_MISSING : CLIENT_REPLAY,
+            errorMessage: error instanceof Error ? error.message : String(error),
+          })
           setTransport('done')
         })
       return () => {
@@ -144,7 +147,7 @@ export function useBoardRun(source: RunSource): BoardRun {
         setRatifyStatus('error')
         setRatifyError(
           error instanceof ApiError
-            ? `The server didn't save your decision (error ${error.status}). Try again.`
+            ? (error.detail ?? `The server didn't save your decision (error ${error.status}). Try again.`)
             : "We couldn't reach the server to save your decision. Check the connection and try again.",
         )
       }

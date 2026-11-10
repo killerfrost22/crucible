@@ -1903,25 +1903,6 @@ body:has(.uth) {
   height: 7px;
   border-radius: 50%;
   background: currentColor;
-  animation: uth-pulse 1.6s var(--ease-in-out) infinite;
-}
-
-@keyframes uth-pulse {
-  0%,
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.35;
-    transform: scale(0.7);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .uth-status__pill::before {
-    animation: none;
-  }
 }
 
 .uth-table-wrap {

@@ -18,9 +18,22 @@ export function userId(): string {
 /** HTTP failure with the server's body kept for error classification. */
 export class ApiError extends Error {
   readonly status: number
+  /** Crucible's own refusal code (`CRUCIBLE_*`, backend/guard.py), sent before any model runs. */
+  readonly code: string | null = null
+  /** The server's one-sentence explanation for the owner, sent with `code`. */
+  readonly detail: string | null = null
   constructor(status: number, body: string) {
     super(`HTTP ${status}${body ? `: ${body.slice(0, 500)}` : ''}`)
     this.status = status
+    try {
+      const payload = JSON.parse(body) as { code?: unknown; detail?: unknown } | null
+      if (typeof payload?.code === 'string' && payload.code.startsWith('CRUCIBLE_')) {
+        this.code = payload.code
+        this.detail = typeof payload.detail === 'string' ? payload.detail : null
+      }
+    } catch {
+      // Not JSON (a proxy or provider error page): classified from the message instead.
+    }
   }
 }
 

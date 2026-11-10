@@ -27,10 +27,18 @@ export const REPLAYS: ReplayInfo[] = [
   },
 ]
 
+/** No such recording. Static hosts answer a missing file with the app shell (200, text/html), so `ok` alone proves nothing. */
+export class ReplayMissingError extends Error {}
+
 export async function loadReplay(name: string, signal?: AbortSignal): Promise<AdkEvent[]> {
   const response = await fetch(`/replays/${encodeURIComponent(name)}.sse`, { signal })
-  if (!response.ok) throw new Error(`Recorded session "${name}" was not found.`)
-  return parseSseText(await response.text())
+  if (response.status === 404 || response.headers.get('content-type')?.includes('text/html')) {
+    throw new ReplayMissingError(`Recorded session "${name}" was not found.`)
+  }
+  if (!response.ok) throw new Error(`Recorded session "${name}" could not be loaded (HTTP ${response.status}).`)
+  const events = parseSseText(await response.text())
+  if (!events.length) throw new Error(`Recorded session "${name}" has no events.`)
+  return events
 }
 
 /** Successful model output: stamped when the call started, delivered when it finished. */

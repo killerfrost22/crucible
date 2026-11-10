@@ -151,11 +151,15 @@
   transform: translateX(-2px);
 }
 
-@media (max-width: 559px) {
+/* Below 600px the wordmark gives its room to the controls. */
+@media (max-width: 599px) {
   .frame .wordmark {
     display: none;
   }
+}
 
+/* Below 800px the labels shorten ("New", "Skip") and one button steps through the speeds (see .replay__cycle). */
+@media (max-width: 799px) {
   .frame__long {
     position: absolute;
     width: 1px;
@@ -203,8 +207,9 @@
   }
 }
 
-/* One row once the rail, wordmark and playback controls all fit; below that the rail takes its own row. */
-@media (min-width: 1400px) {
+/* One row once the rail, wordmark and playback controls all fit (at 1440px they still overflowed); below that the rail
+   takes its own row. */
+@media (min-width: 1480px) {
   .frame {
     grid-template-columns: auto auto 1fr auto;
     align-items: center;
@@ -238,7 +243,7 @@
     justify-self: end;
   }
 
-  /* Shorter connectors so the whole header holds one row down to 1400px. */
+  /* Shorter connectors so the whole header holds one row down to 1480px. */
   .frame .rail__step + .rail__step::before {
     width: clamp(0.75rem, 2.2vw - 0.5rem, 2.5rem);
   }
@@ -357,14 +362,33 @@
   color: var(--seat-chairman);
 }
 
+/* One button that steps 1× → 2× → 4×, below 800px where the three-button pill doesn't fit beside the other controls. */
+.replay__cycle {
+  display: none;
+  padding-inline: 0;
+  font-family: var(--font-mono);
+  font-weight: 500;
+}
+
 .replay button:disabled {
   cursor: default;
   opacity: 0.45;
 }
 
-@media (max-width: 419px) {
+@media (max-width: 559px) {
   .replay__badge:not(.replay__badge--live) {
     display: none;
+  }
+}
+
+@media (max-width: 799px) {
+  .replay__speeds {
+    display: none;
+  }
+
+  .replay__cycle {
+    display: inline-grid;
+    place-items: center;
   }
 }
 
@@ -548,6 +572,16 @@
 
 .board__outcome {
   scroll-margin-top: calc(var(--frame-h) + var(--space-4));
+}
+
+/* Nothing came back (the server never answered): the question and the notice in one centred column, at every width. */
+.board[data-empty] {
+  grid-template-columns: minmax(0, 48rem);
+  grid-template-rows: none;
+  grid-template-areas:
+    'question'
+    'outcome';
+  justify-content: center;
 }
 
 /* Tablet: the question and the crucible share the opening row. */

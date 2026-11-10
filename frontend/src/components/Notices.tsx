@@ -6,12 +6,14 @@ import { EASE_OUT } from './motion'
 
 interface ErrorNoticeProps {
   error: HumanError
+  /** Some of the meeting came back and stays on the page. */
+  kept: boolean
   onRetry?: () => void
   onEdit?: () => void
   onReplay: () => void
 }
 
-export function ErrorNotice({ error, onRetry, onEdit, onReplay }: ErrorNoticeProps) {
+export function ErrorNotice({ error, kept, onRetry, onEdit, onReplay }: ErrorNoticeProps) {
   const ref = useRef<HTMLElement>(null)
   useEffect(() => {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -28,23 +30,23 @@ export function ErrorNotice({ error, onRetry, onEdit, onReplay }: ErrorNoticePro
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: EASE_OUT }}
     >
-      <p className="kicker notice__kicker">{error.kind === 'quota' ? 'Meeting paused' : 'Meeting interrupted'}</p>
+      <p className="kicker notice__kicker">{!kept ? 'Meeting didn’t start' : error.kind === 'quota' ? 'Meeting paused' : 'Meeting interrupted'}</p>
       <h2 id="notice-title" className="notice__title">
         {error.title}
       </h2>
-      <p className="notice__body">{error.body}</p>
+      <p className="notice__body">
+        {error.body}
+        {kept && ' Everything the board finished is still on this page.'}
+      </p>
       <div className="notice__actions">
-        {error.kind === 'quota' ? (
-          <button type="button" className="btn btn--primary" onClick={onReplay}>
-            Watch a recorded session
+        {error.kind !== 'quota' && onRetry && (
+          <button type="button" className="btn btn--primary" onClick={onRetry}>
+            Try again
           </button>
-        ) : (
-          onRetry && (
-            <button type="button" className="btn btn--primary" onClick={onRetry}>
-              Try again
-            </button>
-          )
         )}
+        <button type="button" className={error.kind === 'quota' || !onRetry ? 'btn btn--primary' : 'btn btn--secondary'} onClick={onReplay}>
+          Watch a recorded session
+        </button>
         {error.kind === 'quota' && onRetry && (
           <button type="button" className="btn btn--secondary" onClick={onRetry}>
             Try again

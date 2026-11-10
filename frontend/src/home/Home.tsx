@@ -29,11 +29,18 @@ interface HomeProps {
 const SBDC_URL = 'https://www.marylandsbdc.org/'
 const k = (color: string) => ({ '--k': color }) as CSSProperties
 
-/** Scroll to the full form and put the caret at the end of the question. */
+/**
+ * Scroll to the form and put the caret at the end of the question. Wide screens show the section (heading beside the
+ * form); phones stack the intro above the form, so there the question's own label goes to the top instead.
+ */
 function goToForm(behavior: ScrollBehavior) {
-  document.getElementById('convene')?.scrollIntoView({ block: 'start', behavior })
+  const section = document.getElementById('convene')
   const question = document.getElementById('question') as HTMLTextAreaElement | null
-  if (!question) return
+  if (!section || !question) return
+  const below = question.getBoundingClientRect().bottom - section.getBoundingClientRect().top
+  const room = window.innerHeight - parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop || '0')
+  const target = below <= room ? section : (question.closest('.hm-field') ?? question)
+  target.scrollIntoView({ block: 'start', behavior })
   question.focus({ preventScroll: true })
   question.setSelectionRange(question.value.length, question.value.length)
 }
@@ -437,9 +444,8 @@ const VerdictSection = memo(function VerdictSection({
               <span className="hm-who" style={k(CHAIRMAN.color)}>
                 Your call
               </span>
-              <span className="hm-vcard__btns" aria-hidden="true">
-                <span className="hm-mbtn">Accept</span>
-                <span className="hm-mbtn hm-mbtn--ghost">Override</span>
+              <span className="hm-vcard__how">
+                <b>Accept</b> it, or <b>override</b> it with a note.
               </span>
             </div>
           </figure>

@@ -247,7 +247,7 @@ export function YourCall({ decision, ratification, status, error, local, onSubmi
         {ratification.note && <blockquote className="yourcall__note">{ratification.note}</blockquote>}
         <p className="yourcall__meta">
           Signed {formatAt(ratification.at)}
-          {local ? ' · kept on this device (recorded session)' : ' · saved to this decision'}
+          {local ? ' · practice signature on a recording, not saved' : ' · saved to this decision'}
         </p>
         <button
           type="button"

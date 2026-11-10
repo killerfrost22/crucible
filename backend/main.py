@@ -1,10 +1,10 @@
-"""HTTP entrypoint: ADK's FastAPI app serving the `crucible` agent from ./agents.
+"""HTTP entrypoint: ADK's FastAPI app serving the `crucible` agent from ./agents, behind guard.py.
 
-Routes used by the frontend (all provided by ADK):
+Public routes (everything else answers 404 CRUCIBLE_NOT_FOUND):
+  GET   /list-apps                                            deploy check
   POST  /apps/crucible/users/{user}/sessions                  create a decision session
   POST  /run_sse                                              run the board, stream events
   PATCH /apps/crucible/users/{user}/sessions/{session}        owner ratification (stateDelta)
-  GET   /apps/crucible/users/{user}/sessions                  past decisions
 """
 
 from __future__ import annotations
@@ -13,7 +13,13 @@ import os
 from pathlib import Path
 
 import uvicorn
+from dotenv import load_dotenv
 from google.adk.cli.fast_api import get_fast_api_app
+from starlette.middleware import Middleware
+
+from guard import Guard, Limits
+
+load_dotenv(Path(__file__).resolve().parents[1] / ".env")
 
 AGENTS_DIR = Path(__file__).resolve().parent / "agents"
 ALLOW_ORIGINS = [
@@ -28,6 +34,9 @@ app = get_fast_api_app(
     session_service_uri=os.getenv("CRUCIBLE_SESSION_DB") or None,
     web=False,
 )
+# Innermost user middleware, i.e. inside ADK's CORS middleware, so browsers can read the guard's
+# errors. (`add_middleware` would put it outermost, outside CORS.)
+app.user_middleware.append(Middleware(Guard, limits=Limits.from_env()))
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=int(os.getenv("PORT", "8000")))

@@ -3,6 +3,16 @@ import type { Evidence, EvidenceMode, Intake } from '../types'
 import { factId, useFacts } from './facts'
 import { EASE_OUT } from './motion'
 
+/** `https://www.example.gov/x` → `example.gov`; anything that isn't an http(s) URL → null, shown as plain text. */
+function hostOf(source: string): string | null {
+  if (!/^https?:\/\//.test(source)) return null
+  try {
+    return new URL(source).hostname.replace(/^www\./, '')
+  } catch {
+    return null
+  }
+}
+
 export function QuestionCard({ intake }: { intake: Intake | null }) {
   if (!intake) {
     return (
@@ -114,6 +124,7 @@ export function EvidenceSheet({ evidence, mode, stopped }: EvidenceProps) {
       <ol className="assay__facts">
         {evidence.facts.map((fact, i) => {
           const n = i + 1
+          const host = fact.source ? hostOf(fact.source) : null
           return (
             <li
               key={n}
@@ -130,9 +141,9 @@ export function EvidenceSheet({ evidence, mode, stopped }: EvidenceProps) {
                   <span className={fact.verified ? 'fact__tag fact__tag--ok' : 'fact__tag'}>{fact.verified ? 'Verified' : 'Unverified'}</span>
                   {fact.source && (
                     <span className="fact__source">
-                      {/^https?:\/\//.test(fact.source) && URL.canParse(fact.source) ? (
+                      {host ? (
                         <a href={fact.source} target="_blank" rel="noreferrer">
-                          {new URL(fact.source).hostname.replace(/^www\./, '')}
+                          {host}
                           <span className="visually-hidden"> (opens in a new tab)</span>
                         </a>
                       ) : (

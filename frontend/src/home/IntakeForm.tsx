@@ -11,15 +11,16 @@ interface IntakeFormProps {
 
 type ProfileKey = Exclude<keyof IntakeDraft, 'question' | 'leaning'>
 
-const PROFILE_FIELDS: { key: ProfileKey; label: string; placeholder: string; hint?: string; wide?: boolean; multiline?: boolean }[] = [
-  { key: 'name', label: 'Business name', placeholder: 'e.g. Third Shift Coffee' },
-  { key: 'industry', label: 'What you do', placeholder: 'e.g. coffee shop' },
-  { key: 'location', label: 'Where', placeholder: 'e.g. Hyattsville, Maryland' },
-  { key: 'size', label: 'How big', placeholder: 'e.g. 1 location, 8 staff' },
-  { key: 'tools', label: 'Tools you already use', placeholder: 'e.g. Square, Instagram, Google Sheets', hint: 'Separate with commas', wide: true },
-  { key: 'budget', label: 'Budget for this', placeholder: 'e.g. $200/month' },
-  { key: 'goals', label: 'What you want out of it', placeholder: 'e.g. more weekday regulars', hint: 'Separate with commas' },
-  { key: 'constraints', label: 'Anything the board should know', placeholder: 'e.g. I work the morning shift six days a week', wide: true, multiline: true },
+/** `max` matches the caps in backend/guard.py; the server rejects a longer intake before any model runs. */
+const PROFILE_FIELDS: { key: ProfileKey; label: string; placeholder: string; max: number; hint?: string; wide?: boolean; multiline?: boolean }[] = [
+  { key: 'name', label: 'Business name', placeholder: 'e.g. Third Shift Coffee', max: 200 },
+  { key: 'industry', label: 'What you do', placeholder: 'e.g. coffee shop', max: 200 },
+  { key: 'location', label: 'Where', placeholder: 'e.g. Hyattsville, Maryland', max: 200 },
+  { key: 'size', label: 'How big', placeholder: 'e.g. 1 location, 8 staff', max: 200 },
+  { key: 'tools', label: 'Tools you already use', placeholder: 'e.g. Square, Instagram, Google Sheets', max: 1000, hint: 'Separate with commas', wide: true },
+  { key: 'budget', label: 'Budget for this', placeholder: 'e.g. $200/month', max: 200 },
+  { key: 'goals', label: 'What you want out of it', placeholder: 'e.g. more weekday regulars', max: 1000, hint: 'Separate with commas' },
+  { key: 'constraints', label: 'Anything the board should know', placeholder: 'e.g. I work the morning shift six days a week', max: 2000, wide: true, multiline: true },
 ]
 
 /** One seat colour per example chip, so the three read as distinct at a glance. */
@@ -77,6 +78,7 @@ export function IntakeForm({ draft, onChange, onSubmit }: IntakeFormProps) {
           id="question"
           ref={questionRef}
           rows={3}
+          maxLength={1000}
           value={draft.question}
           placeholder="Should we…"
           required
@@ -95,6 +97,7 @@ export function IntakeForm({ draft, onChange, onSubmit }: IntakeFormProps) {
         <input
           id={`${ids}-leaning`}
           value={draft.leaning}
+          maxLength={500}
           placeholder="e.g. Yes, but I'm nervous about the cost"
           onChange={(e) => set('leaning', e.target.value)}
         />
@@ -111,9 +114,9 @@ export function IntakeForm({ draft, onChange, onSubmit }: IntakeFormProps) {
               <div key={f.key} className={f.wide ? 'hm-field hm-field--wide' : 'hm-field'}>
                 <label htmlFor={id}>{f.label}</label>
                 {f.multiline ? (
-                  <textarea id={id} rows={2} value={draft[f.key]} placeholder={f.placeholder} onChange={(e) => set(f.key, e.target.value)} />
+                  <textarea id={id} rows={2} maxLength={f.max} value={draft[f.key]} placeholder={f.placeholder} onChange={(e) => set(f.key, e.target.value)} />
                 ) : (
-                  <input id={id} value={draft[f.key]} placeholder={f.placeholder} aria-describedby={hintId} onChange={(e) => set(f.key, e.target.value)} />
+                  <input id={id} maxLength={f.max} value={draft[f.key]} placeholder={f.placeholder} aria-describedby={hintId} onChange={(e) => set(f.key, e.target.value)} />
                 )}
                 {f.hint && (
                   <p className="hm-field__hint" id={hintId}>

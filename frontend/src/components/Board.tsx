@@ -3,6 +3,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { humanizeErrors } from '../lib/errors'
 import { REPLAYS } from '../lib/replay'
 import { REPLAY_SPEEDS, useBoardRun, type RunSource } from '../lib/useBoardRun'
+import type { Intake } from '../types'
 import { SEATS } from '../seats'
 import type { SeatId } from '../types'
 import { EvidenceSheet, QuestionCard } from './Brief'
@@ -18,13 +19,16 @@ import { Wordmark } from './Wordmark'
 interface BoardProps {
   source: RunSource
   onNew: () => void
-  onEdit?: () => void
-  onRetry?: () => void
+  onDecisions: () => void
+  onEdit?: (intake: Intake) => void
+  onRetry?: (intake: Intake) => void
   onReplay: (name: string) => void
+  /** Fired once a live session exists, so a reload can restore it. */
+  onLiveSession?: (sessionId: string) => void
 }
 
-export function Board({ source, onNew, onEdit, onRetry, onReplay }: BoardProps) {
-  const run = useBoardRun(source)
+export function Board({ source, onNew, onDecisions, onEdit, onRetry, onReplay, onLiveSession }: BoardProps) {
+  const run = useBoardRun(source, onLiveSession)
   const { board, transport } = run
   const replay = source.mode === 'replay'
   const error = humanizeErrors(board.errors)
@@ -80,15 +84,20 @@ export function Board({ source, onNew, onEdit, onRetry, onReplay }: BoardProps) 
     : (PHASE_STEPS.find((s) => s.phase === board.phase)?.status ?? 'Connecting to the board.')
 
   const hasVerdict = Boolean(board.verdict)
+  // A restored meeting opens on the question. Scrolling to the verdict is for a recommendation that just arrived.
+  const restored = source.mode === 'saved'
   useEffect(() => {
-    if (!hasVerdict) return
+    if (!hasVerdict || restored) return
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     outcomeRef.current?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' })
-  }, [hasVerdict])
+  }, [hasVerdict, restored])
 
   const replayInfo = replay ? REPLAYS.find((r) => r.name === source.name) : undefined
   const otherReplay = REPLAYS.find((r) => r.name !== (replay ? source.name : ''))
   const twoRounds = board.phase === 'rebuttals' || Object.keys(board.round2).length > 0
+  const saved = source.mode === 'saved'
+  const editIntake = onEdit && board.intake ? () => onEdit(board.intake!) : undefined
+  const retryIntake = onRetry && board.intake ? () => onRetry(board.intake!) : undefined
 
   return (
     <MotionConfig reducedMotion="user">
@@ -99,12 +108,17 @@ export function Board({ source, onNew, onEdit, onRetry, onReplay }: BoardProps) 
           </a>
           <header className="frame" ref={frameRef}>
             <div className="frame__row">
-              <button type="button" className="frame__back" onClick={onNew}>
-                <span aria-hidden="true">←</span>
-                <span>
-                  New<span className="frame__long"> decision</span>
-                </span>
-              </button>
+              <div className="frame__nav">
+                <button type="button" className="frame__back" onClick={onNew}>
+                  <span aria-hidden="true">←</span>
+                  <span>
+                    New<span className="frame__long"> decision</span>
+                  </span>
+                </button>
+                <button type="button" className="frame__decisions" onClick={onDecisions}>
+                  My decisions
+                </button>
+              </div>
               <Wordmark />
               <div className="frame__end">
                 {replay ? (
@@ -141,8 +155,12 @@ export function Board({ source, onNew, onEdit, onRetry, onReplay }: BoardProps) 
                     </button>
                   </div>
                 ) : (
-                  <span className="replay__badge replay__badge--live" data-live={transport !== 'done' || undefined}>
-                    {transport === 'done' ? 'Session ended' : 'Live'}
+                  <span
+                    className="replay__badge replay__badge--live"
+                    data-live={(transport !== 'done' && !saved) || undefined}
+                    title={saved ? 'Restored from your decisions. Opening it does not start a new meeting.' : undefined}
+                  >
+                    {saved ? (transport === 'connecting' ? 'Opening' : 'Saved') : transport === 'done' ? 'Saved' : 'Live'}
                   </span>
                 )}
                 <ThemeToggle />
@@ -222,14 +240,20 @@ export function Board({ source, onNew, onEdit, onRetry, onReplay }: BoardProps) 
                   />
                 </div>
               ) : error ? (
-                <ErrorNotice error={error} onRetry={onRetry} onEdit={onEdit} onReplay={() => onReplay(otherReplay?.name ?? REPLAYS[0].name)} />
+                <ErrorNotice error={error} onRetry={retryIntake} onEdit={editIntake} onReplay={() => onReplay(otherReplay?.name ?? REPLAYS[0].name)} />
               ) : (
-                <div className="chair-wait" data-active={(board.phase === 'chairman' && !stopped) || undefined} aria-busy={board.phase === 'chairman'}>
+                <div className="chair-wait" data-active={(board.phase === 'chairman' && !stopped) || undefined} aria-busy={board.phase === 'chairman' && !stopped}>
                   <svg className="chair-wait__mold" viewBox="0 0 120 40" aria-hidden="true" focusable="false">
                     <path d="M2 4H118L110 36H10Z" />
                   </svg>
                   <p className="chair-wait__title">
-                    {stopped ? 'No recommendation in this session.' : board.phase === 'chairman' ? 'The Chairman is weighing the debate' : 'The Chairman speaks last.'}
+                    {stopped
+                      ? saved
+                        ? 'Saved before the Chairman recommended.'
+                        : 'No recommendation in this session.'
+                      : board.phase === 'chairman'
+                        ? 'The Chairman is weighing the debate'
+                        : 'The Chairman speaks last.'}
                     {board.phase === 'chairman' && !stopped && (
                       <span className="dots" aria-hidden="true">
                         <span />
@@ -239,8 +263,15 @@ export function Board({ source, onNew, onEdit, onRetry, onReplay }: BoardProps) 
                     )}
                   </p>
                   <p className="chair-wait__body">
-                    After both rounds, the Chairman weighs every argument and recommends: proceed, pilot, defer, or reject.
+                    {stopped && saved
+                      ? 'Whatever the board finished is still here. Running the question again starts a new meeting.'
+                      : 'After both rounds, the Chairman weighs every argument and recommends: proceed, pilot, defer, or reject.'}
                   </p>
+                  {stopped && retryIntake && (
+                    <button type="button" className="btn btn--secondary" onClick={retryIntake}>
+                      Run this question again
+                    </button>
+                  )}
                 </div>
               )}
             </section>

@@ -10,13 +10,14 @@ import { SEAT_BY_ID, STANCE_LABEL } from '../seats'
 import type { Intake } from '../types'
 import { BrandMark, SeatRule } from './BrandMark'
 import { STATS } from './homeContent'
+import { Decisions } from './Decisions'
 import { IntakeForm } from './IntakeForm'
 import { Showcase } from './Showcase'
 import { Arrow, Chevron, Play } from './icons'
 import { prefersReducedMotion, scrollBehavior } from './useReducedMotion'
 
-/** `fresh`: a normal visit. `form`: back from a meeting, so land on the form with the question focused. */
-export type Arrival = 'fresh' | 'form'
+/** `fresh`: a normal visit. `form`: back from a meeting, so land on the form. `decisions`: land on My decisions. */
+export type Arrival = 'fresh' | 'form' | 'decisions'
 
 interface HomeProps {
   arrival: Arrival
@@ -24,6 +25,7 @@ interface HomeProps {
   onChange: (draft: IntakeDraft) => void
   onSubmit: (intake: Intake) => void
   onReplay: (name: string) => void
+  onOpenDecision: (id: string) => void
 }
 
 const SBDC_URL = 'https://www.marylandsbdc.org/'
@@ -38,15 +40,19 @@ function goToForm(behavior: ScrollBehavior) {
   question.setSelectionRange(question.value.length, question.value.length)
 }
 
-export function Home({ arrival, draft, onChange, onSubmit, onReplay }: HomeProps) {
+export function Home({ arrival, draft, onChange, onSubmit, onReplay, onOpenDecision }: HomeProps) {
   const rootRef = useRef<HTMLDivElement>(null)
   // The recorded meeting the page shows: the showcase switches it, and the board cards, verdict and watch buttons follow.
   const [featured, setFeatured] = useState(0)
+  const [decisionCount, setDecisionCount] = useState(0)
   const session = FEATURED[featured]
+  const onCount = useCallback((count: number) => setDecisionCount(count), [])
 
-  // `/#convene` (from other pages) and a return from a meeting both land on the form.
+  // `/#convene` and a return from a meeting land on the form. `/#decisions` lands on the saved list.
   useLayoutEffect(() => {
-    if (arrival === 'form' || window.location.hash === '#convene') goToForm('instant')
+    if (arrival === 'decisions' || window.location.hash === '#decisions') {
+      document.getElementById('decisions')?.scrollIntoView({ block: 'start', behavior: 'instant' })
+    } else if (arrival === 'form' || window.location.hash === '#convene') goToForm('instant')
     else window.scrollTo({ top: 0, behavior: 'instant' })
   }, [arrival])
 
@@ -80,7 +86,7 @@ export function Home({ arrival, draft, onChange, onSubmit, onReplay }: HomeProps
       <a className="skip" href="#main">
         Skip to content
       </a>
-      <Header onConvene={convene} onWatch={watch} />
+      <Header onConvene={convene} onWatch={watch} decisionCount={decisionCount} />
       <main id="main" tabIndex={-1}>
         <section className="hm-hero" aria-labelledby="hero-title">
           <div className="hm-col hm-hero__col">
@@ -132,7 +138,17 @@ export function Home({ arrival, draft, onChange, onSubmit, onReplay }: HomeProps
                 Watch a session
               </button>
             </div>
-            <p className="hm-hero__fine">About a minute per meeting. No account needed.</p>
+            <p className="hm-hero__fine">
+              About a minute per meeting. No account needed.
+              {decisionCount > 0 && (
+                <>
+                  {' '}
+                  <a href="#decisions">
+                    {decisionCount} saved {decisionCount === 1 ? 'decision' : 'decisions'}
+                  </a>
+                </>
+              )}
+            </p>
           </div>
           <BrandMark hot={draft.question.trim().length > 0} />
         </section>
@@ -152,6 +168,7 @@ export function Home({ arrival, draft, onChange, onSubmit, onReplay }: HomeProps
         <Board session={session} />
         <VerdictSection session={session} onWatch={watch} onConvene={convene} />
         <Sessions onReplay={onReplay} onConvene={convene} />
+        <Decisions arrival={arrival} onOpen={onOpenDecision} onCount={onCount} />
 
         <section className="hm-sec hm-convene" id="convene" aria-labelledby="convene-title">
           <div className="hm-col hm-convene__grid">
@@ -182,7 +199,15 @@ export function Home({ arrival, draft, onChange, onSubmit, onReplay }: HomeProps
   )
 }
 
-const Header = memo(function Header({ onConvene, onWatch }: { onConvene: (e?: MouseEvent) => void; onWatch: () => void }) {
+const Header = memo(function Header({
+  onConvene,
+  onWatch,
+  decisionCount,
+}: {
+  onConvene: (e?: MouseEvent) => void
+  onWatch: () => void
+  decisionCount: number
+}) {
   const [open, setOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
@@ -223,6 +248,10 @@ const Header = memo(function Header({ onConvene, onWatch }: { onConvene: (e?: Mo
       </a>
       <a href="#verdict" onClick={close}>
         Verdicts
+      </a>
+      <a href="#decisions" onClick={close}>
+        My decisions
+        {decisionCount > 0 && <span className="hm-nav__count">{decisionCount}</span>}
       </a>
     </>
   )
@@ -521,6 +550,7 @@ const Footer = memo(function Footer({ onWatch }: { onWatch: () => void }) {
           <a href={UNDER_THE_HOOD} onClick={navigateOnClick(UNDER_THE_HOOD)}>
             How it’s built
           </a>
+          <a href="#decisions">My decisions</a>
           <button type="button" onClick={onWatch}>
             Watch a session
           </button>

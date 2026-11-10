@@ -1,11 +1,15 @@
 import { useCallback, useEffect, useReducer, useRef, useState } from 'react'
 import type { AdkEvent, Intake, Ratification } from '../types'
-import { ApiError, createSession, ratify, runBoard, userId } from './api'
+import { ApiError, createSession, getSession, ratify, runBoard, userId } from './api'
 import { initialBoard, reduceBoard, type BoardState } from './board'
-import { CLIENT_INCOMPLETE, CLIENT_NETWORK, CLIENT_REPLAY } from './errors'
+import { boardFromSessionState, parseRatification, readReplayCall, writeReplayCall } from './decisions'
+import { CLIENT_DECISION, CLIENT_INCOMPLETE, CLIENT_NETWORK, CLIENT_REPLAY } from './errors'
 import { loadReplay, ReplayPlayer } from './replay'
 
-export type RunSource = { mode: 'live'; intake: Intake } | { mode: 'replay'; name: string }
+export type RunSource =
+  | { mode: 'live'; intake: Intake }
+  | { mode: 'replay'; name: string }
+  | { mode: 'saved'; sessionId: string }
 export type Transport = 'connecting' | 'streaming' | 'done'
 export type RatifyStatus = 'idle' | 'saving' | 'error'
 
@@ -32,11 +36,12 @@ function transportError(error: unknown): AdkEvent {
 }
 
 /**
- * Drives one board meeting from either transport into the shared reducer.
- * Mount a fresh instance (React `key`) per meeting.
+ * Drives one board meeting into the shared reducer.
+ * Mount a fresh instance (React `key`) per meeting. A saved decision is read back from the
+ * session store and never starts a model run.
  */
-export function useBoardRun(source: RunSource): BoardRun {
-  const [board, dispatch] = useReducer(reduceBoard, source, (s) =>
+export function useBoardRun(source: RunSource, onLiveSession?: (sessionId: string) => void): BoardRun {
+  const [board, dispatch] = useReducer(reduceBoard, source, (s): BoardState =>
     s.mode === 'live' ? { ...initialBoard, intake: s.intake } : initialBoard,
   )
   const [transport, setTransport] = useState<Transport>('connecting')
@@ -49,6 +54,8 @@ export function useBoardRun(source: RunSource): BoardRun {
   const player = useRef<ReplayPlayer | null>(null)
   const session = useRef<{ user: string; id: string } | null>(null)
   const speedRef = useRef(speed)
+  const onLiveSessionRef = useRef(onLiveSession)
+  onLiveSessionRef.current = onLiveSession
 
   useEffect(() => {
     const abort = new AbortController()
@@ -74,6 +81,36 @@ export function useBoardRun(source: RunSource): BoardRun {
       }
     }
 
+    if (source.mode === 'saved') {
+      const sessionId = source.sessionId
+      void (async () => {
+        try {
+          const user = userId()
+          const stored = await getSession(user, sessionId, signal)
+          if (signal.aborted) return
+          session.current = { user, id: stored.id }
+          const restored = boardFromSessionState(stored.state)
+          if (!restored.intake) {
+            dispatch({ errorCode: CLIENT_DECISION, errorMessage: 'Session has no saved question.' })
+          } else {
+            dispatch({ restore: restored })
+            const savedCall = parseRatification(stored.state.ratification)
+            if (savedCall) setRatification(savedCall)
+          }
+        } catch (error) {
+          if (signal.aborted) return
+          if (error instanceof ApiError && error.status === 404) {
+            dispatch({ errorCode: CLIENT_DECISION, errorMessage: error.message })
+          } else {
+            dispatch(transportError(error))
+          }
+        } finally {
+          if (!signal.aborted) setTransport('done')
+        }
+      })()
+      return () => abort.abort()
+    }
+
     const intake = source.intake
     void (async () => {
       let sawVerdict = false
@@ -84,6 +121,7 @@ export function useBoardRun(source: RunSource): BoardRun {
         // Never start a (quota-spending) run for a meeting that was already torn down.
         if (signal.aborted) return
         session.current = { user, id }
+        onLiveSessionRef.current?.(id)
         setTransport('streaming')
         for await (const event of runBoard(user, id, intake, signal)) {
           if (signal.aborted) return
@@ -130,6 +168,7 @@ export function useBoardRun(source: RunSource): BoardRun {
     async (action: Ratification['action'], note: string) => {
       const next: Ratification = { action, note: note.trim(), at: new Date().toISOString() }
       if (source.mode === 'replay') {
+        writeReplayCall(source.name, next)
         setRatification(next)
         return
       }
@@ -151,6 +190,13 @@ export function useBoardRun(source: RunSource): BoardRun {
     },
     [source.mode],
   )
+
+  // A recorded signature waits until the verdict is on the table, so it doesn't appear mid-playback.
+  useEffect(() => {
+    if (source.mode !== 'replay' || !board.verdict) return
+    const saved = readReplayCall(source.name)
+    if (saved) setRatification((current) => current ?? saved)
+  }, [source, board.verdict])
 
   return { board, transport, speed, setSpeed, skipToEnd, paused, togglePause, ratification, ratifyStatus, ratifyError, submitRatification }
 }

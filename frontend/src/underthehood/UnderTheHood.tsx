@@ -584,9 +584,11 @@ function Streaming() {
   return (
     <section className="uth-sec" id="streaming" tabIndex={-1} aria-labelledby="streaming-title">
       <div className="uth-wrap">
-        <SectionHead id="streaming" file="frontend/src/lib/{sse,board,replay}.ts" title="One event per finished node.">
+        <SectionHead id="streaming" file="frontend/src/lib/{sse,board,replay,decisions}.ts" title="One event per finished node.">
           The backend is ADK’s own FastAPI app, and every route comes from ADK. <code>POST /run_sse</code> holds the connection open and
-          sends one server-sent event each time a node finishes, so the meeting room fills in while the board is still working.
+          sends one server-sent event each time a node finishes, so the meeting room fills in while the board is still working. A finished
+          meeting stays in the session store. My decisions reads <code>GET /apps/crucible/users/…/sessions</code> and opens that board,
+          including the owner’s signature, without starting another run.
         </SectionHead>
 
         <div className="uth-stream">
@@ -615,7 +617,7 @@ function Streaming() {
             </div>
             <div className="uth-box uth-box--end" data-part>
               <span className="uth-box__kicker">The meeting room</span>
-              <p>Live and replay render through exactly the same code.</p>
+              <p>Live, replay, and a reopened decision render through the same meeting room.</p>
             </div>
             <div className="uth-box uth-box--patch" data-part>
               <span className="uth-box__kicker">Your call, saved</span>

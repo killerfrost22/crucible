@@ -82,3 +82,53 @@ export async function ratify(user: string, sessionId: string, ratification: Rati
     body: JSON.stringify({ stateDelta: { ratification } }),
   }).then(expectOk)
 }
+
+/** One ADK session as the list and get routes return it (camelCase, state included, events omitted on list). */
+export interface StoredSession {
+  id: string
+  state: Record<string, unknown>
+  /** Unix seconds; 0 when the server omitted it. */
+  lastUpdateTime: number
+}
+
+function asRecord(value: unknown): Record<string, unknown> | null {
+  return typeof value === 'object' && value !== null && !Array.isArray(value) ? (value as Record<string, unknown>) : null
+}
+
+function parseSession(value: unknown): StoredSession | null {
+  const row = asRecord(value)
+  if (!row || typeof row.id !== 'string' || !row.id) return null
+  const updated = row.lastUpdateTime ?? row.last_update_time
+  return {
+    id: row.id,
+    state: asRecord(row.state) ?? {},
+    lastUpdateTime: typeof updated === 'number' && Number.isFinite(updated) ? updated : 0,
+  }
+}
+
+function sessionUrl(user: string, sessionId?: string): string {
+  const base = `${API_BASE}/apps/${APP}/users/${encodeURIComponent(user)}/sessions`
+  return sessionId ? `${base}/${encodeURIComponent(sessionId)}` : base
+}
+
+/** Past decisions for this owner. Hydrates from GET when a backend returns shells with empty state. */
+export async function listSessions(user: string, signal?: AbortSignal): Promise<StoredSession[]> {
+  const response = await fetch(sessionUrl(user), { signal }).then(expectOk)
+  const body: unknown = await response.json()
+  const record = asRecord(body)
+  const rows = Array.isArray(body) ? body : record && Array.isArray(record.sessions) ? record.sessions : []
+  const sessions = rows.map(parseSession).filter((session): session is StoredSession => session !== null)
+  const blank = sessions.length > 0 && sessions.every((session) => Object.keys(session.state).length === 0)
+  if (!blank) return sessions
+  const hydrated = await Promise.all(
+    sessions.slice(0, 24).map((session) => getSession(user, session.id, signal).catch(() => session)),
+  )
+  return hydrated
+}
+
+export async function getSession(user: string, sessionId: string, signal?: AbortSignal): Promise<StoredSession> {
+  const response = await fetch(sessionUrl(user, sessionId), { signal }).then(expectOk)
+  const session = parseSession(await response.json())
+  if (!session) throw new Error('The server returned a decision this app could not read.')
+  return session
+}

@@ -123,7 +123,7 @@ The installed ADK 2.13 session routes accept identifiers from the URL; its PATCH
 
 **Browser-confirmed:** accepting and signing an override worked, including the note and timestamp. After refreshing and completing the same replay again, the signature disappeared. The confirmation had said **“kept on this device (recorded session)”**, but the inspected browser storage contained only the theme preference.
 
-**Source-confirmed:** `frontend/src/components/Verdict.tsx:227–250` displays the persistence wording. `frontend/src/App.tsx:12–20` intentionally does not resume live meetings from the URL. The existing team roadmap already acknowledges lost boards and inaccessible saved ratifications in `TODO.md:30–31`.
+**Source-confirmed:** `frontend/src/components/Verdict.tsx:227–250` displays the persistence wording. `frontend/src/App.tsx:12–20` intentionally does not resume live meetings from the URL. The existing team roadmap already acknowledges lost boards and inaccessible saved ratifications in `docs/TODO.md:30–31`.
 
 **Separate storage prerequisite, source-confirmed:** `README.md:69,109–111` recommends a plain `postgresql://` URL, but `backend/requirements.txt` installs neither the ADK database extra nor an async Postgres driver. The installed `DatabaseSessionService` requires SQLAlchemy's asyncio support and an asynchronous driver (`backend/.venv/Lib/site-packages/google/adk/sessions/database_session_service.py:357–365,398–422`). Align the dependencies and documented URL, e.g. the supported `postgresql+asyncpg://` configuration, before presenting Postgres as a working durability switch. No Postgres startup was attempted in this review.
 
@@ -301,7 +301,7 @@ Before publishing comparative claims, equalize source access, make final-verdict
 
 ### 20. Keep recordings and deployment claims tied to the actual configuration
 
-**Source-confirmed:** the featured HVAC recording uses the older Gemini/model-knowledge setup, while the technical page describes the current OpenRouter setup. `TODO.md:36` already tracks re-recording HVAC. The shipped error recording demonstrates an older quota failure, not a captured OpenRouter credit-exhaustion response. `frontend/src/lib/api.ts:4` falls back to `http://localhost:8000` if the production API URL is absent.
+**Source-confirmed:** the featured HVAC recording uses the older Gemini/model-knowledge setup, while the technical page describes the current OpenRouter setup. `docs/TODO.md:36` already tracks re-recording HVAC. The shipped error recording demonstrates an older quota failure, not a captured OpenRouter credit-exhaustion response. `frontend/src/lib/api.ts:4` falls back to `http://localhost:8000` if the production API URL is absent.
 
 **Suggestion:** label each replay with recording date, model configuration, and research mode, or feature a current sourced recording. Publish only the event fields needed for the demo; reviewed replay envelopes also contain internal orchestration/model-thought-marked content that the product UI does not need. Inspect exports for business/personal data and provider diagnostics before publishing them. Do not treat obscuring prompts as a security boundary.
 

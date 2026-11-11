@@ -159,7 +159,10 @@
 
 .brief__more-link,
 .brief__more {
+  display: inline-flex;
+  align-items: center;
   justify-self: start;
+  min-height: 44px;
   font-size: var(--step--1);
   font-weight: 600;
   color: var(--text);
@@ -167,10 +170,7 @@
 }
 
 .brief__more {
-  display: inline-flex;
-  align-items: center;
   gap: 0.35em;
-  min-height: 44px;
 }
 
 /* "Your call" sits inside the brief: a raised panel, no longer a sticky column. */
@@ -519,6 +519,12 @@
   border: 1px solid var(--line-strong);
   border-radius: var(--radius-card);
   background: var(--surface-2);
+  scroll-margin-top: calc(var(--frame-h) + var(--space-5));
+}
+
+/* A skip-link target: the scroll is the feedback. */
+.yourcall:focus {
+  outline: none;
 }
 
 .yourcall__title {

@@ -421,6 +421,12 @@
   inset: -10px -5px;
 }
 
+/* Chips on neighbouring lines need 24 px between them (WCAG 2.5.8). Body text already has that; small notes at
+   14 px × 1.55 ≈ 22 px don't, so where they hold a chip they get a 24 px line pitch. */
+:is(.check__note, .rebuttal__response, .compare__use):has(.fref) {
+  line-height: max(1.55em, 24px);
+}
+
 .fref:hover,
 .fref[data-active] {
   border-color: transparent;

@@ -1,0 +1,621 @@
+{
+  "scenario": {
+    "id": "bakery-price-increase",
+    "intake": {
+      "question": "Should I raise prices 8% across the menu to cover higher flour and butter costs?",
+      "leaning": "Yes, all at once next month",
+      "profile": {
+        "industry": "neighborhood bakery",
+        "location": "Annapolis, Maryland",
+        "size": "1 shop, 5 employees",
+        "current_tools": [
+          "Clover POS"
+        ],
+        "goals": [
+          "protect margins",
+          "keep regulars"
+        ]
+      }
+    },
+    "must_catch": [
+      {
+        "label": "Customer reaction / price sensitivity",
+        "any": [
+          "regulars",
+          "customer (reaction|loyalty|churn|pushback)",
+          "price[- ]sensitiv",
+          "elastic"
+        ]
+      }
+    ],
+    "control": "No legal trap. The Realist should not block, and the verdict should not be 'reject' on invented legal grounds."
+  },
+  "seat_model": "openrouter/anthropic/claude-haiku-5.5",
+  "researcher_model": "openrouter/anthropic/claude-sonnet-5.5:online",
+  "chair_model": "openrouter/anthropic/claude-sonnet-5.5",
+  "web_search": true,
+  "baseline": "## Recommendation\n\n**Yes, raise prices next month, but don't make it a flat 8% on everything.** Do one well-communicated increase, with the size set item by item. Aim for a blended increase of about 6-8%, and base it on your actual costs.\n\n**Why one move is right:** For a single-shop bakery, one clear increase with advance notice is usually better received than repeated small bumps. Regulars forgive a single adjustment more easily than constant creep.\n\n**Why not flat 8%:**\n- **Your cost increases aren't uniform.** Butter-heavy items (croissants, danishes, shortbread, laminated dough) are hit much harder than lean breads or coffee.\n- **The math may not need 8% everywhere.** Illustrative example: if ingredients are about 30% of sales, flour and butter are about half of that, and they're up 15%, your cost rise is only about 2-3% of sales. An 8% increase would cover that and start to offset wages, rent, and packaging. That can be justified, but you should know that's what you're doing.\n- **Customers judge a few anchor items.** Your plain croissant, coffee, daily loaf, and cookie shape whether you feel \"expensive.\" Hold or barely move those, and take more on specialty and butter-heavy items.\n\n## Main risks\n\n1. **Losing regulars or visit frequency.** Watch the transaction count, not just revenue.\n2. **Awkward price points.** 8% on a $3.75 item is $4.05. Round to $4.00 or $4.25 deliberately, and remember rounding can swing the effective increase a lot.\n3. **Commodity volatility.** Butter prices swing. You could over- or under-correct, so plan to review quarterly.\n4. **Uneven communication.** If staff can't explain it confidently, customers will notice.\n5. **Missed price updates.** Custom orders, catering, wholesale accounts, your website, and third-party listings can lag behind the shop prices and quietly eat margin.\n6. **Seasonal timing.** In Annapolis, tourist and Naval Academy event traffic is less price-sensitive than winter local traffic, so know where you are in the cycle.\n\n## Next steps\n\n**This week**\n- Pull item-level sales from Clover for the last 90 days. Identify your top 15-20 items by units and by revenue.\n- Cost out each of those items (ingredients per unit). A simple spreadsheet is fine. Flag items with food cost above about 30-35%.\n\n**Next 1-2 weeks**\n- Set new prices in three tiers:\n  - **Hold or +2-4%:** traffic drivers and price-visible items (coffee, plain pastries, basic loaves).\n  - **+6-8%:** the middle of the menu.\n  - **+10-12%:** butter-heavy, labor-intensive, or specialty items that are already underpriced.\n- Round to clean price points and check that the blended increase lands where you want it.\n- Get quotes from a second flour/butter supplier, or ask your current one about volume commitments or a fixed-price window. A 2-3% savings reduces how much you need to pass on.\n\n**2 weeks before the change**\n- Post a friendly sign and a short social/email note: what's changing, why (flour and butter costs), and your commitment to quality. Keep it brief and not apologetic.\n- Brief your staff with a two-sentence answer for questions.\n\n**Launch day**\n- Update Clover, your website, and any wholesale or catering price sheets at the same time.\n- Consider a small goodwill gesture for regulars, such as a loyalty stamp or a free cookie with a coffee that week.\n\n**30-60 days after**\n- Compare transaction counts, average ticket, and gross margin to the prior period. If traffic holds (a drop of 3-5% or less is typical and acceptable), you're fine. If specific items stall, adjust those rather than rolling back everything.\n- Set a calendar reminder to re-check ingredient costs quarterly.\n\n**Bottom line:** Raising prices is the right call, and doing it once next month is fine. Let item-level cost data decide how much each item moves, and protect the few items that define your regulars' sense of value.",
+  "seconds": 86,
+  "board_state": {
+    "intake": {
+      "question": "Should I raise prices 8% across the menu to cover higher flour and butter costs?",
+      "leaning": "Yes, all at once next month",
+      "profile": {
+        "name": "",
+        "industry": "neighborhood bakery",
+        "location": "Annapolis, Maryland",
+        "size": "1 shop, 5 employees",
+        "current_tools": [
+          "Clover POS"
+        ],
+        "budget": "",
+        "goals": [
+          "protect margins",
+          "keep regulars"
+        ],
+        "constraints": ""
+      }
+    },
+    "evidence_mode": "web",
+    "evidence": {
+      "decision": "Whether to raise all menu prices by 8% in a single step next month to offset higher flour and butter costs at a one-shop neighborhood bakery in Annapolis, Maryland.",
+      "options": [
+        "Do nothing: absorb the flour and butter increases and keep current prices",
+        "Raise all menu prices 8% at once next month",
+        "Raise prices selectively: larger increases on high-butter or thin-margin items, smaller or none on staples and regulars' favorites",
+        "Hold list prices and cut cost instead: renegotiate or switch suppliers, adjust recipes or portion sizes, trim the menu"
+      ],
+      "facts": [
+        {
+          "claim": "Cost increases hit profit harder than their percentage suggests. The multiplier is cost divided by profit. In one worked example, a 5% rise in total costs cuts profit by about 8% on a sourdough loaf (multiplier 1.6) and about 13% on a cinnamon bun (multiplier 2.7). Items above roughly 2.5 are described as fragile.",
+          "source": "https://baketly.com/blog/repricing-when-ingredients-go-up/",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T03:00:36Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "The same source says that when repricing, one clear increase with a stated reason is less noticeable to regulars than two smaller increases a few months apart. It also suggests setting a margin-slip threshold in advance and reviewing the list monthly.",
+          "source": "https://baketly.com/blog/repricing-when-ingredients-go-up/",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T03:00:36Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "A New York Fed survey of about 700 firms estimated average cost pass-through to prices at roughly two-thirds in regression estimates. In a hypothetical 5-point cost increase question, average pass-through was 50% and the median about 60%. The firms surveyed were not bakeries.",
+          "source": "https://libertystreeteconomics.newyorkfed.org/2023/06/how-do-firms-adjust-prices-in-a-high-inflation-environment/",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T03:00:39Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "In New York Fed interviews with 33 business decision-makers, firms often accepted lower margins to protect sales volume. Firms that cited high demand elasticity gave it as a reason to hold back on passing through cost increases. One firm tested a 7% all-at-once increase in a few stores to observe customer reaction.",
+          "source": "https://libertystreeteconomics.newyorkfed.org/2025/11/how-businesses-set-prices-in-their-own-words/",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T03:00:39Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "A food-vendor blog offers a rule-of-thumb framework. Absorb a single-ingredient rise of 5-10%. Raise prices or substitute when one ingredient is up 25-50%. Raise prices immediately when multiple ingredients are up 10% or more at once, or when margins fall below 30%. It suggests tracking the top 10 ingredient costs monthly. This is a blog heuristic, not a research benchmark.",
+          "source": "https://findhomegrown.com/blog/ingredient-price-spikes-food-vendor",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T03:00:36Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "An Oregon bakery owner, in a news report on commodity inflation, said she was paying about 25% more for butter and nearly triple for flour. She sets prices on the highest cost but was not raising them in an emergency over the next few months. The article notes that reactionary price increases often come back down when costs fall.",
+          "source": "https://www.bendsource.com/news/not-even-cheaper-by-the-dozen-dozen-22934833/",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T03:00:37Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Maryland's statewide minimum wage is $15.00 per hour (since January 2024). Wage costs also bear on how much of the margin squeeze comes from flour and butter versus labor.",
+          "source": "",
+          "verified": false
+        },
+        {
+          "claim": "Maryland has no general state law requiring advance notice or approval of routine menu price increases for a bakery. Price-gouging rules in Maryland apply to declared emergencies. Local requirements in Annapolis and Anne Arundel County, if any, should be checked directly.",
+          "source": "",
+          "verified": false
+        },
+        {
+          "claim": "Retail food service in Anne Arundel County generally requires a food service facility license from the county health department. A price change does not itself trigger relicensing. Maryland's 6% sales tax applies to taxable items, and whether specific bakery items are taxable depends on how they are sold, for example eaten on premises versus taken home. Taxable status should be confirmed with the Maryland Comptroller.",
+          "source": "",
+          "verified": false
+        },
+        {
+          "claim": "Typical independent-bakery benchmarks from general industry knowledge: ingredient cost around 25-35% of sales, total cost of goods including labor often 60-75%, and net profit margins commonly in the low-to-mid single digits up to about 10%. These vary widely by product mix.",
+          "source": "",
+          "verified": false
+        },
+        {
+          "claim": "Clover POS supports editing item prices and pricing by item or category in its dashboard, so an across-the-board or selective price change can be made without new software. Current Clover plan pricing was not retrieved from the vendor's pricing page in this session.",
+          "source": "",
+          "verified": false
+        }
+      ],
+      "open_questions": [
+        "What are the actual current invoice costs for flour and butter versus 6-12 months ago, and what percent of total cost of goods do they represent? An 8% price rise may exceed or undershoot the real cost increase.",
+        "What is each item's current margin and cost-to-profit ratio? Items with the thinnest margins may need more than 8%, and others less.",
+        "How price-sensitive are Annapolis regulars? Is there local competition (other bakeries, grocery in-store bakeries, cafes) that has already raised prices?",
+        "What does Clover sales data show for item-level volume, and has volume dropped after any past price changes?",
+        "Is the flour and butter spike expected to persist or reverse? Do suppliers offer contracts, volume discounts or alternatives?",
+        "Is seasonal demand, such as the holidays or Naval Academy and tourist traffic, likely to affect how customers react in the coming month?",
+        "Are other costs, such as wages, rent, utilities and packaging, also rising, so that the squeeze is broader than flour and butter?",
+        "Which of the shop's items are subject to Maryland sales tax, and do posted or tax-inclusive prices need to be updated in Clover and on menus?",
+        "Are there pre-orders, wholesale accounts, catering or wedding-cake contracts with fixed prices that an 8% increase cannot reach immediately?"
+      ]
+    },
+    "round1": {
+      "industry_expert": {
+        "stance": "conditional",
+        "headline": "Raise prices, but selectively and with one clear reason, not a flat 8%.",
+        "summary": "Flour and butter hit thin-margin items hardest. Raise the fragile items more and keep staples and regulars' favorites closer to flat. Announce one clear reason. Review margins monthly and set a trigger for any further change.",
+        "key_points": [
+          "F1: Thin-margin items lose profit far faster than the cost percentage, so one flat 8% undershoots some items and overshoots others.",
+          "F2: One clear increase with a stated reason is less noticeable to regulars than repeated small hikes.",
+          "F6: An Oregon bakery avoided emergency hikes, and reactionary increases often come back down when costs fall (bakery owner's account, not a benchmark)."
+        ],
+        "risks": [
+          "Regulars notice a flat 8% on staples like bread and may switch to cheaper options.",
+          "Without current invoice figures, 8% may not match the real cost increase, so margins could still slip.",
+          "Raising every item at once can look like a grab and strain goodwill in a small town."
+        ],
+        "pushback": "Are flour and butter really the main squeeze? Check whether wages, rent and packaging are rising too, since an 8% fix on two ingredients may not close the full gap.",
+        "confidence": 62
+      },
+      "ai_tools_expert": {
+        "stance": "conditional",
+        "headline": "Don't raise every price 8% at once; raise selectively.",
+        "summary": "Raising everything 8% next month is too blunt. Costs hit thin-margin items harder than the percentage suggests. Check real invoice costs and item margins first, then raise fragile items more and staples less. Clover, which you already own, can make item-level changes; no AI tool is needed here.",
+        "key_points": [
+          "Thin-margin items take a bigger hit: a 5% cost rise cut a cinnamon bun's profit about 13% (F1). Price those items more.",
+          "One clear increase with a stated reason is less noticeable than several small ones (F2), so one targeted, explained step can work. That source is a blog, not research.",
+          "A test in a few stores shows customer reaction before a full rollout (F4). Consider that before an all-at-once change."
+        ],
+        "risks": [
+          "Raising staples and regulars' favorites 8% may cost loyal customers and volume.",
+          "8% may exceed or fall short of the real flour and butter increase, since invoices have not been checked.",
+          "Pre-orders, wedding cakes, or catering at fixed prices may not reflect the new prices right away."
+        ],
+        "pushback": "Assumes flour and butter costs rose by about 8% of sales. Check invoices and item margins before picking any number.",
+        "confidence": 70,
+        "tools": []
+      },
+      "realist": {
+        "stance": "conditional",
+        "headline": "Conditional yes: raise prices, but selectively and with a clear reason.",
+        "summary": "Raising prices is reasonable, but an 8% jump on every item all at once is not yet proven. Your flour and butter cost increases are not yet measured against your sales. Check which items are thin-margin, pick a clear reason for customers, and set a margin trigger to review monthly. Confirm the tax and local rules first.",
+        "key_points": [
+          "F5's rule of thumb says to raise prices right away when several ingredients rise 10% or more together, but it is a blog heuristic, not research (F5).",
+          "F2 says one clear increase with a stated reason is less noticeable to regulars than repeated small ones, which supports a single well-explained change (F2).",
+          "F1 shows thin-margin items like cinnamon buns can lose far more profit than staples, so an across-the-board 8% may undershoot some items and overshoot others (F1)."
+        ],
+        "risks": [
+          "Staples and regulars' favorites may get the same 8% as thin-margin items, pushing away the customers you want to keep.",
+          "Without invoice data, the 8% may be more or less than your real cost rise, so margins could still slip or prices could rise too far.",
+          "Price changes in Clover or on menus may miss tax-inclusive or taxable-item settings if not checked (F9, unverified)."
+        ],
+        "pushback": "Does an 8% increase match your actual flour and butter cost rise on your top-selling items, or is it a guess?",
+        "confidence": 60,
+        "checks": [
+          {
+            "area": "legal",
+            "status": "flag",
+            "note": "F8 (unverified) says Maryland has no general advance-notice rule for routine bakery price changes, but Annapolis or Anne Arundel County rules must be confirmed by an attorney or the local Small Business Development Center."
+          },
+          {
+            "area": "compliance",
+            "status": "flag",
+            "note": "F9 (unverified) says a price change alone does not trigger food facility relicensing, but tax treatment of eat-in versus take-out items must be confirmed with the Maryland Comptroller or an accountant."
+          },
+          {
+            "area": "financial",
+            "status": "flag",
+            "note": "No invoice cost history, item margins, or cost-of-goods share is in the evidence, so whether 8% covers the real cost rise is unverified; your accountant or POS data can confirm."
+          },
+          {
+            "area": "goals",
+            "status": "flag",
+            "note": "F2 and F4 support a clear, measured change, but a flat 8% on all items may not protect margins or keep regulars; a selective plan fits both goals better."
+          },
+          {
+            "area": "operational",
+            "status": "pass",
+            "note": "F11 (unverified) says Clover can edit item or category prices without new software, though current plan costs were not retrieved."
+          }
+        ]
+      },
+      "strategist": {
+        "stance": "conditional",
+        "headline": "Raise prices, but not 8% flat next month; phase it in.",
+        "summary": "Price increases are likely needed, but a flat 8% next month locks in a blunt price base for a year. Thin-margin items may need more, staples less. A staged, item-weighted rise with a monthly margin check keeps room to adjust. Next move: pull item-level invoice costs before setting any new prices.",
+        "key_points": [
+          "F1: In one worked example, a 5% cost rise cut cinnamon bun profit about 13%, so a flat 8% may undershoot fragile items.",
+          "F4: One firm tested a 7% all-at-once rise in a few stores first to read customer reaction before committing everywhere.",
+          "F6: An Oregon owner did not raise prices in an emergency, and the article notes reactionary increases often come back down when costs fall."
+        ],
+        "risks": [
+          "Over the next quarter, regulars may see one sudden 8% jump with no staged signal and cut visits, a loss that compounds into next year.",
+          "A flat base makes any later price cut look like a retreat, so reversing after flour eases costs credibility (my reasoning).",
+          "Competitors who hold prices could take weekday regulars; local competitor pricing is still unknown."
+        ],
+        "pushback": "Assume the 8% matches your real cost increase. You have not yet measured flour and butter invoices by item, so the number may be wrong in both directions.",
+        "confidence": 70
+      },
+      "devils_advocate": {
+        "stance": "conditional",
+        "headline": "Raise once next month with a stated reason, weighted to fragile items.",
+        "summary": "Waiting lets thin-margin items lose profit fast. One clear increase with a stated reason bothers regulars less than repeated small ones. Consider one step, but push harder on high-butter items, set a margin floor, and review monthly. Confirm real flour and butter invoice increases first.",
+        "key_points": [
+          "Cost rises hit thin-margin items hardest. In one worked example, a 5% cost rise cut a cinnamon bun's profit about 13% (F1, one example only).",
+          "One clear increase with a stated reason is less noticeable to regulars than two smaller increases a few months apart (F2, a blog's view).",
+          "Surveyed firms passed through roughly half to two-thirds of cost rises, so 8% may not be excessive (F3, not bakeries)."
+        ],
+        "risks": [
+          "Regulars may react badly to an unexplained 8% jump. One firm tested a 7% all-at-once rise in a few stores first (F4).",
+          "If flour and butter fall later, the increase may stick. An Oregon baker noted that reactionary increases often come back down (F6).",
+          "8% may overshoot low-butter items and undershoot fragile ones, since the real per-item cost math is not yet done."
+        ],
+        "pushback": "Assume 8% matches your real cost rise. Check flour and butter invoices and item margins before committing, because 8% is a guess until then.",
+        "confidence": 55
+      }
+    },
+    "round2": {
+      "industry_expert": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "strategist",
+            "their_claim": "A flat 8% next month locks in a blunt price base that is hard to reverse later.",
+            "response": "Fair point on reversibility, but F6 says reactionary increases often come back down, which cuts both ways. The real fix is item-level invoice math before any number, not a staged delay that leaves fragile items losing margin."
+          },
+          {
+            "target": "devils_advocate",
+            "their_claim": "One clear increase with a stated reason bothers regulars less than repeated small ones, so raise once next month.",
+            "response": "I agree on one clear step with a reason (F2). But a flat 8% ignores that F1 items lose profit far faster. Keep the single announcement, while weighting increases by item margin."
+          },
+          {
+            "target": "realist",
+            "their_claim": "Tax treatment and local rules must be confirmed before any price change.",
+            "response": "Agreed that tax and county rules need checking (F8, F9 unverified). That is a pre-launch checklist item, not a reason to delay the pricing decision itself."
+          }
+        ],
+        "concessions": [
+          "Raising every item by the same 8% is too blunt when thin-margin items lose profit much faster (F1).",
+          "Invoice and item-margin data should be pulled before any final number is set."
+        ],
+        "stance": "conditional",
+        "headline": "Raise once with one clear reason, weighted to thin-margin items, not flat 8%.",
+        "summary": "Flour and butter hit some items much harder than others. A flat 8% will overshoot some and undershoot others. Pull invoice costs and item margins first. Then raise fragile items more and staples less, announce one clear reason, and review margins monthly. Confirm tax and local rules with an accountant or the Maryland Comptroller before launch.",
+        "key_points": [
+          "F1: Thin-margin items lose profit far faster than the cost percentage, so a flat 8% misfits.",
+          "F2: One clear, explained increase is less noticeable to regulars than repeated small ones.",
+          "F6: Reactionary increases often come back down when costs fall, so avoid a permanent flat base."
+        ],
+        "risks": [
+          "Regulars may switch on staples like bread if they see a flat 8% with no reason.",
+          "Without invoice data, 8% may over- or under-shoot the real cost rise.",
+          "Fixed-price pre-orders and catering may not reflect new prices right away."
+        ],
+        "pushback": "Are flour and butter really the main squeeze? Wages, rent and packaging may also be rising, and an 8% fix on two ingredients may leave a gap.",
+        "confidence": 66
+      },
+      "ai_tools_expert": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "strategist",
+            "their_claim": "A flat 8% next month locks in a blunt price base for a year, so a phased rise is safer.",
+            "response": "I agree a flat base is blunt. But a slow phase-in leaves fragile items underpriced for months. Set item-level targets now and review monthly instead of waiting."
+          },
+          {
+            "target": "devils_advocate",
+            "their_claim": "Raise once next month with a stated reason, weighted to fragile items, since F3 suggests 8% is not excessive.",
+            "response": "I agree with one weighted step and a stated reason. But F3 covers non-bakery firms, so it does not show 8% fits your shop. Check your invoices first."
+          },
+          {
+            "target": "realist",
+            "their_claim": "F5's rule says to raise prices right away when several ingredients rise 10% or more together.",
+            "response": "F5 is a blog heuristic, not research. The evidence does not show flour and butter both rose 10%. Confirm invoices before treating that trigger as met."
+          }
+        ],
+        "concessions": [
+          "Devil's Advocate: 8% is not automatically excessive, since F3 estimates pass-through around half to two-thirds, though F3 covers non-bakery firms.",
+          "Strategist: a staged rise keeps room to adjust if flour or butter costs later ease."
+        ],
+        "stance": "conditional",
+        "headline": "Conditional: raise selectively with one clear reason, not a flat 8% now.",
+        "summary": "Do not raise everything 8% next month until item margins and flour and butter invoices are checked. Thin-margin items likely need more; staples and regulars' favorites may need less. Announce one clear reason and review margins monthly. No AI tool is needed here. Clover, which you already own, can edit item prices (F11, unverified). Confirm local rules with an attorney or the local Small Business Development Center.",
+        "key_points": [
+          "F1: In one worked example, a 5% cost rise cut a cinnamon bun's profit about 13%, so a flat 8% can undershoot fragile items.",
+          "F2: One clear increase with a stated reason is less noticeable to regulars than two smaller ones, per a bakery blog's view.",
+          "F4: One firm tested a 7% all-at-once rise in a few stores first, a cheap check before a full rollout."
+        ],
+        "risks": [
+          "Regulars may cut visits if staples jump 8% with no stated reason.",
+          "8% could still miss the real flour and butter increase, since invoices are not in the evidence.",
+          "Pre-orders, wedding cakes and catering at fixed prices will lag the new list."
+        ],
+        "pushback": "Does the 8% match your actual flour and butter invoice rise on your top sellers, or is it a guess?",
+        "confidence": 68,
+        "tools": []
+      },
+      "realist": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "strategist",
+            "their_claim": "Phase the increase in stages with a monthly margin check, starting with a test.",
+            "response": "A staged rise conflicts with F2, which favors one clear increase over smaller steps. A single shop cannot test in a few stores as F4's firm did. Keep one item-weighted step, with a monthly margin trigger."
+          },
+          {
+            "target": "devils_advocate",
+            "their_claim": "Surveyed firms passed through about half to two-thirds of cost rises, so 8% may not be excessive.",
+            "response": "F3's pass-through figures come from New York Fed firms, and the source says they were not bakeries. They do not show your 8% fits your costs. Measure your own invoices first."
+          }
+        ],
+        "concessions": [
+          "Reversal risk is real: F6 notes reactionary increases often come back down, so tie the stated reason to a cost figure you can later reverse."
+        ],
+        "stance": "conditional",
+        "headline": "Conditional yes: raise selectively once invoices confirm the real cost rise.",
+        "summary": "Raising prices is reasonable, but a flat 8% on every item is not yet proven. Thin-margin items like cinnamon buns can lose far more profit (F1), so they may need more, and staples less. Measure flour and butter invoices by item first, announce one clear reason (F2), and review margins monthly. Confirm local and tax rules before changing Clover.",
+        "key_points": [
+          "Selective increases protect fragile items better than a flat 8% (F1).",
+          "One clear, explained increase is less noticeable to regulars than repeated small ones (F2).",
+          "Check invoices by item before choosing any percentage; no cost history is in the evidence."
+        ],
+        "risks": [
+          "Staples and regulars' favorites get the same 8%, pushing loyal customers away.",
+          "8% may be too high or too low for real flour and butter costs, so margins could still slip.",
+          "Tax-inclusive or taxable-item prices may be wrong in Clover or on menus if not checked (F9, unverified)."
+        ],
+        "pushback": "Is your 8% matched to measured flour and butter costs on your top sellers, or is it a guess?",
+        "confidence": 62,
+        "checks": [
+          {
+            "area": "legal",
+            "status": "flag",
+            "note": "F8 (unverified) says Maryland has no general advance-notice rule for routine bakery price changes; an attorney or the local Small Business Development Center should confirm Annapolis and Anne Arundel rules."
+          },
+          {
+            "area": "compliance",
+            "status": "flag",
+            "note": "F9 (unverified) says a price change alone does not trigger relicensing; the Maryland Comptroller or an accountant should confirm taxable status of eat-in versus take-out items."
+          },
+          {
+            "area": "financial",
+            "status": "flag",
+            "note": "No invoice history, item margins or cost-of-goods share appears in the evidence, so whether 8% covers the cost rise is unverified; the owner's accountant or Clover sales data can confirm."
+          },
+          {
+            "area": "goals",
+            "status": "flag",
+            "note": "F2 and F4 support a clear, measured change, but a flat 8% on all items may not protect margins or keep regulars."
+          },
+          {
+            "area": "operational",
+            "status": "pass",
+            "note": "F11 (unverified) says Clover can edit item prices without new software; current plan cost was not retrieved, so confirm with Clover."
+          }
+        ]
+      },
+      "strategist": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "devils_advocate",
+            "their_claim": "Devil's Advocate says waiting lets thin-margin items lose profit fast, so the owner should take one step next month.",
+            "response": "Agreed that waiting costs margin, but one flat 8% across all items locks in a blunt base. Speed matters less than tiering. A first test in a few stores (F4) is cheap insurance before a full rollout."
+          },
+          {
+            "target": "industry_expert",
+            "their_claim": "Industry Expert says a flat 8% undershoots some items and overshoots others, so fragile items should rise more.",
+            "response": "Right on tiering, but a fixed per-item schedule can still be too rigid. Add a monthly margin trigger so any later moves are planned, not reactive."
+          }
+        ],
+        "concessions": [
+          "Devil's Advocate and Industry Expert are right that one clear increase with a stated reason beats repeated small hikes (F2)."
+        ],
+        "stance": "conditional",
+        "headline": "Phase a weighted rise in; avoid locking in a flat 8% base.",
+        "summary": "A flat 8% now sets the price base for the next year, and it is hard to walk back if flour and butter ease. A staged, item-weighted rise with a monthly margin check keeps room to adjust. Pull invoice costs by item first, then decide how much each item moves.",
+        "key_points": [
+          "F1: a 5% cost rise cut a cinnamon bun's profit about 13%, so a flat 8% may undershoot fragile items (one worked example, not a benchmark).",
+          "F4: one firm tested a 7% all-at-once rise in a few stores before committing everywhere.",
+          "F6: reactionary increases often come back down when costs fall, so a fast rise can outlast its reason."
+        ],
+        "risks": [
+          "Next quarter, regulars may see one unstaged 8% jump and cut visits, a loss that compounds into next year.",
+          "A flat base makes a later price cut look like a retreat, which weakens trust when flour eases.",
+          "Competitors holding prices could draw weekday regulars; local competitor pricing is still unknown."
+        ],
+        "pushback": "Assume the 8% matches your real cost rise; no invoice data exists yet, so the number may be wrong in either direction.",
+        "confidence": 68
+      },
+      "devils_advocate": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "industry_expert",
+            "their_claim": "Raise the fragile items more and keep staples closer to flat, announcing one clear reason.",
+            "response": "Selective pricing is sensible, but it needs item margins you do not have yet. Without invoice data, 'fragile' is a guess. A flat 8% with a clear reason may still be simpler and fairer to regulars, as F2 suggests."
+          },
+          {
+            "target": "strategist",
+            "their_claim": "A flat 8% next month locks in a blunt price base for a year, and a later cut would look like a retreat.",
+            "response": "Phasing in a rise can be sensible, but a two-step rise puts pressure on regulars twice (F2). Monthly margin reviews let you cut later if costs fall, as F6 notes, without needing a staged rollout first."
+          }
+        ],
+        "concessions": [
+          "Waiting for item-level invoice and margin data is necessary before setting any final number."
+        ],
+        "stance": "conditional",
+        "headline": "Raise once next month, with a clear reason and item-weighting checked first.",
+        "summary": "Waiting costs margin on thin-items. One clear increase with a stated reason bothers regulars less than repeated small ones (F2). Before committing, pull flour and butter invoices and item margins. Price fragile items above 8% and keep staples closer to flat. Set a margin floor and review monthly. Test one store or a few items if the owner wants a safer start (F4). The 8% is a guess until invoices confirm it.",
+        "key_points": [
+          "Thin-margin items lose profit much faster than the cost rise (F1).",
+          "One clear increase with a stated reason is less noticeable than repeated small hikes (F2).",
+          "Surveyed firms passed through roughly half to two-thirds of cost rises, though not bakeries (F3)."
+        ],
+        "risks": [
+          "Regulars may react badly to an unexplained 8% jump.",
+          "If flour and butter fall later, the increase may stick (F6).",
+          "8% may overshoot low-butter items and undershoot fragile ones."
+        ],
+        "pushback": "Assume 8% matches your real cost rise. Check flour and butter invoices and item margins before committing, because 8% is a guess until then.",
+        "confidence": 60
+      }
+    },
+    "verdict": {
+      "decision": "defer",
+      "headline": "Don't raise a flat 8% yet; check invoices, then raise once, item by item.",
+      "confidence": 68,
+      "rationale": "Every seat agrees prices probably need to rise. No seat could show that a flat 8% fits your costs, because no invoice or item-margin data is in the evidence. Thin-margin items lose profit much faster than the cost rise (F1, one worked example). One clear, explained increase is less noticeable to regulars than several small ones (F2, a baking blog's view). So spend this week on the numbers. Then raise once next month, with bigger moves on fragile items and smaller ones on staples. Review margins monthly.",
+      "decisive_arguments": [
+        {
+          "seat": "industry_expert",
+          "point": "A flat 8% misfits the menu. A 5% cost rise cut a cinnamon bun's profit about 13% but a sourdough loaf's about 8% (F1, one worked example), so fragile items may need more and staples less."
+        },
+        {
+          "seat": "realist",
+          "point": "No invoice history, item margins or cost-of-goods share is in the evidence, so whether 8% covers the real cost rise is unproven."
+        },
+        {
+          "seat": "ai_tools_expert",
+          "point": "F3's pass-through figures come from non-bakery firms, and F5's 'raise now' trigger is a blog heuristic. Neither shows that flour and butter both rose 10% or that 8% fits this shop."
+        },
+        {
+          "seat": "industry_expert",
+          "point": "Keep one announcement with one stated reason, since F2 says this is less noticeable to regulars than repeated small hikes (a blog's view). Weight the amounts by item margin."
+        }
+      ],
+      "dissent": [
+        {
+          "seat": "devils_advocate",
+          "point": "Without invoice data, 'fragile' is a guess. A flat 8% with a clear reason may be simpler and fairer to regulars, as F2 suggests."
+        },
+        {
+          "seat": "strategist",
+          "point": "A flat 8% locks in a blunt price base that is hard to walk back if flour and butter ease (F6). Phase the rise in with a monthly margin trigger rather than one jump."
+        },
+        {
+          "seat": "strategist",
+          "point": "Regulars may cut visits after one unstaged jump, and competitors who hold prices could draw them away. Local competitor pricing is still unknown."
+        }
+      ],
+      "conditions": [
+        "Flour and butter invoices (now versus 6-12 months ago) and per-item margins confirm a real cost rise, and show which items are fragile (F1 calls a cost-to-profit ratio above about 2.5 fragile).",
+        "Taxable status of eat-in versus take-out items is confirmed with the Maryland Comptroller or an accountant before Clover prices and menus change (F9, unverified).",
+        "Annapolis and Anne Arundel County rules on price changes are checked with the Maryland SBDC or an attorney. Maryland has no general advance-notice rule for routine bakery price changes (F8, unverified).",
+        "Fixed-price pre-orders, wedding cakes and catering are listed so the team knows which orders the new prices can't reach yet.",
+        "A margin floor and a monthly review date are set before launch, along with a rule for cutting prices back if costs fall (F2, F6)."
+      ],
+      "next_steps": [
+        {
+          "when": "this week",
+          "action": "Pull flour and butter invoices from the last 6-12 months. Work out the percent rise and what share of total costs each represents."
+        },
+        {
+          "when": "this week",
+          "action": "Export item-level sales and volume from Clover. Compute each item's margin and cost-to-profit ratio, and flag the fragile ones (above about 2.5, per F1)."
+        },
+        {
+          "when": "this week",
+          "action": "Ask your accountant or the Maryland Comptroller which items are taxable. Ask the Maryland SBDC (free, confidential) to confirm any Annapolis or Anne Arundel rules on price changes."
+        },
+        {
+          "when": "next 30 days",
+          "action": "Set tiered prices: larger increases on high-butter or thin-margin items, smaller or none on staples and regulars' favorites. Check these against competitors' local prices, and decide a margin floor."
+        },
+        {
+          "when": "next 30 days",
+          "action": "Write one plain sentence giving the reason (flour and butter costs). Post it, tell regulars once, and change Clover and menu prices in one step. Note which fixed-price orders lag."
+        },
+        {
+          "when": "next 90 days",
+          "action": "Review margins and item volume in Clover each month. Track your top 10 ingredient costs (a blog's suggestion, F5). If costs fall, trim the items whose reason has gone away."
+        }
+      ],
+      "ai_tools": [],
+      "escalate_to": "accountant",
+      "escalation_reason": "Which bakery items are taxable at Maryland's 6% sales tax depends on how they are sold, and it must be confirmed before prices change in Clover (F9, unverified). The Comptroller or an accountant can confirm it. The Maryland SBDC can help check local Annapolis and Anne Arundel rules.",
+      "would_change": [
+        "Invoices show flour and butter rose only about 5-10% and total costs barely moved. Then absorbing the increase, or a much smaller rise, may be better (F5 is a blog rule of thumb).",
+        "Item data shows most items have healthy margins and few are fragile. Then a simple flat increase with a clear reason, as the Devil's Advocate argued, may be fine.",
+        "Wages, rent or packaging are also rising, or a local competitor has already raised prices. Then the size and timing of the increase should be re-set."
+      ],
+      "no_new_tool": "No AI tool is needed. Use the Clover POS you already have. Its dashboard can edit prices by item or category (F11, unverified; current plan pricing was not retrieved, so confirm with Clover). Do the invoice and margin math in a spreadsheet by hand, at no new cost beyond a few hours of your time."
+    }
+  },
+  "board_error": null,
+  "baseline_research": "# Recommendation\n\n**Raise prices next month, in one step, but don't default to a flat 8% on everything.** Spend this week checking whether 8% matches your actual cost increase, then set item-level prices around that number. The research supports acting now and acting once. It doesn't tell us 8% is the right figure, because that depends on your invoices.\n\n## Why\n\n- **Doing nothing is risky.** Bakery margins are thin. Benchmarks suggest net profit is often in the low-to-mid single digits up to about 10%, though these are general industry figures and vary widely (F10, unverified). A flour and butter spike can take a large share of that profit. F1 shows a 5% cost rise cutting profit by 8% on one item and 13% on another.\n- **One clear increase beats several small ones.** Regulars notice a single increase with a stated reason less than two smaller ones a few months apart (F2). That favors your \"all at once\" instinct on timing.\n- **Not every item needs the same increase.** Items with a cost-to-profit ratio above about 2.5, typically butter-heavy pastries, are fragile (F1). Staples may need less. A flat 8% will overcharge some items and under-recover on others.\n- **Pass-through is usually partial, and volume matters.** Firms in the New York Fed work passed through roughly 50-67% of cost increases and often accepted lower margins to protect volume (F3, F4). Those firms weren't bakeries, so treat this as context rather than a target.\n- **Don't price at the peak.** The Oregon bakery owner priced off her highest costs but avoided emergency hikes, and the article notes reactionary increases often reverse when costs fall (F6). If you raise prices, plan to review them rather than promise to reverse them.\n\n## Quick check on whether 8% is right\n\nRequired price increase \u2248 (flour and butter share of sales) \u00d7 (their cost increase %).\n\nIllustrative numbers only, not your data:\n- If flour and butter are 15% of sales and are up 20%, that's about 3% of sales, so roughly a 3-4% price increase recovers the dollars. An 8% increase would overshoot.\n- If they are 20% of sales and up 40%, that's about 8% of sales, so 8% is about right.\n\nYour invoices decide which case you're in. The food-vendor rule of thumb (F5) says to raise promptly when several ingredients are up 10% or more at once, which fits your situation. It's a blog heuristic, not research.\n\n## Main risks\n\n1. **Overshooting or undershooting.** Without invoice and item-margin data, 8% is a guess.\n2. **Losing regulars.** The research doesn't tell us how price-sensitive Annapolis customers are or what nearby competitors charge.\n3. **Fragile items.** Thin-margin, butter-heavy items may still lose money at 8%, while raising staples too much risks traffic.\n4. **Cost reversal.** If wholesale prices fall, your prices will look high.\n5. **Broader cost pressure.** Wages, rent, and packaging may also be rising. Maryland's $15 minimum wage (F7, unverified) matters if labor is a big part of the squeeze. Check that 8% isn't being asked to cover more than flour and butter.\n6. **Fixed-price commitments.** Wholesale, catering, and custom-cake contracts may not be adjustable immediately.\n7. **Tax and menu mechanics.** Sales tax applies to some items depending on how they're sold (F9, unverified), so confirm taxability and update tax-inclusive prices.\n\n## Next steps\n\n1. **This week: pull numbers.**\n   - Compare invoices for flour and butter now versus 6-12 months ago.\n   - Calculate each item's cost, margin, and cost-to-profit multiplier.\n   - Pull Clover item-level sales volume (F11, unverified, says item and category price edits are supported).\n2. **Set a target.** Decide the blended increase needed to restore your margin, and set a margin-slip threshold you'll review monthly (F2).\n3. **Price selectively.**\n   - Make bigger increases (possibly above 8%) on butter-heavy and fragile items.\n   - Make smaller or no increases on staples and a few signature items regulars watch.\n   - Round to clean price points.\n4. **Work the cost side in parallel.**\n   - Get quotes from a second supplier, ask about volume discounts or contracts, and check recipes and portion sizes.\n   - Trim the menu's worst-margin items.\n   - These can shrink how much price has to do.\n5. **Check competitors.** Look at nearby bakeries, cafes, and grocery bakeries.\n6. **Review contracts and compliance.**\n   - Review fixed-price orders and catering quotes.\n   - Confirm taxability with the Maryland Comptroller.\n   - Confirm there are no local notice requirements. Maryland has no general rule for routine bakery price increases, but check Annapolis and Anne Arundel directly (F8, unverified).\n7. **Communicate.**\n   - Put up a short, friendly sign or tell regulars in person, with a plain reason, such as \"flour and butter costs have risen sharply.\"\n   - Brief your five staff so they have a consistent answer.\n8. **After launch, watch weekly.** Track Clover item volumes and margins for 4-6 weeks. Adjust individual items rather than doing a second across-the-board increase. Revisit prices in a few months if flour and butter costs fall.\n\nIf the invoice check shows your costs are up enough to justify 8% or more overall, go ahead, but still shift the increases toward fragile items and away from the staples your regulars watch.",
+  "judge": {
+    "model": "openrouter/anthropic/claude-sonnet-5.5",
+    "letters": {
+      "baseline": "A",
+      "baseline_research": "B",
+      "board": "C"
+    },
+    "baseline": {
+      "risks": [
+        {
+          "risk": "Customer reaction / price sensitivity",
+          "score": 2,
+          "quote": "Hold or barely move those, and take more on specialty and butter-heavy items."
+        }
+      ],
+      "actionable": 5,
+      "errors": [],
+      "invented_blocker": false
+    },
+    "baseline_research": {
+      "risks": [
+        {
+          "risk": "Customer reaction / price sensitivity",
+          "score": 2,
+          "quote": "Make smaller or no increases on staples and a few signature items regulars watch."
+        }
+      ],
+      "actionable": 4,
+      "errors": [],
+      "invented_blocker": false
+    },
+    "board": {
+      "risks": [
+        {
+          "risk": "Customer reaction / price sensitivity",
+          "score": 2,
+          "quote": "larger increases on high-butter or thin-margin items, smaller or none on staples and regulars' favorites. Check these against competitors' local prices"
+        }
+      ],
+      "actionable": 3,
+      "errors": [],
+      "invented_blocker": true
+    }
+  }
+}

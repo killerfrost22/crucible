@@ -68,13 +68,15 @@ class Evidence(BaseModel):
 
 
 class SeatOpinion(BaseModel):
+    # Field order is the order the model writes. Keep a non-string last: when `pushback` closed the object,
+    # Haiku often left the object's closing brace (or a made-up key) inside the string, e.g. "...enough.}".
     stance: Stance = Field(description="Your position on the owner's leaning, or on the decision if none.")
     headline: str = Field(description="Your position in at most 12 words; it is pinned to the board.")
     summary: str = Field(description="At most 60 words, plain language, for a non-technical owner.")
     key_points: list[str] = Field(description="At most 3 points, each citing fact IDs like F2 when used.")
     risks: list[str] = Field(description="At most 3 concrete risks.")
-    confidence: int = Field(description="0-100: how sure you are of your stance.")
     pushback: str = Field(description="The single assumption you most want the owner to question.")
+    confidence: int = Field(description="0-100: how sure you are of your stance.")
 
 
 class Check(BaseModel):

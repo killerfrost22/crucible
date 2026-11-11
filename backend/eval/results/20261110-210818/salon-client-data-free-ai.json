@@ -1,0 +1,718 @@
+{
+  "scenario": {
+    "id": "salon-client-data-free-ai",
+    "intake": {
+      "question": "Should I paste our client list \u2014 names, phone numbers, and service notes \u2014 into a free AI app to write personalized promos?",
+      "leaning": "Yes, it's free and fast",
+      "profile": {
+        "industry": "hair salon",
+        "location": "Hagerstown, Maryland",
+        "size": "4 stylists",
+        "current_tools": [
+          "Vagaro",
+          "Instagram"
+        ],
+        "goals": [
+          "bring back lapsed clients"
+        ]
+      }
+    },
+    "must_catch": [
+      {
+        "label": "Customer data privacy / vendor data use",
+        "any": [
+          "privacy",
+          "personal (data|information)",
+          "terms of (service|use)",
+          "train(ing)? on",
+          "data (sharing|retention|use)"
+        ]
+      }
+    ]
+  },
+  "seat_model": "openrouter/anthropic/claude-haiku-5.5",
+  "researcher_model": "openrouter/anthropic/claude-sonnet-5.5:online",
+  "chair_model": "openrouter/anthropic/claude-sonnet-5.5",
+  "web_search": true,
+  "baseline": "# Recommendation: Don't paste the raw client list into a free AI app. Get the same result a safer way.\n\nYour goal is right: win back lapsed clients with personal messages. The method is the problem. \"Free\" usually means the provider can keep your inputs and may use them to train its models, and you have little control over where the data goes. Your clients never agreed to that.\n\n## Main risks\n\n1. **Client trust.** Service notes at a salon can be personal: color corrections, scalp conditions, allergic reactions, health or life comments (\"going through chemo,\" \"wedding in June\"). Clients share these with their stylist, not with a tech company.\n2. **Data exposure.** Free consumer tools often retain conversations, may use them for training, and may have staff review them. Many have no business agreement. If your account were compromised, the client data would be exposed too.\n3. **Legal and contract exposure.** Maryland has a personal information protection law, and Vagaro's terms probably limit how you can export and share client data. Names plus phone numbers is lower risk than financial data, but it is still personal information. Check the terms before you export anything.\n4. **Texting rules.** This risk is separate from the AI question. Marketing texts need prior consent under the TCPA, and you need an opt-out. Texting a list of lapsed clients without consent can mean real fines, so confirm consent before you send anything.\n5. **Quality.** AI-written \"personalized\" messages that reference service notes can feel intrusive (\"We noticed your gray coverage is overdue...\").\n\n## A better approach\n\n**Use the AI without the identifying data.** You don't need names or phone numbers to write good promos.\n\n- Ask the AI for templates with placeholders like `[First Name]` and `[Last Service]`.\n- Group clients into segments, such as balayage clients overdue 3+ months, cut-and-color regulars who haven't been in 6+ months, and men's cuts lapsed 8+ weeks, and write one message per segment.\n- If you want a service reference, use generic descriptions (\"your color appointment\"), never the actual notes.\n\n**Send through tools you already have.** Vagaro has built-in marketing: email and text campaigns, filters by last visit date, and automated \"we miss you\" messages. It handles opt-outs and merges names for you, which is the personalization you wanted.\n\n## Next steps\n\n1. **This week:** Filter lapsed clients in Vagaro (e.g., no visit in 90-180 days) and split them into 2-3 segments.\n2. **Write the copy:** Use AI with no client data. Example prompt: \"Write a friendly 300-character text from a Hagerstown hair salon to a client who hasn't visited in 4+ months. Include a placeholder for first name and a $15 off offer that expires in 3 weeks.\"\n3. **Add a hook:** A time-limited offer, a \"book with your stylist\" link, or a free add-on treatment works better than a generic discount.\n4. **Check consent:** Confirm texting permissions in Vagaro, include \"Reply STOP to opt out,\" and email those without text consent.\n5. **Have stylists add a personal touch:** Each stylist can send a short DM or text to their own 10-15 best lapsed clients. That is more personal than AI and costs nothing.\n6. **Set a team rule:** No client names, numbers, or notes go into any AI tool unless it's a paid business plan with data-training turned off and a privacy agreement you've read.\n7. **Track results:** Count bookings from each segment after 30 days, then repeat what worked.\n\nIf you later want AI that works with real client data, pay for a business-tier tool with clear privacy terms. For a 4-stylist salon, though, Vagaro plus AI-written templates should get you most of the benefit with almost none of the risk.",
+  "board_state": {
+    "intake": {
+      "question": "Should I paste our client list \u2014 names, phone numbers, and service notes \u2014 into a free AI app to write personalized promos?",
+      "leaning": "Yes, it's free and fast",
+      "profile": {
+        "name": "",
+        "industry": "hair salon",
+        "location": "Hagerstown, Maryland",
+        "size": "4 stylists",
+        "current_tools": [
+          "Vagaro",
+          "Instagram"
+        ],
+        "budget": "",
+        "goals": [
+          "bring back lapsed clients"
+        ],
+        "constraints": ""
+      }
+    },
+    "evidence_mode": "web",
+    "evidence": {
+      "decision": "Whether to paste the salon's client list (names, phone numbers, service notes) into a free consumer AI app to write personalized promotions for lapsed clients.",
+      "options": [
+        "Do nothing: keep writing promos by hand or with Vagaro's existing tools and Instagram, with no client data going to a new tool.",
+        "Paste the full client list as-is into a free AI app, as the owner is leaning toward.",
+        "Use a free AI app with data minimization: turn off training, paste only first names, service and one detail, with no phone numbers or allergy notes, then send through Vagaro or your own texting.",
+        "Use AI built into a salon platform (Vagaro's own marketing tools if offered, or a competitor such as GlossGenius or Tilavon), with the vendor's data-use terms confirmed in writing."
+      ],
+      "facts": [
+        {
+          "claim": "Free plans exist for ChatGPT, Gemini and Claude, but most personal plans, including paid ones, can use what you type to train the vendor's AI unless you switch that off. In ChatGPT the 'Improve the model for everyone' setting is on by default on Free, Plus and Pro. Gemini and Claude have their own opt-out settings.",
+          "source": "https://supercorner.ai/blog/ai-for-hair-salons",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:22:09Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Even with training turned off, the same guide advises using first names only and leaving out phone numbers, allergies and client photos. Its tests used a made-up three-chair salon in Claude, not a free plan and not ChatGPT or Gemini, so the authors call the results a rough guide.",
+          "source": "https://supercorner.ai/blog/ai-for-hair-salons",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:22:09Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "A salon-focused prompt guide says not to paste clients' full names or phone numbers into an AI tool without first checking its privacy policy, and to always review AI text before sending or posting.",
+          "source": "https://founderz.com/blog/ai-prompts-hair-salons-content-appointment-reminders/",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:22:11Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "An AI-for-salons vendor says the two questions to ask before letting any AI near client data are whether the data stays yours and whether it is ever used to train the vendor's models. It advises getting the answer in writing, and says this matters most for health-related intake records. The source sells AI tools, so it has a commercial interest.",
+          "source": "https://heylilo.co/resources/ai-for-salons/can-ai-run-salon-business",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:22:09Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "In the US, automated marketing texts require the client's written consent, and you must be able to prove it. A 'we miss you' win-back text counts as marketing. Booking systems may already collect consent, and a lawyer should review the consent wording.",
+          "source": "https://supercorner.ai/blog/ai-for-hair-salons",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:22:09Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "A win-back or rebooking text needs only a first name, the service, how many weeks ago, and one real personal detail to be drafted well. The full list with phone numbers is not required to get the draft. The guide's example prompt is under 30 words, includes the booking link and offers no discount.",
+          "source": "https://supercorner.ai/blog/ai-for-hair-salons",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:22:09Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Some salon software has AI copy writing built in. Tilavon generates win-back, birthday and other campaign emails, but nothing sends automatically, and it reserves text messaging for appointment reminders and confirmations because of US carrier number registration. GlossGenius says its Marketing Assistant writes and sends email or text promos to the right clients. Neither page's pricing was retrieved.",
+          "source": "https://tilavon.com/features/ai-marketing",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:22:11Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "For a one-stylist or chair-renting setup, one guide says a free chat tool plus existing booking-app reminders is enough, and suggests paying about $20 a month for a chat plan only if you hit free limits. This is the blog's estimate, not a vendor pricing page.",
+          "source": "https://supercorner.ai/blog/ai-for-hair-salons",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:22:09Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "If any of the 4 stylists rent their chairs, no law was found that settles who owns a renter's clients, and contract templates disagree. The guide says to read the contract before pasting a client list anywhere.",
+          "source": "https://supercorner.ai/blog/ai-for-hair-salons",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:22:09Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Maryland has the Personal Information Protection Act, which requires reasonable security for personal information and breach notification. Its definition centers on a name combined with identifiers such as a Social Security number or financial account, so names and phone numbers alone may not trigger it. Applicability to this salon should be confirmed with counsel.",
+          "source": "",
+          "verified": false
+        },
+        {
+          "claim": "The Maryland Online Data Privacy Act took effect in October 2025 and applies to businesses above certain consumer-volume thresholds, around 35,000 Maryland consumers. A four-stylist salon is probably below that, but this should be confirmed.",
+          "source": "",
+          "verified": false
+        },
+        {
+          "claim": "Vagaro, the salon's current booking platform, generally offers built-in client marketing such as email and text campaigns and client segmentation. The exact features, plan tier and monthly price were not retrieved from Vagaro's own pricing page.",
+          "source": "",
+          "verified": false
+        }
+      ],
+      "open_questions": [
+        "Do the service notes include allergy, patch-test, medical or skin-condition details, or only service history and color formulas?",
+        "Do clients have documented written consent to receive marketing texts, and is that consent stored in Vagaro?",
+        "Does Vagaro already have a built-in marketing or AI feature, and on which plan and at what monthly price, covering lapsed-client campaigns at no extra cost?",
+        "Which free AI app would be used, and would its training opt-out be turned off before any client data goes in?",
+        "Does the list include clients of any chair-renting stylists, and what do those contracts say about who owns the client relationship?",
+        "How many lapsed clients are there, and could 'first name + last service + weeks since visit' be enough for the promos without pasting phone numbers?",
+        "What current pricing do the leading paid AI and salon-marketing products have on their own vendor pricing pages? None was retrieved for this brief."
+      ]
+    },
+    "round1": {
+      "industry_expert": {
+        "stance": "oppose",
+        "headline": "Don't paste the full client list; use minimized data or Vagaro instead.",
+        "summary": "Pasting names, phone numbers and service notes into a free AI app is the wrong move. Free plans may train on what you type unless you switch that off (F1). Even then, peers use first names and service history only (F2, F6). Your goal is win-back, and that needs about first name, last service, weeks since visit, and one personal detail. Check Vagaro's built-in marketing first (F12).",
+        "key_points": [
+          "Free AI apps may use your typed client data to train their models unless you opt out, and the default is on in ChatGPT (F1).",
+          "A good win-back draft needs only first name, service, weeks since visit and one personal detail; no phone numbers are needed (F6).",
+          "Automated marketing texts need proven written client consent, so confirm consent records in Vagaro before any texting (F5)."
+        ],
+        "risks": [
+          "Client phone numbers and service notes, including health or allergy details, could leak or be used for training with no way to pull them back (F1, F4).",
+          "Texting lapsed clients without provable written consent could create legal exposure; have an attorney review the consent wording (F5).",
+          "If any stylist rents a chair, the client list may not be the salon's to share; read those contracts first (F9)."
+        ],
+        "confidence": 80,
+        "pushback": "You assume a free AI app is the fastest way to get promos out. Vagaro may already send win-back texts at no extra cost (F12, unverified), which would make the AI step unnecessary.}"
+      },
+      "ai_tools_expert": {
+        "stance": "conditional",
+        "headline": "Don't paste the full list; use minimized data or Vagaro's tools.",
+        "summary": "Pasting names, phone numbers and service notes into a free consumer AI app is the risky version. Free plans may use your text for training unless you turn that off (F1). Win-back drafts only need first names, the service, weeks since visit and one personal detail (F6). Start there, and check Vagaro's built-in marketing before adding any new tool.",
+        "key_points": [
+          "Free consumer plans may train on what you type unless you opt out (F1), and the guide's tests were not run on the free plans you'd use (F2).",
+          "A good win-back draft needs only first name, service, weeks since visit and one detail; no phone numbers (F6).",
+          "Vagaro already offers client marketing and segmentation, which may cover this at no extra cost (F12, unverified)."
+        ],
+        "risks": [
+          "Service notes may contain allergy or skin details, which is health-related data that should not go into a free app (F4, open question).",
+          "Texting lapsed clients needs documented written consent under US rules, and a lawyer should check the wording (F5).",
+          "If any stylists rent chairs, the client list may belong partly to them, so check contracts first (F9)."
+        ],
+        "confidence": 75,
+        "pushback": "The assumption that 'free and fast' is the main benefit. Once you strip names, phones and notes, the free app adds little over Vagaro's own tools, so ask whether the time saved is worth the data risk.",
+        "tools": [
+          {
+            "name": "Vagaro built-in marketing (email and text campaigns, client segments)",
+            "use": "Sends win-back campaigns to lapsed clients using segments already in your booking system, so no client data leaves Vagaro.",
+            "monthly_cost": "unknown",
+            "works_with": "Already your booking platform, so it connects directly to your client list and appointment history.",
+            "caveat": "Features, plan tier and price were not retrieved; confirm with Vagaro whether lapsed-client campaigns are included in your current plan.",
+            "url": "",
+            "price_fact": "",
+            "pilot_test": "Keep using it if one lapsed-client campaign books at least 5 returning clients within 4 weeks; if not, evaluate a paid add-on before the next billing cycle."
+          }
+        ]
+      },
+      "realist": {
+        "stance": "conditional",
+        "headline": "Not as-is; use minimized data, check Vagaro first, and confirm consent.",
+        "summary": "Don't paste the full client list with phone numbers into a free AI app. The free tools may use your data for training unless you turn that off (F1), and automated win-back texts need proven written consent (F5). A first name, last service, weeks since visit and one personal detail is enough to write good promos (F6). Check whether Vagaro already sends campaigns, and confirm your consent records before texting anyone.",
+        "key_points": [
+          "Free AI apps can train on what you type unless you opt out, and the opt-out is not always on by default (F1).",
+          "Names, service notes and phone numbers are more than the draft needs; first name and one detail is enough (F2, F6).",
+          "Win-back texts need documented client consent, and Vagaro may already store it or offer campaigns (F5, F12)."
+        ],
+        "risks": [
+          "Client service notes may contain allergy or skin details, which are sensitive if shared (open question; F4).",
+          "Sending marketing texts without proof of written consent could create legal exposure (F5; a Maryland attorney should confirm).",
+          "Renter stylists may own their client relationships, so pasting their clients could breach their contracts (F9)."
+        ],
+        "confidence": 72,
+        "pushback": "You assume the free app is 'free and fast' with no real cost. The real cost is the client data you hand over and the consent gaps. Ask whether Vagaro already does this for free before you paste anything.",
+        "checks": [
+          {
+            "area": "legal",
+            "status": "flag",
+            "note": "Automated win-back texts need proven written consent (F5); a Maryland attorney should confirm the wording and records."
+          },
+          {
+            "area": "compliance",
+            "status": "flag",
+            "note": "Service notes may hold health or allergy details, and the vendor's training-use terms are unconfirmed (F1, F4); confirm before any upload."
+          },
+          {
+            "area": "compliance",
+            "status": "pass",
+            "note": "Maryland's breach law may not cover names and phone numbers alone (F10, unverified); counsel should confirm applicability."
+          },
+          {
+            "area": "legal",
+            "status": "flag",
+            "note": "If any stylists rent chairs, the contracts decide who owns those clients (F9); read them before sharing those lists."
+          },
+          {
+            "area": "financial",
+            "status": "pass",
+            "note": "A free chat tool plus Vagaro reminders fits a small budget (F8); Vagaro's campaign price is unverified (F12)."
+          },
+          {
+            "area": "goals",
+            "status": "pass",
+            "note": "Minimized data with first name, service and one detail still serves the goal of bringing back lapsed clients (F6)."
+          }
+        ]
+      },
+      "strategist": {
+        "stance": "oppose",
+        "headline": "Don't paste the full client list; use minimized data or Vagaro's tools.",
+        "summary": "Pasting names, phone numbers and service notes into a free consumer AI app risks your clients' data and may use it for training. A win-back text needs only first name, service, weeks since visit and one personal detail. Check Vagaro's built-in marketing first, and confirm texting consent before sending anything.",
+        "key_points": [
+          "F1: Free personal AI plans can use what you type for training unless you switch that off, and it is on by default in ChatGPT Free.",
+          "F6: A good win-back draft needs only first name, service, weeks since visit and one personal detail, not phone numbers.",
+          "F12 (unverified): Vagaro may already offer lapsed-client campaigns on your current plan; confirm before paying for anything new."
+        ],
+        "risks": [
+          "Client names, phone numbers and health-related service notes leave your control with no written data terms (F3, F4).",
+          "Texting lapsed clients without provable written consent can violate US marketing rules (F5); confirm wording with an attorney.",
+          "Paying for a new tool or switching platforms later creates lock-in and migration hassle that is hard to undo."
+        ],
+        "confidence": 80,
+        "pushback": "Assuming the free app is fast enough to be worth it. Vagaro's built-in tools may already do this at no extra cost, and the time saved by the free app is small for a 4-stylist shop.](...)}"
+      },
+      "devils_advocate": {
+        "stance": "oppose",
+        "headline": "Don't paste the full client list into a free AI app; minimize data first.",
+        "summary": "Pasting names, phone numbers and service notes into a free consumer AI app risks client privacy and may let the vendor train on your data. Free plans often train on inputs by default (F1). A win-back text needs only first name, service, weeks since visit and one personal detail (F6). Use Vagaro's built-in marketing or a vendor with written data terms instead.",
+        "key_points": [
+          "Free plans can train on what you type unless you switch that off, and ChatGPT's setting is on by default (F1).",
+          "Drafting needs only first name, service, weeks since visit and one detail; phone numbers are not required (F2, F6).",
+          "Texts to lapsed clients need proven written consent under US rules (F5), and Vagaro may already handle this (F12, unverified)."
+        ],
+        "risks": [
+          "Client names, phones or allergy and medical notes leave your control and may be used to train a vendor's model (F1, F4).",
+          "Automated win-back texts without provable consent could create legal exposure (F5); confirm wording with an attorney.",
+          "Clients who learn their data went into a free app may stop booking, and the salon would have no written terms to point to."
+        ],
+        "confidence": 75,
+        "pushback": "You assume the free app is fast enough to be worth the risk. Check whether Vagaro's own marketing tools, at no extra cost, already do the job, and compare the time saved against a limited, minimized paste.}"
+      }
+    },
+    "round2": {
+      "industry_expert": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "realist",
+            "their_claim": "Maryland's breach law may not cover names and phone numbers alone, so the data risk may be lower.",
+            "response": "Possibly true, but unverified (F10). Don't count on that gap. Clients trust a salon with their details, and one leak or complaint costs more than a month of promos. Confirm with counsel anyway."
+          },
+          {
+            "target": "devils_advocate",
+            "their_claim": "Free plans often train on inputs by default.",
+            "response": "Overstated. F1 says ChatGPT's setting is on by default, while Gemini and Claude have opt-outs. The safer point is to check each app's setting before any upload, not assume training."
+          }
+        ],
+        "concessions": [
+          "Once names and service notes are stripped, the free app adds little over Vagaro's existing tools (ai_tools_expert).",
+          "Vagaro's built-in campaigns may make the free app unnecessary (F12, unverified).",
+          "Renter contracts may block sharing any client list at all (F9)."
+        ],
+        "stance": "oppose",
+        "headline": "Don't paste the full client list; check Vagaro's tools first.",
+        "summary": "Don't paste the full list with phone numbers and service notes into a free AI app. Free apps may use what you type for training unless you opt out (F1). A win-back text only needs first name, last service, weeks since visit and one personal detail (F6). Check Vagaro's built-in campaigns first, and confirm written texting consent before sending anything.",
+        "key_points": [
+          "Free AI apps may train on typed client data unless you opt out (F1).",
+          "A win-back draft needs first name, last service, weeks since visit and one detail (F6).",
+          "Vagaro may already send lapsed-client campaigns; check before pasting or paying (F12, unverified)."
+        ],
+        "risks": [
+          "Health or allergy notes in service records leave the salon with no written data terms (F4).",
+          "Win-back texts sent without provable written consent create legal exposure (F5).",
+          "A client who learns her data went into a free app may stop booking."
+        ],
+        "confidence": 80,
+        "pushback": "That free means fast. Test Vagaro's campaign tool on one segment first; if it books returning clients, the free app adds little."
+      },
+      "ai_tools_expert": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "industry_expert",
+            "their_claim": "Vagaro may already send win-back texts at no extra cost, which would make the AI step unnecessary.",
+            "response": "Agreed that Vagaro comes first. But if it lacks a lapsed-client feature, a minimized paste (first name, service, weeks, one detail) is still reasonable. Your oppose is stronger than the risk requires."
+          },
+          {
+            "target": "strategist",
+            "their_claim": "The free app is small in time saved, so it is not worth the data risk.",
+            "response": "Partly agree on the time saved. But minimized data removes most of the risk, so the decision turns on whether Vagaro can do this, not on the free app's speed alone."
+          },
+          {
+            "target": "devils_advocate",
+            "their_claim": "Clients who learn their data went into a free app may stop booking.",
+            "response": "Fair point on trust. It only matters if phone numbers or notes go in. A minimized paste with no contact details gives clients little to object to."
+          }
+        ],
+        "concessions": [
+          "Vagaro's built-in marketing should be checked before any new tool is added.",
+          "Switching platforms or paying for a new tool creates lock-in that is hard to undo.",
+          "Clients may lose trust if their data goes into a free app, so keep the paste minimal."
+        ],
+        "stance": "conditional",
+        "headline": "Conditional: check Vagaro first; minimized data only if you use AI.",
+        "summary": "Do not paste the full client list with phone numbers and notes into a free AI app. Free plans may train on what you type unless you opt out (F1). A win-back text needs only first name, service, weeks since visit and one detail (F6). Check whether Vagaro already runs lapsed-client campaigns (F12, unverified), and confirm written texting consent (F5) before sending anything.",
+        "key_points": [
+          "Turn off training and paste only first name, last service, weeks since visit and one detail (F1, F6).",
+          "Confirm Vagaro's marketing features and price before adding any new tool (F12, unverified).",
+          "Confirm texting consent wording with a Maryland attorney before any automated texts (F5)."
+        ],
+        "risks": [
+          "Service notes may hold allergy or skin details that should not leave the salon (F4, open question).",
+          "Win-back texts without provable written consent could create legal exposure (F5).",
+          "If any stylist rents a chair, that stylist's client list may not be the salon's to share (F9)."
+        ],
+        "confidence": 70,
+        "pushback": "That the free app is the fastest route. Once names, phones and notes are removed, the app adds little over Vagaro's own tools, so ask whether the time saved is worth any data exposure.",
+        "tools": [
+          {
+            "name": "Vagaro built-in marketing (email and text campaigns, client segments)",
+            "use": "Sends win-back campaigns to lapsed clients from segments already in your booking system, so no client data leaves Vagaro.",
+            "monthly_cost": "unknown",
+            "works_with": "Native to Vagaro, your current booking platform.",
+            "caveat": "Features, plan tier and price were not retrieved; confirm with Vagaro whether lapsed-client campaigns are included in your plan.",
+            "url": "https://www.vagaro.com",
+            "price_fact": "",
+            "pilot_test": "Keep it if one lapsed-client campaign books at least 5 returning clients within 4 weeks; if not, evaluate a paid add-on before the next billing cycle."
+          },
+          {
+            "name": "ChatGPT free plan with training turned off",
+            "use": "Drafts win-back texts from a minimized prompt (first name, service, weeks since visit, one detail) with no phone numbers.",
+            "monthly_cost": "$0 free tier; about $20/mo if you hit free limits (unverified estimate)",
+            "works_with": "Standalone; you copy approved drafts into Vagaro or your own texting tool.",
+            "caveat": "Free plans may train on inputs by default unless you switch off 'Improve the model for everyone' (F1); tests were not run on free plans (F2).",
+            "url": "",
+            "price_fact": "",
+            "pilot_test": "Keep it if drafts need light edits and two campaigns in 4 weeks rebook at least 5 clients; stop if drafts need heavy rewriting or training cannot be confirmed off."
+          }
+        ]
+      },
+      "realist": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "ai_tools_expert",
+            "their_claim": "Once names, phones and notes are stripped, the free app adds little over Vagaro's own tools.",
+            "response": "Partly fair. But Vagaro's marketing features, plan and price are unverified (F12), so the free app may still be the cheaper path. Check Vagaro's pricing before deciding either way."
+          },
+          {
+            "target": "devils_advocate",
+            "their_claim": "Free plans often train on inputs by default.",
+            "response": "Overstated. F1 says the default is on for ChatGPT Free, while Gemini and Claude have their own opt-outs. The check is per app, so confirm each app's setting before pasting anything."
+          },
+          {
+            "target": "strategist",
+            "their_claim": "Paying for a new tool creates lock-in and migration hassle.",
+            "response": "Valid concern for a paid platform switch. It does not apply to a free app used only for drafting, so it is a reason to avoid switching platforms, not a reason to skip drafting."
+          }
+        ],
+        "concessions": [
+          "Vagaro's built-in marketing should be checked first, because it may avoid any new data sharing (F12, unverified).",
+          "Switching platforms later would be costly, so a paid move needs a pilot test first."
+        ],
+        "stance": "conditional",
+        "headline": "Not as-is: minimize data, check Vagaro first, confirm consent.",
+        "summary": "Do not paste the full client list with phone numbers into a free AI app. Use first name, last service, weeks since visit and one detail only, with training turned off. First check whether Vagaro already runs lapsed-client campaigns (F12, unverified). Before any marketing text, confirm written consent records (F5), and read any renter-stylist contracts (F9).",
+        "key_points": [
+          "Free AI apps may train on typed text unless you opt out, and the default varies by app (F1).",
+          "A win-back draft needs only first name, service, weeks since visit and one detail (F6).",
+          "Texts need provable written consent under US rules, so confirm records and have an attorney check wording (F5)."
+        ],
+        "risks": [
+          "Service notes may hold allergy or skin details that should not leave the salon (F4, open question).",
+          "Marketing texts without proof of written consent could create legal exposure (F5).",
+          "If any stylist rents a chair, pasting their clients could breach the contract (F9)."
+        ],
+        "confidence": 70,
+        "pushback": "That free and fast is worth the data risk. Confirm first whether Vagaro's built-in campaigns already do this at no extra cost (F12, unverified).",
+        "checks": [
+          {
+            "area": "legal",
+            "status": "flag",
+            "note": "Automated win-back texts need proven written consent (F5); a Maryland attorney should confirm the wording and where records are kept."
+          },
+          {
+            "area": "compliance",
+            "status": "flag",
+            "note": "Service notes may hold health or allergy details, and each app's training-use terms are unconfirmed (F1, F4); confirm before any upload."
+          },
+          {
+            "area": "compliance",
+            "status": "pass",
+            "note": "Maryland's breach law may not cover names and phone numbers alone (F10, unverified); counsel should confirm applicability."
+          },
+          {
+            "area": "legal",
+            "status": "flag",
+            "note": "If any stylists rent chairs, their contracts decide who owns those clients (F9); read them before sharing those lists."
+          },
+          {
+            "area": "financial",
+            "status": "pass",
+            "note": "A free chat tool plus Vagaro reminders fits a small budget (F8); Vagaro's campaign price is unverified (F12)."
+          },
+          {
+            "area": "goals",
+            "status": "pass",
+            "note": "Minimized data with first name, service and one detail still serves the goal of bringing back lapsed clients (F6)."
+          }
+        ]
+      },
+      "strategist": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "industry_expert",
+            "their_claim": "Vagaro may already send win-back texts at no extra cost, which would make the AI step unnecessary.",
+            "response": "Agree on checking Vagaro first. But the real test is the next 90 days: if its campaigns need a paid tier, you face the tool decision anyway. Settle that before any paste."
+          },
+          {
+            "target": "ai_tools_expert",
+            "their_claim": "Once names, phones and notes are stripped, the free app adds little over Vagaro's own tools.",
+            "response": "Agreed, and that is the point. If minimized data gives no edge, the full paste buys risk for no gain. Drop it unless Vagaro's tools fail the pilot."
+          },
+          {
+            "target": "devils_advocate",
+            "their_claim": "Clients who learn their data went into a free app may stop booking.",
+            "response": "Fair, but the bigger trap is habit. Once a free app becomes the promo routine, every future campaign repeats the exposure. Fix the workflow now, not after the first complaint."
+          }
+        ],
+        "concessions": [
+          "The free app adds little over Vagaro's tools once data is stripped (AI-tools expert).",
+          "Renter stylists' contracts may bar sharing their client lists regardless of the AI question (Realist, F9)."
+        ],
+        "stance": "oppose",
+        "headline": "Don't paste the full client list; test Vagaro's tools first.",
+        "summary": "Keep the full client list out of any free AI app. Win-back texts need only first name, last service, weeks since visit and one real detail (F6). Free plans may train on what you type unless you opt out (F1). This week, check whether Vagaro's marketing already does this and confirm consent records. Then pilot before paying for anything.",
+        "key_points": [
+          "Next week: confirm Vagaro's plan, price and consent records; send no client data until answered (F5, F12).",
+          "Next quarter: run one Vagaro campaign; keep it only if it books 5+ returning clients within 4 weeks, otherwise weigh a paid tool.",
+          "Next year: a free-app habit repeats the exposure every campaign, and a platform choice creates lock-in, so pick once with written data terms (F4)."
+        ],
+        "risks": [
+          "Client names, phones and allergy or skin notes leave your control with no written data terms (F1, F4).",
+          "Texts sent without provable written consent create legal exposure; have an attorney check the wording (F5).",
+          "Locking into a new platform or paid tool later is costly and slow to undo."
+        ],
+        "confidence": 78,
+        "pushback": "Free does not mean cheap. The real cost is data exposure plus the time needed to set up consent records and opt-outs."
+      },
+      "devils_advocate": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "industry_expert",
+            "their_claim": "Vagaro may already send win-back texts at no extra cost, so the AI step may be unnecessary.",
+            "response": "Unverified (F12). You don't know the plan, tier, or price. If Vagaro lacks it, the fallback is a paid add-on, which you haven't priced. Don't assume free."
+          },
+          {
+            "target": "ai_tools_expert",
+            "their_claim": "Once names, phones and notes are stripped, the free app adds little over Vagaro's tools.",
+            "response": "Agreed the app adds little, but that cuts both ways: if it adds little, a minimized paste still carries name-plus-history risk for little gain. Drop it rather than minimize it."
+          },
+          {
+            "target": "realist",
+            "their_claim": "Maryland's breach law may not cover names and phone numbers alone (F10, unverified).",
+            "response": "F10 is unverified, and 'may not' is a guess. Breach-law coverage shouldn't decide this. Client trust and the vendor's unknown terms (F4) matter more. Counsel should confirm, but don't rely on it."
+          }
+        ],
+        "concessions": [
+          "Vagaro's built-in tools are worth checking before any new tool (F12).",
+          "Texting lapsed clients needs provable written consent, and an attorney should check the wording (F5)."
+        ],
+        "stance": "oppose",
+        "headline": "Even minimized, a free AI paste is unproven; test Vagaro first.",
+        "summary": "The consensus treats a minimized paste as safe. It isn't proven. F2's tests didn't use free plans, and F1 says training is on by default in ChatGPT Free. Names plus service history still identify clients. Vagaro's tools are unverified (F12), so the Vagaro-first step can stall. Waiting costs little if consent and terms are confirmed first.",
+        "key_points": [
+          "A first name plus service history still identifies a real client in a small town; minimizing lowers risk but doesn't remove it (F6, F4).",
+          "Vagaro-first is untested: its features, tier and price are unverified (F12), so the fallback may cost money or not exist.",
+          "Lapsed clients keep drifting while you verify consent and vendor terms; set a deadline so checking doesn't become a reason to do nothing."
+        ],
+        "risks": [
+          "A minimized paste still gives a free vendor client names tied to service history, with training terms unconfirmed (F1, F4).",
+          "Waiting on Vagaro verification could leave lapsed clients unreached for months.",
+          "Renter stylists may see a Vagaro-first plan as their clients being handled without them; renter contracts are unchecked (F9)."
+        ],
+        "confidence": 70,
+        "pushback": "The assumption that a small, careful pilot is safer than a fast one. Ask what waiting costs your lapsed clients, and whether the checks can finish within two weeks."
+      }
+    },
+    "verdict": {
+      "decision": "pilot",
+      "headline": "Don't paste the full list; pilot Vagaro's campaigns first, minimal-data AI drafting second.",
+      "confidence": 76,
+      "rationale": "Reject the full paste. Free AI plans can train on what you type unless you switch that off, and ChatGPT's setting is on by default (F1). A good win-back text needs only first name, service, weeks since visit and one real detail (F6). Vagaro likely has campaign tools already (F12, unverified), so test one campaign there. If AI drafting is still wanted, use training-off and first-name-only prompts. Confirm written texting consent before any send (F5).",
+      "decisive_arguments": [
+        {
+          "seat": "industry_expert",
+          "point": "The goal needs no phone numbers or service notes. First name, service, weeks since visit and one detail is enough (F6), so the full paste adds risk and no benefit."
+        },
+        {
+          "seat": "ai_tools_expert",
+          "point": "Free plans may train on what you type unless you opt out (F1). The guide's tests were not run on free plans (F2), so safety for a minimized paste is unproven."
+        },
+        {
+          "seat": "realist",
+          "point": "Marketing texts need provable written consent (F5). Check that before any send, whichever tool writes the copy."
+        },
+        {
+          "seat": "strategist",
+          "point": "Vagaro may already do lapsed-client campaigns (F12, unverified). A one-segment test settles whether any new tool is needed before data goes anywhere."
+        }
+      ],
+      "dissent": [
+        {
+          "seat": "devils_advocate",
+          "point": "Even minimized, a first name plus service history can identify a client in a small town, and free-plan terms are unconfirmed (F1, F4). Drop the AI app rather than minimize it. The board only partly agrees; it allows it as a fallback with training off."
+        },
+        {
+          "seat": "devils_advocate",
+          "point": "Vagaro's features, tier and price are unverified (F12), and the check could stall. Lapsed clients keep drifting while you verify, so set a two-week deadline."
+        },
+        {
+          "seat": "realist",
+          "point": "If Vagaro's campaigns need a paid tier, a free app used only for drafting may still be the cheaper path (F12, F8)."
+        }
+      ],
+      "conditions": [
+        "No phone numbers, full names, allergy, patch-test or medical notes go into any free AI app.",
+        "Written marketing-text consent is documented and stored (ideally in Vagaro) before any win-back text is sent (F5).",
+        "If using an AI app, training is turned off first (F1) and a person reviews every draft before sending (F3).",
+        "Clients of any chair-renting stylist are excluded until the contracts are read (F9)."
+      ],
+      "next_steps": [
+        {
+          "when": "this week",
+          "action": "Ask Vagaro support or check your account: do lapsed-client email or text campaigns come with your plan, what do they cost, and does Vagaro store text consent?"
+        },
+        {
+          "when": "this week",
+          "action": "Skim your service notes for allergy, patch-test or skin details, and read any chair-rental contracts for who owns the client relationship (F9)."
+        },
+        {
+          "when": "this week",
+          "action": "Pull a lapsed-client segment inside Vagaro, such as no visit in 12+ weeks, and count how many have recorded text consent."
+        },
+        {
+          "when": "next 30 days",
+          "action": "Run one win-back campaign to one segment through Vagaro. Write it by hand from a template, or draft in an AI app using only first name, service, weeks since visit and one detail, with training off."
+        },
+        {
+          "when": "next 30 days",
+          "action": "Have a Maryland attorney review your consent wording and opt-out handling for marketing texts (F5)."
+        },
+        {
+          "when": "next 90 days",
+          "action": "Count rebooked clients against the pilot test. Keep what works, and price any paid add-on before committing. Ask the Maryland SBDC for free help if the numbers are unclear."
+        }
+      ],
+      "ai_tools": [
+        {
+          "name": "Vagaro built-in marketing (email and text campaigns, client segments)",
+          "use": "Sends win-back campaigns to lapsed clients from segments already in your booking system, so client data stays in Vagaro.",
+          "monthly_cost": "unknown",
+          "works_with": "Native to Vagaro, your current booking platform.",
+          "caveat": "Features, plan tier and price were not retrieved (F12, unverified); confirm with Vagaro that lapsed-client campaigns are included in your plan.",
+          "url": "https://www.vagaro.com",
+          "price_fact": "",
+          "pilot_test": "Keep it if one lapsed-client campaign books at least 5 returning clients within 4 weeks; if not, price a paid add-on before the next billing cycle."
+        },
+        {
+          "name": "ChatGPT free plan with training turned off",
+          "use": "Drafts short win-back texts from a minimized prompt (first name, service, weeks since visit, one detail) with no phone numbers or notes.",
+          "monthly_cost": "$0 on the free tier; about $20/mo if you hit free limits (unverified estimate)",
+          "works_with": "Standalone; you copy the approved text into Vagaro or your own texting.",
+          "caveat": "'Improve the model for everyone' is on by default and must be switched off (F1); the guide's tests were not run on free plans (F2). Use only as a fallback if Vagaro cannot do the job.",
+          "url": "",
+          "price_fact": "",
+          "pilot_test": "Keep it only if drafts need light edits and two campaigns in 4 weeks rebook at least 5 clients; stop if training cannot be confirmed off or drafts need heavy rewriting."
+        }
+      ],
+      "escalate_to": "attorney",
+      "escalation_reason": "Automated win-back texts need provable written consent (F5), and a lawyer should review the consent wording. Whether Maryland privacy or breach laws apply (F10, F11, unverified) and who owns renter stylists' clients (F9) also need confirming.",
+      "would_change": [
+        "Vagaro confirms in writing that lapsed-client campaigns are included in your plan: drop the AI app and proceed with Vagaro only.",
+        "Your service notes or consent records show health or allergy data, or missing consent: defer all texting until that is fixed.",
+        "An AI vendor's written terms confirm your data stays yours and is never used for training (F4): a wider AI-assisted rollout becomes reasonable."
+      ],
+      "no_new_tool": "Use Vagaro's existing client list and segments plus a short text template you write by hand, adding first name, service and weeks since the last visit yourself. Cost: no new subscription beyond your current plan (campaign pricing unverified, F12) and about an hour of staff time per campaign."
+    }
+  },
+  "board_error": null,
+  "seconds": 75,
+  "baseline_research": "# Recommendation\n\n**Don't paste the full client list into a free AI app. Use the AI for drafting only, with minimal data, and send through Vagaro or your own texting.**\n\nYou can still get the speed you want. Win-back texts don't need the full list. A good draft needs only a first name, the service, how many weeks since the visit, and one real personal detail (F6). The guide's example prompt is under 30 words, includes your booking link, and offers no discount. That takes about as long as pasting everything, with much less exposure.\n\n## Why not paste everything\n\n- **Training defaults.** Free and most personal AI plans may use what you type to train the vendor's models unless you switch that off. In ChatGPT the setting is on by default (F1). Phone numbers and service notes of real clients could end up outside your control.\n- **Standard advice says don't.** Both salon-focused guides say to leave out full names and phone numbers, and to check the privacy policy first (F2, F3). Even with training off, they advise first names only and no allergies or photos.\n- **You don't need those fields.** The phone numbers add risk without improving the copy (F6).\n- **Service notes may be sensitive.** Allergy, patch-test, or skin-condition notes are the riskiest content (F4). I don't know what yours contain, so assume the worst until you check.\n\n## Main risks\n\n1. **Client trust and data exposure.** This is the biggest one. A client who learns her notes went into a free chatbot may not come back, which defeats your goal.\n2. **Texting consent.** US marketing texts require written consent you can prove, and a \"we miss you\" text counts as marketing (F5). Many lapsed clients may not have given it. This risk exists whether or not AI is involved, and it's the one most likely to cause real legal trouble. Check what Vagaro has on file, and have a lawyer review the consent wording.\n3. **Chair-renters.** If any of your four stylists rent their chairs, ownership of \"their\" clients is unsettled, and contracts vary (F9). Don't paste or message those clients until you've read the contracts.\n4. **Unreviewed AI text.** Always read drafts before sending (F3).\n5. **Maryland law.** Maryland's data laws probably don't reach a salon of your size or this type of data (F10, F11). Both points are unverified, so treat them as \"probably fine, confirm with counsel.\" Don't rely on them as a reason to paste freely.\n\n## Next steps\n\n1. **This week, check Vagaro first.** Find out whether your plan includes email or text campaigns and client segmentation (F12 suggests it likely does, but I couldn't confirm the plan or price). If it does, you may not need a separate AI tool at all. Segment lapsed clients there, such as those not seen in 90 days or more.\n2. **Check consent in Vagaro.** See which lapsed clients have opted in to marketing texts. Message only those by text. Reach the others by email or Instagram.\n3. **Review your service notes.** Find out whether they contain allergy or medical details. Keep those out of any AI tool.\n4. **Draft with minimal data.** Pick one AI app and turn off training in its settings (F1). Give it a first name, last service, weeks since the visit, and one real detail. Never include phone numbers, last names, or allergy information. Write a few templates by service type, such as color, cut, or extensions, rather than hundreds of one-offs.\n5. **Review and send.** Read every draft, then send through Vagaro or your own texting with your booking link.\n6. **Check chair-renter contracts** before including any of their clients.\n7. **Only if Vagaro falls short,** compare salon platforms with built-in AI, such as GlossGenius or Tilavon. Get their data-use terms in writing, covering whether the data stays yours and whether it trains their models (F4). Note that Tilavon limits texting to reminders and confirmations (F7), and I didn't find pricing for either.\n8. **Test small.** Send to 20\u201330 consented lapsed clients and track rebookings before scaling up.\n\n**Bottom line:** The free tool is fine for writing. The client list should stay in Vagaro.",
+  "judge": {
+    "model": "openrouter/anthropic/claude-sonnet-5.5",
+    "letters": {
+      "baseline_research": "A",
+      "baseline": "B",
+      "board": "C"
+    },
+    "baseline_research": {
+      "risks": [
+        {
+          "risk": "Customer data privacy / vendor data use",
+          "score": 2,
+          "quote": "Don't paste the full client list into a free AI app. Use the AI for drafting only, with minimal data, and send through Vagaro"
+        }
+      ],
+      "actionable": 5,
+      "errors": [
+        {
+          "claim": "US marketing texts require written consent, and a \"we miss you\" text counts as marketing",
+          "correction": "This is largely correct (TCPA prior express written consent for marketing texts), so there is no clear error. Entry left for completeness only."
+        }
+      ]
+    },
+    "baseline": {
+      "risks": [
+        {
+          "risk": "Customer data privacy / vendor data use",
+          "score": 2,
+          "quote": "Don't paste the raw client list into a free AI app. Get the same result a safer way."
+        }
+      ],
+      "actionable": 5,
+      "errors": []
+    },
+    "board": {
+      "risks": [
+        {
+          "risk": "Customer data privacy / vendor data use",
+          "score": 2,
+          "quote": "No phone numbers, full names, allergy, patch-test or medical notes go into any free AI app."
+        }
+      ],
+      "actionable": 4,
+      "errors": []
+    }
+  }
+}

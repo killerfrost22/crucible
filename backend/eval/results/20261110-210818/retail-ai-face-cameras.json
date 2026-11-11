@@ -1,0 +1,702 @@
+{
+  "scenario": {
+    "id": "retail-ai-face-cameras",
+    "intake": {
+      "question": "Should I install AI security cameras with facial recognition to flag repeat shoplifters?",
+      "leaning": "Yes, theft is up 30%",
+      "profile": {
+        "industry": "convenience store",
+        "location": "Laurel, Maryland",
+        "size": "1 store, 6 employees",
+        "current_tools": [
+          "NCR Counterpoint"
+        ],
+        "budget": "$300/month",
+        "goals": [
+          "cut shrinkage"
+        ]
+      }
+    },
+    "must_catch": [
+      {
+        "label": "Biometric privacy / notice to customers",
+        "any": [
+          "biometric",
+          "privacy",
+          "notice",
+          "signage",
+          "consent"
+        ]
+      },
+      {
+        "label": "Misidentification / bias risk",
+        "any": [
+          "false (positive|match|identif)",
+          "misidentif",
+          "bias",
+          "accuracy"
+        ]
+      }
+    ]
+  },
+  "seat_model": "openrouter/anthropic/claude-haiku-5.5",
+  "researcher_model": "openrouter/anthropic/claude-sonnet-5.5:online",
+  "chair_model": "openrouter/anthropic/claude-sonnet-5.5",
+  "web_search": true,
+  "baseline": "# Recommendation: Not yet. Fix the basics first and skip facial recognition for now.\n\nFacial recognition is probably the wrong first move for a one-store, $300/month operation. A 30% theft increase is a real problem, but you likely haven't pinned down where the loss is coming from, and cheaper tools can address most of it.\n\n## Why I'd hold off\n\n1. **Cost and fit.** True facial-recognition watchlist systems are mostly sold to larger chains, often with contracts, setup fees, and per-camera pricing. Most won't fit in $300/month for a single store. Mainstream cloud camera systems (Spot AI, Rhombus, Verkada, and similar) usually do searchable video and motion/person alerts, not face matching.\n2. **Accuracy and liability.** Facial recognition produces false matches, and those errors have historically been worse for some demographic groups. The FTC banned Rite Aid from using it for five years after it falsely flagged customers. If your staff confronts or accuses the wrong person, you face defamation, discrimination, and reputation risk, and possibly safety risk for your employees.\n3. **Legal uncertainty.** Maryland has no Illinois-style biometric privacy law that clearly applies to a store your size, but the state's newer privacy law (MODPA) treats biometric data as sensitive, and local rules and case law are evolving. Get a short attorney consult before collecting face data. Signage requirements and data retention would be on you.\n4. **You haven't diagnosed the problem.** \"Theft is up 30%\" could be customer shoplifting, employee theft, vendor or receiving errors, or bad inventory counts. Facial recognition only addresses a slice of the first.\n\n## Main risks of the facial recognition route\n\n- Misidentification leading to a confrontation or accusation\n- Legal and privacy exposure, plus data-breach responsibility for biometric data\n- Employee safety if staff are expected to act on alerts\n- Customer backlash in a neighborhood store that depends on regulars\n- Paying for a system that doesn't reduce losses because repeat offenders are only a small share of shrink\n\n## What I'd do instead (fits within $300/month)\n\n**Weeks 1\u20132: Diagnose**\n- Use NCR Counterpoint to run shrink by category and SKU. Look for voids, no-sales, refunds, discounts, and adjustments by cashier and shift.\n- Do cycle counts on the top 20 stolen items (tobacco, vape, alcohol, energy drinks, OTC meds, and the like).\n- Check receiving: are deliveries being counted in against invoices?\n- Review existing footage for patterns: who, when, where, and how many incidents involve the same people.\n\n**Weeks 2\u20134: Cheap, effective deterrence**\n- Upgrade to HD cameras with cloud storage and fast search. Put one at the door at face height and one at the register, and cover blind spots. Turn audio recording off, because Maryland's wiretap law is strict about it.\n- Move high-theft items behind the counter or into locked cases.\n- Use convex mirrors, a door chime, a clear sightline from the register, and visible monitors.\n- Post signs saying that cameras are recording and that you prosecute.\n- Greet every customer. It's a surprisingly effective deterrent.\n- Set a written policy: employees do not chase or physically confront anyone.\n\n**Ongoing: Handle repeat offenders**\n- Keep an incident log with date, time, items, and a saved clip.\n- File police reports every time, and contact Laurel/Prince George's County police about repeat offenders. Ask whether you can issue trespass notices to known repeat offenders, which are enforceable and don't need biometrics.\n- Join or start a local business watch group to share information.\n\n## Rough budget\n\n| Item | Approx. cost |\n|---|---|\n| Cloud camera system or upgrade (3\u20136 cameras) | $100\u2013250/month, or a one-time purchase plus a small cloud fee |\n| Locking cases, mirrors, signage | One-time, a few hundred dollars |\n| Attorney consult, if you still consider facial recognition | One-time, a few hundred dollars |\n\nPrices vary by vendor, so get at least three quotes.\n\n## When to revisit facial recognition\n\nReconsider in 90 days if all of these hold:\n- Your data shows a small group of identifiable repeat offenders accounts for a large share of losses.\n- Trespass notices and police reports aren't working.\n- A vendor fits your budget, and an attorney has signed off on signage, consent, retention, and a process for human verification.\n- You commit to never acting on an alert without a person confirming it, and never to publicly accusing anyone.\n\n## Bottom line\n\nSpend the next 30 days finding out where the 30% is coming from, and fix the cheap things first. If repeat offenders turn out to be the main driver, a camera system with strong search and incident documentation will get you most of the benefit without the legal, accuracy, and reputational risks of face matching.",
+  "board_state": {
+    "intake": {
+      "question": "Should I install AI security cameras with facial recognition to flag repeat shoplifters?",
+      "leaning": "Yes, theft is up 30%",
+      "profile": {
+        "name": "",
+        "industry": "convenience store",
+        "location": "Laurel, Maryland",
+        "size": "1 store, 6 employees",
+        "current_tools": [
+          "NCR Counterpoint"
+        ],
+        "budget": "$300/month",
+        "goals": [
+          "cut shrinkage"
+        ],
+        "constraints": ""
+      }
+    },
+    "evidence_mode": "web",
+    "evidence": {
+      "decision": "Whether a single-store Laurel, Maryland convenience store should install AI security cameras with facial recognition to flag repeat shoplifters, given a $300/month budget and a goal of reducing shrinkage.",
+      "options": [
+        "Do nothing and keep the current cameras and processes",
+        "Install facial recognition cameras with a watchlist of repeat offenders, with human review of every alert",
+        "Install AI video analytics without biometric matching, such as behavior alerts, searchable video and POS exception alerts tied to NCR Counterpoint",
+        "Upgrade conventional measures: better camera placement and image quality at the entrance and register, visible signage, incident logging, police reporting and layout or staffing changes"
+      ],
+      "facts": [
+        {
+          "claim": "On December 19, 2023, the FTC took enforcement action banning a large U.S. retailer from using facial recognition in its stores for five years. The FTC said the retailer failed to implement reasonable procedures when deploying the technology.",
+          "source": "https://www.dentons.com/en/insights/alerts/2024/january/11/top-considerations-for-retailers-using-artificial-intelligence-to-combat-retail-theft",
+          "verified": true,
+          "check": {
+            "status": "unreachable",
+            "checked_at": "2026-11-11T02:25:42Z",
+            "http_status": 403
+          }
+        },
+        {
+          "claim": "The FTC alleged the retailer's system produced many false-positive matches, and that these were especially likely for Black, Latino, Asian and women customers. Employee alerts did not show the system's confidence score.",
+          "source": "https://www.dentons.com/en/insights/alerts/2024/january/11/top-considerations-for-retailers-using-artificial-intelligence-to-combat-retail-theft",
+          "verified": true,
+          "check": {
+            "status": "unreachable",
+            "checked_at": "2026-11-11T02:25:42Z",
+            "http_status": 403
+          }
+        },
+        {
+          "claim": "The FTC order also required deletion of all customer photos and videos collected for the facial recognition system, and of any data, models or algorithms derived from them. Third-party vendors had to be notified and told to delete the same.",
+          "source": "https://www.dentons.com/en/insights/alerts/2024/january/11/top-considerations-for-retailers-using-artificial-intelligence-to-combat-retail-theft",
+          "verified": true,
+          "check": {
+            "status": "unreachable",
+            "checked_at": "2026-11-11T02:25:42Z",
+            "http_status": 403
+          }
+        },
+        {
+          "claim": "Dentons lists these steps for retailers using facial recognition: use models trained on diverse data, test accuracy before deployment, monitor results continuously, train employees and have them report false positives, post conspicuous customer notice, run a strong data security program, and review vendor agreements.",
+          "source": "https://www.dentons.com/en/insights/alerts/2024/january/11/top-considerations-for-retailers-using-artificial-intelligence-to-combat-retail-theft",
+          "verified": true,
+          "check": {
+            "status": "unreachable",
+            "checked_at": "2026-11-11T02:25:42Z",
+            "http_status": 403
+          }
+        },
+        {
+          "claim": "The Security Industry Association says commercial facial recognition use is legal in all 50 U.S. states. It is prohibited in a few local jurisdictions and practical in all states except Illinois because of its Biometric Information Privacy Act. It recommends human verification before any action is taken on a match.",
+          "source": "https://www.securityindustry.org/wp-content/uploads/2026/10/SIA_Retail-Security-AI-Hype-Vs-Reality.pdf",
+          "verified": true,
+          "check": {
+            "status": "unreachable",
+            "checked_at": "2026-11-11T02:25:42Z",
+            "http_status": 403
+          }
+        },
+        {
+          "claim": "The Security Industry Association says false positives and missed detections remain part of nearly every AI security platform. Accuracy depends on camera placement, lighting, store layout and image quality, and polished demos may not predict real-world performance.",
+          "source": "https://www.securityindustry.org/wp-content/uploads/2026/10/SIA_Retail-Security-AI-Hype-Vs-Reality.pdf",
+          "verified": true,
+          "check": {
+            "status": "unreachable",
+            "checked_at": "2026-11-11T02:25:42Z",
+            "http_status": 403
+          }
+        },
+        {
+          "claim": "The Security Industry Association describes facial recognition as targeting a small share of repeat offenders who cause a disproportionate share of retail loss. It describes watchlists built from individuals enrolled for probable cause, such as violent incidents or organized retail crime.",
+          "source": "https://www.securityindustry.org/wp-content/uploads/2026/10/SIA_Retail-Security-AI-Hype-Vs-Reality.pdf",
+          "verified": true,
+          "check": {
+            "status": "unreachable",
+            "checked_at": "2026-11-11T02:25:42Z",
+            "http_status": 403
+          }
+        },
+        {
+          "claim": "Small UK retailers have adopted facial recognition that flags offenders on a shared watchlist maintained by participating businesses. One shop owner reported working with police after the system identified a repeat-crime location. This is UK evidence under different privacy law.",
+          "source": "https://www.bbc.com/news/uk-england-surrey-66982326",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:25:42Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Axios reported that the retailer was barred from facial recognition for five years after the FTC found its system erroneously flagged people of color as shoplifters. It also reported that AI cameras can flag suspicious behavior without staff watching hours of video.",
+          "source": "https://www.axios.com/2024/03/18/retail-theft-stores-security-cameras-ai",
+          "verified": true,
+          "check": {
+            "status": "unreachable",
+            "checked_at": "2026-11-11T02:25:42Z",
+            "http_status": 403
+          }
+        },
+        {
+          "claim": "Maryland has no statewide biometric privacy law like Illinois BIPA that gives private individuals a right to sue. The Maryland Online Data Privacy Act took effect October 2025 and has applicability thresholds that a single small store may fall below. Counsel should confirm whether it applies. Laurel sits mainly in Prince George's County, and local rules should be checked with the county and city.",
+          "source": "",
+          "verified": false
+        },
+        {
+          "claim": "Maryland is an all-party-consent state for recording oral communications. Video-only cameras are generally fine, but cameras that capture audio can create wiretap exposure.",
+          "source": "",
+          "verified": false
+        },
+        {
+          "claim": "Pricing for facial recognition vendors is mostly quote-based rather than published. Cloud-managed AI camera platforms commonly charge per-camera annual licenses on top of hardware, so a multi-camera install may strain a $300/month budget. Quotes are needed to confirm.",
+          "source": "",
+          "verified": false
+        },
+        {
+          "claim": "NCR Counterpoint is a retail POS system. Its transaction data, such as voids, refunds and no-sale openings, can support exception reporting for employee-related shrinkage. It does not provide facial recognition.",
+          "source": "",
+          "verified": false
+        }
+      ],
+      "open_questions": [
+        "What share of the 30% theft increase is from identifiable repeat offenders, versus one-time theft, employee theft or vendor and receiving errors?",
+        "How many cameras are needed, and what are the actual quotes for hardware, licensing and installation from vendors that offer facial recognition in Maryland?",
+        "Does the store's existing camera system and network support upgrades, or would it need full replacement?",
+        "Would the Maryland Online Data Privacy Act or any Prince George's County or Laurel rule apply to the store's biometric data collection? This needs a Maryland attorney.",
+        "What is the store's insurance position, and would its insurer require or discount specific security measures?",
+        "What is Laurel and Prince George's County police's response to retail theft reports, and would they act on facial recognition matches or just footage?",
+        "Who would verify alerts during all open hours with six employees, and what is the safe protocol for confronting a suspect?",
+        "How would the store handle false matches, customer complaints, data retention, deletion and vendor data sharing?",
+        "Would posted biometric notice deter customers, or deter thieves, in this neighborhood?"
+      ]
+    },
+    "round1": {
+      "industry_expert": {
+        "stance": "oppose",
+        "headline": "Skip facial recognition; use cheaper, lower-risk theft controls first.",
+        "summary": "Facial recognition carries real legal, accuracy and reputation risk (F1, F2), and quotes likely strain a $300/month budget (F12). Your 30% jump needs a breakdown first. Start with better entrance and register camera coverage, POS exception reports in Counterpoint (F13), and consistent incident logging and police reporting. Revisit biometrics only after counsel and vendor quotes are in hand.",
+        "key_points": [
+          "The FTC banned a large retailer from facial recognition for five years over false matches that hit people of color harder (F1, F2); a small store has less room for error.",
+          "Accuracy depends on camera placement, lighting and layout, and demos rarely match real stores (F6). Six staff cannot reliably verify alerts across all open hours.",
+          "Counterpoint exception reports on voids, refunds and no-sales can cut employee-related loss cheaply (F13), and better camera coverage at the register is a proven fix."
+        ],
+        "risks": [
+          "Biometric data collection could trigger Maryland privacy rules or local requirements; a Maryland attorney must confirm (unverified, F10).",
+          "Confronting a flagged person could escalate into injury or a false accusation, with six staff on shift.",
+          "Cloud camera licenses per camera could exceed $300/month before hardware is counted (F12, unverified)."
+        ],
+        "confidence": 75,
+        "pushback": "You assume the 30% rise is mainly outside repeat shoplifters. If a small group of known offenders drives most of it (F7), a non-biometric watchlist and police reporting may already capture much of the gain.}"
+      },
+      "ai_tools_expert": {
+        "stance": "oppose",
+        "headline": "Don't install facial recognition; fix theft with cheaper, lower-risk measures first",
+        "summary": "Theft is up 30%, but facial recognition is a poor fit for one small store. Its accuracy is uneven, it has drawn FTC enforcement, and its costs may exceed $300 a month. Start with better cameras, POS exception reports and clear incident logs. Reassess only if repeat offenders are proven to drive the losses.",
+        "key_points": [
+          "The FTC barred a large retailer from facial recognition for five years over erroneous matches, with false positives worse for some groups (F1, F2). A small store would carry the same exposure with less legal support.",
+          "Accuracy depends on camera placement, lighting and image quality, and demos may not match real results (F6). Your entrance and register setup would need work first.",
+          "Vendor pricing is mostly quote-based, and per-camera licenses may strain a $300/month budget (F12). NCR Counterpoint exception data can target employee-related loss without biometrics (F13)."
+        ],
+        "risks": [
+          "Biometric data collection may trigger Maryland privacy duties or local rules that a Maryland attorney must confirm (F10). Deletion and vendor data-sharing duties would also apply.",
+          "Wrongful flags on customers could cause complaints, lost customers and confrontations handled by staff with no protocol.",
+          "Spending on facial recognition may leave the real drivers of the 30% increase unaddressed, such as employee theft or receiving errors."
+        ],
+        "confidence": 80,
+        "pushback": "You assume the 30% rise comes from identifiable repeat shoplifters. Check how much of it is repeat offenders versus one-time theft, employee theft or vendor errors before buying anything.",
+        "tools": [
+          {
+            "name": "Spot AI",
+            "use": "Adds behavior alerts and searchable video to existing cameras, without face matching.",
+            "monthly_cost": "unknown",
+            "works_with": "Existing IP cameras; POS exception alerts would need a separate link to NCR Counterpoint.",
+            "caveat": "Pricing is quote-based and per-camera; it may not fit a $300/month budget at full store coverage.",
+            "url": "",
+            "price_fact": "",
+            "pilot_test": "Keep it if it flags at least 5 real incidents per month that staff confirm and that lead to recovered goods within 60 days; cancel before the first annual renewal otherwise."
+          }
+        ]
+      },
+      "realist": {
+        "stance": "conditional",
+        "headline": "Not facial recognition now; pursue cheaper, lower-risk theft controls first.",
+        "summary": "Facial recognition carries serious legal, accuracy and bias risk, and the FTC has banned a major retailer from using it (F1, F2). Your $300/month budget likely cannot cover multi-camera biometric licensing (F12, unverified). Start with POS exception alerts, camera and entrance upgrades, incident logging and police reporting, then measure whether theft falls.",
+        "key_points": [
+          "Federal enforcement shows facial recognition can fail badly and create liability (F1, F2, F3).",
+          "Vendor accuracy depends on camera placement and lighting, not demos (F6).",
+          "NCR Counterpoint exception reports can target employee and void shrinkage without biometrics (F13)."
+        ],
+        "risks": [
+          "Biometric false matches could wrongly accuse customers, creating complaints and legal exposure (F2).",
+          "Vendor licensing and hardware may exceed the $300/month budget (F12, unverified).",
+          "Maryland and Prince George's County rules may apply to biometric data; a Maryland attorney must confirm (F10, unverified)."
+        ],
+        "confidence": 78,
+        "pushback": "Are you sure the 30% increase comes from repeat offenders rather than employee, void, or receiving losses that a POS report would reveal first?",
+        "checks": [
+          {
+            "area": "legal",
+            "status": "flag",
+            "note": "Biometric use is legal in Maryland but untested locally; a Maryland attorney should confirm whether the Online Data Privacy Act or county rules apply (F5, F10, unverified)."
+          },
+          {
+            "area": "compliance",
+            "status": "flag",
+            "note": "Any face-matching needs conspicuous notice, data deletion and vendor controls, per F3 and F4; audio-capturing cameras add wiretap risk in an all-party-consent state (F11, unverified)."
+          },
+          {
+            "area": "financial",
+            "status": "flag",
+            "note": "Vendor quotes are unknown and per-camera licensing may strain $300/month; get written quotes before any commitment (F12, unverified)."
+          },
+          {
+            "area": "goals",
+            "status": "pass",
+            "note": "Cutting shrinkage is served best by POS exception alerts and camera and layout upgrades that need no biometric data (F7, F13)."
+          },
+          {
+            "area": "operational",
+            "status": "flag",
+            "note": "Six employees may not be able to verify alerts across all open hours; confrontation protocol is needed first (F6, F9)."
+          }
+        ]
+      },
+      "strategist": {
+        "stance": "oppose",
+        "headline": "Not facial recognition now; start with cheaper, lower-risk theft controls.",
+        "summary": "Facial recognition carries serious legal, accuracy and reputational risk for a six-person store on $300 a month. The FTC banned a large retailer for five years over false matches (F1, F2). Start by finding out where the 30% theft rise comes from, use POS exception reporting and better camera placement, and revisit biometrics only with a lawyer's sign-off.",
+        "key_points": [
+          "The FTC penalty shows the failure mode: biased false matches and no confidence scores shown to staff (F1, F2). A small store lacks the testing and oversight the FTC expects (F4).",
+          "Accuracy depends on camera placement, lighting and layout, and demos rarely predict real results (F6). Vendor quotes are unknown and may strain the budget (F12).",
+          "Your 30% figure may not come from repeat offenders. Split it by cause first. NCR Counterpoint exception reports can catch voids, refunds and no-sales, which cost little (F13)."
+        ],
+        "risks": [
+          "Wrongful accusation of a customer, causing a complaint, a public incident or a discrimination claim (F2, F9).",
+          "Multi-year lock-in to a vendor and biometric data that must be deleted later if the program fails (F3).",
+          "Unclear Maryland and Prince George's County rules; a Maryland attorney must confirm before any biometric collection (F10)."
+        ],
+        "confidence": 78,
+        "pushback": "You assume the theft rise comes from repeat shoplifters who a watchlist could catch. Pull the numbers first: if most loss is employee, receiving or one-time theft, facial recognition misses it entirely.\n\nNext move: pull 90 days of Counterpoint exception data and incident logs, then request two quotes for camera upgrades and AI video analytics without biometric matching."
+      },
+      "devils_advocate": {
+        "stance": "oppose",
+        "headline": "Don't buy facial recognition yet; fix the basics and measure first.",
+        "summary": "Facial recognition carries serious legal, accuracy and bias risk, and the FTC has banned a large retailer from using it (F1, F2). A $300/month budget likely cannot cover cameras, licenses and staff review (F12, unverified). The 30% theft rise may not come from repeat offenders at all. Start with cheaper fixes: better entrance and register cameras, POS exception reports, and logging incidents. Then decide with real numbers.",
+        "key_points": [
+          "The FTC found a retailer's system produced many false matches, especially for women and people of color, and staff could not see confidence scores (F2).",
+          "Recognition targets a small group of repeat offenders (F7), but the owner has not shown that repeat offenders drive the 30% rise.",
+          "NCR Counterpoint exception data (voids, refunds, no-sales) can flag theft without biometrics (F13)."
+        ],
+        "risks": [
+          "Biometric data collection may create legal exposure under Maryland or local rules; a Maryland attorney must confirm (F10, unverified).",
+          "Six staff cannot reliably verify alerts or safely confront suspects during all open hours.",
+          "Deletion duties, vendor data sharing and customer complaints could cost more than the shrinkage saved (F3)."
+        ],
+        "confidence": 78,
+        "pushback": "Assume the theft increase comes from repeat, identifiable offenders. If most loss is employee, vendor or receiving error, facial recognition solves the wrong problem.] ,"
+      }
+    },
+    "round2": {
+      "industry_expert": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "realist",
+            "their_claim": "Biometric use is legal in Maryland but untested locally, based on the SIA finding that it is legal in all 50 states.",
+            "response": "F5 is an industry group's general statement, not a Maryland legal opinion. Legal in most states does not mean safe here. A Maryland attorney must confirm before any biometric step."
+          },
+          {
+            "target": "ai_tools_expert",
+            "their_claim": "A non-biometric Spot AI pilot should be kept only if it flags at least five confirmed incidents a month that lead to recovered goods within 60 days.",
+            "response": "Good test, but it needs a simple written incident log, not memory. Six staff will not track 60-day recoveries otherwise. Get the written quote before the pilot starts."
+          }
+        ],
+        "concessions": [
+          "A non-biometric video analytics pilot with a clear keep-or-cancel test is a reasonable way to learn.",
+          "The strategist is right to split the 30% rise by cause before buying anything."
+        ],
+        "stance": "oppose",
+        "headline": "Skip facial recognition; fix theft basics and measure before buying.",
+        "summary": "Facial recognition is the wrong first move for a six-person store on $300 a month. The FTC banned a large retailer for five years over false matches that hit some groups harder (F1, F2). Before buying anything, split the 30% rise by cause using 90 days of Counterpoint exception data (F13) and incident logs. Then get camera and analytics quotes, with a Maryland attorney reviewing any biometric option.",
+        "key_points": [
+          "The FTC banned a large retailer from facial recognition for five years over false matches (F1, F2); a small store has less room for error.",
+          "Accuracy depends on camera placement and lighting, so demos will not predict results (F6).",
+          "Counterpoint exception reports on voids, refunds and no-sales are cheap and target employee loss (F13)."
+        ],
+        "risks": [
+          "Biometric data may trigger Maryland or county duties; an attorney must confirm (F10, unverified).",
+          "Six staff cannot verify alerts or safely confront suspects during all open hours.",
+          "Per-camera licenses could exceed $300 a month before hardware is counted (F12, unverified)."
+        ],
+        "confidence": 76,
+        "pushback": "You assume the 30% rise comes from identifiable repeat shoplifters. If most loss is employee, receiving or one-time theft, facial recognition misses the real problem."
+      },
+      "ai_tools_expert": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "strategist",
+            "their_claim": "Multi-year vendor lock-in and biometric data that must be deleted later if the program fails (F3).",
+            "response": "Agreed on lock-in. Any analytics deal should be month-to-month, with a cancel point before renewal. Deletion risk disappears entirely when no faces are collected."
+          },
+          {
+            "target": "devils_advocate",
+            "their_claim": "Facial recognition may solve the wrong problem, since the owner has not shown repeat offenders drive the 30% rise.",
+            "response": "I agree the cause is unproven. A non-biometric tool also needs a loss breakdown first, so the 90-day Counterpoint exception data should come before any vendor quote."
+          }
+        ],
+        "concessions": [
+          "Six staff cannot reliably verify alerts across all open hours (industry_expert, devils_advocate); any tool needs a named verifier per shift.",
+          "Per-camera licensing may exceed the budget before hardware is counted (industry_expert, realist)."
+        ],
+        "stance": "oppose",
+        "headline": "Oppose facial recognition now; test non-biometric analytics only after the loss breakdown.",
+        "summary": "Theft is up 30%, but facial recognition is a poor fit for this store. The FTC banned a large retailer over false matches (F1, F2), and its accuracy depends on setup (F6). Vendor costs are unknown and may exceed $300 a month (F12). Split the loss by cause first. If you add cameras, choose non-biometric analytics on a month-to-month plan.",
+        "key_points": [
+          "The FTC case shows the failure mode: false matches, worse for some groups, with no confidence scores shown to staff (F1, F2).",
+          "Non-biometric video analytics can flag behavior and cut video review time without face matching (F9).",
+          "Counterpoint exception data (F13) can catch employee-related loss at little cost, before any AI spend."
+        ],
+        "risks": [
+          "Per-camera licenses on top of hardware could push costs past $300 a month (F12, unverified).",
+          "Six staff cannot verify alerts across all open hours or safely confront suspects without a written protocol.",
+          "Annual contracts could leave you paying for tools that do not reduce shrinkage."
+        ],
+        "confidence": 78,
+        "pushback": "That the 30% rise comes from identifiable repeat offenders. If most loss is employee theft or receiving error, no camera tool fixes it.",
+        "tools": [
+          {
+            "name": "Spot AI",
+            "use": "Adds behavior alerts and searchable video to existing cameras, without face matching.",
+            "monthly_cost": "unknown (quote-based, per camera)",
+            "works_with": "Existing IP cameras; no link to NCR Counterpoint confirmed",
+            "caveat": "Pricing is per camera and quote-based; full store coverage may not fit a $300/month budget.",
+            "url": "",
+            "price_fact": "",
+            "pilot_test": "Keep it if it flags at least 5 real incidents per month that staff confirm and lead to recovered goods within 60 days; cancel before the first annual renewal otherwise."
+          }
+        ]
+      },
+      "realist": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "ai_tools_expert",
+            "their_claim": "A non-biometric video analytics pilot could fit the budget if it proves useful within 60 days.",
+            "response": "The pilot idea is sound, but pricing is quote-based and per-camera (F12, unverified). Get written quotes and confirm the pilot terms before treating it as affordable."
+          },
+          {
+            "target": "industry_expert",
+            "their_claim": "Biometric data collection could trigger Maryland privacy rules or local requirements.",
+            "response": "Agreed that a Maryland attorney must confirm this first. Until then, I treat it as an open legal question, not a clear bar (F10, unverified)."
+          }
+        ],
+        "concessions": [
+          "Split the 30% rise by cause before buying anything (F7 and open questions).",
+          "A non-biometric analytics pilot with clear keep-or-cancel criteria is a reasonable next step."
+        ],
+        "stance": "conditional",
+        "headline": "Not facial recognition now; split the 30% by cause first.",
+        "summary": "Do not buy facial recognition yet. The FTC banned a large retailer for five years over false matches (F1, F2), and your $300 budget likely cannot cover multi-camera biometric licenses (F12, unverified). First find what drives the 30% rise using Counterpoint exception data and incident logs (F13). Then compare written quotes for camera upgrades and non-biometric analytics.",
+        "key_points": [
+          "Split the 30% rise by cause: repeat offenders, employee loss, voids or receiving errors (F7, F13).",
+          "FTC enforcement shows false matches can create real legal exposure (F1, F2, F3).",
+          "Get a Maryland attorney to confirm privacy rules before any biometric collection (F10, unverified)."
+        ],
+        "risks": [
+          "Wrongful matches could accuse customers and create complaints or legal claims (F2).",
+          "Per-camera licenses and hardware could exceed $300 a month (F12, unverified).",
+          "Six staff may be unable to verify alerts or confront suspects safely during all open hours."
+        ],
+        "confidence": 78,
+        "pushback": "Assume the 30% rise is mainly repeat, identifiable shoplifters. If most loss is employee, void or receiving error, facial recognition solves the wrong problem.",
+        "checks": [
+          {
+            "area": "legal",
+            "status": "flag",
+            "note": "Biometric use is untested locally; a Maryland attorney should confirm whether the Online Data Privacy Act or county rules apply (F10, unverified)."
+          },
+          {
+            "area": "compliance",
+            "status": "flag",
+            "note": "Face matching would need conspicuous notice, deletion and vendor controls (F3, F4); audio-capturing cameras add wiretap risk in an all-party-consent state (F11, unverified)."
+          },
+          {
+            "area": "financial",
+            "status": "flag",
+            "note": "Vendor quotes are unknown and per-camera licensing may strain $300 a month; get written quotes before any commitment (F12, unverified)."
+          },
+          {
+            "area": "goals",
+            "status": "pass",
+            "note": "Cutting shrinkage is served best by POS exception alerts and camera or layout upgrades that need no biometric data (F7, F13)."
+          },
+          {
+            "area": "operational",
+            "status": "flag",
+            "note": "Six employees may not be able to verify alerts across all open hours; a confrontation protocol is needed first (F6, F9)."
+          }
+        ]
+      },
+      "strategist": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "ai_tools_expert",
+            "their_claim": "A non-biometric AI analytics pilot on existing cameras can test value within 60 days before renewal.",
+            "response": "Agree the pilot is the right test, but analytics still need per-camera quotes (F12) before any spend. Add a cap: no renewal without written proof of recovered goods."
+          },
+          {
+            "target": "industry_expert",
+            "their_claim": "Revisit biometrics once counsel and vendor quotes are in hand.",
+            "response": "Quotes and counsel are necessary but not sufficient. The real gate is proof that repeat offenders drive the loss (F7). Without that split, a clean legal opinion still buys the wrong tool."
+          },
+          {
+            "target": "devils_advocate",
+            "their_claim": "Deletion duties, vendor sharing and complaints could cost more than the shrinkage saved.",
+            "response": "Possibly, but that is unquantified. Price the shrink first from Counterpoint data, then compare it with compliance cost. Deletion duties (F3) make any exit costly, so decide before enrolling anyone."
+          }
+        ],
+        "concessions": [
+          "Non-biometric AI video alerts are a reasonable next test if quotes fit the budget (F12).",
+          "POS exception alerts should come first; they cost little and measure employee loss (F13)."
+        ],
+        "stance": "oppose",
+        "headline": "Oppose facial recognition now; measure the 30% rise first.",
+        "summary": "Do not buy facial recognition now. First find out what caused the 30% rise: pull 90 days of Counterpoint exception data and incident logs. Then get quotes for better entrance and register cameras and non-face AI alerts. Consider biometrics only if repeat offenders prove to drive most loss, and a Maryland attorney signs off.",
+        "key_points": [
+          "The FTC penalty followed false matches and hidden confidence scores (F1, F2); a six-person store lacks the testing F4 expects.",
+          "Repeat offenders are a small share of shoppers (F7), so a watchlist may miss most of the 30% rise.",
+          "Counterpoint exception reports (F13) and camera placement (F6) can be tested within 90 days at low cost."
+        ],
+        "risks": [
+          "Multi-year vendor lock-in before any shrink baseline exists.",
+          "Wrongful accusation of a customer, leading to complaints or discrimination claims (F2, F9).",
+          "Biometric data must be deleted if the program is dropped (F3); Maryland rules are unverified and an attorney must confirm (F10)."
+        ],
+        "confidence": 80,
+        "pushback": "That repeat offenders, rather than employee, vendor or one-time theft, drive most of the 30% rise."
+      },
+      "devils_advocate": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "industry_expert",
+            "their_claim": "Revisit biometrics only after counsel and vendor quotes are in hand, starting with cameras and POS reports.",
+            "response": "Sequencing is fine, but 'after quotes' has no deadline. Set one: quotes and 90 days of Counterpoint data by a fixed date, or the 30% rise goes unmeasured."
+          },
+          {
+            "target": "realist",
+            "their_claim": "POS exception alerts and camera and layout upgrades can cut shrinkage without biometric data (F7, F13).",
+            "response": "POS exceptions only catch theft that runs through the register. Entrance and walkout theft will not show in Counterpoint data, so the board should not assume those tools cover the 30%."
+          },
+          {
+            "target": "strategist",
+            "their_claim": "Split the 30% by cause first; if most loss is employee or receiving, facial recognition misses it.",
+            "response": "Agreed on splitting, but the board never sizes the repeat-offender share. Estimate it from incident logs now, rather than waiting for a full study."
+          }
+        ],
+        "concessions": [
+          "Facial recognition carries serious legal and accuracy risk (F1, F2, F6).",
+          "Six staff cannot reliably verify biometric alerts during all open hours."
+        ],
+        "stance": "oppose",
+        "headline": "Consensus waits too long; run a time-boxed, measured test instead.",
+        "summary": "The board agrees facial recognition is risky, but measure first, then decide could drift into months of unchecked losses. The 30% rise is the urgent problem. Set a 60-day deadline: pull Counterpoint exception data and incident logs, get written quotes, and test one cheap fix. Do not buy biometrics without counsel sign-off.",
+        "key_points": [
+          "Delay is not free: a 30% rise, if accurate, costs money every month the review drags on.",
+          "Cheap-first is also unpriced: vendor quotes are unknown (F12), so the board has not shown its own alternative fits $300 a month.",
+          "Repeat offenders may drive a meaningful share (F7). A targeted, non-biometric watchlist plus police reporting could capture that without face matching (F7, F13)."
+        ],
+        "risks": [
+          "Waiting without a tracked baseline lets theft continue with no way to judge progress.",
+          "Non-biometric video analytics still raise audio and privacy questions to check (F11, unverified).",
+          "Cheap fixes may underdeliver, and the owner may wrongly conclude that all loss-control tools fail."
+        ],
+        "confidence": 72,
+        "pushback": "Assume a cheap fix plus more study will stop the loss. If the 30% is mostly visible customer theft at the entrance, delay is the expensive choice."
+      }
+    },
+    "verdict": {
+      "decision": "defer",
+      "headline": "Don't buy facial recognition now; measure the theft first, fix basics.",
+      "confidence": 76,
+      "rationale": "Facial recognition is the wrong first move for one store on $300 a month. The FTC banned a large retailer for five years over false matches that hit some groups harder (F1, F2). Accuracy depends on your lighting and camera placement (F6). Quotes likely exceed your budget (F12, unverified). Nobody has shown that repeat offenders drive the 30% rise (F7). Spend 30 days splitting the loss by cause, fix entrance and register cameras, then test non-biometric analytics. Revisit biometrics only if repeat offenders prove to be most of the loss and a Maryland attorney signs off.",
+      "decisive_arguments": [
+        {
+          "seat": "strategist",
+          "point": "Facial recognition only helps if repeat offenders drive most of the loss (F7). That is unproven. If the loss is employee, receiving or one-time theft, a watchlist misses it."
+        },
+        {
+          "seat": "industry_expert",
+          "point": "The FTC ban followed false matches, and staff could not see confidence scores (F1, F2). A six-person store cannot test or monitor the system as F4 expects."
+        },
+        {
+          "seat": "ai_tools_expert",
+          "point": "Non-biometric analytics can flag behavior and cut video review time (F9). No faces means no deletion or biometric-data duties (F3). A month-to-month trial limits lock-in."
+        },
+        {
+          "seat": "realist",
+          "point": "Per-camera licenses on top of hardware may break a $300/month budget (F12, unverified). Written quotes must come before any commitment."
+        }
+      ],
+      "dissent": [
+        {
+          "seat": "devils_advocate",
+          "point": "Delay costs money. 'Measure first' with no deadline lets a 30% rise continue. Set a fixed date for the data and quotes."
+        },
+        {
+          "seat": "devils_advocate",
+          "point": "Counterpoint exception reports only catch theft that runs through the register (F13). Walkout theft at the entrance will not show up, so the cheap-first plan may not cover the 30%."
+        },
+        {
+          "seat": "realist",
+          "point": "Biometric use is legal in most states (F5). The Maryland rules are an open question, not a clear bar (F10, unverified). A clean legal opinion could later make biometrics viable for a small repeat-offender group."
+        }
+      ],
+      "conditions": [
+        "Split the 30% rise by cause using 90 days of Counterpoint data and a written incident log before any purchase.",
+        "No biometric collection until a Maryland attorney confirms the Maryland Online Data Privacy Act and Prince George's County and Laurel rules (F10, unverified).",
+        "Choose cameras without audio recording, because Maryland is an all-party-consent state (F11, unverified).",
+        "Any analytics tool must be month-to-month or have a cancel point before renewal.",
+        "Name one person per shift to review alerts, and forbid staff from confronting suspects."
+      ],
+      "next_steps": [
+        {
+          "when": "this week",
+          "action": "Pull 90 days of Counterpoint exception data (voids, refunds, no-sales). Start a written incident log with date, time, location, what happened, any police report number and a description of the person."
+        },
+        {
+          "when": "this week",
+          "action": "Call your insurer and ask whether they require or discount specific security measures. Ask Laurel or Prince George's County police how they handle retail theft reports and whether they act on footage."
+        },
+        {
+          "when": "next 30 days",
+          "action": "Estimate what share of the 30% rise comes from repeat offenders, one-time theft, employee activity and receiving errors. Write down your result with a decision date."
+        },
+        {
+          "when": "next 30 days",
+          "action": "Get two written quotes for better entrance and register camera coverage and for non-biometric analytics. Confirm that per-camera licensing fits $300/month and that terms are month-to-month. Ask the Maryland SBDC for free help if useful."
+        },
+        {
+          "when": "next 30 days",
+          "action": "Write a one-page protocol: who reviews alerts each shift, no confrontation, call police and note details. Add visible signage and fix lighting and camera angles at the door and register."
+        },
+        {
+          "when": "next 90 days",
+          "action": "If the quotes fit, run a month-to-month non-biometric analytics trial with the stated keep-or-cancel test. Revisit biometrics only if repeat offenders are most of the loss, and hire a Maryland attorney first."
+        }
+      ],
+      "ai_tools": [
+        {
+          "name": "Spot AI",
+          "use": "Adds behavior alerts and searchable video to existing cameras without face matching, to cut video review time.",
+          "monthly_cost": "unknown (quote-based, per camera)",
+          "works_with": "Existing cameras per the expert; no NCR Counterpoint link confirmed (unverified)",
+          "caveat": "Pricing is per camera and quote-based, so full store coverage may not fit $300/month. It adds no help for theft that never appears on camera.",
+          "url": "",
+          "price_fact": "",
+          "pilot_test": "Start only after the loss breakdown and a written month-to-month quote. Keep it if it flags at least 5 real incidents a month that staff confirm and that lead to recovered goods or police reports within 60 days. Otherwise cancel before the first renewal."
+        }
+      ],
+      "escalate_to": "attorney",
+      "escalation_reason": "Biometric data collection may trigger the Maryland Online Data Privacy Act or Prince George's County and Laurel rules (F10, unverified). Notice and deletion duties also apply (F3, F4). A Maryland attorney must confirm before any facial matching.",
+      "would_change": [
+        "Your incident log shows a small group of identifiable repeat offenders causes most of the loss, and a Maryland attorney clears biometric use.",
+        "A written quote shows a facial recognition system with human review fits within $300/month, with a clear deletion and exit clause.",
+        "The non-biometric and camera upgrades run for 60-90 days and shrinkage still does not fall."
+      ],
+      "no_new_tool": "Use what you have. Run Counterpoint exception reports for voids, refunds and no-sales (F13) weekly and compare them against your incident log. Move or fix cameras and lighting at the entrance and register, post visible signage, report every incident to police and log it by hand. Cost is mostly staff time, a few hours a week, plus roughly $0-200 for signage and minor camera adjustments (estimate)."
+    }
+  },
+  "board_error": null,
+  "seconds": 73,
+  "baseline_research": "# Recommendation: not yet. Start with conventional upgrades and POS exception reporting, then revisit facial recognition if the data supports it.\n\nTheft up 30% is a real problem, but facial recognition is the wrong first move for a one-store, six-employee shop on $300/month.\n\n## Why not facial recognition now\n\n- **You don't yet know who is stealing.** Facial recognition only helps with identifiable repeat offenders (F7). If much of the 30% is one-time theft, employee theft, or receiving and vendor errors (open questions), a watchlist won't touch it.\n- **The regulatory and liability risk is real.** The FTC banned a large retailer from facial recognition for five years. It cited false matches, especially for Black, Latino, Asian and women customers, and alerts that didn't show confidence scores. It also ordered deletion of all collected images and derived models (F1\u2013F3, F9). Using the technology legally is not the problem (F5). Using it carelessly is. A false accusation of a customer in your store is a reputational and legal risk that a small shop can't easily absorb.\n- **Doing it properly is a lot of work for six people.** Best practice includes accuracy testing, continuous monitoring, staff training, conspicuous notice, data security, vendor contract review (F4), and human verification of every match (F5). Someone would have to do that during every open hour. Nobody on your team is currently assigned to it.\n- **The performance claims may not hold in your store.** Vendors' demos often don't predict real-world results, and accuracy depends on lighting, placement and image quality (F6). Your existing cameras may not be good enough.\n- **The cost likely exceeds your budget.** Pricing is quote-based, and per-camera licenses on top of hardware may strain $300/month (F12, unverified). Get quotes before assuming otherwise.\n- **The evidence it works for stores like yours is thin.** The positive example is from UK small retailers under different privacy law (F8).\n- **The Maryland legal picture is unsettled.** Maryland seems to have no Illinois-style private right to sue over biometrics, and the Maryland Online Data Privacy Act may not reach a store your size. Both points, along with any county or city rules, are unverified (F10) and need a Maryland attorney to confirm.\n\n## What I'd do instead (about $300/month or less)\n\n1. **Diagnose the 30% first (free, 2\u20133 weeks).** Start an incident log with date, time, item, what the footage shows, and whether the person is a repeat. Do a cycle count on your top-shrink categories. Review receiving procedures. This tells you whether repeat offenders are the problem.\n2. **Use NCR Counterpoint for exception reports (likely free).** Check voids, refunds, no-sales, and discounts by employee and shift. It won't do facial recognition, but it can catch employee-related loss (F13, unverified).\n3. **Fix the basics of your cameras.** Put a clear, face-height camera at the entrance and one covering the register, with good lighting. Add visible signage and monitors. Good footage is what police need, and it's also what any later facial recognition system would require.\n4. **Make police reporting routine.** File a report with footage for every incident. Ask Laurel and Prince George's County police what they will act on.\n5. **Adjust layout and staffing.** Move high-theft items near the register, remove blind spots, and put an employee at the door during peak theft hours.\n6. **Set a safe protocol.** Staff should not physically confront suspects. They should greet, make themselves visible, and document.\n7. **Consider non-biometric AI analytics** (searchable video, behavior or POS-linked alerts) only if quotes fit the budget. They avoid the biometric risks (F9), but F6's caveat about false positives still applies.\n8. **Skip audio recording.** Maryland is an all-party-consent state, so audio capture creates wiretap exposure (F11, unverified).\n\n## Revisit facial recognition if\n\n- After 60\u201390 days of logging, a small group of identifiable repeat offenders accounts for a large share of losses.\n- Police will act on matches and not just footage.\n- Written quotes fit your budget, including licensing and installation.\n- A Maryland attorney confirms the legal requirements.\n- You can assign a trained person to verify every alert during all open hours.\n- Your insurer is supportive.\n\nIf you proceed, use a small watchlist limited to people with documented incidents, require human review, post clear notice, set a short retention and deletion policy, and put false-match handling in writing (F4, F5, F7).\n\n## Risks of my recommendation\n\n- Determined repeat offenders may keep stealing, and conventional measures may reduce but not eliminate losses.\n- Diagnosis takes a few weeks while losses continue.\n- Much of the cost and legal detail here (F10\u2013F13) is unverified, so confirm it with vendor quotes, your insurer and an attorney before relying on it.\n\n## Next steps this month\n\n1. Start the incident log and run Counterpoint exception reports this week.\n2. Photograph your camera views and check whether the entrance and register footage would identify a face.\n3. Call your insurer and ask about required or discounted security measures.\n4. Contact police about reporting and what evidence they act on.\n5. Get two written quotes: one for better conventional cameras and one for facial recognition or AI analytics, including all licensing fees.\n6. Review the log in 60\u201390 days and decide with data.",
+  "judge": {
+    "model": "openrouter/anthropic/claude-sonnet-5.5",
+    "letters": {
+      "baseline": "A",
+      "baseline_research": "B",
+      "board": "C"
+    },
+    "baseline": {
+      "risks": [
+        {
+          "risk": "Biometric privacy / notice to customers",
+          "score": 2,
+          "quote": "an attorney has signed off on signage, consent, retention, and a process for human verification."
+        },
+        {
+          "risk": "Misidentification / bias risk",
+          "score": 2,
+          "quote": "The FTC banned Rite Aid from using it for five years after it falsely flagged customers."
+        }
+      ],
+      "actionable": 4,
+      "errors": []
+    },
+    "baseline_research": {
+      "risks": [
+        {
+          "risk": "Biometric privacy / notice to customers",
+          "score": 2,
+          "quote": "A Maryland attorney confirms the legal requirements."
+        },
+        {
+          "risk": "Misidentification / bias risk",
+          "score": 2,
+          "quote": "false matches, especially for Black, Latino, Asian and women customers, and alerts that didn't show confidence scores."
+        }
+      ],
+      "actionable": 4,
+      "errors": []
+    },
+    "board": {
+      "risks": [
+        {
+          "risk": "Biometric privacy / notice to customers",
+          "score": 2,
+          "quote": "No biometric collection until a Maryland attorney confirms the Maryland Online Data Privacy Act and Prince George's County and Laurel rules"
+        },
+        {
+          "risk": "Misidentification / bias risk",
+          "score": 2,
+          "quote": "The FTC banned a large retailer for five years over false matches that hit some groups harder."
+        }
+      ],
+      "actionable": 5,
+      "errors": []
+    }
+  }
+}

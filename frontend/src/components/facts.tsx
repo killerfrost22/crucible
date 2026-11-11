@@ -1,4 +1,4 @@
-import { createContext, useContext, useMemo, useState, type ReactNode } from 'react'
+import { createContext, useContext, useMemo, useRef, useState, type ReactNode, type RefObject } from 'react'
 import type { Fact } from '../types'
 
 interface FactState {
@@ -7,13 +7,22 @@ interface FactState {
   /** `pinned` is set by click/tap so touch users can read the fact; hover/focus set it transiently. */
   pinned: boolean
   setActive: (n: number | null, pinned?: boolean) => void
+  /** The chip that pinned the fact from the keyboard: the peek takes focus from it and hands it back on close. */
+  opener: RefObject<HTMLElement | null>
 }
 
-const FactContext = createContext<FactState>({ facts: [], active: null, pinned: false, setActive: () => {} })
+const FactContext = createContext<FactState>({
+  facts: [],
+  active: null,
+  pinned: false,
+  setActive: () => {},
+  opener: { current: null },
+})
 
 export function FactProvider({ facts, children }: { facts: Fact[]; children: ReactNode }) {
   const [active, setActiveState] = useState<number | null>(null)
   const [pinned, setPinned] = useState(false)
+  const opener = useRef<HTMLElement | null>(null)
   const value = useMemo<FactState>(
     () => ({
       facts,
@@ -23,6 +32,7 @@ export function FactProvider({ facts, children }: { facts: Fact[]; children: Rea
         setActiveState(n)
         setPinned(n !== null && pin)
       },
+      opener,
     }),
     [facts, active, pinned],
   )
@@ -84,7 +94,7 @@ export function SourceLink({ source, label }: { source: string; label?: string }
 }
 
 function FactRef({ n, label }: { n: number; label: string }) {
-  const { active, pinned, setActive } = useFacts()
+  const { active, pinned, setActive, opener } = useFacts()
   const on = active === n
   return (
     <button
@@ -97,7 +107,12 @@ function FactRef({ n, label }: { n: number; label: string }) {
       onMouseLeave={() => !pinned && setActive(null)}
       onFocus={() => !pinned && setActive(n)}
       onBlur={() => !pinned && setActive(null)}
-      onClick={() => setActive(on && pinned ? null : n, true)}
+      onClick={(e) => {
+        const pin = !(on && pinned)
+        // `detail` is 0 when Enter or Space pressed the button rather than a pointer.
+        opener.current = pin && e.detail === 0 ? e.currentTarget : null
+        setActive(pin ? n : null, true)
+      }}
     >
       {label}
     </button>

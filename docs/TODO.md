@@ -14,9 +14,9 @@
 | Tiffany | Video producer |
 
 ## ✅ Quota blocker resolved: OpenRouter ($25 prepaid)
-- [x] The board now runs through OpenRouter: Claude Haiku 5.5 for the five seats, and Claude Sonnet 5.5 with web search for the Researcher and Chairman. Measured runs cost $0.06–0.12 and took 50–85 s. Since the Nov 10 link check and longer tool and verdict fields, four runs took 75–102 s; their cost wasn't measured. $25 covers roughly 200–400 runs. The credit is a hard cap, so a public demo link can't overspend.
+- [x] The board now runs through OpenRouter: Claude Haiku 5.5 for the five seats, and Claude Sonnet 5.5 with web search for the Researcher and Chairman. A meeting costs about $0.12, summed from OpenRouter's per-call charges for two eval meetings on Nov 10. The board alone takes 72–120 s. $25 covers roughly 200 meetings. The credit is a hard cap, so a public demo link can't overspend.
 - [x] Web search works, and since Nov 10 `check_sources` also opens every source link and dates it. In the current dental recording, 9 of 12 facts have a source link that opened. The board and the verdict both name Maryland's all-party recording consent and the HIPAA BAA, and the verdict requires both before any live pilot call. Leaked prompt tags (Claude Haiku once wrote `</reasoning_effort>` into an answer) are now stripped from every model answer before anyone sees it.
-- [ ] Watch the balance at https://openrouter.ai/settings/credits before filming and judging. When the credit is gone the board shows "out of AI credit". Four paid runs were used on Nov 10: three re-recordings and one live test.
+- [ ] Watch the balance at https://openrouter.ai/settings/credits before judging. When the credit is gone the board shows "out of AI credit". At the end of Nov 10, **$13.19 of $25 was left** (about 100 meetings). Nov 10 used three re-recordings, two live meetings, the 10-scenario eval twice with its grading, and a two-scenario retest.
 
 ## ✅ Done (Fri)
 - [x] Backend: ADK 2.13 graph workflow — Researcher → 5 seats (Round 1) → 5 rebuttals (Round 2) → Chairman, all with structured output; FastAPI app with CORS; owner ratification stored via session PATCH. Full run verified end to end (~20–65 s on flash-lite models).
@@ -37,52 +37,66 @@
 **Sat**
 - [x] Deploy the backend. It went to Vercel instead of Cloud Run: https://hacks2026-corkboard-api.vercel.app.
 - [x] Deploy the frontend to Vercel: https://smith26-crucible.vercel.app, with `VITE_API_BASE` pointing at the backend above.
-- [ ] Prompt fixes from Ruijie's eval report. One is already known: the five seats open with the same plan (see "the five seats agree from the start" in the website backlog).
+- [x] Prompt fixes from Ruijie's eval report (Nov 10): see "Read every transcript" under Ruijie and the eval item under "Keep improving". The changes are in `seats.py` and `schemas.py`.
 - [x] Re-record the HVAC replay with the final models. Done Nov 10: bakery, dental and HVAC were all re-recorded on the current Claude setup with web search and the link check. When you re-record again (`python eval/record_replay.py hvac-ai-promo-texts`), the home page quotes, the `/under-the-hood` dental data and the recording labels update from the file on their own (see #20 + #21 below).
 **Sun**
 - [ ] Feature freeze at noon; final `AGENTS.md` review pass at 375/768/1440/1920.
 - [x] Put the public prototype link in the submission.
 
 ## Ruijie — tester
-- [ ] `python eval/run_eval.py` on all 10 scenarios (about $1–1.50); commit `eval/results/<timestamp>/report.md`. Not run yet as of Nov 10: there is no `backend/eval/results/`, and `/under-the-hood` says "Not run yet" until there is. The verdict check matches exact wording ("all-party"), so a verdict that says "attorney-approved recording notice" scores as a miss; read the transcripts before quoting numbers.
-- [ ] Read every transcript (`eval/results/<timestamp>/<scenario>.json`) and log problems for Yizhan with scenario id + quote:
-  - invented laws or wrong legal claims; legal claims without a fact ID that are not marked "(unverified)"
-  - fact IDs (F1…) that don't match the claim
-  - seats out of role (e.g., Devil's Advocate agreeing in both rounds)
-  - groupthink: everyone flipping in Round 2 without a concrete `changed_because`, or (seen in all three Nov 10 recordings) all five opening with the same plan
-  - `bakery-price-increase` is the control: the Realist should not block, and the Chairman should not reject on legal grounds
-- [ ] Time 3 live runs end to end (target < 60 s). On Nov 10, four runs took 75–102 s, mostly the Researcher and the Chairman. Getting under 60 s needs a faster Researcher or Chairman model, or a shorter verdict.
-- [ ] UI test matrix: 375 / 768 / 1440 / 1920 px; keyboard only; screen-reader phase announcements; reduced motion; all three replays; one live run; override requires a note; quota-error message keeps partial results. New since Nov 10:
-  - a live meeting's URL turns into `/?decision=…`, and reloading it reopens the decision without a new run
-  - the signed call survives a reload
-  - **Your decisions** on the home page
-  - "Decision not found" in another browser
-  - Show/Hide on research and debate
-  - "Open source" in the F-number preview
-  - keyboard path to Accept/Override in the brief
-- [ ] Poke single runs in ADK's dev UI: `cd backend && .venv/Scripts/adk web agents` → http://127.0.0.1:8000 (stop the API first, or add `--port 8001`).
+- [x] **Run the eval on all 10 scenarios** (Nov 10): [`backend/eval/results/20261110-210818/report.md`](../backend/eval/results/20261110-210818/report.md), with every transcript next to it.
+  - **Keyword check:** the plain single prompt scored the same as the board on every planted risk. The only miss was a regex miss: the restaurant verdict says "facial templates", not "facial recognition".
+  - **Graded blind:** the harness now also grades the final answers (see "Keep improving" below). Risk points: baseline 29/30, baseline + research 30/30, board 30/30. Actionable (1–5): 4.1 / 4.4 / 4.6. Confident errors: 5 / 5 / 2.
+  - **What this means:** with Claude Sonnet 5.5, one prompt catches these traps too. Don't quote "board 2 of 2, one prompt 0 of 2": that was an early test on a lightweight model.
+- [x] **Read every transcript and log problems for Yizhan** (Nov 10): [`review.md`](../backend/eval/results/20261110-210818/review.md), 101 entries, each with the field, a verbatim quote (all 114 quotes checked against the transcripts by script) and a fix.
+  - **Patterns:**
+    - a fact ID cited for a claim the fact doesn't make (30 entries, 9 of 10 scenarios);
+    - all five seats opening with the same plan, with the Devil's Advocate repeating the consensus (10 of 10);
+    - overstated legal claims, e.g. "may" read as "must", a penalty on another company presented as a duty, or an amended bill presented as law (8 of 10);
+    - the Chairman crediting a point to the wrong seat (3);
+    - a must-catch risk left in the escalation note instead of the conditions (3);
+    - JSON fragments inside Round 1 "Question this" text (17 strings, 9 of 10).
+  - **The control** (`bakery-price-increase`) mostly passes: no Realist block, and the verdict is defer, not reject. But it adds an attorney check on a pricing law its own fact says doesn't apply.
+  - **Read by hand:** the single prompt was about as good in most scenarios and better in a few. The board was better on local detail and on turning risks into conditions.
+  - **Fixes:** all of the patterns above are fixed, in `seats.py` and `schemas.py` (see "Keep improving" below).
+- [x] **Time the runs** (Nov 10). The target of under 60 s is not met.
+  - **Board alone, in-process:** the 10 eval scenarios took 72–113 s (median 92).
+  - **Live meeting:** one through the browser took 103 s end to end.
+  - **Why:** the Researcher's web search and the Chairman take most of the time. Getting under 60 s needs a faster Researcher or Chairman model, or a shorter verdict. That's a quality trade, so it's left for Yizhan to decide.
+- [x] **UI test matrix** (Nov 10, Chromium; one paid live meeting, about $0.10). Everything passed except three items, which are fixed:
+  - **Covered:**
+    - all three replays play to the end at 4×, and the screen reader hears each phase, ending with "The Chairman recommends: …";
+    - the quota-error recording keeps the research and all five seats, with the notice as `role="alert"`;
+    - reduced motion: the walkthrough doesn't auto-advance, nothing waits hidden, `/under-the-hood` starts with the effect off, and the verdict shows at once;
+    - keyboard only, from the hero question through the form to **Convene the board**, past the data notice;
+    - a live meeting (nail salon, Rockville) took 103 s; its URL became `/?decision=…`, and a reload reopened it with two GETs and no new run;
+    - the signed call survives a reload and shows in **Your decisions**; a different browser id gets "Decision not found";
+    - Override focuses the note, an empty note is refused with the focus back on it, and Show/Hide on research and debate work by keyboard;
+    - no page scrolls sideways at 375, 768, 1440 or 1920 px.
+  - **Fixed:**
+    - **F-chips too tight:** axe found two F-chips in a Realist note less than 24 px apart (WCAG 2.5.8). Small notes that hold a chip now get a 24 px line pitch (`cards.css`).
+    - **Open source unreachable by keyboard:** a pinned F-number preview sits at the end of the page, so Tab couldn't reach its **Open source** link. Pinned with Enter, the preview now takes focus; Tab past either end, Escape or ✕ returns to the chip. A mouse click still leaves focus where it was (`Notices.tsx`, `facts.tsx`).
+    - **Too many stops before Accept:** reaching Accept took 15 Tab presses through the brief's F-chips. A second skip link, **Skip to your call**, appears once there's a verdict.
+  - **After the fixes:** axe-core reports 0 violations on the live decision and all three replays, at 375 and 1440 px.
+- [x] **ADK dev UI** (Nov 10): it starts and lists the `crucible` app on port 8001. In this checkout the `adk.exe` launcher points at the folder the `.venv` was first created in, so the README now gives `.venv/Scripts/python.exe -m google.adk.cli web --port 8001 agents` as the fallback. The eval transcripts show the same events and state, so no paid run was done in the dev UI.
 
-## Tiffany — video producer (10 minutes)
-The challenge requires: MVP proof of concept · how we built it · how we'd use 16 weeks · evidence it's technically possible and valuable · visible contribution from each member.
-- [ ] Interview 3–5 small-business owners (Fri/Sat). Ask: the last hard decision they made, who they asked, whether they'd trust an AI board, what would make them act on its advice. Get permission to quote them.
-- [ ] Script, suggested timing:
-  - 0:00–0:45 Problem, opened with an owner quote
-  - 0:45–1:30 The board: 5 seats + Chairman; the owner makes the call
-  - 1:30–5:00 Demo: dental replay (Realist block, Devil's Advocate, rebuttal strings, verdict, ratify) + one live run
-  - 5:00–6:30 How we built it (Yizhan): architecture diagram from README
-  - 6:30–7:45 Evidence (Ruijie): eval table, board vs. single prompt
-  - 7:45–9:15 16-week plan: outcome tracking, real business data (QuickBooks/Square), live Maryland SBDC hand-off, verified AI-tool catalog, multilingual intake
-  - 9:15–10:00 Team and close
+## Tiffany — video producer
+**The video is submitted (Nov 8), so there is no more video production.** The unticked video items below are closed as not needed; they stay here only as a record of what the cut contains.
+- [ ] Optional, for the finals pitch: interview 3–5 small-business owners. Ask: the last hard decision they made, who they asked, whether they'd trust an AI board, what would make them act on its advice. Get permission to quote them. A real owner quote would open slide 3 of the deck better than the made-up "Maria". This needs people, so nobody on the AI side can do it.
+- [x] ~~Script~~: done. The 9:08 cut follows `videos/voiceover/script.md`.
 - [x] 9:08 cut in `videos/`: `crucible-demo.mp4` (burned-in captions), `crucible-demo-no-captions.mp4`, `crucible-demo.srt`, 16 per-scene clips in `videos/segments/` (voice only), `videos/stems/` (voice + music), and the voiceover with a timed edit/voice script in `videos/voiceover/script.md`. Narrator is a bright female ElevenLabs voice (Jessica); other candidates are in `videos/voiceover/narrator-samples/`. App scenes are recorded at 2560×1440 with a larger UI and reframed in post: push-ins on the card, fact or form field being discussed, a visible cursor for clicks and hovers, and each advisor's spoken sentence highlighted on its card in its seat color. Yizhan's on-camera scenes are the Nov 8 retakes in `videos/Retakes/`: scene2 (the problem) with the full-screen comparison/chatbot graphic over the middle, scene3 (meet Crucible, cutting to the crucible melt during the metaphor), Scene4 (meet the board, each advisor's card cut in as he names it, then the advisor materializes as a hologram in one of the empty chairs, tracked to the handheld camera; the narrator then adds the AI-Tools Expert and the Researcher), back-to-maria (Maria at the iPad, opening "Ask the board"), how it works (whiteboard, now including the OpenRouter line) and why it matters and what's next. scene1 (Maria at 2 a.m.) from `Crucible-videos/` stays under the cold open. Crossfades, chapter labels, a "Yizhan Ao" lower third when he introduces himself, and Kevin MacLeod music (CC BY 4.0) ducked about 16 dB under speech; soundtrack at −16 LUFS. Build scripts: `.videobuild/rt/` next to the repo (`holo.py` draws the board holograms).
 - [x] The close now says "Built by Yizhan, Tiffany and Ruijie": narrator line re-voiced (Jessica, spelled "Yee-jahn" so it matches his own pronunciation), close card and captions updated. No "Joseph" is left on screen, in the audio or in the captions.
-- [ ] Still needed: one live run as proof (the cut only shows a live meeting starting), owner quotes, Tiffany and Ruijie on camera for their parts. `videos/segments/` are clean, so cut new footage in wherever it fits.
-- [ ] **For the finals cut:** the app footage predates Nov 10. It doesn't show the decision card at the top, a reopened decision, **Your decisions**, "Link checked" sources or the side-by-side tools, and all three recordings have since been re-recorded (the dental verdict now reads "Don't replace the front desk yet; pilot after-hours and overflow calls once gates clear."). Re-shoot the demo scenes from the new recordings.
-- [ ] Team credits are a separate video, `videos/crucible-credits.mp4` (16.8 s, also appended to the end of the main cut): team cards, then music, voice and tech credits. Yizhan's card is the photo `videos/Retakes/Yizhan.HEIC`; Tiffany and Ruijie show letter tiles until we have their photos or a short clip of each. Still to add: any coaching acknowledgement (rules require it) and the AI tools used to build Crucible. On Nov 10, neither `crucible-credits.mp4` nor `videos/Retakes/` was in the `videos/` folder of the copy that was checked; find them before re-cutting for the finals.
+- [x] ~~Still needed: a live run as proof, owner quotes, Tiffany and Ruijie on camera~~: not needed, the video is submitted. For the finals, slide 6 of the deck is a live demo instead.
+- [x] ~~Re-shoot the demo scenes from the Nov 10 recordings~~: not needed. The live demo at the finals shows the current site.
+- [x] ~~Team credits video~~: not needed. The coaching acknowledgement and the AI-tools credit belong on the deck's last slide now (see the Finals presentation section).
 - [x] Export and upload to the designated Google Drive before Sun 11:59 pm.
 
 ## Finals presentation (Tue Nov 17)
 - [x] Deck: `docs/finals/crucible-finals.pptx` (brand fonts embedded) and `crucible-finals.pdf`. 14 slides, about 10 minutes plus a 2–3 minute live demo (slide 6). Each slide's notes have a suggested speaker (Tiffany 1–3 and 12–13, Yizhan 4–6 and 11, Ruijie 7–10) and a script; the last slide's notes list likely judge questions with answers. Numbers and quotes come from the three recordings in `frontend/public/replays/` as of Nov 10.
-- [ ] Slide 10 (Evidence) quotes only the early dental test (one prompt 0 of 2, the board 2 of 2). Replace it with the full table once `eval/results/<timestamp>/report.md` is committed.
+- [ ] Slide 10 (Evidence) quotes the early dental test (one prompt 0 of 2, the board 2 of 2). **The full eval doesn't back that.** On the latest run ([`report.md`](../backend/eval/results/20261110-214837/report.md)), the single prompt also catches the planted risks.
+  - **Risk points:** one prompt 28/30, one prompt with the board's research 30/30, the board 30/30.
+  - **Where the board did better:** confident errors 4 / 3 / 0, and actionable 4.1 / 4.3 / 4.6 of 5.
+  - **For the slide:** say that, plus what reading the transcripts fixed. Don't claim the board catches more.
 - [ ] Slides 3, 7, 8 and 9 quote the recordings. Re-check them whenever a replay is re-recorded.
 - [ ] Re-check the competitor facts on slide 12 (checked Nov 7).
 - [ ] If the rules require the coaching acknowledgement and the AI-tools credit (see the credits item above), add them to the last slide.
@@ -103,7 +117,7 @@ Browser review of local `main` (`42c49c4`) at 320, 375, 768, 1440 and 1920 px, b
 - [x] **#2: the replay header fits at every width.** It also overflowed at 420–799 and 1400–1479 px. Below 800 px the labels shorten and one `2×` button steps through the speeds; the wordmark hides below 600 px and the "Recorded" badge below 560 px; the one-row header starts at 1480 px (`board.css`). Checked: no control past the header's padding, 320–2560 px.
 - [x] **#4: a mistyped `/?replay=` shows "Recording not found".** `loadReplay` rejects HTML and empty bodies, and the Board shows the new `NotFound` view with links to all three recordings.
 - [x] **#18: tab titles and unknown routes.** A finished meeting's tab reads "Pilot: Should we replace our front-desk phone line… — Crucible"; stopped meetings say "Meeting stopped". Unknown paths get a 404 view ("Nothing was cast here.", `components/NotFound.tsx`).
-- [x] **#16: eval copy.** `/under-the-hood` now says the full eval "hasn't been run yet", with a static "Not run yet" pill. Re-quote once Ruijie commits `report.md`.
+- [x] **#16: eval copy.** Since Nov 10 the Evaluation section of `/under-the-hood` shows the measured run: risk points, actionability and errors for one prompt, one prompt with research, and the board. It also gives what that does and doesn't show, and three findings from reading the transcripts. The early "0 of 2 / 2 of 2" figure is gone. `EVAL_RUN` in `underthehood/recorded.ts` is copied by hand from the report; update it with each run.
 - [x] **#3 wording.** A replay signature now says "practice signature on a recording, not saved".
 - [x] **#10: Industry Expert copy.** It now reads "Judges it the way a seasoned operator in your trade would." (`seats.ts`). The seat prompt in `backend/agents/crucible/seats.py` is unchanged.
 - [x] **New: no more fake buttons.** The walkthrough's "Convene the board" is now a real button that steps the tour to Research. Accept/Override on the example verdict and the walkthrough's "Your call" step are now a plain caption: "Accept it, or override it with a note."
@@ -125,20 +139,6 @@ Browser review of local `main` (`42c49c4`) at 320, 375, 768, 1440 and 1920 px, b
   - [x] Write the live URLs (Live table above) in the README.
   - [ ] Make the Deploy section of `/under-the-hood` match Vercel (it still says Cloud Run + Secret Manager), and list Cloud Run in the README as the alternative.
 
-### Next: a decision worth coming back to
-- [x] **#3 + #19: decision history** (Nov 10).
-  - **The link:** once a live meeting's session exists, the URL becomes `/?decision=<id>`.
-  - **Reopening:** a reload or the link rebuilds the board from the saved state (`GET` session), shows the signed call again, and starts no new run.
-  - **Your decisions:** the home page lists this browser's decisions under **Your decisions**, from the new `GET …/decisions` route in the guard.
-  - **Elsewhere:** another browser, or another owner id, gets "Decision not found".
-  - **Checked:** one live meeting (tip pool → Defer), then reload → "Saved" badge and only `GET` requests, Accept → reload still signed, the home list, and the stranger case.
-  - [ ] On the Vercel deploy, this needs `CRUCIBLE_SESSION_DB` (Neon), or a reload can land on an instance without the session.
-  - [ ] A meeting that stopped early reopens as stopped, with "Convene a new meeting on this question". Nothing resumes a run that was cut off.
-- [x] **#5: the brief first** (Nov 10).
-  - **The card:** under the question, a card shows the decision, up to three reasons, the strongest objection, open gates (including a Realist block), the first next step and **Your call**. From tablet width, your call sits beside the reasons.
-  - **Where Your call lands (finished replay):** about 900 px down at 1440 (the verdict used to start about 7,150 px down), about 1,250 px at 768, and about 2,500 px on a phone (it used to be past 17,000).
-  - **Folding:** research and debate have Show/Hide, open by default.
-- [x] **#9: source labels** (Nov 10).
 ### Next: written decision brief and site clarity (Nov 10 live review)
 
 Reviewed the live home page, `/under-the-hood`, and finished bakery/dental recordings; desktop and mobile layouts, both themes. This is a **written reading experience**, not audio narration. Build on the existing brief, citation previews, folding controls and saved decisions rather than duplicating them.
@@ -188,6 +188,20 @@ Reviewed the live home page, `/under-the-hood`, and finished bakery/dental recor
 
 **Review before marking these done:** check changed surfaces at 375/768/1440/1920 px in both themes, keyboard-only navigation and reduced motion. Use the bakery/dental recordings and a seeded saved decision for repeatable checks without paid runs. Keep the current visual identity, citation previews, explicit dissent and owner-final-call framing.
 
+### Next: a decision worth coming back to
+- [x] **#3 + #19: decision history** (Nov 10).
+  - **The link:** once a live meeting's session exists, the URL becomes `/?decision=<id>`.
+  - **Reopening:** a reload or the link rebuilds the board from the saved state (`GET` session), shows the signed call again, and starts no new run.
+  - **Your decisions:** the home page lists this browser's decisions under **Your decisions**, from the new `GET …/decisions` route in the guard.
+  - **Elsewhere:** another browser, or another owner id, gets "Decision not found".
+  - **Checked:** one live meeting (tip pool → Defer), then reload → "Saved" badge and only `GET` requests, Accept → reload still signed, the home list, and the stranger case.
+  - [ ] On the Vercel deploy, this needs `CRUCIBLE_SESSION_DB` (Neon), or a reload can land on an instance without the session.
+  - [ ] A meeting that stopped early reopens as stopped, with "Convene a new meeting on this question". Nothing resumes a run that was cut off.
+- [x] **#5: the brief first** (Nov 10).
+  - **The card:** under the question, a card shows the decision, up to three reasons, the strongest objection, open gates (including a Realist block), the first next step and **Your call**. From tablet width, your call sits beside the reasons.
+  - **Where Your call lands (finished replay):** about 900 px down at 1440 (the verdict used to start about 7,150 px down), about 1,250 px at 768, and about 2,500 px on a phone (it used to be past 17,000).
+  - **Folding:** research and debate have Show/Hide, open by default.
+- [x] **#9: source labels** (Nov 10).
   - **Link check:** a new backend node, `check_sources`, opens every source link (SSRF-safe, 8 s cap) and stamps it `ok`/`broken`/`unreachable` with the date.
   - **Labels:** facts read "Link checked Nov 10", "Couldn't open link", "Link broken", "Source found" (older recordings) or "No source". The F-number preview has **Open source**.
   - **What it proves:** "link checked" means the page loaded, not that it backs the claim. The page says so.
@@ -197,14 +211,11 @@ Reviewed the live home page, `/under-the-hood`, and finished bakery/dental recor
   - **Also on the card:** the **No new tool** option, using the tools the owner already has.
   - **Example:** in the bakery recording, DoorDash's price cites F9, the DoorDash pricing page, with the link checked.
   - [ ] Dental's RingCentral and HVAC's Housecall Pro have no price fact yet: the Researcher found no vendor pricing page. The catalog in `todo/03-barriers.md` §4 is what would fill that gap.
-- [ ] **New: the five seats agree from the start.** In all three Nov 10 recordings the five Round 1 headlines are nearly the same plan.
-  - **Bakery:** three seats wrote "Don't sign the Route 1 lease yet; test delivery and a manager first." word for word.
-  - **HVAC:** all five open with "Don't blast the whole list; …".
-  - **Dental:** even the Devil's Advocate opens with "Don't sign up this month; run a limited pilot first."
-  - **Why it matters:** the debate only starts in Round 2, which weakens "argued from five sides". The fix is in each seat's charge in `backend/agents/crucible/seats.py`. Ideas:
-    - give each seat a question only it answers;
-    - make the Devil's Advocate argue against whatever plan the others are likely to reach, not only against the owner's leaning.
-  - **Check:** re-record and compare the Round 1 headlines.
+- [x] **New: the five seats agree from the start** (Nov 10). It was seen in all three recordings and in all 10 eval scenarios.
+  - **Fix:** the Devil's Advocate now argues *for* the owner's leaning in Round 1 when caution is the obvious answer, and against the consensus in Round 2 (`seats.py`). The Strategist leads with the 6–12 month view.
+  - **Result in the rerun:** the Devil's Advocate's Round 1 stance differed from the majority's in 5 of 10 scenarios, up from 3. In retail it argued a different plan ("Yes, but only as a short, cancellable, human-verified pilot").
+  - [ ] **Still open:** in cleaning it still opened with the others' plan, and the other four seats still tend to converge. A question only each seat answers (the other idea from the review) hasn't been tried.
+  - [ ] The three replays predate the fix. Re-record them when the deck no longer quotes them; the Round 1 "Question this" in the dental and HVAC recordings still ends with a stray `}`.
 - [x] **#11: a data notice next to Convene** (Nov 10).
   - **Above the button:** "Don't enter patient, customer or payment details. Describe the decision, not the people in it."
   - **"What happens to what you type"** (a disclosure) covers three things:
@@ -245,6 +256,22 @@ Reviewed the live home page, `/under-the-hood`, and finished bakery/dental recor
   - **Checked:** editing a sentence in a `.sse` changed the page with no change to `content.ts` (then reverted). Some home excerpts changed because the rules now pick them (e.g. bakery F2 replaces F7).
 
 ### Keep improving: make every change checkable
+- [x] **Eval: a fair baseline, a blind judge, exact cost** (Nov 10, `backend/eval/run_eval.py`; see the README's Evaluate section).
+  - **Fair baseline:** besides the plain prompt, a second baseline gets the board's own research, so sources alone don't decide the comparison.
+  - **Blind judge:** a judge model grades the three final answers shuffled, unlabeled and with fact IDs removed. Per planted risk it scores 2 (the decision is gated on it), 1 (only mentioned) or 0. It also scores actionability (1–5), lists confident errors, and checks the control for an invented legal blocker. The keyword check stays as a secondary column.
+  - **Also new:** `--repeat N`, `--rejudge <run>` (fills in only what a run lacks), and cost per scenario from OpenRouter's per-call `usage.cost`.
+  - **Restaurant regex:** the pattern now also accepts "facial template", "HB 1202" and "3-717".
+  - **Results:**
+
+    | Run | Risk points: one prompt · + research · board | Actionable | Confident errors | JSON junk in seats |
+    |---|---|---|---|---|
+    | Before the fixes (`210818`) | 29 · 30 · 30 of 30 | 4.1 · 4.4 · 4.6 | 5 · 5 · 2 | 17 strings |
+    | After (`214837`) | 28 · 30 · 30 of 30 | 4.1 · 4.3 · 4.6 | 4 · 3 · 0 | 0 |
+
+  - **Citations checked by hand:** in four scenarios (retail, cleaning, food truck, salon), each re-checked citation by citation, fact IDs on claims the fact doesn't make fell from 42 to 24. Retail went from 25 to 7, but salon went from 3 to 7 (mostly one third-party Vagaro fact read as Vagaro's own claim). The checkers' counting rules differed slightly, so read it as a modest gain.
+  - **The control:** the first fixed version made the Chairman turn every legal question into a condition, and the judge flagged an invented blocker in the bakery control. The rule now covers only requirements a fact says apply. A retest (`221043`) passed the control, and the chatbot scenario still made "bound by what the bot says" a gate.
+  - [ ] **Each scenario ran once,** and the judge is a Claude model grading Claude answers. Before quoting a difference, run `--repeat 3` (about $0.19 per scenario run, so $5–6 for all ten) and, if possible, a judge from another provider (`--judge-model`).
+  - [ ] **The traps are too easy now:** every answer scores 28–30 of 30. Harder scenarios would separate the approaches better, e.g. a risk that only shows up in the research, or two rules that conflict.
 - [ ] **New: CI.** There is no `.github/`, no test and no lint script. Add a GitHub Action that runs `npm ci && npm run build` in `frontend/` and builds the backend app with `python -c "import main"` in `backend/` (this passes locally today) on every push and PR. Turn on Vercel preview deploys for PRs.
 - [ ] **New: browser smoke tests (Playwright).** Cover `/`, `/under-the-hood`, and each replay skipped to the verdict, at 375/768/1440/1920 px in both themes.
   - **Assert:**

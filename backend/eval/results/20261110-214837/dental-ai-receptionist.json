@@ -1,0 +1,811 @@
+{
+  "scenario": {
+    "id": "dental-ai-receptionist",
+    "intake": {
+      "question": "Should we replace our front-desk phone line with an AI receptionist that answers, books appointments, and records calls?",
+      "leaning": "Yes \u2014 sign up for an AI receptionist this month",
+      "profile": {
+        "name": "Bright Smile Family Dental",
+        "industry": "dental practice",
+        "location": "Silver Spring, Maryland",
+        "size": "2 dentists, 6 staff",
+        "current_tools": [
+          "Dentrix",
+          "Google Workspace",
+          "RingCentral"
+        ],
+        "budget": "$400/month",
+        "goals": [
+          "stop missing new-patient calls",
+          "free up front-desk time"
+        ],
+        "constraints": "Front desk is one person"
+      }
+    },
+    "must_catch": [
+      {
+        "label": "Maryland all-party recording consent",
+        "any": [
+          "all[- ]party",
+          "two[- ]party",
+          "consent of all",
+          "every party",
+          "both parties"
+        ]
+      },
+      {
+        "label": "HIPAA business associate agreement",
+        "any": [
+          "\\bBAA\\b",
+          "business associate"
+        ]
+      }
+    ]
+  },
+  "seat_model": "openrouter/anthropic/claude-haiku-5.5",
+  "researcher_model": "openrouter/anthropic/claude-sonnet-5.5:online",
+  "chair_model": "openrouter/anthropic/claude-sonnet-5.5",
+  "web_search": true,
+  "baseline": "# Recommendation\n\n**Yes to an AI receptionist, but as a backstop, not a replacement.** Sign up for a 30-60 day pilot this month. Keep your RingCentral line and your front-desk person as the primary answer. Have the AI catch calls the front desk can't: overflow while she's busy or on another call, lunch, and after hours.\n\nThis targets both goals directly. Missed new-patient calls are mostly a coverage problem, and a single front-desk person can't be in two places. Fully replacing the human, though, adds risk in a business where trust, pain, and insurance questions matter. A pilot lets you capture most of the benefit with little downside.\n\n## Main risks\n\n1. **HIPAA.** Calls contain protected health information. The vendor must sign a Business Associate Agreement (BAA) and explain where recordings and transcripts are stored, who can access them, and how long they're kept. No BAA, no deal.\n2. **Call recording consent.** Maryland requires all-party consent to record. The AI must give a clear disclosure at the start of every call, such as \"This call may be recorded and is handled by an automated assistant.\" Have your attorney review the wording.\n3. **Dentrix integration.** Many AI receptionists only \"book\" into a separate calendar or send an email. If it can't read and write to Dentrix (check your version, since on-premise setups are harder), you'll get double-bookings and extra cleanup work for your one front-desk person. Confirm this before signing.\n4. **Emergencies and clinical judgment.** Swelling, trauma, severe pain, and post-op complications need immediate escalation to a human or on-call dentist. Test this carefully.\n5. **Booking accuracy.** The AI must respect appointment types, such as new-patient exams versus cleanings versus emergencies, along with provider schedules and insurance acceptance. Errors here create more work than they save.\n6. **Patient experience.** Older patients may dislike it, and Silver Spring is linguistically diverse. Check Spanish, French, Amharic, and other language support and how well it handles accents.\n7. **Cost creep.** Many vendors charge per minute or per call on top of the base fee. Your $400/month budget may be tight with overages.\n8. **Dependence on one vendor.** Make sure calls fall back to a human or voicemail if the AI fails.\n\n## Next steps\n\n1. **Get your baseline (this week).** Pull RingCentral reports: missed calls, after-hours calls, peak times, and average hold time. Estimate how many are new-patient calls. A rough value of one new patient (often $1,000+ in first-year revenue) will tell you what the tool is worth.\n2. **Shortlist 2-3 vendors.** Look at dental-specific options and general AI answering services. Ask each:\n   - Will you sign a BAA?\n   - Do you integrate with my version of Dentrix, and is it read/write?\n   - How does it work with RingCentral (forwarding, overflow, SIP)?\n   - What is the total monthly cost at my call volume, including overages?\n   - How does it handle emergencies, transfers to a human, and non-English callers?\n   - Can I export my data and cancel monthly?\n3. **Demo with real scenarios.** Test a new-patient booking, a reschedule, an insurance question, an emergency, and a confusing caller.\n4. **Set it up conservatively.** Route only overflow and after-hours calls to the AI at first. Script the recording disclosure. Define escalation rules and who gets alerts.\n5. **Tell your team.** Position it as taking the repetitive calls off the front desk, not replacing her. Her feedback on call summaries and errors is your best quality check.\n6. **Run the pilot for 30-60 days.** Track new-patient calls captured, booking accuracy, double-bookings, patient complaints, and front-desk time saved. Review weekly at first.\n7. **Decide at day 30-60.** If it's accurate and patients are fine, expand coverage, for example to more daytime calls. If not, cancel with little lost.\n\n**Bottom line:** The goal is reasonable and the budget is workable, but the compliance and Dentrix details decide whether this works. Don't sign anything without a BAA, a recording-consent plan, and a clear answer on Dentrix booking.",
+  "seconds": 120,
+  "board_state": {
+    "intake": {
+      "question": "Should we replace our front-desk phone line with an AI receptionist that answers, books appointments, and records calls?",
+      "leaning": "Yes \u2014 sign up for an AI receptionist this month",
+      "profile": {
+        "name": "Bright Smile Family Dental",
+        "industry": "dental practice",
+        "location": "Silver Spring, Maryland",
+        "size": "2 dentists, 6 staff",
+        "current_tools": [
+          "Dentrix",
+          "Google Workspace",
+          "RingCentral"
+        ],
+        "budget": "$400/month",
+        "goals": [
+          "stop missing new-patient calls",
+          "free up front-desk time"
+        ],
+        "constraints": "Front desk is one person"
+      }
+    },
+    "evidence_mode": "web",
+    "evidence": {
+      "decision": "Whether Bright Smile Family Dental should replace its front-desk phone line with an AI receptionist that answers, books appointments and records calls, within a $400/month budget.",
+      "options": [
+        "Do nothing: keep the current RingCentral line and one-person front desk, and measure the missed-call rate first",
+        "Add an AI receptionist as overflow and after-hours coverage only, so staff still answer the line in business hours (e.g., RingCentral AIR add-on or a general-purpose AI agent)",
+        "Replace the front-desk line with a dental-specific AI receptionist that books directly into Dentrix (e.g., TensorLinks, BuzzWisely, Arini, or Viva-type vendors)",
+        "Use a human or hybrid answering service, or hire part-time front-desk help, instead of AI"
+      ],
+      "facts": [
+        {
+          "claim": "Maryland requires consent from all parties to record a phone call. Under Md. Code, Courts & Judicial Proceedings 10-402, recording without all-party consent is a felony punishable by up to 5 years in prison and a fine of up to $10,000. Federal law needs only one party's consent, so the stricter Maryland rule governs.",
+          "source": "https://www.rcfp.org/reporters-recording-guide/maryland/",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:49:52Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Sources differ on how consent can be given. One source says a pre-call notice such as 'this call may be recorded' creates implied consent if the caller continues. Another source advises announcing the recording at the start and getting an audible yes. Another says consent under the Wiretap Act may be express or implied. A Maryland appellate opinion discussed a recorded announcement plus continued conversation as implied consent.",
+          "source": "https://execvision.io/blog/maryland-call-recording-laws/",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:49:52Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Under HIPAA, an AI receptionist vendor that handles patient names, appointments or other PHI is a business associate. The practice needs a signed Business Associate Agreement (BAA) before patient calls go to it. The regulations cited are 45 CFR 160.103 and 164.502(e). No 'HIPAA certification' exists for these tools.",
+          "source": "https://vocenya.com/ai-tools/ai-receptionists/for/dentists",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:49:53Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "BAA availability varies by vendor. One August 2026 review of six dental AI receptionist vendors found only three documented a BAA on their own site. Another source lists a vendor charging $50/month per workspace for a HIPAA BAA add-on and another limiting HIPAA eligibility to its Enterprise plan.",
+          "source": "https://www.credminds.com/blog/ai-dental-receptionist",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:49:52Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "The Maryland Online Data Privacy Act took effect October 1, 2025, with enforcement of processing activities from April 1, 2026. It exempts PHI governed by HIPAA but has no entity-level exemption for HIPAA-covered practices. Non-PHI data (e.g., marketing or web-visitor data) may still be covered if applicability thresholds are met.",
+          "source": "https://www.bakerdonelson.com/marylands-new-online-data-privacy-act-sweeping-protections-for-consumer-health-data-and-implications-for-health-care-life-sciences-and-ai",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:49:53Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Maryland dental record rules (COMAR 10.44.30 and 10.01.16) require a separate record for each patient and forbid altering records. Medical records must be kept at least 5 years, or until the patient turns 21 if longer. Any call recordings or transcripts stored in a patient chart fall within the practice's records and retention obligations.",
+          "source": "https://health.maryland.gov/dental/PublishingImages/MSBDE_Newsletter.pdf",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:49:53Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Reported dental missed-call benchmarks vary widely. One source says practices miss about 20\u201338% of incoming calls. Another says 38% of new-patient calls go unanswered in business hours, attributed to ADA Practice Transitions, and a third says the average practice answers about 75% of calls. One analytics firm advises measuring your own rate over relying on a benchmark. Most of these figures come from vendors that sell call-handling products.",
+          "source": "https://practicenumbers.com/blog/cost-of-dental-practice-missed-calls/",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:49:53Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Estimates of the value of a missed new-patient call vary widely. One source puts first-visit revenue near $450. Others put immediate revenue at $400\u2013$850, and lifetime value anywhere from $3,000 to $22,000. An illustrative model assumes a 25% new-patient share of missed calls and a 60% booking rate if answered.",
+          "source": "https://www.dentalbase.ai/blogs/practice-management/missed-calls-in-dental-practices-data",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:49:53Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "RingCentral AI Receptionist (AIR), the practice's current vendor, costs $39/month as an add-on to RingEX or $49/month standalone. Both include 100 minutes, and extra minutes are billed at about $0.50/minute in 30-second increments according to third-party summaries of its pricing page. A cited third-party review says AIR has HIPAA-oriented controls. Dentrix-specific booking was not confirmed in the results.",
+          "source": "https://www.ringcentral.com/us/en/blog/ai-receptionist-for-small-business/",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:49:52Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Goodcall (general-purpose AI agent) costs $79/month (Starter, 100 unique customers), $129/month (Growth, 500) or $299/month (Scale, 2,000), with unlimited minutes. Overage is 79\u00a2, 26\u00a2 or 15\u00a2 per extra unique customer. A third-party review lists Google Calendar, HighLevel and Zapier integrations, not Dentrix, and claims SOC 2 and HIPAA per Goodcall.",
+          "source": "https://www.goodcall.com/answering-services/ai-answering-service-cost",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:49:52Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "TensorLinks (dental AI receptionist) lists Dentrix G6, G7 and Ascend integration with HIPAA and a BAA. It costs from $399/month per location, with a 30-day free trial and a $199 one-time setup fee according to its site. Its own blog lists Starter $399, Connect $599 and Growth $799, and says Dentrix Ascend third-party API use carries a separate $47/month per-location fee from Henry Schein One.",
+          "source": "https://www.tensorlinks.com/blog/ai-receptionist-dentrix-complete-guide/",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:49:52Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "BuzzWisely (dental AI receptionist) lists Dentrix plans at $289/month (Nectar, 775 minutes) and $389/month (Honey, up to 1,200 minutes with a signed BAA). It says the Dentrix connector has no separate fee.",
+          "source": "https://buzzwisely.com/industries/dental/integrations/dentrix/",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:49:52Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "AgentZap (dental AI receptionist) lists plans at $109/month (Solo, 150 minutes), $295/month (Dental Practice, 450 minutes) and $899/month (Multi-Location), priced per minute, with Dentrix integration claimed. The page was indexed about 292 days ago, so pricing may be stale.",
+          "source": "https://agentzap.ai/industries/dentist",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:49:52Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Smith.ai AI Receptionist plans, per third-party reports (Smith.ai's own pricing page was not retrieved): Free is $0 for 25 calls, Pro is $150/month for 75 calls, and Enterprise is $500/month for 300 calls. Extra calls cost about $2.10\u2013$3.00 each. Human receptionist plans start at $300/month for 30 calls. Smith.ai is built mainly for law and professional services, and Dentrix booking was not confirmed.",
+          "source": "https://imisofts.com/blog/smith-ai-pricing/",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:49:52Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Arini (dental-specific, reads and writes to Dentrix according to third-party sources) does not publish pricing and quotes after a demo. Third-party estimates range from about $249 to $600/month per location. Setup fees from a few hundred dollars to $2,000 are described as often waived on annual terms.",
+          "source": "https://www.cloudtalk.io/blog/best-dental-ai-virtual-receptionist-tools/",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:49:52Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Industry cost ranges for dental AI receptionists: base subscriptions of $300\u2013$800/month, with an all-in cost of $700\u2013$1,400/month once setup ($500\u2013$3,500), overage, PMS integration surcharges ($99\u2013$300/month, with Dentrix often at the higher end) and add-ons are included. Other sources cite $200\u2013$600/month for single-location practices. A full-time human receptionist is cited at $3,000\u2013$4,500/month fully loaded. Most of these sources are vendors or vendor-affiliated.",
+          "source": "https://www.buildberg.co/blog/dental-ai-receptionist-cost",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:49:53Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Dentrix integrations run through the Henry Schein One API Exchange, which is gated by application, security review and a signed agreement. Third-party and program FAQs cite $5,000 one-time READ plus $5,000 WRITE fees and monthly royalties for developers. Henry Schein One states that practices do not pay for the API unless they build their own software. Vendors without approved access may connect through intermediaries such as NexHealth.",
+          "source": "https://www.henryscheinone.com/dental-solutions/api-exchange/customer-faqs/",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:49:55Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Viva AI advertises a dental AI receptionist with SOC 2 Type II, HIPAA and a signed BAA for every practice, booking into the practice management system, with a 30-day trial. Its price was not shown in the retrieved result.",
+          "source": "https://www.getviva.ai/",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:49:52Z",
+            "http_status": 200
+          }
+        }
+      ],
+      "open_questions": [
+        "Which Dentrix version is the practice on (G6/G7 on-premise or Ascend cloud), and is it a current version? This decides which vendors can book directly and whether any integration or API fees apply.",
+        "What is the actual missed-call rate and the new-patient share of calls? Call logs in RingCentral would show this. How many calls does the office get per month, and how long are they?",
+        "Which RingCentral plan is the practice on? Does it already include or discount AIR, and can calls be forwarded or set to overflow only?",
+        "Will the vendor sign a BAA before any trial calls with real patient data, and where are recordings and transcripts stored, for how long, and can they be deleted or exported? Does the vendor use the data to train models?",
+        "How will recording consent be obtained in a way that satisfies Maryland's all-party rule (a disclosure at the start of every call, and what happens if a caller objects)? Should the practice's attorney confirm this?",
+        "Does Maryland, Montgomery County or Silver Spring have any rule requiring disclosure that a caller is talking to an AI? Nothing was verified in this search, so the practice's attorney should confirm.",
+        "Can the AI handle dental-specific scenarios such as emergencies, insurance questions, existing-patient requests, Spanish or other languages, and clean handoff to a live person when the front desk is busy?",
+        "What is the true all-in monthly cost versus the $400 budget (setup fees, overage, integration fees, contract length, cancellation terms)?",
+        "How will patients react to an AI answering? Is the practice comfortable with the risk of a bad first impression, and what is the fallback if it books incorrectly into Dentrix?",
+        "What is the practice's actual average first-visit production and new-patient conversion rate, to size the return on investment?"
+      ]
+    },
+    "round1": {
+      "industry_expert": {
+        "stance": "conditional",
+        "headline": "Yes to AI coverage, but not signing this month as planned.",
+        "summary": "Don't sign this month yet. First measure how many calls you miss in RingCentral, confirm your Dentrix version, and get a signed BAA. If those check out, a dental-specific tool like BuzzWisely Honey can fit the $400 budget. Start with after-hours and overflow coverage to limit risk.",
+        "key_points": [
+          "Your missed-call rate is unknown, and most benchmarks come from vendors selling call products (F7), so measure your own first.",
+          "A signed BAA is required before patient calls reach a vendor (F3), and only three of six reviewed vendors documented one (F4).",
+          "BuzzWisely Honey at $389/month lists a signed BAA and no Dentrix connector fee (F12). TensorLinks' $399 base plus $199 setup and $47 Dentrix Ascend fee runs over budget (F11)."
+        ],
+        "risks": [
+          "Maryland requires all-party consent to record calls, and recording without it is a felony (F1). Your attorney should confirm the consent script.",
+          "The AI could book wrong into Dentrix or mishandle emergencies, leaving a bad first impression and cleanup work for your one front-desk person.",
+          "Setup, overage, and integration fees could push real cost well past $400 (F16), so get the all-in quote in writing."
+        ],
+        "pushback": "Are missed calls really lost new patients? The $400\u2013$850 value per call (F8) comes from sources that lean toward selling the product, so check your own new-patient conversion before committing.",
+        "confidence": 70
+      },
+      "ai_tools_expert": {
+        "stance": "conditional",
+        "headline": "Conditional: verify BAA and consent, measure missed calls, then decide",
+        "summary": "Don't sign up this month. Before any AI takes patient calls, get a signed BAA from the vendor, set a Maryland all-party recording disclosure, and count your real missed calls for two weeks. A low-cost overflow test on your current RingCentral line can show demand first. Dedicated dental systems can exceed $400 once setup and Dentrix fees are added.",
+        "key_points": [
+          "Maryland requires all-party consent to record calls, and recording without it is a felony (F1).",
+          "Patient-data vendors need a signed BAA before any patient call reaches them (F3), and BAA availability varies (F4).",
+          "Dedicated dental tools can exceed $400 with add-ons: TensorLinks starts at $399 plus a $47 Dentrix Ascend fee (F11)."
+        ],
+        "risks": [
+          "Call recordings or transcripts stored in patient charts add retention duties (F6).",
+          "Missed-call benchmarks come mostly from vendors, so your own rate is the only reliable number (F7).",
+          "The AI could book wrongly into Dentrix or mishandle emergencies, creating bad first impressions."
+        ],
+        "pushback": "Assume the missed-call loss is large enough to justify a new system. Measure it first.",
+        "confidence": 70,
+        "tools": [
+          {
+            "name": "RingCentral AI Receptionist (AIR)",
+            "use": "Handles overflow and after-hours calls on your existing RingCentral line to test demand at low cost.",
+            "monthly_cost": "$39/month as add-on to RingEX, or $49/month standalone; extra minutes about $0.50 each (F9)",
+            "works_with": "Your current RingCentral line; Dentrix booking not confirmed.",
+            "caveat": "Dentrix booking is unconfirmed, and a BAA must be verified before patient calls.",
+            "url": "https://www.ringcentral.com/",
+            "price_fact": "F9",
+            "pilot_test": "Keep it if it captures at least 5 more new-patient bookings from after-hours calls in 4 weeks; cancel at the first monthly invoice otherwise."
+          },
+          {
+            "name": "BuzzWisely",
+            "use": "Dental AI receptionist that books into Dentrix, worth considering only if the Dentrix version and BAA check out.",
+            "monthly_cost": "$389/month Honey plan with signed BAA, up to 1,200 minutes (F12)",
+            "works_with": "Dentrix; the connector has no separate fee according to the vendor (F12).",
+            "caveat": "The BAA requires the Honey plan, and the Dentrix version must be confirmed first.",
+            "url": "https://buzzwisely.com/",
+            "price_fact": "F12",
+            "pilot_test": "Keep it if AI-made new-patient bookings rise by 8 in 6 weeks with no Dentrix booking errors; cancel before the second invoice otherwise."
+          }
+        ]
+      },
+      "realist": {
+        "stance": "conditional",
+        "headline": "Conditional yes: start with a BAA-signed, overflow-only pilot after measuring misses.",
+        "summary": "Don't sign this month yet. First measure how many new-patient calls you miss now, confirm the vendor signs a HIPAA BAA, and have your attorney confirm Maryland call-recording consent. Then try an overflow-only option inside $400. Dentrix-direct vendors vary in price, so get the all-in quote before deciding.",
+        "key_points": [
+          "Maryland requires all-party consent to record calls, and recording without it is a felony (F1).",
+          "A vendor that handles patient names or appointments needs a signed BAA before patient calls go to it (F3), and only three of six reviewed vendors documented one (F4).",
+          "Missed-call rates come mostly from vendors selling call products and vary widely (F7), so measure your own rate first."
+        ],
+        "risks": [
+          "Recording calls without valid all-party consent could expose the practice to criminal liability (F1).",
+          "Dentrix-direct options can exceed $400 once integration and setup fees apply (F11, F16).",
+          "A booking error in Dentrix or a poor first impression on new patients."
+        ],
+        "pushback": "Assume the missed-call problem is large enough to justify spending now; your own RingCentral call logs have not been checked.",
+        "confidence": 65,
+        "checks": [
+          {
+            "area": "legal",
+            "status": "flag",
+            "note": "Maryland all-party consent applies (F1), and whether a start-of-call notice counts as valid consent is unverified; the practice's attorney must confirm."
+          },
+          {
+            "area": "compliance",
+            "status": "flag",
+            "note": "A signed BAA is required before patient calls reach any vendor (F3), and no candidate vendor has been confirmed to offer one (F4); recordings stored in charts also fall under retention rules (F6)."
+          },
+          {
+            "area": "financial",
+            "status": "flag",
+            "note": "BuzzWisely's Dentrix tiers at $289 to $389 (F12) fit the budget, while TensorLinks at $399 plus a $47 Dentrix Ascend fee (F11) likely exceeds it; RingCentral AIR at $39 to $49 (F9) fits, and an accountant or vendor should confirm all-in cost."
+          },
+          {
+            "area": "goals",
+            "status": "flag",
+            "note": "The missed-call rate is unmeasured, and published benchmarks range from 20 to 38% (F7), so the current gap is unknown; pull RingCentral call logs before choosing."
+          },
+          {
+            "area": "operational",
+            "status": "flag",
+            "note": "The Dentrix version (G6/G7 or Ascend) is unknown, and it decides whether direct booking is possible and what fees apply (F17)."
+          }
+        ]
+      },
+      "strategist": {
+        "stance": "conditional",
+        "headline": "Pilot overflow first; don't sign a dental-specific contract this month.",
+        "summary": "A dental-specific contract replacing the front desk locks in a vendor, a Dentrix link, and recording rules before you know your real missed-call rate. Start with overflow and after-hours coverage on your current line, and measure for two months. Then choose the vendor that signs a BAA and books into Dentrix.",
+        "key_points": [
+          "Patient calls cannot go to a vendor until a signed BAA is in place (F3), and only three of six reviewed vendors documented one on their own site (F4), so vendor choice is gated.",
+          "Dentrix booking runs through an approval-gated API, and vendors without access may use intermediaries such as NexHealth (F17); your Dentrix version decides which path is available.",
+          "Missed-call benchmarks vary widely and mostly come from vendors selling the fix (F7), so your own call log is the only reliable baseline."
+        ],
+        "risks": [
+          "Lock-in: setup fees of $500\u2013$3,500 and multi-month terms (F16, vendor-affiliated sources) make switching costly once Dentrix is linked.",
+          "Consent: Maryland requires all-party consent to record, and violating it is a felony (F1), so every call needs a disclosure built in before recording starts.",
+          "Staff erosion: cutting the one-person front desk too early removes the human fallback if the AI books wrongly into Dentrix, which is hard to correct because records cannot be altered (F6)."
+        ],
+        "pushback": "Question the assumption that a missed-call problem is best solved by replacing the front desk. Measure how many missed calls are new patients before committing $400 or more per month.",
+        "confidence": 70
+      },
+      "devils_advocate": {
+        "stance": "conditional",
+        "headline": "Start small: overflow AI only, after BAA and consent plan.",
+        "summary": "Argue for the safest version: a low-cost AI backup for missed and after-hours calls, not a full front-desk replacement. Missed new-patient calls may cost real money (F7, F8), and waiting keeps that loss. Sign only after the vendor signs a HIPAA BAA (F3) and a recording-consent plan is set (F1). Skip call recording at first.",
+        "key_points": [
+          "RingCentral AIR add-on runs $39\u2013$49/month, inside budget, with no new vendor to onboard (F9). Its Dentrix booking is unconfirmed, so keep it as overflow.",
+          "Benchmarks are vendor-sourced: 20\u201338% of calls missed (F7) and about $400\u2013$850 immediate value per new patient (F8). Your own call logs matter more.",
+          "Full dental AI replacement starts near $289\u2013$399/month before integration fees (F12, F11), and all-in costs can exceed budget (F16)."
+        ],
+        "risks": [
+          "Bad bookings if the AI writes to Dentrix without a clean fallback; overflow-only limits exposure.",
+          "Recording without all-party consent is a felony in Maryland (F1). Turn recording off until the practice's attorney confirms the consent method.",
+          "Vendor may refuse a BAA; only three of six reviewed vendors documented one (F4). No real patient calls before it is signed."
+        ],
+        "pushback": "Assumes your missed-call rate is high enough to justify any spend. Pull RingCentral call logs first; if few new-patient calls go unanswered, waiting costs little.",
+        "confidence": 55
+      }
+    },
+    "round2": {
+      "industry_expert": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "strategist",
+            "their_claim": "Lock-in from setup fees and multi-month terms makes switching costly once Dentrix is linked.",
+            "response": "Agree on lock-in risk, but the strategist's F16 figures are vendor-affiliated. Overflow-only on RingCentral avoids Dentrix linking entirely, which is the cleaner first step for a one-person front desk."
+          },
+          {
+            "target": "devils_advocate",
+            "their_claim": "Skip call recording at first, and turn recording off until the attorney confirms consent.",
+            "response": "Sensible. Recording adds consent and chart-retention duties (F6) that a first pilot does not need. Keep the AI answering and booking, and leave recording off until an attorney signs off."
+          }
+        ],
+        "concessions": [
+          "Recording adds consent and chart-retention duties (F1, F6) that a first pilot does not need; turning it off at first lowers risk.",
+          "Benchmarks are vendor-sourced (F7), so measuring the practice's own missed-call rate comes first."
+        ],
+        "stance": "conditional",
+        "headline": "Measure misses first; pilot overflow AI only after BAA and consent are confirmed.",
+        "summary": "Don't sign a dental AI contract this month. Pull your RingCentral call logs to see how many new-patient calls you miss. If the number is real, test RingCentral's AI add-on for after-hours and overflow only, which costs $39 to $49 a month (F9). Get a signed BAA before any patient call reaches a vendor (F3). Check the Dentrix version before paying for direct booking, since integration fees can push costs past $400 (F11, F16). Ask your attorney to confirm the Maryland recording consent method before turning recording on (F1).",
+        "key_points": [
+          "Measure your own missed new-patient calls first; vendor benchmarks are sales-driven (F7).",
+          "A signed BAA is required before patient calls reach any vendor (F3), and only three of six reviewed vendors documented one (F4).",
+          "BuzzWisely's Honey plan at $389/month lists a BAA and no Dentrix connector fee (F12); TensorLinks' $399 base plus $47 Dentrix Ascend fee likely runs over budget (F11)."
+        ],
+        "risks": [
+          "Maryland all-party consent: recording without it is a felony (F1); keep recording off until an attorney confirms the method.",
+          "AI books wrong into Dentrix or mishandles emergencies, and staff must clean up because records cannot be altered (F6).",
+          "All-in costs (setup $500\u2013$3,500 and overage, per vendor-affiliated sources, F16) can exceed $400, so get a written quote."
+        ],
+        "pushback": "Assume the missed calls are mostly new patients worth $400\u2013$850 each (F8). Those values come from sources that sell the product; check your own new-patient conversion before committing.",
+        "confidence": 70
+      },
+      "ai_tools_expert": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "industry_expert",
+            "their_claim": "BuzzWisely Honey at $389/month fits the budget once a signed BAA and the Dentrix version are confirmed.",
+            "response": "Agree on the order, but $389 leaves little room for overage. F12 is the vendor's own claim, so get the connector and overage terms in writing before any trial."
+          },
+          {
+            "target": "strategist",
+            "their_claim": "Overflow-first avoids lock-in, since setup fees and multi-month terms make switching costly once Dentrix is linked.",
+            "response": "Agree on lock-in risk. But F16's setup and integration figures come mostly from vendor-affiliated sources, so get written terms and a BAA before any Dentrix link."
+          }
+        ],
+        "concessions": [
+          "Dentrix linking and setup fees create lock-in, so an overflow-only pilot should come before any dental-specific contract (strategist, F16).",
+          "Dentrix booking needs an approved API path or an intermediary, so the Dentrix version decides which vendors are possible (strategist, F17).",
+          "Call recording stays off until the practice's attorney confirms the consent method (devils_advocate, F1)."
+        ],
+        "stance": "conditional",
+        "headline": "Conditional: pilot overflow AI on current line after BAA and consent check.",
+        "summary": "Do not sign a dental-specific contract this month. First pull your RingCentral call logs to measure new-patient calls you miss. Confirm any vendor signs a HIPAA BAA before patient calls reach it, and have your attorney confirm Maryland all-party recording consent. If those check out, test an overflow-only AI on your current line within the $400 budget. Only then consider a Dentrix-booking vendor.",
+        "key_points": [
+          "Missed-call benchmarks run 20 to 38 percent (F7), mostly from vendors selling fixes, so your own call log is the baseline.",
+          "Patient calls cannot reach a vendor until a signed BAA is in place (F3), and only three of six reviewed vendors documented one (F4).",
+          "Maryland requires all-party consent to record calls, and recording without it is a felony (F1), so recording stays off until the consent method is confirmed."
+        ],
+        "risks": [
+          "A vendor may refuse a BAA, which blocks any patient-call use.",
+          "Bad bookings written into Dentrix are hard to fix, since records cannot be altered (F6).",
+          "All-in cost may exceed $400 once setup, overage, and integration fees are added (F16)."
+        ],
+        "pushback": "Assume the missed-call loss is large enough to justify any spend; pull RingCentral call logs for new-patient calls before committing.",
+        "confidence": 70,
+        "tools": [
+          {
+            "name": "RingCentral AI Receptionist (AIR)",
+            "use": "Covers overflow and after-hours calls on the current RingCentral line to test demand before changing the front desk.",
+            "monthly_cost": "$39/month as RingEX add-on; $49/month standalone (per F9)",
+            "works_with": "RingCentral, the practice's current phone line",
+            "caveat": "Dentrix booking is unconfirmed and no BAA is verified; the cited review mentions only HIPAA-oriented controls (F9).",
+            "url": "https://www.ringcentral.com/",
+            "price_fact": "F9",
+            "pilot_test": "Keep it if it captures at least 5 more new-patient bookings from after-hours calls in 4 weeks; cancel at the first monthly invoice otherwise."
+          },
+          {
+            "name": "BuzzWisely",
+            "use": "Dental AI receptionist that books into Dentrix, considered only after the Dentrix version and a signed BAA are confirmed.",
+            "monthly_cost": "$289/month Nectar; $389/month Honey, which the vendor says includes a signed BAA (per F12)",
+            "works_with": "Dentrix, with the version still to be confirmed",
+            "caveat": "The BAA is listed only on the Honey plan, and the connector and overage claims come from the vendor itself (F12).",
+            "url": "https://buzzwisely.com/",
+            "price_fact": "F12",
+            "pilot_test": "Keep it if AI-made new-patient bookings rise by 8 in 6 weeks with zero Dentrix booking errors; cancel before the second invoice otherwise."
+          }
+        ]
+      },
+      "realist": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "industry_expert",
+            "their_claim": "BuzzWisely Honey at $389/month fits the budget with no Dentrix connector fee and a signed BAA.",
+            "response": "Only the base price fits. The Dentrix version and total cost are unconfirmed (F12 is the vendor's own page), and add-ons often push cost higher (F16). Get the all-in quote in writing."
+          },
+          {
+            "target": "ai_tools_expert",
+            "their_claim": "RingCentral AIR on the current line can test demand cheaply before any bigger spend.",
+            "response": "I agree with the low-cost test. But AIR's Dentrix booking is unconfirmed (F9), and its HIPAA claim comes from a third-party review. Confirm a BAA before any patient call reaches it."
+          }
+        ],
+        "concessions": [
+          "Recording should stay off until the attorney confirms the consent method (Devil's Advocate).",
+          "Setup fees and multi-month terms create lock-in risk, so avoid long contracts (Strategist, F16)."
+        ],
+        "stance": "conditional",
+        "headline": "Conditional yes: overflow-only pilot after BAA, consent, and call-log check",
+        "summary": "Don't sign this month. Pull your RingCentral call logs to measure missed new-patient calls first. Only a vendor that signs a HIPAA BAA should take patient calls. Have your attorney confirm Maryland all-party recording consent before any recording. If the gap is real, try an overflow-only option within $400 and check the all-in price.",
+        "key_points": [
+          "Maryland requires all-party consent to record calls, and recording without it is a felony (F1). Attorney must confirm the consent method.",
+          "A signed BAA is required before patient calls reach a vendor (F3), and only three of six reviewed vendors documented one (F4).",
+          "Missed-call benchmarks are mostly vendor-sourced and vary widely (F7), so your own RingCentral logs decide whether to spend."
+        ],
+        "risks": [
+          "Recording without valid all-party consent could expose the practice to criminal liability (F1).",
+          "Dentrix-direct vendors can exceed $400 once integration and setup fees apply (F11, F16).",
+          "A wrong booking into Dentrix is hard to correct because records cannot be altered (F6)."
+        ],
+        "pushback": "Assume the missed-call problem is large enough to justify spending now. Your own call logs have not been checked.",
+        "confidence": 65,
+        "checks": [
+          {
+            "area": "legal",
+            "status": "flag",
+            "note": "Maryland all-party consent applies (F1), but whether a start-of-call notice counts as valid consent is unverified; the practice's attorney must confirm."
+          },
+          {
+            "area": "compliance",
+            "status": "flag",
+            "note": "A signed BAA is required before patient calls reach any vendor (F3), and no candidate has been confirmed to offer one (F4); chart recordings also fall under retention rules (F6)."
+          },
+          {
+            "area": "financial",
+            "status": "flag",
+            "note": "RingCentral AIR at $39 to $49 (F9) and BuzzWisely at $289 to $389 (F12) fit the budget, while TensorLinks at $399 plus a $47 Dentrix fee (F11) likely exceeds it; an accountant should confirm all-in cost."
+          },
+          {
+            "area": "goals",
+            "status": "flag",
+            "note": "The missed-call rate is unmeasured, and published benchmarks range from 20 to 38% (F7), so the real gap is unknown until call logs are pulled."
+          },
+          {
+            "area": "operational",
+            "status": "flag",
+            "note": "The Dentrix version (G6/G7 or Ascend) is unknown, and it decides whether direct booking is possible and what fees apply (F17)."
+          }
+        ]
+      },
+      "strategist": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "industry_expert",
+            "their_claim": "A dental tool like BuzzWisely Honey can fit the $400 budget once the missed-call rate, BAA and Dentrix version are checked.",
+            "response": "Right on the checks, but a Dentrix-linked contract is the hardest step to undo. Keep overflow first; sign the dental tool only after call data supports it."
+          },
+          {
+            "target": "ai_tools_expert",
+            "their_claim": "Run RingCentral AIR as a short overflow test with keep-or-cancel thresholds.",
+            "response": "Agree overflow is the right first move. Add a staff-time check: if the front desk spends more time fixing AI bookings than it saves, cancel."
+          },
+          {
+            "target": "devils_advocate",
+            "their_claim": "Waiting costs little if few new-patient calls go unanswered.",
+            "response": "Only if the call log is checked now. Waiting is cheap only with proof of a small gap; otherwise every unanswered new-patient call keeps costing money."
+          }
+        ],
+        "concessions": [
+          "Realist: an attorney must confirm the Maryland consent script before any call is recorded (F1).",
+          "Industry expert: BuzzWisely Honey is the strongest dental candidate if the BAA and Dentrix checks pass (F12)."
+        ],
+        "stance": "conditional",
+        "headline": "Pilot overflow first; lock in a Dentrix-linked vendor only after measuring.",
+        "summary": "A dental-specific contract that replaces the front desk locks you into a vendor, a Dentrix link, and a setup that is costly to undo. Over the next 6 to 12 months, that is the real commitment. Start with RingCentral overflow and after-hours coverage on your current line for about two months while you count missed new-patient calls. Choose a vendor only after it signs a BAA and proves it books correctly into your Dentrix version.",
+        "key_points": [
+          "Lock-in: setup fees of $500-$3,500 and multi-month terms appear in vendor-affiliated estimates (F16), so switching after Dentrix is linked is costly.",
+          "Dentrix booking runs through an approval-gated API; vendors without access may use intermediaries such as NexHealth (F17).",
+          "Missed-call benchmarks mostly come from vendors selling the fix (F7), so your own call log is the only reliable baseline."
+        ],
+        "risks": [
+          "Staff erosion: cutting the one-person front desk early removes the human fallback if the AI books wrongly.",
+          "Hard to fix: records cannot be altered (F6), so a wrong booking or chart entry is difficult to correct later.",
+          "Consent: Maryland requires all-party consent to record calls (F1); the attorney must confirm the disclosure method (unverified)."
+        ],
+        "pushback": "Question the assumption that a missed-call problem is best solved by replacing the front desk. Measure how many missed calls are new patients before committing $400 or more per month.",
+        "confidence": 72
+      },
+      "devils_advocate": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "strategist",
+            "their_claim": "A dental-specific contract locks in a vendor, a Dentrix link and recording rules before the real missed-call rate is known, so measure first.",
+            "response": "Waiting has a cost too. Vendors TensorLinks and Viva offer 30-day trials (F11, F18), so signing now doesn't mean long lock-in. Measure your missed calls during the trial."
+          },
+          {
+            "target": "realist",
+            "their_claim": "Measure the missed-call rate and pull RingCentral logs before choosing, since published benchmarks run 20 to 38%.",
+            "response": "A 20 to 38% range (F7) means the gap could be large. Pulling logs can happen this week alongside a trial. Waiting delays the answer; a trial produces the number."
+          },
+          {
+            "target": "ai_tools_expert",
+            "their_claim": "Test RingCentral AIR as overflow first, then decide on a dental tool.",
+            "response": "AIR's Dentrix booking is unconfirmed (F9), so an overflow test may never book into your chart. That leaves the front-desk problem unsolved for another month while you pay for a test that can't fully answer the question."
+          }
+        ],
+        "concessions": [
+          "A signed BAA is required before any patient call reaches a vendor (F3), so no patient calls can go live until one is in hand.",
+          "Maryland all-party consent is a felony risk (F1), so the consent script must be set before recording starts."
+        ],
+        "stance": "conditional",
+        "headline": "Sign this month, but only with a BAA and a 30-day trial.",
+        "summary": "The board says wait. I disagree, with conditions. Missed new-patient calls may be worth $400 to $850 each, though that figure comes from vendors (F8). BuzzWisely's Honey plan lists a BAA and no Dentrix connector fee at $389 a month (F12), inside budget. Sign only if the BAA and the Maryland consent script are settled before any patient call goes live. Use the trial to measure your own missed-call rate.",
+        "key_points": [
+          "Missed new-patient calls may be worth $400 to $850 each, but the figure is vendor-sourced (F8), so each month of delay has a real cost.",
+          "BuzzWisely Honey lists a BAA and no Dentrix connector fee at $389 a month (F12), inside the $400 budget.",
+          "TensorLinks and Viva list 30-day trials (F11, F18), which limits lock-in if you test before committing."
+        ],
+        "risks": [
+          "Going live before a BAA is signed would break HIPAA rules for patient data (F3).",
+          "Trial pricing may leave out overage, setup, or integration fees that push cost past $400 (F16).",
+          "Setup work during the same month the one-person front desk is stretched could create errors before the AI proves itself."
+        ],
+        "pushback": "Assume waiting is free. Every month without answered new-patient calls is a cost the owner already pays, even if it is not on a bill.",
+        "confidence": 50
+      }
+    },
+    "verdict": {
+      "decision": "pilot",
+      "headline": "Don't replace the front desk yet; pilot overflow AI after BAA and consent.",
+      "confidence": 68,
+      "rationale": "Do not sign a front-desk replacement this month. Your own missed-call rate is unknown, and published benchmarks mostly come from vendors selling call products (F7). No vendor may take patient calls until it signs a BAA (F3), and only three of six reviewed dental vendors documented one (F4). Maryland recording without all-party consent is a felony (F1), so keep recording off until your attorney signs off. Pull your RingCentral logs, then test AI on overflow and after-hours calls only. Move to a Dentrix-booking vendor only if the data supports it.",
+      "decisive_arguments": [
+        {
+          "seat": "industry_expert",
+          "point": "Measure your own missed new-patient calls first. The 20-38% benchmarks and $400-$850 call values come mostly from vendors that sell call products (F7, F8)."
+        },
+        {
+          "seat": "realist",
+          "point": "A signed BAA is required before patient calls reach any vendor (F3). Only three of six reviewed vendors documented one (F4), so vendor choice is gated."
+        },
+        {
+          "seat": "strategist",
+          "point": "A Dentrix-linked contract is the hardest step to undo. Setup fees of $500-$3,500 and multi-month terms appear in vendor-affiliated estimates (F16), and Dentrix booking runs through an approval-gated API (F17)."
+        },
+        {
+          "seat": "devils_advocate",
+          "point": "Recording stays off until the attorney confirms the consent method. Recording without all-party consent is a felony in Maryland (F1)."
+        }
+      ],
+      "dissent": [
+        {
+          "seat": "devils_advocate",
+          "point": "Waiting has a cost, because every unanswered new-patient call may be lost revenue (the $400-$850 figure is vendor-sourced, F8). TensorLinks and Viva list 30-day trials (F11, F18), so a trial could produce the missed-call number faster than an overflow test."
+        },
+        {
+          "seat": "devils_advocate",
+          "point": "RingCentral AIR's Dentrix booking is unconfirmed (F9), so an overflow test may never book into your chart. That leaves the front-desk problem unsolved while you pay for a test that cannot fully answer the question."
+        },
+        {
+          "seat": "strategist",
+          "point": "Cutting the one-person front desk early removes the human fallback if the AI books wrongly. Records cannot be altered (F6), so a bad entry is hard to fix."
+        }
+      ],
+      "conditions": [
+        "No real patient call goes to any AI vendor until a signed BAA is in hand (F3). RingCentral's HIPAA claim comes only from a third-party review (F9).",
+        "Call recording and transcript storage stay off until your attorney confirms a Maryland-compliant consent method (F1). Whether a start-of-call notice counts as consent is unverified.",
+        "If recordings or transcripts later enter patient charts, they fall under Maryland record and retention rules (F6).",
+        "Keep your front desk answering the line in business hours. The AI covers only overflow and after-hours.",
+        "Get the all-in monthly cost in writing, including setup, overage and integration fees, and stay at or under $400.",
+        "Avoid long contracts. Use monthly terms or trials, and keep the cancellation date visible."
+      ],
+      "next_steps": [
+        {
+          "when": "this week",
+          "action": "Export 60-90 days of RingCentral call logs. Count missed calls, after-hours calls, and how many were new patients. Check call length and monthly volume."
+        },
+        {
+          "when": "this week",
+          "action": "Confirm your Dentrix version (G6/G7 or Ascend) and your RingCentral plan. Ask RingCentral whether AIR can be set to overflow and after-hours only, and whether they will sign a BAA."
+        },
+        {
+          "when": "this week",
+          "action": "Book your attorney to confirm the Maryland all-party consent script, whether transcripts count as recordings, and whether any AI-disclosure rule applies. Both are unverified in the evidence."
+        },
+        {
+          "when": "next 30 days",
+          "action": "If the logs show a real new-patient gap and a BAA is signed, start the AIR overflow and after-hours pilot with recording off. Track calls handled, bookings, and front-desk minutes spent fixing errors."
+        },
+        {
+          "when": "next 30 days",
+          "action": "Request written all-in quotes, a BAA draft, and Dentrix write-access details from BuzzWisely. Ask a second dental vendor for the same. Compare each in dollars per month against $400."
+        },
+        {
+          "when": "next 90 days",
+          "action": "Decide with the pilot data. Keep AIR, trial a Dentrix-booking vendor, or stop. Call the Maryland SBDC for free help comparing contract terms and return on investment."
+        }
+      ],
+      "ai_tools": [
+        {
+          "name": "RingCentral AI Receptionist (AIR)",
+          "use": "Answers overflow and after-hours calls on your current RingCentral line to test demand before changing the front desk.",
+          "monthly_cost": "$39/month as an add-on to RingEX or $49/month standalone; both include 100 minutes, and extra minutes are about $0.50 each (third-party summaries of its pricing page)",
+          "works_with": "Your existing RingCentral line; Dentrix booking was not confirmed.",
+          "caveat": "No BAA is verified (only a third-party review mentions HIPAA-oriented controls), and it may not book into Dentrix.",
+          "url": "https://www.ringcentral.com/",
+          "price_fact": "F9",
+          "pilot_test": "Only after a BAA is signed: keep it if it captures at least 5 more new-patient bookings from after-hours and overflow calls in 4 weeks and front-desk fix-up time stays low; cancel before the second invoice otherwise."
+        },
+        {
+          "name": "BuzzWisely",
+          "use": "Dental AI receptionist that books into Dentrix; a second-stage option only if the overflow pilot shows a real gap.",
+          "monthly_cost": "$289/month (Nectar, 775 minutes) or $389/month (Honey, up to 1,200 minutes with a signed BAA), per the vendor's own page",
+          "works_with": "Dentrix (vendor says the connector has no separate fee); your Dentrix version must be confirmed first.",
+          "caveat": "The BAA is listed only on the $389 Honey plan, which leaves about $11 of headroom under $400. Connector and overage claims come from the vendor itself.",
+          "url": "https://buzzwisely.com/",
+          "price_fact": "F12",
+          "pilot_test": "Start only after a signed BAA and a written all-in quote at or under $400. Keep it if AI-made new-patient bookings rise by 8 in 6 weeks with zero Dentrix booking errors; cancel before the second invoice otherwise."
+        }
+      ],
+      "escalate_to": "attorney",
+      "escalation_reason": "Maryland makes recording without all-party consent a felony (F1), and sources differ on what counts as valid consent (F2). An attorney should approve the consent script, review the vendor BAA required under HIPAA (F3), and confirm whether any AI-disclosure rule applies (unverified).",
+      "would_change": [
+        "Your RingCentral logs show very few missed new-patient calls: do nothing and keep the current line.",
+        "Logs show a large new-patient miss rate, and a Dentrix-booking vendor signs a BAA and confirms an all-in price at or under $400: move to that vendor sooner.",
+        "RingCentral will not sign a BAA: skip the AIR pilot and go to a BAA-backed dental vendor trial."
+      ],
+      "no_new_tool": "Pull your RingCentral call logs and tally missed, after-hours and new-patient calls in a Google Sheet; this costs only a few hours of staff time. Then try a clear after-hours voicemail with a promised next-morning callback, and a daily callback block for the front desk. Check with RingCentral whether overflow forwarding to a staff mobile is available on your plan (unverified). These steps cost $0 in new software. A human answering service or part-time front-desk help is the other no-AI option. A full-time human receptionist is cited at $3,000-$4,500/month fully loaded (F16, mostly vendor-affiliated sources), so get local quotes."
+    }
+  },
+  "board_error": null,
+  "baseline_research": "# Recommendation\n\n**Start an AI receptionist this month, but as overflow and after-hours coverage, not as a replacement for your front-desk line. Do not sign an annual contract until you've run a 30-day pilot.**\n\nYour goals are to stop missing new-patient calls and free up front-desk time. Overflow coverage achieves both without the main risks of full replacement: a bad first impression, bad bookings in Dentrix, and legal exposure on every call. Your one front-desk person keeps answering when available, and the AI catches what they can't.\n\n## Why not replace the line outright\n\n- **Recording is a legal risk in Maryland (F1).** It requires all-party consent, and unlawful recording is a felony. Sources differ on whether \"this call may be recorded\" plus continued conversation is enough (F2). Full replacement means every call carries that risk.\n- **The missed-call numbers come from vendors (F7).** The 20\u201338% figures are mostly from companies selling call-handling products. Your real rate could be much lower or higher, and your RingCentral logs will show it.\n- **Full replacement is hard to fit in $400 (F11, F16).** Dentrix-integrated dental vendors often cost $289\u2013$600 or more per month before setup and integration fees. Once those are added, many land above your budget.\n- **One front-desk person is a single point of failure.** If the AI mishandles an emergency, a Spanish-speaking caller, or an insurance question, there should be a human to hand off to.\n\n## The economics\n\nUsing the illustrative assumptions in F8, say you miss 40 calls a month, 25% are new patients, and 60% would book if answered. That is about 6 new patients a month. At roughly $450 first-visit revenue, that is about $2,700 a month, before lifetime value. Even at much lower volume, **one extra new patient a month roughly covers a $400 tool.** The bar is low, but only if the tool actually captures and books those callers. Replace these placeholders with your own call counts and production numbers.\n\n## Options within budget\n\n| Option | Cost | Notes |\n|---|---|---|\n| RingCentral AIR (F9) | $39\u201349/mo, 100 minutes included, about $0.50/min over | Already your vendor and cheapest to test. Dentrix booking is unconfirmed, so it may only take messages and answer FAQs. Confirm the BAA. |\n| BuzzWisely (F12) | $289 (Nectar) or $389 (Honey, with BAA) | Dentrix connector has no separate fee. Confirm whether the cheaper plan includes a BAA. |\n| TensorLinks (F11) | From $399 plus $199 setup | Free 30-day trial. Over budget if you're on Dentrix Ascend (extra $47/mo). |\n| Arini, Viva (F15, F18) | Quote only (Arini est. $249\u2013600) | Ask for pricing. Viva offers a 30-day trial and a BAA for every practice. |\n| Goodcall (F10) | $79\u2013129 | No Dentrix integration, so it would only capture messages. |\n\nYour Dentrix version (G6/G7 or Ascend) determines which vendors can book directly, so check that first.\n\n## Main risks and how to handle them\n\n1. **HIPAA (F3, F4).** Any vendor that touches patient names or appointments is a business associate. **Get a signed BAA before any call with real patient data, including during a trial.** There is no such thing as \"HIPAA certified.\" Only about half of vendors reviewed documented a BAA publicly, and some charge extra for it.\n2. **Maryland recording consent (F1, F2).** Play a disclosure at the start of every call, for example: \"This is the AI assistant for Bright Smile. This call is recorded. Say 'no' or press 1 to speak with a person.\" Give callers a real opt-out. Have your attorney approve the wording. If the vendor can't turn recording off or stop it on objection, don't use it.\n3. **AI disclosure.** I couldn't verify whether Maryland or local rules require telling callers they're talking to an AI. Disclose it anyway and ask your attorney.\n4. **Record retention (F6).** Recordings or transcripts saved to a patient chart fall under the 5-year (or until age 21) retention and no-alteration rules. Decide up front whether you keep recordings at all, or only summaries or transcripts. Confirm where the vendor stores them, for how long, whether you can export or delete them, and that your data isn't used to train models.\n5. **Booking errors.** Start with the AI booking new patients only, or taking a request that staff confirm, until you trust it. Spot-check Dentrix daily during the pilot.\n6. **Dental scenarios.** Test emergencies, insurance questions, existing-patient requests, Spanish, and handoff to a live person.\n7. **Hidden costs.** Ask for the all-in monthly cost: setup, overage, integration fees, contract length, and cancellation terms. Prefer month-to-month.\n8. **Maryland Online Data Privacy Act (F5).** This is low concern for call data, since HIPAA-governed PHI is exempt. Mention it to your attorney in case you use marketing or web data.\n\n## Next steps\n\n**Week 1**\n- Pull 60\u201390 days of RingCentral call logs. Calculate the missed-call rate (business hours and after-hours), new-patient share, monthly call volume, and call length.\n- Confirm your Dentrix version and your RingCentral plan (AIR add-on or discount, overflow forwarding).\n- Calculate your average first-visit production and new-patient conversion rate.\n\n**Week 2**\n- Ask RingCentral whether AIR can book into Dentrix, sign a BAA, and is already discounted on your plan.\n- Request quotes and BAAs from two or three dental-specific vendors (BuzzWisely, Arini, Viva, TensorLinks). Ask for an all-in price under $400 and month-to-month or trial terms.\n- Have your attorney review the call-recording disclosure and AI disclosure wording.\n\n**Weeks 3\u20136 (pilot)**\n- Run the best-fit vendor as after-hours and overflow only, on a trial or month-to-month term, with a signed BAA and the disclosure in place.\n- Track weekly: calls answered by AI, new-patient bookings, booking errors, caller complaints or hang-ups, and front-desk time saved.\n\n**Decision point (about day 45)**\n- If the pilot shows a meaningful number of captured new patients, few errors, and the cost fits $400, keep it and consider extending coverage.\n- If your real missed-call rate is low, or the tool can't book accurately into Dentrix, stay with the cheap RingCentral AIR option or consider a human answering service or part-time front-desk help (F16).\n\nGo ahead this month with the pilot, but hold off on replacing the line until your own data and the pilot support it.",
+  "judge": {
+    "model": "openrouter/anthropic/claude-sonnet-5.5",
+    "letters": {
+      "baseline_research": "A",
+      "board": "B",
+      "baseline": "C"
+    },
+    "baseline_research": {
+      "risks": [
+        {
+          "risk": "Maryland all-party recording consent",
+          "score": 2,
+          "quote": "If the vendor can't turn recording off or stop it on objection, don't use it."
+        },
+        {
+          "risk": "HIPAA business associate agreement",
+          "score": 2,
+          "quote": "Get a signed BAA before any call with real patient data, including during a trial."
+        }
+      ],
+      "actionable": 5,
+      "errors": []
+    },
+    "board": {
+      "risks": [
+        {
+          "risk": "Maryland all-party recording consent",
+          "score": 2,
+          "quote": "Call recording and transcript storage stay off until your attorney confirms a Maryland-compliant consent method."
+        },
+        {
+          "risk": "HIPAA business associate agreement",
+          "score": 2,
+          "quote": "No real patient call goes to any AI vendor until a signed BAA is in hand."
+        }
+      ],
+      "actionable": 5,
+      "errors": []
+    },
+    "baseline": {
+      "risks": [
+        {
+          "risk": "Maryland all-party recording consent",
+          "score": 1,
+          "quote": "Maryland requires all-party consent to record. The AI must give a clear disclosure at the start of every call"
+        },
+        {
+          "risk": "HIPAA business associate agreement",
+          "score": 2,
+          "quote": "The vendor must sign a Business Associate Agreement (BAA)... No BAA, no deal."
+        }
+      ],
+      "actionable": 4,
+      "errors": []
+    }
+  }
+}

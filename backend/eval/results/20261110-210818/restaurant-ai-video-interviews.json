@@ -1,0 +1,715 @@
+{
+  "scenario": {
+    "id": "restaurant-ai-video-interviews",
+    "intake": {
+      "question": "Should we use an AI tool that scores job applicants' recorded video interviews to speed up hiring line cooks?",
+      "leaning": "Yes, we're drowning in applications",
+      "profile": {
+        "industry": "full-service restaurant",
+        "location": "Baltimore, Maryland",
+        "size": "35 employees",
+        "current_tools": [
+          "Toast",
+          "Indeed"
+        ],
+        "goals": [
+          "hire faster for summer"
+        ]
+      }
+    },
+    "must_catch": [
+      {
+        "label": "Maryland facial-recognition consent in interviews",
+        "any": [
+          "facial recognition",
+          "facial (analysis|scan)",
+          "biometric"
+        ]
+      },
+      {
+        "label": "Hiring bias / discrimination risk",
+        "any": [
+          "bias",
+          "discriminat",
+          "EEOC",
+          "disparate"
+        ]
+      }
+    ]
+  },
+  "seat_model": "openrouter/anthropic/claude-haiku-5.5",
+  "researcher_model": "openrouter/anthropic/claude-sonnet-5.5:online",
+  "chair_model": "openrouter/anthropic/claude-sonnet-5.5",
+  "web_search": true,
+  "baseline": "# Recommendation\n\n**Don't use AI scoring of video interviews for line cooks. Fix the bottleneck with simpler tools.** Your problem is application volume, and there are cheaper, safer, and more predictive ways to solve it.\n\n## Why not\n\n1. **Video doesn't predict cooking.** Line cook success depends on speed, consistency, reliability, and handling pressure. A recorded interview mostly measures on-camera polish, which has little to do with the job. A trial shift tells you far more.\n\n2. **Maryland law applies.** Maryland restricts employers from using facial recognition to create a facial template during an interview unless the applicant signs a written consent waiver. Many AI video tools analyze faces, expressions, or voice. Ask any vendor exactly what they analyze. Using the tool without the right consent could expose you to a legal problem.\n\n3. **Discrimination risk stays with you, not the vendor.** At 35 employees you're covered by Title VII, the ADA, and Maryland's anti-discrimination law. Tools that score speech, accent, eye contact, or expression can disadvantage non-native English speakers, people with disabilities, and others. Kitchen workforces are often diverse, so this risk is real. \"The software did it\" is not a defense.\n\n4. **You'd lose good candidates.** Strong cooks, especially those working doubles, may not bother with a recorded video. Cooks often apply to several places at once, and extra friction means they take the first callback elsewhere.\n\n5. **Black-box scoring is hard to defend.** If a rejected applicant files a complaint, you'd have to explain a score you can't audit.\n\n## What to do instead to hire faster\n\n- **Use Indeed's built-in screening.** Add 3\u20135 knockout questions: availability (nights, weekends), years on a line, stations worked, ability to lift 50 lbs, and work authorization. Use Indeed's screener questions and \"must-have\" filters.\n- **Run a 10-minute phone or text screen** with a short, consistent script for everyone who passes the knockouts. Your chef or sous can do this in batches.\n- **Do a paid working interview (stage) of 1\u20132 hours** for finalists. Pay them for their time. This is the best predictor of performance and also shows culture fit.\n- **Hold open hiring blocks.** Schedule 2\u20133 half-day sessions where candidates rotate through a quick conversation and a basic skills check.\n- **Set a speed standard.** Contact qualified applicants within 24\u201348 hours and make offers right after the trial. Speed wins cooks more than any scoring tool.\n- **Tap referrals.** Offer your staff a bonus (e.g., $250\u2013$500 after 60\u201390 days) for referring a cook who sticks.\n\n## Main risks of the alternatives\n\n- Inconsistent screening can also create bias, so use the same questions and the same scoring for everyone.\n- Paid trial shifts require proper payroll treatment. Unpaid trials can violate wage laws.\n- Be careful with criminal-history questions. Maryland's Criminal Record Screening Act bars asking on the application and early in the process.\n\n## Next steps\n\n1. **This week:** Add knockout questions to your active Indeed postings and clear the backlog with them.\n2. **This week:** Write a 5-question phone screen and a simple 1\u20135 trial-shift scorecard (knife skills, speed, cleanliness, following direction, communication).\n3. **Next week:** Block two hiring sessions and have candidates contacted within 48 hours.\n4. **Document:** Keep records of your criteria and decisions for each applicant.\n5. **If you still want AI tools later:** Ask the vendor in writing what data it analyzes (face, voice, text), whether it has bias audits, and how it meets Maryland's consent requirement. Get applicant consent, offer an alternative to video, and have an employment attorney review the contract. Never let the tool auto-reject candidates.\n\nWith this approach, you should be able to move from application to offer in about a week, well in time for summer.",
+  "board_state": {
+    "intake": {
+      "question": "Should we use an AI tool that scores job applicants' recorded video interviews to speed up hiring line cooks?",
+      "leaning": "Yes, we're drowning in applications",
+      "profile": {
+        "name": "",
+        "industry": "full-service restaurant",
+        "location": "Baltimore, Maryland",
+        "size": "35 employees",
+        "current_tools": [
+          "Toast",
+          "Indeed"
+        ],
+        "budget": "",
+        "goals": [
+          "hire faster for summer"
+        ],
+        "constraints": ""
+      }
+    },
+    "evidence_mode": "web",
+    "evidence": {
+      "decision": "Whether a 35-employee full-service restaurant in Baltimore, Maryland should adopt an AI tool that scores applicants' recorded video interviews to speed up hiring line cooks for summer.",
+      "options": [
+        "Do nothing: keep screening Indeed applications manually with Toast and Indeed's built-in tools.",
+        "Use a one-way video interview platform that has no AI scoring (humans review and rate the recordings), such as Spark Hire Meet.",
+        "Adopt an AI video-scoring tool (HireVue-type), with signed consent, accommodation paths, a human review of every rejection, and adverse-impact monitoring.",
+        "Use non-video screening to cut volume instead: Indeed screening questions and scheduling, text or voice-AI prescreens, or a short in-person or paid kitchen trial."
+      ],
+      "facts": [
+        {
+          "claim": "Maryland Labor & Employment Code 3-717 (HB 1202, effective Oct 1, 2020) bars an employer from using a facial recognition service to create a facial template during an applicant's interview unless the applicant signs a waiver. The waiver must state the applicant's name, the interview date, consent to facial recognition, and that the applicant read the waiver.",
+          "source": "https://www.recordinglaw.com/us-laws/ai-laws/maryland-ai-laws/",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:17:05Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "One summary says an AI interview tool that scores vocal tone, word choice or answer content without creating a facial template falls outside HB 1202. The statute's definitions leave broad gaps, so the board needs to confirm with each vendor whether its tool creates facial templates. A law-firm summary says the statute has no specific penalty, while another source says the Maryland Attorney General enforces it.",
+          "source": "https://www.workforcebulletin.com/new-maryland-law-requires-applicant-consent-prior-to-using-facial-recognition-technology-in-job-interviews",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:17:09Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Baltimore City's Ban the Box ordinance covers employers with 10 or more full-time-equivalent employees in the city. Before a conditional offer, they may not ask about criminal history or run a record check. A video-interview question set or AI scoring rubric that touches criminal history would conflict with this. This is stricter than Maryland's statewide rule, which applies at 15 or more employees and restricts inquiries before the first interview.",
+          "source": "https://www.baltimorecity.gov/civil-rights/our-work/community-relations-commission/resources/ban-box",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:17:06Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Title VII disparate-impact liability can attach to AI screening tools, including vendor-supplied ones, if selection rates for protected groups fall well below others. A common benchmark is the four-fifths (80%) rule. Employers generally cannot shift this liability to the vendor by contract.",
+          "source": "https://www.aipolicydesk.com/blog/eeoc-ai-hiring-guidance-2026-employer-checklist",
+          "verified": true,
+          "check": {
+            "status": "unreachable",
+            "checked_at": "2026-11-11T02:17:05Z",
+            "http_status": 403
+          }
+        },
+        {
+          "claim": "Federal enforcement has pulled back. The EEOC removed its AI technical-assistance documents in 2025, and its June 4, 2026 National Enforcement Plan says it will not litigate disparate-impact claims. Title VII itself is unchanged, and private plaintiffs and state agencies can still bring such claims.",
+          "source": "https://interviewersignal.com/blog/eeoc-guidance-on-ai-in-hiring",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:17:05Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "The ADA applies to AI and video-interview tools. DOJ guidance says employers must tell applicants what technology is used and how they will be evaluated. They must also provide reasonable accommodations, such as an alternative format or a human reviewer. A tool that recognizes facial expressions or speech patterns can screen out people with disabilities such as autism or speech impairments.",
+          "source": "https://www.ada.gov/assets/pdfs/ai-guidance.pdf",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:17:06Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "The Mobley v. Workday litigation tests whether an HR-technology vendor can be liable as an agent in hiring decisions. The more an employer relies on a tool to reject or rank applicants with little human involvement, the easier it is for plaintiffs to argue the tool performed a hiring function.",
+          "source": "https://www.harrisbeachmurtha.com/insights/ai-assisted-hiring-in-2026-managing-discrimination-risk/",
+          "verified": true,
+          "check": {
+            "status": "unreachable",
+            "checked_at": "2026-11-11T02:17:05Z",
+            "http_status": null
+          }
+        },
+        {
+          "claim": "Independent validity evidence for AI video-interview scoring is thin. One review calls it the weakest evidence base of any major AI hiring application, with fewer than 5 independent studies. HireVue dropped facial analysis in January 2021, and its current scoring is described as based on the transcript of what the candidate says.",
+          "source": "https://www.cogn-iq.org/blog/ai-hiring-assessments/",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:17:06Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Restaurant turnover benchmarks vary by source. Full-service turnover is about 73% a year per National Restaurant Association-derived data, and about 92% in the Black Box Intelligence hourly index. Back-of-house turnover is reported at about 43%. BLS JOLTS for June 2026 shows accommodation and food services with a 5.0% monthly hires rate against 3.4% for all nonfarm employment.",
+          "source": "https://boostpoint.com/industries-frontline/cost-per-hire-restaurant/",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:17:06Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "One benchmark puts line cook/prep replacement cost at about $3,850 and time-to-fill at about 14 days. Another puts the average cost-per-hire for hourly workers at about $4,129. These figures are vendor-published estimates, not audited data.",
+          "source": "https://gratuitysolutions.com/blog/restaurant-employee-turnover-rate.html",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:17:05Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Spark Hire Meet (one-way and live video interviews) is listed by third-party review sites at about $299/month billed monthly (5 jobs, 5 users) or $249/month billed annually. The Growth tier at about $499/month adds predictive assessments, and the cheapest tier has no built-in automated scoring. I did not retrieve the vendor's own pricing page, so confirm current prices there.",
+          "source": "",
+          "verified": false
+        },
+        {
+          "claim": "Indeed lets you post 3 jobs free per month. Sponsored Jobs are an auction billed per click or per started application, with an advertised starting point of about $5/day or $150/month. Indeed's own pricing page does not show a flat figure, and the number comes from a third-party summary. Workstream and HireVue do not publish prices. Third-party reports put HireVue at tens of thousands of dollars a year, and Workstream is quoted per employee or location. Both are built mainly for larger chains.",
+          "source": "https://avahr.com/indeed-job-posting-cost/",
+          "verified": true,
+          "check": {
+            "status": "unreachable",
+            "checked_at": "2026-11-11T02:17:05Z",
+            "http_status": 403
+          }
+        }
+      ],
+      "open_questions": [
+        "Does the specific vendor create a facial template or analyze video of the face? If so, HB 1202 waivers are required. What scoring inputs does it use (transcript, voice, face)?",
+        "Can the vendor supply adverse-impact or validation data for hourly kitchen roles, and does it support accommodations such as phone or live alternatives and human-only review?",
+        "How many applications per opening arrive, and what share is clearly unqualified? Would knockout questions, Indeed screening, or text-based prescreens cut the volume without video AI?",
+        "Is the real bottleneck the volume of applicants, or the slowness of scheduling and follow-up? Where are candidates dropping out?",
+        "Would a 35-person restaurant hire enough line cooks to justify a roughly $250\u2013$500/month tool or an enterprise quote? What is the baseline time-to-hire and cost per hire?",
+        "Do applicants include many non-native English speakers or people with speech or disability-related differences, for whom transcript-based scoring may perform worse?",
+        "Will a manager review every candidate the tool ranks low, and is applicant demographic data collected so selection rates can be checked?",
+        "Does Toast's current hiring or onboarding module, or Indeed's built-in screening, already provide enough? Does the restaurant's EPLI insurance cover AI-related hiring claims?",
+        "Have Maryland or Baltimore enacted any new AI-in-hiring rules in the latest session that these sources do not reflect? Counsel should confirm."
+      ]
+    },
+    "round1": {
+      "industry_expert": {
+        "stance": "conditional",
+        "headline": "Speed up hiring, but skip AI video scoring; use cheaper screening first.",
+        "summary": "Your problem is real: restaurants churn staff fast. But AI video scoring is the riskiest fix. Its validity evidence is thin (F8), and discrimination liability stays with you even if the vendor supplies it (F4). Start with Indeed screening questions and scheduling, plus a short paid kitchen trial. Add a human-reviewed video tool only if the vendor proves it is validated and accessible.",
+        "key_points": [
+          "Validity evidence for AI video scoring is weak, and HireVue dropped facial analysis (F8).",
+          "Liability for biased screening stays with you, and contracts cannot shift it to the vendor (F4, F7).",
+          "Cheap fixes like knockout questions and a kitchen trial target the real bottleneck: scheduling and drop-off (F9, F10)."
+        ],
+        "risks": [
+          "A video tool could screen out disabled or non-native English applicants, triggering ADA and Title VII claims (F6, F4).",
+          "Maryland's facial-template consent rules may apply depending on the vendor's design (F1, F2).",
+          "Federal enforcement is weaker, but private lawsuits and state claims remain possible (F5)."
+        ],
+        "confidence": 72,
+        "pushback": "Assume the applicant volume is the bottleneck. Check whether candidates are actually dropping out during slow scheduling or follow-up. If so, fixing response time may cut hiring time more than any screening tool."
+      },
+      "ai_tools_expert": {
+        "stance": "oppose",
+        "headline": "Not the AI video scorer now; cut applicant volume first.",
+        "summary": "Don't buy AI video scoring for summer hiring. Its validity evidence is thin (F8), it carries Maryland consent duties (F1) and discrimination risk the restaurant would still own (F4). Start with free Indeed screening questions and scheduling, and measure where candidates drop out. Add human-reviewed video only if volume is still the problem.",
+        "key_points": [
+          "Maryland requires signed consent if the tool creates facial templates, and vendors' answers on that are unclear (F1, F2).",
+          "Discrimination liability can attach to vendor tools and cannot be contracted away, and a tool that screens out people with disabilities creates ADA duties (F4, F6).",
+          "Your real bottleneck may be scheduling or follow-up, not applicant volume; turnover pressure is high, so speed matters (F9, F10)."
+        ],
+        "risks": [
+          "Adverse-impact claims from rejected applicants, even though federal enforcement has eased and private suits remain possible (F5, F7).",
+          "Paying a monthly fee for a tool that cannot prove it predicts kitchen performance, while the summer deadline passes.",
+          "Excluding strong candidates who are non-native English speakers or have speech differences, if scoring relies on transcripts."
+        ],
+        "confidence": 72,
+        "pushback": "Assume volume is the problem. Measure how many applicants per opening are clearly unqualified and where candidates drop out before you pay for any tool.",
+        "tools": [
+          {
+            "name": "Spark Hire Meet (one-way video, no AI scoring)",
+            "use": "Lets candidates record answers on their own time so managers can review them in batches, without any automated ranking.",
+            "monthly_cost": "$249-299/mo",
+            "works_with": "Standalone; you would post the link through Indeed, which you already use.",
+            "caveat": "Still adds review time per candidate, and the price comes from third-party sites, not the vendor (F11).",
+            "url": "",
+            "price_fact": "F11",
+            "pilot_test": "Keep it only if time-to-hire falls by 5 days for summer cooks within 4 weeks; cancel before the first invoice renews otherwise."
+          }
+        ]
+      },
+      "realist": {
+        "stance": "conditional",
+        "headline": "Not AI video scoring yet; try cheaper non-AI screening first.",
+        "summary": "Speeding up line cook hiring is a fair goal, but AI scoring of video interviews carries legal and fairness risk, and the evidence that it works is thin (F8). Maryland requires signed consent if the tool creates facial templates (F1), disparate-impact liability can land on you even if the vendor built the tool (F4, F7), and accommodation duties apply (F6). Try non-AI fixes first: Indeed screening questions, knockout questions, and scheduling tools. Revisit AI scoring only after vendor validation and counsel review.",
+        "key_points": [
+          "Volume may be solvable without AI: Indeed screening questions and knockout questions cut unqualified applicants cheaply (F12, open questions).",
+          "Legal exposure stays with you, not the vendor, so contract protections will not shield you (F4, F7).",
+          "Turnover is high and hiring is costly, so speed matters, but a $250 to $500 monthly tool needs a clear payoff (F9, F10, F11)."
+        ],
+        "risks": [
+          "Disparate-impact claims from rejected applicants, even though federal enforcement has eased (F4, F5).",
+          "Maryland facial-recognition waiver violations if the vendor's tool creates facial templates (F1, F2).",
+          "ADA screen-outs for applicants with speech or disability differences, with weak validation data behind the tool (F6, F8)."
+        ],
+        "confidence": 72,
+        "pushback": "Assumes the bottleneck is applicant volume. The real delay may be slow scheduling or follow-up, which a cheap tool or process fix would solve without any AI scoring.",
+        "checks": [
+          {
+            "area": "legal",
+            "status": "block",
+            "note": "Any AI tool that analyzes faces requires signed HB 1202 waivers before use (F1); confirm with the vendor and Maryland counsel before any video AI is used."
+          },
+          {
+            "area": "legal",
+            "status": "flag",
+            "note": "Disparate-impact and ADA accommodation duties apply to AI screening regardless of vendor (F4, F6); an employment attorney should confirm the process."
+          },
+          {
+            "area": "compliance",
+            "status": "flag",
+            "note": "Baltimore Ban the Box limits criminal-history questions for employers with 10 or more FTEs (F3); the question set and scoring rubric must avoid that topic."
+          },
+          {
+            "area": "financial",
+            "status": "pass",
+            "note": "Lower-cost options such as Indeed screening or a $250 to $300 monthly video platform without AI scoring fit a 35-person budget (F11, F12); exact prices unverified."
+          },
+          {
+            "area": "financial",
+            "status": "flag",
+            "note": "HireVue-type enterprise pricing is unpublished and likely far above a small restaurant's budget (F12); get a written quote before considering it."
+          },
+          {
+            "area": "goals",
+            "status": "flag",
+            "note": "A faster summer hire is plausible, but no baseline time-to-hire or cost-per-hire data exists yet to prove the tool helps (F9, F10)."
+          }
+        ]
+      },
+      "strategist": {
+        "stance": "conditional",
+        "headline": "Speed up hiring, but avoid AI video scoring; start with non-scoring screens.",
+        "summary": "Your problem is real: line cook turnover is high and summer hiring is urgent. But AI video scoring is the weakest-evidenced option, carries discrimination and consent risk, and is hard to undo once built into your process. Start with Indeed screening questions and a human-reviewed video or scheduling tool. Check whether the bottleneck is volume or slow follow-up first.",
+        "key_points": [
+          "Turnover is high and time-to-fill is about 14 days (F9, F10), so speed matters, but cost per hire is only about $4,000 (F10).",
+          "Independent validity evidence for AI video scoring is thin (F8), and disparate-impact liability can still land on you, not the vendor (F4, F5).",
+          "Maryland consent rules hinge on whether the vendor creates facial templates (F1, F2), and disability accommodations must be offered (F6)."
+        ],
+        "risks": [
+          "Adverse-impact claims from a tool with weak validation, enforced privately or by state agencies even though federal enforcement has pulled back (F4, F5).",
+          "Lock-in: once scoring is wired into Toast and Indeed workflows and staff rely on it, reversing it costs time and goodwill during peak season.",
+          "Screening out qualified cooks with speech or disability differences, which damages reputation in a small Baltimore market (F6)."
+        ],
+        "confidence": 72,
+        "pushback": "You assume the problem is too many applicants. Check whether the real delay is slow scheduling and follow-up, since fixing that may need no AI at all.','pushback_fix':''}"
+      },
+      "devils_advocate": {
+        "stance": "oppose",
+        "headline": "Don't adopt AI video scoring now; try cheaper screening first.",
+        "summary": "The owner wants speed, but AI video scoring carries legal and fairness risk, and its validity evidence is thin (F8). Liability stays with you even if the vendor built the tool (F4). Cheaper steps like Indeed screening questions, knockout questions, or a paid kitchen trial may cut volume without that exposure. Test those first for summer.",
+        "key_points": [
+          "Validity evidence for AI video scoring is weak, with fewer than 5 independent studies (F8).",
+          "Employers keep disparate-impact liability even when a vendor supplies the tool, and contracts cannot shift it (F4); federal enforcement has pulled back, but private and state claims remain (F5).",
+          "The bottleneck may be scheduling and follow-up, not applicant volume; this is unmeasured, and a cheaper fix may solve it (F9, F10)."
+        ],
+        "risks": [
+          "Screening out qualified applicants with accents, speech differences, or disabilities, which can trigger ADA claims (F6).",
+          "Maryland HB 1202 waivers or facial-template issues if the vendor analyzes faces (F1, F2); Baltimore Ban the Box limits on criminal-history questions (F3).",
+          "Paying for a tool that barely speeds hiring, while summer staffing stays short."
+        ],
+        "confidence": 72,
+        "pushback": "Assumes volume is the real problem. Measure applicants per opening, drop-off points, and days to fill before paying for any video tool; the delay may be your own follow-up speed.}"
+      }
+    },
+    "round2": {
+      "industry_expert": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "ai_tools_expert",
+            "their_claim": "Spark Hire Meet one-way video with human review is a reasonable pilot if it cuts time-to-hire, and volume should be measured first.",
+            "response": "Agree on measuring first, but a one-way video tool still adds review time per candidate and is not free. Keep it as a second step only if scheduling and drop-off fixes fail, with a written 4-week test (F11)."
+          },
+          {
+            "target": "strategist",
+            "their_claim": "Lock-in is the key risk: once scoring is wired into Toast and Indeed workflows, reversing it costs time during peak season.",
+            "response": "Fair point on lock-in, and I'd add it to my list. But my concern is more practical: a line cook who quits after one bad week costs more than the tool, so fix scheduling and onboarding speed first (F9, F10)."
+          },
+          {
+            "target": "realist",
+            "their_claim": "Indeed screening and knockout questions cut unqualified volume cheaply, and a $250 to $300 video platform without AI scoring fits the budget.",
+            "response": "Agreed on the cheap steps. Restaurants lose cooks mainly in the first weeks, so pair any screen with a paid trial shift and fast callbacks, not just a lower applicant count (F9, F12)."
+          }
+        ],
+        "concessions": [
+          "Lock-in to a video-scoring workflow is a real reversal cost during peak season.",
+          "A non-scoring one-way video platform may be a reasonable fallback if cheaper steps fail."
+        ],
+        "stance": "conditional",
+        "headline": "Skip AI video scoring; fix scheduling and run a paid kitchen trial first.",
+        "summary": "Your summer problem is real, and restaurant turnover is high (F9). But AI video scoring has the weakest validity evidence of any hiring tool (F8) and leaves you liable for bias even if the vendor built it (F4). Start with Indeed screening questions, faster callbacks, and a short paid kitchen trial, which target what actually loses candidates. Measure applicants per opening and drop-off for two weeks. Consider a non-scoring video platform only if those fail.",
+        "key_points": [
+          "AI video scoring has weak validity evidence and HireVue dropped facial analysis (F8).",
+          "Liability stays with you even if the vendor supplies the tool (F4, F7).",
+          "Paid kitchen trials and faster follow-up address the real drop-off point (F9, F10)."
+        ],
+        "risks": [
+          "Screening out qualified cooks with accents, speech differences, or disabilities, triggering ADA or Title VII claims (F6, F4).",
+          "Maryland facial-template consent duties if the vendor's tool analyzes faces (F1, F2).",
+          "Missing the summer window while testing cheaper fixes (F9)."
+        ],
+        "confidence": 74,
+        "pushback": "Assume volume is the bottleneck. Measure applicants per opening, days from application to first call, and where candidates drop out before paying for any video tool."
+      },
+      "ai_tools_expert": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "realist",
+            "their_claim": "Indeed screening questions and knockout questions can cut unqualified applicants cheaply without AI.",
+            "response": "Agreed on the sequence, but measure first. Without current application counts per opening, we can't tell whether knockout questions cut enough volume to fix summer hiring. Run them as the first test."
+          },
+          {
+            "target": "industry_expert",
+            "their_claim": "Add a human-reviewed video tool only if the vendor proves it is validated and accessible.",
+            "response": "Agreed as a condition, but that proof is unlikely soon. F8 finds fewer than 5 independent studies, and no vendor has supplied adverse-impact data for kitchen roles. Treat that as a hard gate."
+          }
+        ],
+        "concessions": [
+          "Strategist: a scoring tool wired into Toast and Indeed workflows is hard to reverse in peak season, so lock-in is a real cost.",
+          "Realist: a non-scoring video platform, if priced as cited, may fit a 35-person budget better than enterprise tools."
+        ],
+        "stance": "oppose",
+        "headline": "Oppose AI video scoring now; measure bottleneck and try non-AI screens",
+        "summary": "Don't buy AI video scoring for summer. Its validity evidence is thin (F8), and Maryland consent duties apply if faces are analyzed (F1). The restaurant keeps discrimination liability even with a vendor tool (F4). First, measure applicants per opening and where candidates drop out. Then test free Indeed screening questions and faster scheduling. Revisit video only if volume is still the problem.",
+        "key_points": [
+          "Validity evidence for AI video scoring is weak, with fewer than 5 independent studies (F8).",
+          "Liability for biased screening stays with you, and vendor contracts cannot shift it (F4, F5).",
+          "Turnover and time-to-fill are costly, so speed matters, but a tool must show it actually cuts time-to-hire (F9, F10)."
+        ],
+        "risks": [
+          "Adverse-impact or ADA claims from screen-outs of non-native speakers or applicants with speech or disability differences (F4, F6).",
+          "Paying a monthly fee for a tool that cannot prove it predicts kitchen performance while the summer deadline passes.",
+          "Lock-in: once scoring is built into hiring workflows, reversing it costs time during peak season."
+        ],
+        "confidence": 74,
+        "pushback": "Assume applicant volume is the bottleneck. Measure applicants per opening, drop-off points, and days to fill first; the delay may be your own follow-up speed.",
+        "tools": [
+          {
+            "name": "Spark Hire Meet (one-way video, no AI scoring)",
+            "use": "Lets candidates record answers on their own time so managers review them in batches, with no automated ranking.",
+            "monthly_cost": "$249-299/mo (third-party listing)",
+            "works_with": "Standalone; posting through Indeed is likely but unverified.",
+            "caveat": "Still adds review time per candidate, and the price comes from third-party sites, not the vendor (F11).",
+            "url": "",
+            "price_fact": "F11",
+            "pilot_test": "Keep it only if time-to-hire falls by 5 days for summer cooks within 4 weeks; cancel before the first renewal invoice otherwise."
+          }
+        ]
+      },
+      "realist": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "ai_tools_expert",
+            "their_claim": "Spark Hire Meet, a one-way video tool with no AI scoring, is a safer interim step than AI scoring.",
+            "response": "Not risk-free. Video-only formats can still screen out applicants with disabilities, so ADA alternative paths must be offered (F6)."
+          },
+          {
+            "target": "strategist",
+            "their_claim": "A human-reviewed video or scheduling tool is a safe starting point.",
+            "response": "Only if it offers accessible alternatives and a human review of rejections. Without those, it carries the same ADA exposure as AI scoring (F6, F4)."
+          }
+        ],
+        "concessions": [
+          "A one-way video tool with no AI scoring and human review of every rejection can be a reasonable interim test, if it meets accessibility rules (AI-tools expert, strategist)."
+        ],
+        "stance": "conditional",
+        "headline": "Not AI video scoring now; test non-AI screening and fix scheduling first.",
+        "summary": "AI video scoring is not ready for you. Its proof of working is thin (F8), Maryland consent rules may apply if it reads faces (F1), and you stay liable for biased results even if the vendor built it (F4). Try cheaper steps first: Indeed screening questions, knockout questions, and faster scheduling. Measure where candidates drop out before paying for any tool.",
+        "key_points": [
+          "AI video scoring has weak validity evidence and may trigger Maryland consent rules if it reads faces (F1, F8).",
+          "Disparate-impact and ADA duties stay with you, not the vendor (F4, F6).",
+          "Screening and scheduling fixes cost little and target the likely bottleneck (F12, F9)."
+        ],
+        "risks": [
+          "Disparate-impact or ADA claims from applicants screened out by a tool with weak validation (F4, F6, F8).",
+          "Maryland facial-template violations if the vendor's design creates facial templates without signed waivers (F1, F2).",
+          "Paying a monthly fee for a tool that does not speed summer hiring, with no baseline to prove it helped (F10, F11)."
+        ],
+        "confidence": 74,
+        "pushback": "Assumes applicant volume is the bottleneck. Measure applicants per opening, drop-off points, and days to fill first; the delay may be slow follow-up that needs no tool.",
+        "checks": [
+          {
+            "area": "legal",
+            "status": "block",
+            "note": "Block AI video scoring until the vendor confirms in writing whether it creates facial templates; if it does, signed HB 1202 waivers are required (F1), and Maryland employment counsel should confirm (F2)."
+          },
+          {
+            "area": "legal",
+            "status": "flag",
+            "note": "Disparate-impact and ADA accommodation duties apply regardless of vendor (F4, F6); an employment attorney should review the process."
+          },
+          {
+            "area": "compliance",
+            "status": "flag",
+            "note": "Baltimore Ban the Box bars criminal-history questions before a conditional offer for employers with 10+ FTEs (F3); the question set and scoring rubric must avoid that topic."
+          },
+          {
+            "area": "financial",
+            "status": "pass",
+            "note": "Indeed screening and a no-AI video platform fit a 35-person budget (F12, F11); F11 prices are third-party and unverified, so confirm with each vendor."
+          },
+          {
+            "area": "goals",
+            "status": "flag",
+            "note": "A faster summer hire is plausible, but no baseline time-to-hire or cost-per-hire data exists to prove any tool helps (F9, F10)."
+          }
+        ]
+      },
+      "strategist": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "industry_expert",
+            "their_claim": "A video tool can be added later if the vendor proves validation and accessibility.",
+            "response": "Agreed on sequencing, but human review does not cure a scoring tool. If the tool ranks candidates, plaintiffs can argue it performed the hiring function with little human involvement (F7). Ask for validation data before any pilot."
+          },
+          {
+            "target": "devils_advocate",
+            "their_claim": "Paying for a tool that barely speeds hiring is the main cost risk.",
+            "response": "The bigger risk is that we have not measured the bottleneck. Track days-to-fill and drop-off for two weeks first (F10). Then choose the fix, so the spend follows the data."
+          }
+        ],
+        "concessions": [
+          "Indeed screening questions and faster scheduling are the right first moves (industry_expert, realist).",
+          "A non-scoring one-way video platform with human review is a reasonable second step if volume stays the problem (ai_tools_expert)."
+        ],
+        "stance": "oppose",
+        "headline": "Hold off on AI video scoring; fix scheduling and screening first.",
+        "summary": "Start this week with Indeed screening questions and faster interview scheduling, and track days-to-fill and drop-off. Skip AI video scoring for summer. Its validity evidence is weak (F8), Maryland consent duties depend on the vendor's design (F1, F2), and discrimination liability stays with you (F4). If volume is still the problem after two weeks, pilot a non-scoring video platform with human review.",
+        "key_points": [
+          "Validity evidence for AI video scoring is weak, with fewer than 5 independent studies (F8).",
+          "Liability stays with the employer even when a vendor supplies the tool (F4, F7).",
+          "Turnover and time-to-fill create real urgency, but cost per hire is about $4,000, so a fix must be measured (F9, F10)."
+        ],
+        "risks": [
+          "Adverse-impact or ADA claims if scoring screens out qualified applicants with speech or disability differences (F6).",
+          "Lock-in: wiring AI scoring into Toast and Indeed workflows could be costly to reverse in peak season (unverified).",
+          "Summer hiring slips while the team tests fixes, so set a two-week checkpoint to avoid delay."
+        ],
+        "confidence": 70,
+        "pushback": "You assume too many applicants is the problem. If scheduling or follow-up is the real delay, no AI tool is needed, and buying one would add cost and legal exposure without fixing it."
+      },
+      "devils_advocate": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "ai_tools_expert",
+            "their_claim": "Free Indeed screening questions are the low-risk first step before any video tool.",
+            "response": "Free does not mean low-risk. Knockout questions can create disparate impact just as AI scoring can, so they need the same adverse-impact checks (F4)."
+          },
+          {
+            "target": "industry_expert",
+            "their_claim": "Cheap fixes like knockout questions and a kitchen trial target the real bottleneck.",
+            "response": "Nobody has measured the bottleneck yet, including you. Your own pushback admits this. Recommending a fix before measurement is the same guess you warn against."
+          },
+          {
+            "target": "strategist",
+            "their_claim": "AI scoring is hard to reverse once wired into workflows, so avoid lock-in.",
+            "response": "Lock-in cuts both ways. A cheap path that stalls summer hiring also locks in lost candidates. Reversal risk should be weighed against an unmeasured status quo, not assumed."
+          }
+        ],
+        "concessions": [
+          "Validity evidence for AI video scoring is genuinely thin (F8).",
+          "Baltimore Ban the Box limits criminal-history questions in any screen, so question sets must be cleared first (F3)."
+        ],
+        "stance": "oppose",
+        "headline": "The cheap-first plan is untested and may cost the summer.",
+        "summary": "The consensus treats cheap screening as safe and fast, but it is unmeasured. Knockout questions and Indeed screening carry the same disparate-impact exposure under Title VII (F4), so cheaper does not mean lower risk. A 14-day time-to-fill (F10) means a four-week test may eat most of the summer window. Keep open a tightly bounded, consented pilot of a validated tool.",
+        "key_points": [
+          "Cheap screens carry the same Title VII disparate-impact exposure as AI tools; knockout questions are not exempt (F4).",
+          "The bottleneck is unmeasured on both sides; no baseline time-to-hire exists (F9, F10).",
+          "A four-week test consumes most of a summer window when time-to-fill is about 14 days (F10)."
+        ],
+        "risks": [
+          "Summer understaffing from a slow test, in an industry with about 73% annual full-service turnover (F9).",
+          "Disparate-impact claims from knockout or screening questions, not only from AI scoring (F4, F5).",
+          "Paying for a tool-free path that still needs a paid kitchen trial, costing wages and manager time (unverified)."
+        ],
+        "confidence": 68,
+        "pushback": "Assume the cheap-first path is safe and fast. Check whether it can fill cooks by June, and whether its knockout questions pass an adverse-impact check before rollout."
+      }
+    },
+    "verdict": {
+      "decision": "reject",
+      "headline": "Don't buy AI video scoring; fix screening and callbacks first, then test non-AI video.",
+      "confidence": 74,
+      "rationale": "Every seat opposed AI video scoring, and no one answered the main objections. Independent proof it predicts job performance is thin (F8). You would still own any bias claim, even if the vendor built the tool (F4, F7). Maryland consent rules apply if the tool builds facial templates (F1, F2). ADA duties apply too (F6). Cheaper fixes target the likely delay: slow follow-up and scheduling. Nobody has measured that delay yet, so measure for two weeks, then decide on a non-scoring video tool.",
+      "decisive_arguments": [
+        {
+          "seat": "ai_tools_expert",
+          "point": "Validity evidence for AI video scoring is the weakest of any major AI hiring tool, with fewer than 5 independent studies (F8). No vendor has shown adverse-impact data for kitchen roles."
+        },
+        {
+          "seat": "realist",
+          "point": "Legal exposure stays with the restaurant, not the vendor (F4, F7). Maryland facial-template waivers (F1, F2) and ADA accommodation duties (F6) add compliance work. Until the vendor confirms in writing how it scores, this is a block."
+        },
+        {
+          "seat": "industry_expert",
+          "point": "Restaurants lose cooks to slow callbacks and early quits (F9, F10). Indeed screening questions (F12), fast follow-up, and a paid kitchen trial hit those problems at little cost."
+        },
+        {
+          "seat": "strategist",
+          "point": "Wiring scoring into Toast and Indeed workflows is hard to undo in peak season. A human reviewer does not cure a tool that ranks candidates (F7)."
+        }
+      ],
+      "dissent": [
+        {
+          "seat": "devils_advocate",
+          "point": "The cheap-first plan is also unmeasured. Knockout questions can cause disparate impact too (F4). With about 14 days to fill (F10), a slow test could eat the summer window. Check knockout questions for adverse impact before rollout."
+        },
+        {
+          "seat": "realist",
+          "point": "A one-way video tool without AI scoring still needs a phone or live alternative and human review of every rejection, or it carries ADA exposure (F6)."
+        },
+        {
+          "seat": "devils_advocate",
+          "point": "A tightly bounded, consented pilot of a validated scoring tool should stay open if volume proves unmanageable. Cheaper steps may not cut enough."
+        }
+      ],
+      "conditions": [
+        "Measure applicants per opening, days from application to first contact, and drop-off points for two weeks before spending on any tool.",
+        "Keep criminal-history questions out of every screen and video question set until after a conditional offer (F3).",
+        "Record applicant demographics where lawful and compare pass rates by group, using the 80% benchmark (F4).",
+        "A manager personally reviews every rejection, and every candidate has a phone or live alternative (F6).",
+        "Do not pilot any scoring tool unless the vendor confirms in writing whether it builds facial templates and supplies adverse-impact data for hourly kitchen roles (F1, F2, F8)."
+      ],
+      "next_steps": [
+        {
+          "when": "this week",
+          "action": "Pull Indeed data: applications per opening, share clearly unqualified, hours to first reply, and where candidates drop out. Commit to a 24-hour callback target."
+        },
+        {
+          "when": "this week",
+          "action": "Add 3-5 Indeed screening questions on availability, start date, and kitchen experience. Leave out criminal history (F3). Turn on Indeed's built-in scheduling."
+        },
+        {
+          "when": "next 30 days",
+          "action": "Offer short paid kitchen trial shifts to finalists. Track trial-to-hire rate, days to fill, and first-30-day retention."
+        },
+        {
+          "when": "next 30 days",
+          "action": "At the two-week mark, compare to your baseline. If review volume is still the bottleneck, start the non-scoring video pilot below."
+        },
+        {
+          "when": "next 30 days",
+          "action": "Call the Maryland SBDC (free) and an employment attorney. Review your screening questions, accommodation process, and whether your EPLI covers hiring-technology claims."
+        },
+        {
+          "when": "next 90 days",
+          "action": "Review pass rates by group and hiring results. Revisit AI scoring only if a vendor gives written validation data and facial-template answers."
+        }
+      ],
+      "ai_tools": [
+        {
+          "name": "Spark Hire Meet",
+          "use": "Candidates record one-way video answers on their own time and managers review in batches, with no automated scoring.",
+          "monthly_cost": "$249-299/mo (third-party listing)",
+          "works_with": "Standalone; candidates can be invited from Indeed applicants by link (unverified).",
+          "caveat": "Still adds manager review time. Video-only formats need an accessible alternative (F6). Price is from third-party sites, so confirm it with the vendor (F11).",
+          "url": "",
+          "price_fact": "F11",
+          "pilot_test": "Start only if the two-week checkpoint shows review volume is still the bottleneck. Keep it if time-to-hire for summer cooks falls by 5 days within 4 weeks. Cancel before the second monthly invoice otherwise."
+        }
+      ],
+      "escalate_to": "attorney",
+      "escalation_reason": "An employment attorney should confirm the Maryland HB 1202 waiver duties (F1, F2), ADA accommodation steps (F6), and disparate-impact exposure (F4). They should also check for new Maryland or Baltimore AI-hiring rules not in the sources.",
+      "would_change": [
+        "A vendor confirms in writing that it builds no facial templates, supplies adverse-impact and validation data for hourly kitchen roles, and offers phone or human-only alternatives. That would move this to a bounded pilot.",
+        "Baseline data shows hundreds of applications per opening and Indeed screening plus faster callbacks fail to cut review time. That would justify a non-scoring video pilot sooner.",
+        "Your attorney or the SBDC finds a new Maryland or Baltimore rule on AI hiring tools, which would tighten or loosen this advice."
+      ],
+      "no_new_tool": "Use Indeed's free screening questions and scheduling (up to 3 free job posts a month; sponsored jobs from about $5/day per F12) and Toast, with a 24-hour callback rule. Add paid trial shifts for finalists. This costs manager time plus a few paid trial hours per candidate (unverified)."
+    }
+  },
+  "board_error": null,
+  "seconds": 96,
+  "baseline_research": "# Recommendation: Don't adopt AI video scoring. Cut the volume with simpler screening first.\n\nYou're right that the applicant pile is the problem. But an AI video scorer is the riskiest and most expensive way to fix it, and it fits line-cook hiring poorly.\n\n## Why not AI video scoring\n\n- **The evidence it works is thin.** One review calls AI video-interview scoring the weakest evidence base of any major AI hiring tool, with fewer than 5 independent studies. Current scoring is mostly transcript-based (F8). That rewards verbal polish, which isn't what makes a good line cook.\n- **The legal exposure stays with you.** Disparate-impact liability under Title VII can attach to vendor tools, and you generally can't contract it away (F4). Federal enforcement has pulled back, but the law hasn't changed, and private plaintiffs and state agencies can still sue (F5). The more the tool rejects people without a human involved, the worse your position (F7).\n- **Maryland adds requirements.**\n  - If the tool creates a facial template, you need a signed waiver with specific contents (F1).\n  - Some tools may fall outside that statute, but the definitions have gaps and you'd have to confirm with the vendor (F2).\n  - Under the ADA you must disclose how applicants are evaluated and offer an alternative, such as a phone interview or a human reviewer (F6).\n  - Baltimore's Ban the Box applies to you at 35 employees. No video question or scoring rubric can touch criminal history before a conditional offer (F3).\n- **The economics are poor.** HireVue-type tools are built for large chains. They don't publish prices, and third-party reports put them at tens of thousands of dollars a year (F12). A line-cook hire costs roughly $3,850\u2013$4,129 by vendor estimates (F10, not audited). Unless you hire dozens of cooks a year, the tool likely costs more than the problem it solves.\n- **It may not target your bottleneck.** In restaurants, candidates are often lost to slow follow-up and scheduling, not to a shortage of screening. Video scoring doesn't fix that.\n\n## What I'd do instead (Option 4, non-video screening)\n\n1. **Add Indeed screening questions with knockouts.** Cover availability (nights and weekends), start date, years of line experience, and whether they can stand for the shift, with the usual \"can you perform the essential functions with or without accommodation\" wording. Don't ask about criminal history before a conditional offer (F3).\n2. **Respond fast.** Set up automated text or email replies with a scheduling link, and aim to reach qualified candidates within 24 hours.\n3. **Use a paid working trial or stage in place of video.** A 1\u20132 hour paid kitchen trial tests what matters for a cook: knife work, speed, and how they take direction. Pay them for the time and check wage rules with counsel.\n4. **If you still want recorded interviews,** use a one-way video tool with no AI scoring (Option 2). Use 3 structured questions, have two managers rate each recording against a written rubric, and offer a phone alternative. Third-party sites list Spark Hire Meet at about $249\u2013$299/month (F11, unverified, so confirm on the vendor's site). Subscribe only for the summer hiring months.\n\n## Main risks of my recommendation\n\n- Manual review still takes manager time. Knockout questions and a trial reduce this, but won't eliminate it.\n- Knockout criteria can themselves create adverse impact if they are not job-related, so keep them tied to real job needs.\n- Summer hiring is competitive. Food service has a 5.0% monthly hire rate against 3.4% for all industries (F9), so speed matters more than sophistication.\n\n## Next steps\n\n1. **This week:** Pull your numbers. Count applications per opening, the share clearly unqualified, days from application to first contact, and where candidates drop out. This also tells you whether volume or follow-up speed is the real problem.\n2. **Within 2 weeks:** Rewrite your Indeed posts with screening questions and knockouts, turn on automated scheduling, and set a 24-hour response rule.\n3. **Before summer:** Run a trial-shift process and a short written scorecard for every candidate. Keep a record of why each candidate was advanced or rejected.\n4. **Check with counsel and your insurer:** Ask whether Maryland or Baltimore passed new AI-hiring rules the research may not reflect, and whether your EPLI policy covers AI-related hiring claims.\n5. **Revisit AI scoring only if** you hire at much larger scale and a vendor can show all of the following:\n   - validation and adverse-impact data for hourly kitchen roles;\n   - no facial analysis, or a compliant waiver process;\n   - phone and human-only alternatives;\n   - a human review of every rejection;\n   - a way for you to monitor selection rates against the four-fifths benchmark (F4).\n\nIf you tell me your applications per opening and how many cooks you hire a year, I can sharpen this and say whether even a no-AI video tool is worth the subscription.",
+  "judge": {
+    "model": "openrouter/anthropic/claude-sonnet-5.5",
+    "letters": {
+      "board": "A",
+      "baseline_research": "B",
+      "baseline": "C"
+    },
+    "board": {
+      "risks": [
+        {
+          "risk": "Maryland facial-recognition consent in interviews",
+          "score": 2,
+          "quote": "Do not pilot any scoring tool unless the vendor confirms in writing whether it builds facial templates and supplies adverse-impact data for hourly kitchen roles."
+        },
+        {
+          "risk": "Hiring bias / discrimination risk",
+          "score": 2,
+          "quote": "Record applicant demographics where lawful and compare pass rates by group, using the 80% benchmark."
+        }
+      ],
+      "actionable": 5,
+      "errors": []
+    },
+    "baseline_research": {
+      "risks": [
+        {
+          "risk": "Maryland facial-recognition consent in interviews",
+          "score": 2,
+          "quote": "If the tool creates a facial template, you need a signed waiver with specific contents (F1)."
+        },
+        {
+          "risk": "Hiring bias / discrimination risk",
+          "score": 2,
+          "quote": "Revisit AI scoring only if you hire at much larger scale and a vendor can show all of the following"
+        }
+      ],
+      "actionable": 4,
+      "errors": []
+    },
+    "baseline": {
+      "risks": [
+        {
+          "risk": "Maryland facial-recognition consent in interviews",
+          "score": 2,
+          "quote": "Ask any vendor exactly what they analyze. Using the tool without the right consent could expose you to a legal problem."
+        },
+        {
+          "risk": "Hiring bias / discrimination risk",
+          "score": 2,
+          "quote": "Discrimination risk stays with you, not the vendor."
+        }
+      ],
+      "actionable": 4,
+      "errors": [
+        {
+          "claim": "Maryland's Criminal Record Screening Act bars asking on the application and early in the process.",
+          "correction": "The Maryland Criminal Record Screening Act applies to employers with 15 or more employees and bars asking before the first in-person interview, not for the whole early process. The answer is roughly right but imprecise."
+        }
+      ]
+    }
+  }
+}

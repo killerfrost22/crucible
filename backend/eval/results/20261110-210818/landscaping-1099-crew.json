@@ -1,0 +1,704 @@
+{
+  "scenario": {
+    "id": "landscaping-1099-crew",
+    "intake": {
+      "question": "Should I switch my seasonal mowing crew from W-2 employees to 1099 contractors to cut payroll costs?",
+      "leaning": "Yes, it would save about 12%",
+      "profile": {
+        "industry": "landscaping",
+        "location": "Bowie, Maryland",
+        "size": "owner + 7 seasonal workers",
+        "current_tools": [
+          "Jobber",
+          "Gusto"
+        ],
+        "goals": [
+          "improve margins"
+        ],
+        "constraints": "I set their schedules and provide the equipment"
+      }
+    },
+    "must_catch": [
+      {
+        "label": "Worker misclassification risk",
+        "any": [
+          "misclassif",
+          "classified as employees",
+          "really employees",
+          "behavioral control",
+          "control (over|of) (how|when|their)",
+          "economic reality"
+        ]
+      }
+    ]
+  },
+  "seat_model": "openrouter/anthropic/claude-haiku-5.5",
+  "researcher_model": "openrouter/anthropic/claude-sonnet-5.5:online",
+  "chair_model": "openrouter/anthropic/claude-sonnet-5.5",
+  "web_search": true,
+  "baseline": "# Recommendation: Don't do it\n\nWith your constraints, converting these workers to 1099 would almost certainly be misclassification, and in Maryland landscaping that is a high-risk move.\n\n## Why it doesn't hold up\n\nYou told me **you set their schedules and provide the equipment**. Those are two of the strongest indicators of employment.\n\n- **IRS common-law test:** Control over when, where, and how work is done, plus company-provided tools, points to employee status.\n- **Maryland Workplace Fraud Act:** It covers **construction and landscaping**. It presumes workers are employees unless you can prove they meet a strict test, including that they are free from your control, operate an independent business, and use their own tools. Penalties can reach thousands of dollars per misclassified worker, plus stop-work orders and back-owed amounts. Confirm current figures with the Maryland Department of Labor.\n- **Maryland unemployment insurance:** It uses a strict ABC-style test, and you'd likely fail it.\n- **Workers' comp:** Mowing is injury-prone work. If an \"independent contractor\" is hurt on your equipment and you have no coverage for them, you could face a claim, a penalty, and a lawsuit. Your insurer will also likely reclassify them at audit.\n\n## The 12% savings is smaller than it looks\n\nThe saving comes from employer payroll taxes, unemployment insurance, and workers' comp. Against that, you'd face:\n- Back payroll taxes, penalties, and interest, plus possible personal liability for unpaid trust-fund taxes\n- Back wages and overtime claims\n- Workers' comp audit charges\n- Legal costs\n- A misclassification claim from just one worker, such as after a layoff or injury\n\nMisclassification is usually discovered when a worker files for unemployment or workers' comp, not through a random audit. With seasonal crews, that happens often.\n\n## Main risks if you proceed anyway\n1. State and IRS penalties and back taxes\n2. An uninsured injury\n3. Wage-and-hour claims\n4. Loss of commercial or HOA clients that require proof of compliance and insurance\n5. A damaged reputation, which makes hiring harder\n\n## Better ways to improve margins\n\n1. **Use Jobber to cut drive time.** Route optimization, tighter job batching, and fewer callbacks often save more than 12% of labor hours.\n2. **Review pricing.** Check profit per property and raise rates or drop the bottom 10-15% of accounts.\n3. **Adjust the pay structure.** Consider productivity bonuses or crew-based incentives instead of flat hourly pay for all, which is legal if you stay compliant on overtime and minimum wage.\n4. **Control overtime.** Use Gusto reports to see where it is concentrated.\n5. **Check your workers' comp class code and experience mod.** Misclassified codes and poor safety records inflate premiums. Ask your agent about a safety credit program.\n6. **Subcontract real jobs, not labor.** If you want contractors, hire established landscaping businesses with their own insurance, equipment, and clients to handle whole properties or specialized work like mulching, tree work, or hardscaping. The key is that they run their own operation.\n7. **Get seasonal staffing right.** Hire only for peak weeks and use part-time schedules in shoulder seasons.\n8. **Check tax credits.** The Work Opportunity Tax Credit (WOTC) can offset the cost of hiring certain groups.\n\n## Next steps\n\n1. **Stay with W-2.** Don't change anything yet.\n2. **Pull 12 months of data** from Gusto and Jobber: labor cost per job, overtime, and drive time per route.\n3. **Talk to your insurance agent** about the workers' comp premium and any credits.\n4. **Run a margin analysis by client** and fix pricing on the weakest accounts.\n5. **If you still want contractors,** consult a Maryland employment attorney or CPA before making any change.\n\nI'm not a lawyer, and the details depend on your facts, but with owner-set schedules and owner-supplied equipment, the answer is almost certainly that these are employees. Your margin gains will come from operations and pricing, not reclassification.",
+  "board_state": {
+    "intake": {
+      "question": "Should I switch my seasonal mowing crew from W-2 employees to 1099 contractors to cut payroll costs?",
+      "leaning": "Yes, it would save about 12%",
+      "profile": {
+        "name": "",
+        "industry": "landscaping",
+        "location": "Bowie, Maryland",
+        "size": "owner + 7 seasonal workers",
+        "current_tools": [
+          "Jobber",
+          "Gusto"
+        ],
+        "budget": "",
+        "goals": [
+          "improve margins"
+        ],
+        "constraints": "I set their schedules and provide the equipment"
+      }
+    },
+    "evidence_mode": "web",
+    "evidence": {
+      "decision": "Whether a Bowie, Maryland landscaping business should convert its seasonal mowing crew from W-2 employees to 1099 independent contractors to reduce payroll costs.",
+      "options": [
+        "Do nothing: keep all seven seasonal workers on W-2 and keep the current Jobber and Gusto setup.",
+        "Convert the whole crew to 1099 contractors. The business would keep setting schedules and supplying equipment, which is the highest legal-exposure path.",
+        "Restructure into a genuine subcontract model. Hire only independent businesses or exempt sole proprietors who set their own schedules, use their own equipment and serve other clients, and pay them per job. Keep W-2 for anyone who stays under the owner's direction.",
+        "Keep W-2 and cut costs another way: reprice routes, tighten scheduling and routing in Jobber, or reduce seasonal hours. A payroll or PEO provider could also bundle workers' comp."
+      ],
+      "facts": [
+        {
+          "claim": "Maryland's Workplace Fraud Act covers construction and landscaping, and lawn care including mowing is named in its definition of landscaping services. In these industries a worker is presumed to be an employee under the ABC test, the same test Maryland uses for unemployment insurance. The first prong requires the worker to be free from the business's direction and control.",
+          "source": "https://labor.maryland.gov/workplace/wfempfaqs.shtml",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:15:19Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Maryland Workplace Fraud Act penalties: an employer that fails to correct an unintentional misclassification within 45 days faces up to $1,000 per worker. A knowing violation carried up to $5,000 per worker, doubled for prior violators and up to $20,000 for a third violation. A 2024 law (Ch. 309) raised the knowing-violation maximum to $10,000 per worker and added misdemeanor penalties of up to $5,000 and/or 60 days per worker.",
+          "source": "https://mgaleg.maryland.gov/2024RS/Chapters_noln/CH_309_hb0465t.pdf",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:15:19Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "For federal employment tax, the IRS uses a common-law test of behavioral control, financial control and the relationship of the parties. The business's right to direct how work is done points to employee status. So does the business supplying the tools, and a worker's lack of unreimbursed expenses or investment in equipment. A 1099 label or a signed contract does not decide status.",
+          "source": "https://www.irs.gov/taxtopics/tc762",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:15:20Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Maryland requires workers' compensation coverage from the first employee, with no exemption for seasonal or part-time staff. Legitimate independent contractors need not be covered, but misclassified workers can still claim and the Uninsured Employers' Fund can pursue the employer. The uninsured-employer penalty can reach $25,000. One source shows landscaping (class 0042) at about $4.18 per $100 of payroll.",
+          "source": "https://firsthr.app/compliance-hub/maryland/maryland-workers-compensation",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:15:19Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Maryland unemployment insurance: the 2026 taxable wage base is $8,500 per employee. New employers pay 1.0% to 2.6%, which is $85 to $221 per employee per year. Experienced employers pay 0.30% to 7.50% under Tax Table A. Reclassifying workers as contractors removes this cost, but a prong failure in an audit makes the business liable for back contributions.",
+          "source": "https://www.teamed.global/country-hiring-guides/united-states/maryland/state-income-tax-and-unemployment-insurance",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:15:19Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "The employer share of FICA is 7.65% (6.2% Social Security plus 1.45% Medicare). A true contractor pays the full 15.3% self-employment tax, so the business saves the employer half only if the worker is correctly classified. Federal unemployment tax of 0.6% on the first $7,000 per employee also applies to W-2 staff.",
+          "source": "https://en.wikipedia.org/wiki/Federal_Insurance_Contributions_Act",
+          "verified": true,
+          "check": {
+            "status": "unreachable",
+            "checked_at": "2026-11-11T02:15:19Z",
+            "http_status": 403
+          }
+        },
+        {
+          "claim": "Maryland's statewide minimum wage is $15.00 an hour. Prince George's County, which includes most of Bowie, has its own higher rate of $15.30 as of 2026. Misclassified workers can claim minimum wage and overtime back pay on top of tax and penalty exposure.",
+          "source": "https://fingercheck.com/payroll-software/maryland-minimum-wage/",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:15:19Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Wage benchmark: BLS May 2025 data put the Maryland median for landscaping and groundskeeping workers at about $39,380 a year, or about $18.93 an hour. Indeed's job-posting data (page undated, last updated April 2026) put Bowie landscape laborers at about $20.88 an hour.",
+          "source": "https://www.shiftflow.app/playbook/landscaper-salary",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:15:19Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Enforcement benchmark: the Maryland Joint Enforcement Task Force on Workplace Fraud 2024 annual report says workplace fraud is widespread in landscaping. It lists landscaping among the industries with high misclassification findings, with a 19.65% rate in its unemployment-insurance audit table. The Act also has anti-retaliation protections, and anyone can report a business to the state anonymously.",
+          "source": "https://labor.maryland.gov/workplacefraudtaskforce/wpftfannrep2024.pdf",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:15:19Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "If a landscaping business does use contractors or exempt persons, Maryland requires a written notice of classification in English and Spanish at the time of hire, and a posted notice at the workplace. It also requires files with the contract, a signed acknowledgement and any licenses. An 'exempt person' is a sole proprietor with no employees other than a parent, child or spouse.",
+          "source": "https://labor.maryland.gov/workplace/wfempfaqs.shtml",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:15:19Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Jobber (current tool, field-service software) pricing per the third-party reports I found; the vendor's own pricing page was not retrieved, so confirm at getjobber.com/pricing. Month-to-month: Core $49 (1 user), Connect $139 (1 user), Grow $199 (1 user), and Plus about $499 (5 users), with extra users at $29 a month. Annual billing runs about $29, $99 and $149 a month for Core, Connect and Grow. Jobber is a scheduling and invoicing tool and is not changed by the W-2 versus 1099 choice.",
+          "source": "https://noon.ai/blog/articles/120-jobber-pricing-2026",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:15:19Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Gusto (current payroll tool) pricing per the third-party reports I found; the vendor's own pricing page was not retrieved, so confirm at gusto.com/product/pricing. Simple is $49 a month plus $6 per person, Plus is $80 plus $12 and Premium is $180 plus $22. Eight W-2 workers plus the owner on Simple would be about $103 a month. One report says the Contractor Only plan ($35 plus $6 per contractor) closed to new customers on Oct 1, 2026, while others still list it. Gusto's own payroll tax cost is small next to the legal exposure.",
+          "source": "https://www.tinyteam.io/blog/gusto-pricing",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:15:19Z",
+            "http_status": 200
+          }
+        }
+      ],
+      "open_questions": [
+        "Is the 12% savings estimate net of the workers' comp premium, the unemployment insurance contribution, the employer FICA share, and any rate increase needed to keep workers who would then pay their own self-employment tax and equipment costs?",
+        "Could any crew member honestly meet all three ABC prongs? That would mean setting their own schedule and methods, running an independent business that serves other clients, and working outside the usual course of the owner's business. The owner's stated control over schedules and equipment suggests not, but the facts of each worker's setup matter.",
+        "Would any workers be true sole-proprietor subcontractors (exempt persons) who bring their own insured business, equipment and customers, and who might accept per-job pricing?",
+        "Does the business have prior misclassification findings, wage claims or UI audits? A prior violation can make a later violation count as 'knowing', which carries higher penalties.",
+        "What is the business's current workers' comp classification rate and experience mod, and what is its actual UI new-employer or experience rate?",
+        "What is the workers' actual weekly hours? Overtime, back wages and any exposure for prior seasons depend on this.",
+        "Could the workforce lose labor-market competitiveness? Prince George's County's minimum wage is $15.30, and local landscaping laborer wages run about $17 to $21 an hour. Contractors may demand higher gross pay to cover their own taxes and insurance.",
+        "Is Maryland HB 632 (2025) or any later legislation, or the proposed federal contractor rule, changing the rules? I did not confirm HB 632's status. Maryland's ABC test would still be stricter than the federal rule either way.",
+        "Do any customers, such as HOAs or commercial clients, require proof of workers' comp and insurance for crews on their sites?"
+      ]
+    },
+    "round1": {
+      "industry_expert": {
+        "stance": "oppose",
+        "headline": "Don't convert the whole crew to 1099; the savings are likely illusory and the exposure is large.",
+        "summary": "Your crew works under your schedules and on your equipment. That is the profile Maryland treats as employees (F1, F3). Misclassification fines reach $10,000 per worker for knowing violations (F2), plus back wages and workers' comp exposure (F4, F7). The 12% savings likely ignores these costs. Restructure only with truly independent businesses, or cut costs by repricing and routing in Jobber.",
+        "key_points": [
+          "Maryland presumes landscaping workers are employees under the ABC test, and your control of schedules and equipment fails the first prong (F1, F3).",
+          "Penalties can reach $10,000 per worker for a knowing violation, and back wages plus UI contributions can follow (F2, F5, F7).",
+          "Payroll tax savings are only 7.65% employer FICA plus UI and workers' comp, and contractors will likely demand higher gross pay (F4, F5, F6, F8)."
+        ],
+        "risks": [
+          "Audit or worker claim triggers back wages, overtime, fines, and uninsured-employer penalties up to $25,000 (F2, F4).",
+          "Losing experienced crew members to competitors paying $17 to $21 an hour (F8).",
+          "Customers or HOAs requiring proof of insurance may reject uninsured or misclassified crews (unverified)."
+        ],
+        "confidence": 82,
+        "pushback": "Assumes the owner can't legally structure crew members as true subcontractors; check whether any worker runs an independent insured business before ruling it out.-.Confirm with a Maryland employment attorney or the Bowie-area Small Business Development Center before any change.\u201d,"
+      },
+      "ai_tools_expert": {
+        "stance": "oppose",
+        "headline": "Don't convert the crew to 1099; the savings likely don't cover the legal risk.",
+        "summary": "Your crew works on your schedule with your equipment. Maryland treats that as employment for landscaping, and the IRS points the same way (F1, F3). Penalties can reach $10,000 per worker for a knowing violation (F2), so a 12% saving could be wiped out by one audit. Keep W-2 and cut costs through pricing, routing, or scheduling instead.",
+        "key_points": [
+          "Your control of schedules and equipment fails Maryland's ABC test for landscaping, which presumes employee status (F1, F3).",
+          "Penalties are per worker: up to $1,000 each for unintentional errors and up to $10,000 each for knowing violations, so seven workers could mean $70,000 at the top end (F2).",
+          "Your 12% estimate likely leaves out the employer FICA share (7.65%), unemployment contributions, and workers' comp, which still applies to misclassified workers (F4, F5, F6)."
+        ],
+        "risks": [
+          "An audit or a worker's wage claim could bring back pay, back taxes, and penalties for prior seasons (F7).",
+          "Landscaping is a high-enforcement industry in Maryland, and anyone can report you anonymously (F9).",
+          "Contractors may demand higher gross pay to cover their own taxes and insurance, which can erase the savings and hurt retention in a tight local labor market (F8)."
+        ],
+        "confidence": 85,
+        "pushback": "Ask whether your 12% figure is net of workers' comp, UI, employer FICA, and the higher pay contractors would demand. If it is not, the real savings may be far smaller.",
+        "tools": []
+      },
+      "realist": {
+        "stance": "oppose",
+        "headline": "Converting the whole crew to 1099 is high legal risk; oppose as proposed.",
+        "summary": "As described, your crew would almost certainly count as employees under Maryland's ABC test (F1) and the IRS control test (F3), because you set schedules and supply equipment. Misclassification penalties can reach $10,000 per worker for a knowing violation (F2), plus back wages and workers' comp exposure (F4, F7). The 12% savings is likely overstated once those risks are counted. A genuine subcontract model or repricing routes in Jobber would be safer ways to improve margins.",
+        "key_points": [
+          "Your stated control over schedules and equipment points to employee status under both Maryland and federal tests (F1, F3).",
+          "Penalties and back-pay exposure could wipe out years of payroll savings (F2, F7).",
+          "Cheaper margin options exist: reprice routes, tighten scheduling in Jobber, or bundle workers' comp through a PEO (F11, F4)."
+        ],
+        "risks": [
+          "Fines up to $10,000 per worker for a knowing violation, plus misdemeanor exposure (F2).",
+          "Back wages, overtime and uninsured-employer penalties up to $25,000 (F4, F7).",
+          "Crew turnover if workers demand higher gross pay to cover their own taxes and insurance (unverified)."
+        ],
+        "confidence": 85,
+        "pushback": "Does the 12% savings figure include workers' comp, UI contributions, the employer FICA share, and the higher pay contractors would need? If not, the real saving may be near zero.",
+        "checks": [
+          {
+            "area": "legal",
+            "status": "block",
+            "note": "Owner-controlled schedules and owner-supplied equipment fail the ABC test's first prong in Maryland landscaping (F1, F3); attorney should confirm before any change."
+          },
+          {
+            "area": "compliance",
+            "status": "block",
+            "note": "Maryland requires written classification notices in English and Spanish, posted notices, and signed acknowledgements for any contractors (F10); the current setup cannot meet these for a true contractor model."
+          },
+          {
+            "area": "compliance",
+            "status": "flag",
+            "note": "Workers' comp is required from the first employee with no seasonal exemption, and landscaping runs about $4.18 per $100 payroll (F4); confirm the rate with the carrier."
+          },
+          {
+            "area": "financial",
+            "status": "flag",
+            "note": "Gusto cost is small, about $103 a month on Simple for eight people (F12), so payroll tool cost is not the savings driver; the 12% figure needs a full cost build-up."
+          },
+          {
+            "area": "goals",
+            "status": "flag",
+            "note": "Margin goal is better served by repricing and routing in Jobber than by reclassification, which carries the largest downside (F11, F9)."
+          }
+        ]
+      },
+      "strategist": {
+        "stance": "oppose",
+        "headline": "Don't convert the crew to 1099; the savings are small against large legal exposure.",
+        "summary": "Your crew works under your schedules and your equipment. Under Maryland's ABC test for landscaping, that makes them employees, so 1099 labels would likely fail. Penalties run up to $10,000 per worker for knowing violations, plus back wages and taxes. Consider cutting costs through routing, scheduling, or a PEO, or a true subcontract model for qualified businesses.",
+        "key_points": [
+          "Maryland presumes landscaping workers are employees under the ABC test; your control over schedules and equipment fails the first prong (F1, F3).",
+          "Knowing violations reach $10,000 per worker, with possible misdemeanor charges; seven workers multiply that quickly (F2).",
+          "Your 12% savings must be netted against workers' comp, UI, FICA and back-wage exposure, which may erase it (F4, F5, F6, F7)."
+        ],
+        "risks": [
+          "Audit or worker complaint triggers back wages, back taxes, penalties and workers' comp claims for prior seasons.",
+          "Contractors demand higher gross pay to cover self-employment tax, eroding the savings and hurting retention.",
+          "Reversing later means reclassifying under scrutiny, and a prior violation makes any future violation count as knowing."
+        ],
+        "confidence": 85,
+        "pushback": "Assume the 12% figure is a real saving. Ask whether it is net of workers' comp, UI, employer FICA and the pay rise contractors would demand; if not, the true saving may be near zero.](Next move: have an employment attorney or accountant review the crew's actual control facts, and price route and scheduling savings in Jobber before any change.)"
+      },
+      "devils_advocate": {
+        "stance": "oppose",
+        "headline": "Converting the crew to 1099 contractors is likely a costly legal trap.",
+        "summary": "Your crew works under your schedules and with your equipment. Maryland presumes that makes them employees for landscaping, and the penalties are per worker. The 12% savings is likely wiped out by back taxes, penalties, back wages and insurance. Better margin gains are available by repricing routes and tightening scheduling in Jobber.",
+        "key_points": [
+          "Maryland presumes landscaping workers are employees under the ABC test, and your control over schedules and equipment fails the first prong (F1, F3).",
+          "Knowing violations cost up to $10,000 per worker plus misdemeanor fines, so seven workers could mean $70,000 or more in exposure (F2).",
+          "Landscaping had a 19.65% misclassification finding rate in state audits, so enforcement risk is real (F9)."
+        ],
+        "risks": [
+          "A state audit or worker claim could trigger back unemployment contributions, back wages and overtime, plus per-worker penalties (F2, F5, F7).",
+          "Uninsured misclassified workers can bring claims against you, and the Uninsured Employers' Fund can pursue you for up to $25,000 (F4).",
+          "Workers may demand higher gross pay to cover self-employment tax, eroding the savings and hurting retention (F6, F8)."
+        ],
+        "confidence": 85,
+        "pushback": "Assume the 12% is net savings. Ask whether it includes workers' comp, UI, the employer FICA share, and the higher pay contractors would demand. Probably it does not.}"
+      }
+    },
+    "round2": {
+      "industry_expert": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "ai_tools_expert",
+            "their_claim": "Seven workers could mean $70,000 in penalty exposure at the top end of the knowing-violation range.",
+            "response": "That $70,000 is a ceiling, not an expected outcome. The realistic cost is back UI contributions, back wages and comp premiums (F4, F5, F7). Those still wipe out a 12% saving, so the conclusion holds."
+          },
+          {
+            "target": "realist",
+            "their_claim": "Bundling workers' comp through a PEO is a cheaper margin option than reclassification.",
+            "response": "A PEO can cut admin work, but it does not lower the underlying comp rate of about $4.18 per $100 payroll (F4). Get a written quote from the carrier or PEO before counting any saving (unverified)."
+          },
+          {
+            "target": "devils_advocate",
+            "their_claim": "Landscaping had a 19.65% misclassification finding rate in state audits.",
+            "response": "That rate comes from the UI audit table (F9). It shows where the state is looking, not that your crew is misclassified. It supports caution, though, because enforcement here is active."
+          }
+        ],
+        "concessions": [
+          "Payroll tool cost is not the savings driver; Gusto on Simple is about $103 a month for eight people (F12).",
+          "Repricing routes and tightening scheduling in Jobber are the best near-term margin levers (F11)."
+        ],
+        "stance": "oppose",
+        "headline": "Keep crew W-2; the 12% saving likely vanishes against legal risk.",
+        "summary": "Your crew works on your schedule with your equipment. Maryland presumes that makes them employees in landscaping, and the IRS points the same way (F1, F3). Penalties run per worker and can reach $10,000 each for knowing violations (F2). Once you net out employer FICA, unemployment contributions, workers' comp and the higher pay contractors would want, the 12% saving is probably small or gone. Improve margins by repricing and routing in Jobber first.",
+        "key_points": [
+          "Your control of schedules and equipment fails Maryland's ABC test first prong for landscaping (F1, F3).",
+          "Per-worker penalties and back wages can erase years of payroll savings (F2, F7).",
+          "Employer FICA is 7.65%, and UI and comp costs stay in play even if workers are reclassified (F4, F5, F6)."
+        ],
+        "risks": [
+          "An audit or worker claim could bring back wages, back taxes, UI contributions and penalties for prior seasons (F2, F5, F7).",
+          "Uninsured-employer penalties can reach $25,000 (F4).",
+          "Experienced crew members may leave for higher-paying local work at $17 to $21 an hour (F8)."
+        ],
+        "confidence": 85,
+        "pushback": "Ask whether the 12% figure is net of workers' comp, UI, employer FICA and the higher pay contractors would demand. If it is not, the real saving may be near zero."
+      },
+      "ai_tools_expert": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "realist",
+            "their_claim": "A PEO could bundle workers' comp to cut margin costs.",
+            "response": "A PEO can bundle workers' comp for W-2 staff, but it will not fix misclassification. Price it as a W-2 saving, not as a 1099 workaround."
+          },
+          {
+            "target": "devils_advocate",
+            "their_claim": "Landscaping had a 19.65% misclassification finding rate, so enforcement risk is real.",
+            "response": "The 19.65% is an industry rate in state audit tables, not a finding about your business. Treat it as a warning sign, not a penalty estimate for you."
+          },
+          {
+            "target": "industry_expert",
+            "their_claim": "Restructure only with truly independent businesses.",
+            "response": "Agreed in principle, but a true subcontractor sets its own schedule and uses its own equipment. Your current crew likely cannot qualify, so do not plan around it."
+          }
+        ],
+        "concessions": [
+          "A PEO could bundle workers' comp for W-2 staff, which may be a real margin lever (F4).",
+          "A prior violation can make a later one count as knowing, so the downside grows with each season (F2)."
+        ],
+        "stance": "oppose",
+        "headline": "Keep W-2; test a PEO and routing savings before any 1099 change.",
+        "summary": "Your crew works on your schedule with your equipment, which Maryland treats as employment for landscaping (F1, F3). Knowing violations reach $10,000 per worker (F2), so one audit could erase years of savings. Keep W-2 and price cost cuts first: routing and scheduling in Jobber, plus a PEO quote for workers' comp.",
+        "key_points": [
+          "Your control of schedules and equipment points to employee status under Maryland's ABC test and the IRS test (F1, F3).",
+          "Penalties are per worker, so seven workers multiply the exposure quickly (F2).",
+          "Payroll tool cost is small, so the real margin levers are routing, scheduling and workers' comp pricing (F4, F12)."
+        ],
+        "risks": [
+          "An audit or worker claim could bring back wages, back taxes and penalties for prior seasons (F2, F7).",
+          "Contractors may demand higher gross pay, erasing the savings and hurting retention (unverified).",
+          "Customers or HOAs may require proof of workers' comp, which misclassified crews may not be able to show (unverified)."
+        ],
+        "confidence": 85,
+        "pushback": "Does the 12% savings figure net out workers' comp, UI, employer FICA and the higher pay contractors would demand? If not, the real saving may be near zero.",
+        "tools": [
+          {
+            "name": "Justworks",
+            "use": "Could bundle payroll, benefits and workers' comp for the W-2 crew, which is the margin lever the Realist flagged.",
+            "monthly_cost": "unknown",
+            "works_with": "Would likely replace Gusto for payroll; Jobber handles scheduling and is unaffected.",
+            "caveat": "PEO fees are often charged per employee and can cost more than Gusto; co-employment terms need legal review.",
+            "url": "https://www.justworks.com",
+            "price_fact": "",
+            "pilot_test": "Keep only if the all-in quote, including workers' comp, is at least 5% below current Gusto plus comp cost for the same eight people; decide before next season's hiring."
+          }
+        ]
+      },
+      "realist": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "devils_advocate",
+            "their_claim": "The Uninsured Employers' Fund can pursue the business for up to $25,000.",
+            "response": "F4 says the fund can pursue the employer and the penalty can reach $25,000; that is a ceiling, not an automatic charge. Exposure depends on the facts of each worker."
+          },
+          {
+            "target": "ai_tools_expert",
+            "their_claim": "Seven workers could mean $70,000 at the top end in knowing-violation penalties.",
+            "response": "The $70,000 figure is a theoretical ceiling that assumes every worker is found a knowing violation (F2). Real exposure is still serious, but the number is not a forecast."
+          },
+          {
+            "target": "industry_expert",
+            "their_claim": "Payroll tax savings are only the employer FICA share plus UI and workers' comp, and contractors will demand higher pay.",
+            "response": "Their cost stack is right, but the owner's 12% may already be net of some of it. Get the calculation before concluding the savings are illusory."
+          }
+        ],
+        "concessions": [
+          "A genuine subcontract model with independent businesses that run their own insured operations is a legitimate path to check, as the industry expert and strategist argue.",
+          "Prior-violation risk is real: a past violation can make a later one count as knowing, as the strategist notes (F2)."
+        ],
+        "stance": "oppose",
+        "headline": "Oppose converting the crew to 1099; the legal exposure outweighs the savings.",
+        "summary": "As described, your crew would likely count as employees in Maryland because you set schedules and supply equipment (F1, F3). Knowing violations can cost up to $10,000 per worker (F2), plus back wages and insurance. The 12% saving probably shrinks once those costs are counted. Reprice routes and tighten scheduling in Jobber first. Subcontract only true independent businesses.",
+        "key_points": [
+          "Owner-set schedules and owner-supplied equipment point to employee status under Maryland's ABC test and the IRS control test (F1, F3).",
+          "Lower-risk margin gains come from repricing routes and tightening scheduling in Jobber (F11).",
+          "Payroll tool cost is small, about $103 a month on Gusto Simple, so it is not the savings driver (F12)."
+        ],
+        "risks": [
+          "Knowing-violation fines up to $10,000 per worker, plus misdemeanor exposure (F2).",
+          "Back wages, overtime and uninsured-employer penalties up to $25,000 (F4, F7).",
+          "Crew turnover if contractors demand higher gross pay (unverified)."
+        ],
+        "confidence": 85,
+        "pushback": "Assumes the 12% saving is net of workers' comp, UI, employer FICA and higher contractor pay; if it is not, the real saving may be near zero.",
+        "checks": [
+          {
+            "area": "legal",
+            "status": "block",
+            "note": "Owner-set schedules and owner-supplied equipment fail the ABC test's first prong in Maryland landscaping (F1, F3); a Maryland employment attorney should confirm."
+          },
+          {
+            "area": "compliance",
+            "status": "block",
+            "note": "Maryland requires written notices in English and Spanish, posted notices and signed acknowledgements for contractors (F10), which the current crew setup cannot meet for a true contractor model."
+          },
+          {
+            "area": "compliance",
+            "status": "flag",
+            "note": "Workers' comp applies from the first employee with no seasonal exemption, at about $4.18 per $100 payroll in landscaping (F4); confirm the actual rate with the carrier."
+          },
+          {
+            "area": "financial",
+            "status": "flag",
+            "note": "Gusto cost is about $103 a month on Simple for eight people (F12), so the 12% figure needs a full cost build-up, which is unverified until the owner provides it."
+          },
+          {
+            "area": "goals",
+            "status": "flag",
+            "note": "The margin goal is better served by repricing and routing in Jobber, which avoids the largest downside (F11, F9)."
+          }
+        ]
+      },
+      "strategist": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "realist",
+            "their_claim": "The real saving may be near zero once workers' comp, UI, FICA and higher contractor pay are counted.",
+            "response": "Possibly, but near zero is an assumption too. Build the full cost sheet from the owner's 12% figure before accepting either number (F4, F5, F6)."
+          },
+          {
+            "target": "industry_expert",
+            "their_claim": "Restructure only with truly independent businesses, which the owner may be able to do.",
+            "response": "Agreed, but a real subcontract needs each worker's own insured business, tools and other clients (F10). Relabeling current crew members does not qualify, so do not treat this as a quick fix."
+          },
+          {
+            "target": "devils_advocate",
+            "their_claim": "Landscaping had a 19.65% misclassification finding rate in state audits.",
+            "response": "That rate comes from the state's audit table (F9). It signals enforcement focus, not a 19.65% chance this business gets caught. Use it as a warning, not as odds."
+          }
+        ],
+        "concessions": [
+          "Bundling workers' comp through a PEO is worth pricing now (F4, F11).",
+          "Anonymous reporting makes enforcement risk real even for a well-run crew (F9)."
+        ],
+        "stance": "oppose",
+        "headline": "Don't switch to 1099; price route and PEO savings first.",
+        "summary": "Your crew works on your schedules with your equipment, which Maryland treats as employment for landscaping (F1, F3). A knowing violation can cost up to $10,000 per worker (F2). Before any change, get an employment attorney to test each worker's facts and build the full 12% cost sheet. Meanwhile, price route, scheduling and PEO savings. Those moves carry little legal downside.",
+        "key_points": [
+          "This week: have an attorney test each worker's control facts against the ABC test (F1, F3).",
+          "Next quarter: price Jobber route and scheduling savings and get a PEO quote that bundles workers' comp (F4, F11).",
+          "Next year: a switch made now is hard to reverse, and any prior violation makes a later one count as knowing (F2)."
+        ],
+        "risks": [
+          "An audit or worker claim could bring back wages, UI contributions and per-worker penalties (F2, F5, F7).",
+          "Reversing a 1099 move after scrutiny would be costly and visible to the crew (unverified).",
+          "Raising pay to offset contractors' self-employment tax could push crew pay toward competitors' $17 to $21 an hour (F8)."
+        ],
+        "confidence": 85,
+        "pushback": "Assume the 12% saving is real and net of all costs. Ask whether it survives workers' comp, UI, employer FICA and the higher pay contractors would demand, since you have not yet shown that it does."
+      },
+      "devils_advocate": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "realist",
+            "their_claim": "Penalties and back-pay exposure could wipe out years of payroll savings (F2, F7).",
+            "response": "That holds only for knowing violations. F2 shows an unintentional error fixed within 45 days costs up to $1,000 per worker. Use the cure path as the baseline, not the worst case."
+          },
+          {
+            "target": "ai_tools_expert",
+            "their_claim": "Seven workers could mean $70,000 at the top end under F2.",
+            "response": "True only at the knowing-violation maximum. Your own F2 range starts at $1,000 per worker for a fixable error. Show the likely penalty, not the ceiling, when weighing the 12% saving."
+          },
+          {
+            "target": "strategist",
+            "their_claim": "Contractors demand higher gross pay, eroding savings and hurting retention.",
+            "response": "Plausible but unpriced. Nobody has quantified the pay increase. Until someone does, this is a guess that could erase the saving, or leave most of it intact."
+          }
+        ],
+        "concessions": [
+          "Owner control over schedules and equipment fails Maryland's first ABC prong for landscaping (F1, F3).",
+          "The 12% saving is unverified and likely overstated once workers' comp, UI, FICA, and pay increases are netted (F4, F5, F6)."
+        ],
+        "stance": "oppose",
+        "headline": "Oppose whole-crew 1099 switch; but the board overstates worst-case penalties.",
+        "summary": "I still oppose switching the whole crew to 1099. Your schedule and equipment control fails Maryland's test (F1, F3). But the board treats the worst case as the likely case. An unintentional error fixed within 45 days costs up to $1,000 per worker (F2). The 12% estimate has not been built up yet. Test a true subcontract model for any worker who runs their own insured business before ruling it out.",
+        "key_points": [
+          "Penalty math leans on knowing violations; a fixable unintentional error costs up to $1,000 per worker (F2).",
+          "The 12% estimate is unbuilt; no seat has netted workers' comp, UI, FICA, or pay increases against it (F4, F5, F6).",
+          "Subcontracting is dismissed too fast; a worker with their own insured business and clients may qualify (F1, F3, F10)."
+        ],
+        "risks": [
+          "Ruling out true subcontracting too early leaves a legitimate saving off the table.",
+          "Repricing and routing gains in Jobber are unpriced, so they are not yet a proven alternative (F11).",
+          "Overpaying for maximum-penalty compliance in a case that is only an unintentional error (F2)."
+        ],
+        "confidence": 70,
+        "pushback": "Assume the owner can truly change the crew's control facts; if not, a whole-crew 1099 switch is off the table no matter the savings."
+      }
+    },
+    "verdict": {
+      "decision": "reject",
+      "headline": "Don't convert the crew to 1099; keep W-2 and cut costs other ways.",
+      "confidence": 88,
+      "rationale": "You set schedules and supply equipment. Maryland presumes landscaping workers are employees and your control fails the first ABC prong (F1, F3). Knowing violations can cost up to $10,000 per worker, with misdemeanor exposure (F2). The 12% saving has not been netted against workers' comp, unemployment insurance, FICA or the higher pay contractors would want (F4, F5, F6), so it is likely much smaller. Margin gains from routing, pricing and a workers' comp quote carry almost no legal risk. Subcontract only genuinely independent businesses.",
+      "decisive_arguments": [
+        {
+          "seat": "industry_expert",
+          "point": "Owner-set schedules and owner-supplied equipment fail the first ABC prong for Maryland landscaping, and the IRS control test points the same way. A 1099 label or contract does not change that (F1, F3)."
+        },
+        {
+          "seat": "realist",
+          "point": "Penalties are per worker and the process is legally tricky. Misclassified workers can still claim back wages, overtime and workers' comp (F2, F4, F7). Maryland also requires bilingual classification notices and contractor files that your current setup cannot meet (F10)."
+        },
+        {
+          "seat": "strategist",
+          "point": "The 12% saving is unbuilt. Employer FICA is 7.65% (F6). UI and comp costs return if the state reclassifies the workers (F4, F5). Contractors will likely ask for higher gross pay against local wages of $17 to $21 an hour (F8). Net savings may be near zero."
+        },
+        {
+          "seat": "ai_tools_expert",
+          "point": "Gusto costs only about $103 a month for eight people (F12), so payroll software is not the problem. Routing, scheduling and workers' comp pricing are the safer margin levers (F4, F11)."
+        }
+      ],
+      "dissent": [
+        {
+          "seat": "devils_advocate",
+          "point": "The board leaned on worst-case penalties. An unintentional error fixed within 45 days costs up to $1,000 per worker (F2). Genuine subcontracting for a worker with an insured business and other clients may be dismissed too fast."
+        },
+        {
+          "seat": "realist",
+          "point": "No one has seen the owner's 12% calculation. It may already net out part of the costs, so the true saving is unknown, not proven to be zero."
+        },
+        {
+          "seat": "devils_advocate",
+          "point": "Jobber routing and PEO savings are also unpriced, so they are not yet a proven alternative (F11)."
+        }
+      ],
+      "conditions": [
+        "Every current crew member who works under your schedule and equipment stays on W-2.",
+        "Any subcontractor you add must be a true independent business or exempt sole proprietor with their own insured business, equipment, other clients and per-job pricing (F10).",
+        "For any contractor, you complete Maryland's bilingual written notice, workplace posting, signed acknowledgement and file requirements (F10).",
+        "You have no prior misclassification findings. A prior violation can make a later one count as knowing (F2). Confirm with the attorney."
+      ],
+      "next_steps": [
+        {
+          "when": "this week",
+          "action": "Write out how you got the 12% figure. List wages, employer FICA, UI, workers' comp and any pay increase. Bring it to the Maryland SBDC (free) for a review."
+        },
+        {
+          "when": "this week",
+          "action": "Call your current workers' comp carrier or broker. Ask for your landscaping class rate and experience mod, and whether a safety program or better payroll reporting can lower the premium (about $4.18 per $100 is one reported rate, F4)."
+        },
+        {
+          "when": "next 30 days",
+          "action": "Pull last season's routes from Jobber. Find unprofitable stops, long drive times and idle hours. Reprice or drop the weakest routes and batch stops by neighborhood."
+        },
+        {
+          "when": "next 30 days",
+          "action": "Ask a Maryland employment attorney to review your crew's actual setup. Also ask whether any work, such as specialty or one-off jobs, could go to a true independent business."
+        },
+        {
+          "when": "next 30 days",
+          "action": "Request a written all-in PEO quote, including workers' comp, for the same eight people. Compare it with current Gusto plus comp cost."
+        },
+        {
+          "when": "next 90 days",
+          "action": "Adjust seasonal hiring and hours to demand. If you subcontract any jobs, vet each business for its own insurance, equipment, other clients and per-job rates before hiring. Keep the required notices and files (F10)."
+        }
+      ],
+      "ai_tools": [
+        {
+          "name": "Justworks",
+          "use": "A PEO that could bundle payroll, benefits and workers' comp for your W-2 crew, so you can price a W-2 saving.",
+          "monthly_cost": "unknown",
+          "works_with": "Would replace Gusto for payroll; Jobber stays as is (unverified).",
+          "caveat": "PEO fees are often per employee and can cost more than Gusto. Co-employment terms need legal review. It does not fix misclassification.",
+          "url": "https://www.justworks.com",
+          "price_fact": "",
+          "pilot_test": "Get a written all-in quote for the same eight people. Keep it only if it is at least 5% below current Gusto plus workers' comp cost; decide before next season's hiring."
+        }
+      ],
+      "escalate_to": "attorney",
+      "escalation_reason": "Misclassification carries per-worker fines up to $10,000, misdemeanor exposure and back wages (F2, F7). A Maryland employment attorney should test each worker's facts against the ABC test and review any subcontract structure. An accountant can check the savings math and tax effects.",
+      "would_change": [
+        "A cost sheet showing the 12% saving holds after comp, UI, FICA and contractor pay increases, and that specific workers run their own insured businesses with other clients and their own equipment and schedules.",
+        "Confirmation from an attorney or the Maryland Department of Labor that a changed Maryland law or rule (such as HB 632, status unverified) loosens the landscaping ABC presumption.",
+        "A PEO or carrier quote that makes W-2 cheaper than expected, which would lower the case for any restructure."
+      ],
+      "no_new_tool": "You can skip Justworks. Use Jobber, which you already pay for (F11), to cut drive time, batch routes and reprice weak stops. Call your comp carrier directly for a rate review. That costs about an afternoon of your time and no new subscription. Keep Gusto on Simple at about $103 a month for eight people (F12)."
+    }
+  },
+  "board_error": null,
+  "seconds": 113,
+  "baseline_research": "# Recommendation: Don't convert the crew to 1099\n\nKeep your seasonal mowers on W-2 and find the margin elsewhere. Your setup would very likely fail Maryland's test, and the 12% savings is smaller than the downside.\n\n## Why not\n\n**1. Your own facts decide the question.** You set their schedules and provide the equipment. That is the profile of an employee under both tests:\n- **Maryland:** Mowing is named in the Workplace Fraud Act's definition of landscaping, so workers are *presumed employees* under the ABC test. The first prong requires the worker to be free from your direction and control (F1). You can't meet it if you set the schedule.\n- **IRS:** Control over how work is done and supplying the tools both point to employee status. A 1099 label or signed contract doesn't change that (F3).\n\n**2. The penalties far outweigh the savings.** Rough illustration, assuming about $20/hour and 1,000 hours per worker, which are my assumptions, not your numbers:\n- A 12% saving is about $2,400 per worker, or roughly $17,000 across seven workers per season.\n- An uncorrected unintentional misclassification costs up to $1,000 per worker. A knowing violation costs up to $10,000 per worker, plus misdemeanor exposure of up to $5,000 and/or 60 days per worker (F2). For seven workers, that's up to $70,000 in fines.\n- Because you know you control their schedules and equipment, a state auditor could argue the violation was \"knowing.\"\n- On top of the fines you would owe back UI contributions, back payroll taxes, and possibly minimum wage and overtime back pay (F5, F7).\n\n**3. Detection risk is real.** Landscaping is a named high-misclassification industry, with a 19.65% finding rate in the state's UI audits. Anyone can report you anonymously, and the Act protects workers from retaliation (F9). One unhappy former worker, an injury claim, or an unemployment filing can trigger a review.\n\n**4. Much of the \"savings\" isn't real.**\n- Your 12% roughly matches employer FICA (7.65%) plus landscaping workers' comp (about 4.18%), with small UI and FUTA amounts on top (F4\u2013F6).\n- Misclassified workers can still claim workers' comp, and the Uninsured Employers' Fund can pursue you. The uninsured-employer penalty can reach $25,000 (F4). So you can't safely count the comp savings.\n- A true contractor pays 15.3% self-employment tax plus their own equipment and insurance costs (F6). Local laborers earn about $17\u201321/hour (F8), so good workers will want higher pay, or will go to competitors who offer W-2 jobs.\n- I can't tell whether your 12% estimate accounts for any of this.\n\n**5. Your tools don't change the answer.** Jobber and Gusto cost the same either way (F11, F12). Gusto's payroll cost is small next to the legal exposure.\n\n## Main risks if you did it anyway\n- Back taxes, UI contributions and per-worker penalties (up to $10,000 each if \"knowing\") and possible criminal charges.\n- Uninsured workers' comp injury claims and penalties of up to $25,000.\n- Wage and overtime claims, including for prior seasons.\n- Losing HOA or commercial accounts that require proof of crew insurance.\n- Losing workers to competitors.\n\n## What to do instead\n\n**Step 1: Find your real labor burden.** Pull your actual workers' comp premium and experience mod, your UI rate, and last season's hours from Gusto. That tells you what the 12% is made of and what you can realistically reduce.\n\n**Step 2: Cut costs while staying W-2.**\n- Use Jobber to tighten route density and drive time, and cut unprofitable stops.\n- Reprice low-margin accounts, add minimum charges, and raise prices at renewal.\n- Match crew hours to seasonal demand and limit overtime.\n- Get competing workers' comp quotes, or ask a PEO or your Gusto partners to bundle coverage. A safety program can lower your mod over time.\n\n**Step 3: Check your current compliance.** Confirm everyone earns at least $15.30/hour (Prince George's County) and that overtime is paid correctly (F7). Fixing this now avoids a bigger problem later.\n\n**Step 4: Consider a small, genuine subcontract model, only if it fits.** If you have overflow routes, hire an established mowing business or sole proprietor who has their own equipment, insurance and other customers, sets their own schedule, and is paid per job. Don't convert your existing crew. You must provide the written English/Spanish classification notice, post the workplace notice, and keep contracts, signed acknowledgements and licenses on file (F10). Anyone who works under your direction stays W-2.\n\n**Step 5: Get professional sign-off.** Before changing anything, spend an hour with a Maryland employment attorney or a CPA who knows the Workplace Fraud Act. I could not confirm whether HB 632 (2025) or any federal contractor rule changes things. Even so, Maryland's ABC test would remain stricter than the federal one.\n\n## Open items that could change my view\nI'd revisit if a worker truly runs their own business with other clients and their own equipment, or if your actual cost data shows a margin problem that routing and pricing can't fix. Neither fits your current setup. This is business guidance, not legal advice.",
+  "judge": {
+    "model": "openrouter/anthropic/claude-sonnet-5.5",
+    "letters": {
+      "board": "A",
+      "baseline": "B",
+      "baseline_research": "C"
+    },
+    "board": {
+      "risks": [
+        {
+          "risk": "Worker misclassification risk",
+          "score": 2,
+          "quote": "Every current crew member who works under your schedule and equipment stays on W-2."
+        }
+      ],
+      "actionable": 5,
+      "errors": []
+    },
+    "baseline": {
+      "risks": [
+        {
+          "risk": "Worker misclassification risk",
+          "score": 2,
+          "quote": "Stay with W-2. Don't change anything yet."
+        }
+      ],
+      "actionable": 4,
+      "errors": [
+        {
+          "claim": "Maryland unemployment insurance uses a strict ABC-style test.",
+          "correction": "This is broadly correct, so it is not an error. The claim that the Workplace Fraud Act's test includes 'use their own tools' is loosely paraphrased, since the ABC test does not list tools as a prong."
+        }
+      ]
+    },
+    "baseline_research": {
+      "risks": [
+        {
+          "risk": "Worker misclassification risk",
+          "score": 2,
+          "quote": "Don't convert the crew to 1099... Anyone who works under your direction stays W-2."
+        }
+      ],
+      "actionable": 4,
+      "errors": [
+        {
+          "claim": "Misdemeanor exposure of up to $5,000 and/or 60 days per worker.",
+          "correction": "Unsure about the exact figures. Leave unflagged."
+        }
+      ]
+    }
+  }
+}

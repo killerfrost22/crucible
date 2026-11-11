@@ -1,0 +1,672 @@
+{
+  "scenario": {
+    "id": "food-truck-merchant-cash-advance",
+    "intake": {
+      "question": "Should I take a $60,000 merchant cash advance to buy a second food truck before spring?",
+      "leaning": "Yes, the approval was instant",
+      "profile": {
+        "industry": "food truck",
+        "location": "Washington, DC area (Maryland side)",
+        "size": "1 truck, 4 employees",
+        "current_tools": [
+          "Square POS"
+        ],
+        "goals": [
+          "double revenue next year"
+        ]
+      }
+    },
+    "must_catch": [
+      {
+        "label": "True cost of capital (APR / factor rate)",
+        "any": [
+          "APR",
+          "factor rate",
+          "annual(ized)? (percentage|cost|rate)",
+          "effective (interest|rate)"
+        ]
+      },
+      {
+        "label": "SBA-backed alternatives",
+        "any": [
+          "SBA",
+          "microloan",
+          "7\\(a\\)",
+          "CDFI",
+          "Small Business Development Center",
+          "SBDC"
+        ]
+      }
+    ]
+  },
+  "seat_model": "openrouter/anthropic/claude-haiku-5.5",
+  "researcher_model": "openrouter/anthropic/claude-sonnet-5.5:online",
+  "chair_model": "openrouter/anthropic/claude-sonnet-5.5",
+  "web_search": true,
+  "baseline": "# Recommendation: Don't take the MCA as offered\n\nLook for cheaper financing first. A second truck can be a good move, but this is the wrong way to fund it.\n\n## Why I'd say no\n\n**1. Instant approval is a warning sign, not a perk.** MCA providers approve quickly because they price in high default rates and collect aggressively. Banks, SBA lenders, and equipment lenders take longer because they charge far less.\n\n**2. The real cost is likely very high.** MCAs use a factor rate (typically 1.2-1.5) instead of interest. For example:\n- $60,000 \u00d7 1.35 = **$81,000 repaid**, a $21,000 cost.\n- If repaid over 8-10 months, that's roughly **$8,000-$10,000 a month**, or an effective APR often in the 50-100%+ range.\n- Repayment is usually daily or weekly, so it hits your cash even in slow weeks.\n\n**3. The timing works against you.** You'd start repaying in winter or early spring, before the new truck earns anything. Food truck revenue in the DC area is seasonal and weather-dependent, and repayments don't flex.\n\n**4. A second truck doesn't automatically double revenue.** It needs:\n- A reliable manager or lead, since you can't be on both trucks\n- 3-5 more hires in a tight labor market\n- Enough profitable locations, events, or catering. Permits, commissary requirements, and vending spots in DC, Montgomery, and Prince George's counties are limited.\n- Your first truck's operations to keep running without you\n\n**5. Contract traps.** MCAs often include personal guarantees, UCC liens on all business assets, and confession-of-judgment or default clauses. Some prohibit other financing, which can cripple your operation if sales dip.\n\n## Main risks if you proceed anyway\n- A cash-flow squeeze that threatens your existing, working truck\n- Stacking more advances to cover payments, which leads to a debt spiral\n- Personal liability and frozen accounts if you default\n- Startup costs beyond the truck: wrap, equipment, permits, insurance, inventory, payroll, and repairs\n\n## Better options\n- **Equipment financing or a truck loan.** The truck is the collateral, so rates are much lower, often high single digits to the high teens.\n- **SBA microloan or 7(a) small loan.** Slower, but far cheaper.\n- **Maryland and local CDFIs and state programs**, such as MSBDFA and nonprofit lenders. A free Maryland SBDC advisor can help you package an application.\n- **Buy a used truck or trailer** with a down payment from cash flow, or lease or rent one.\n- **Test demand first.** Add catering, private events, brewery partnerships, or extra shifts on your current truck. If you're turning down business, that's the best justification for a second truck.\n\n## Next steps\n1. **Pull your numbers.** Know your current truck's monthly revenue, food cost, labor, and net profit by season. A second truck realistically earns similar or less at first.\n2. **Build a simple model** for truck two. Include startup costs, seasonal revenue, a 3-month ramp-up, and debt payments. If it can't comfortably cover payments in your slowest months, don't borrow for it.\n3. **Get the MCA terms in writing** (factor rate, total payback, holdback or daily payment, fees, prepayment rules, personal guarantee, liens, default terms). Have an attorney review them if you're still considering it.\n4. **Apply for 2-3 alternatives** this week: an equipment lender, a CDFI or SBA microlender, and your bank or credit union.\n5. **Check permit and location availability** for a second truck in your target jurisdictions before spending anything.\n6. **Consider a phased plan:** lock in cheaper financing, buy the truck in spring or early summer, and start with your strongest manager and proven locations.\n\n**Bottom line:** The goal of doubling revenue is reasonable, but this financing could cost you $20,000+ and put your existing business at risk. If the second truck only works with an MCA's terms, the economics probably aren't strong enough yet.",
+  "seconds": 78,
+  "board_state": {
+    "intake": {
+      "question": "Should I take a $60,000 merchant cash advance to buy a second food truck before spring?",
+      "leaning": "Yes, the approval was instant",
+      "profile": {
+        "name": "",
+        "industry": "food truck",
+        "location": "Washington, DC area (Maryland side)",
+        "size": "1 truck, 4 employees",
+        "current_tools": [
+          "Square POS"
+        ],
+        "budget": "",
+        "goals": [
+          "double revenue next year"
+        ],
+        "constraints": ""
+      }
+    },
+    "evidence_mode": "web",
+    "evidence": {
+      "decision": "Whether to accept a $60,000 merchant cash advance to buy a second food truck ahead of the spring season, rather than using another financing route or waiting.",
+      "options": [
+        "Do nothing: keep operating one truck and revisit expansion later using retained earnings",
+        "Take the $60,000 merchant cash advance now to buy the second truck before spring",
+        "Finance the truck with equipment financing or an SBA 7(a) loan, with the truck as collateral",
+        "Wait until March-April to apply, or buy a cheaper used truck with a smaller advance or lender-backed financing"
+      ],
+      "facts": [
+        {
+          "claim": "One industry guide lists truck purchase as a wrong-fit use of an MCA. It puts a used outfitted food truck at $40,000-$80,000 and a new custom build at $80,000-$150,000. It says MCA factor rates of 1.28-1.40 add $12,000-$42,000 in fees on those purchases, and that an SBA 7(a) loan or specialty equipment lender at 8-14% APR over 48-60 months cuts that cost by 70-85%.",
+          "source": "https://mcaguide.ai/mca-food-trucks/",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T03:07:09Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Arithmetic on the source's factor range: a $60,000 advance at a 1.28-1.40 factor would mean total repayment of $76,800-$84,000, or $16,800-$24,000 in fees. The actual factor rate on the owner's offer is not known to the board.",
+          "source": "",
+          "verified": false
+        },
+        {
+          "claim": "The same guide shows a percentage holdback of 12% of card sales falling from $216 a day at $1,800 daily card volume in August to $30 a day at $250 in February. It says an advance expected to repay in 6 months at summer averages can take 10-14 months at winter averages. It says a fixed daily ACH debit makes winter months genuinely unsustainable, and recommends insisting on percentage-of-card-receipts holdback.",
+          "source": "https://mcaguide.ai/mca-food-trucks/",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T03:07:09Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "The guide advises applying in March-April, when bank statements reflect shoulder-season averages, rather than at peak volume. It also advises pulling the prior December and January card statements and calculating the daily holdback at those volumes before signing.",
+          "source": "https://mcaguide.ai/mca-food-trucks/",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T03:07:09Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "A financing guide says that buying a truck is an equipment-financing conversation, with the truck as collateral, and that this is generally more accessible than unsecured borrowing. Terms commonly run a few years and lenders typically want a down payment. Funding a second truck from an operating business is treated as a working-capital conversation underwritten on 3-4 months of bank statements, with 6-12 months of deposits opening more options.",
+          "source": "https://www.guilderfunding.com/resources/food-truck-financing",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T03:07:09Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "The same source says a fixed daily withdrawal against seasonal revenue is the most common way food truck owners get into trouble. It says the funder's pull does not adjust for weather or festival calendars, and that payments should be sized against the worst realistic month.",
+          "source": "https://www.guilderfunding.com/resources/food-truck-financing",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T03:07:09Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "A funding-advice site gives an example MCA at a 1.30 factor as roughly 55% APR and says the test is whether the capital earns more than that return over the same period. It says MCAs for a new location or a investment that will not generate cash for 12+ months are almost always the wrong tool because daily debits start immediately. It suggests modeling a 20% slow month at the daily debit and ruling out a line of credit, term loan, SBA loan or supplier payment plan first.",
+          "source": "https://outsetfunding.com/answers/merchant-cash-advance/is-mca-worth-it",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T03:07:11Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "A lender blog argues that waiting 12 months to save $60,000 for an extra truck is a false economy because the delay forgoes monthly revenue. The revenue figure in the retrieved excerpt is garbled, and the source is a lender with an interest in selling financing.",
+          "source": "https://www.nationalbusinesscapital.com/blog/food-truck-financing/",
+          "verified": true,
+          "check": {
+            "status": "unreachable",
+            "checked_at": "2026-11-11T03:07:09Z",
+            "http_status": 403
+          }
+        },
+        {
+          "claim": "An MCA-provider page describes a second truck for peak season as a defensible use of a short advance only if booked events cover it. It says stacked advances can take about 19.8% of January deposits in its example, versus 14.9% in an average month, and that a second-position funder charges more. It also says funders review booked events, catering contracts and a full year of deposits including winter.",
+          "source": "https://afterfirstmca.com/industries/food-trucks/second-position-merchant-cash-advance",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T03:07:09Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "In Maryland, mobile food service facilities are generally licensed and inspected by the county or local health department, so rules and fees differ between jurisdictions such as Montgomery and Prince George's Counties. Most counties also require use of an approved commissary or base of operations.",
+          "source": "",
+          "verified": false
+        },
+        {
+          "claim": "Selling in Washington, DC proper involves separate DC licensing and vending-location rules from Maryland county rules, so a second truck working both sides of the line may need permits from each jurisdiction.",
+          "source": "",
+          "verified": false
+        },
+        {
+          "claim": "MCAs are generally structured as purchases of future receivables rather than loans, so state interest-rate caps often do not apply. Agreements commonly include a UCC lien, a personal guarantee and, in some contracts, other remedies, and the disclosure rules vary by state.",
+          "source": "",
+          "verified": false
+        }
+      ],
+      "open_questions": [
+        "What are the offer's actual terms: factor rate, total payback, holdback percentage versus fixed daily ACH debit, term, fees, personal guarantee, UCC lien, and any confession-of-judgment clause?",
+        "What were the truck's card sales in the prior December-February, and what would the holdback or daily debit be at those volumes?",
+        "Does the owner already have any advance or other debt, and does the existing contract limit new advances?",
+        "Are there booked events, catering contracts or lunch locations that would give a second truck revenue before the spring season starts?",
+        "Does the $60,000 cover the full cost of a suitable truck, including wrap, equipment, permits, insurance, commissary fees and initial inventory?",
+        "Can the owner staff a second truck, and what does it cost beyond the current four employees?",
+        "Does the owner qualify for SBA 7(a) or equipment financing at lower cost, and how long would approval take compared with an MCA?",
+        "Does Maryland, or the county involved, have a commercial-financing disclosure law covering MCAs that applies to this offer?",
+        "Which county health department and, if relevant, DC agencies would license the second truck, and how long would that take?",
+        "Do the first truck's current margins, after payroll and commissary costs, show that a second truck would be profitable at the repayment level?"
+      ]
+    },
+    "round1": {
+      "industry_expert": {
+        "stance": "oppose",
+        "headline": "Don't take the merchant cash advance now; pursue cheaper financing or wait.",
+        "summary": "A merchant cash advance is a poor fit for buying a truck. Fees can run high, and daily debits can crush you in slow winter months. Food trucks lose a lot of sales in winter. An instant approval is not proof the deal is good. Get the real terms in writing, check your December-February card sales, and compare an equipment loan or SBA 7(a) before deciding.",
+        "key_points": [
+          "A truck purchase is a wrong-fit use of an MCA, and cheaper equipment or SBA financing can cut fee costs sharply (F1).",
+          "A fixed daily debit against seasonal sales is the most common way food truck owners get into trouble (F6).",
+          "Winter card volume can fall far below summer, so a payback planned on summer sales can stretch from 6 to 10-14 months (F3)."
+        ],
+        "risks": [
+          "Daily debits in February could leave too little cash to cover payroll for four employees and the first truck.",
+          "Stacking a second advance or defaulting could trigger personal guarantee and lien claims against your assets (F12, unverified details).",
+          "A second truck without booked events may sit idle before spring, adding cost with no revenue."
+        ],
+        "pushback": "Are you assuming the second truck will double sales? Revenue must cover the payback in the worst month, not the average one, and the board has no evidence yet of booked events or winter profit on the first truck.",
+        "confidence": 78
+      },
+      "ai_tools_expert": {
+        "stance": "oppose",
+        "headline": "Oppose the $60,000 advance; instant approval is not a sound reason.",
+        "summary": "A merchant cash advance is a poor fit for buying a second truck. Daily debits would hit hardest in winter, when card sales fall sharply. Fees could be high. Check cheaper financing first. Fast approval shows the lender is willing, not that the truck will pay off.",
+        "key_points": [
+          "A food-truck guide's example shows the card holdback falling from $216 a day in August to $30 in February (F3). A fixed daily debit would be unsustainable in winter (F3).",
+          "At the guide's factor range, fees could run $16,800-$24,000 (F2). The guide says an SBA 7(a) or equipment loan at 8-14% APR could cut that cost by 70-85% (F1).",
+          "Equipment financing uses the truck as collateral and is generally more accessible than unsecured borrowing (F5). Check that route before signing an advance."
+        ],
+        "risks": [
+          "Daily debits start immediately, before a new truck earns money. A 20% slow month may not be affordable (F7).",
+          "Stacked or second-position advances cost more. One MCA provider's example shows them taking a larger share of January deposits (F9).",
+          "Permits may be needed from both Maryland county and DC agencies, which could delay a spring launch (unverified). Confirm with the county health department and DC licensing agency."
+        ],
+        "pushback": "Question whether instant approval reflects the truck's real profit. Ask for the first truck's margins after payroll and commissary costs, and its December-February card sales, before deciding.",
+        "confidence": 80,
+        "tools": []
+      },
+      "realist": {
+        "stance": "oppose",
+        "headline": "Do not take this merchant cash advance; the seasonal cash risk is too high.",
+        "summary": "A merchant cash advance pulls money daily from sales, and food truck sales drop sharply in winter. Even if the fee math is only roughly right, the daily debit could outrun income in slow months. Ask for percentage-based repayment and compare an equipment loan or SBA 7(a) before deciding. Approval speed is not a reason to sign.",
+        "key_points": [
+          "F3 shows winter card sales can fall to about $30 a day, while a fixed daily debit keeps running.",
+          "F1 and F2 suggest the fees on a $60,000 advance could be $16,800-$24,000 (source range, offer terms unknown).",
+          "F5 says a truck purchase is normally an equipment-financing deal with the truck as collateral, which is cheaper and better suited."
+        ],
+        "risks": [
+          "A fixed daily debit could take more cash than the business earns in January or February, forcing missed payments or stacked advances (F3, F9).",
+          "A personal guarantee and UCC lien could put personal and business assets at risk (F12, unverified; an attorney should confirm).",
+          "The second truck may not be licensed or profitable in time for spring, since Maryland and DC permits are separate and unverified (F10, F11)."
+        ],
+        "pushback": "Assumes the spring season will make up the winter losses. Pull last December through February card statements and model the daily debit at those volumes before believing the revenue doubling.",
+        "confidence": 80,
+        "checks": [
+          {
+            "area": "legal",
+            "status": "flag",
+            "note": "Offer terms, confession-of-judgment clause, and any state disclosure rules are unknown; an attorney should review the contract before signing (F12, unverified)."
+          },
+          {
+            "area": "compliance",
+            "status": "flag",
+            "note": "Second truck needs county health permits and commissary use in Maryland, plus separate DC permits if it sells there; a county health department should confirm timing (F10, F11, unverified)."
+          },
+          {
+            "area": "financial",
+            "status": "block",
+            "note": "A fixed daily debit against seasonal sales is a confirmed risk pattern, and the winter drop shown in F3 makes the offer unaffordable as described until the holdback is confirmed as percentage-based."
+          },
+          {
+            "area": "financial",
+            "status": "flag",
+            "note": "Fee cost of $16,800-$24,000 is arithmetic from a source range, not the owner's actual factor rate (F2, unverified)."
+          },
+          {
+            "area": "goals",
+            "status": "flag",
+            "note": "Doubling revenue needs booked events or catering to cover the second truck before spring (F9); none are shown in the evidence."
+          }
+        ]
+      },
+      "strategist": {
+        "stance": "oppose",
+        "headline": "Don't take this advance now; the 6-12 month cash squeeze outweighs the speed.",
+        "summary": "A fixed-share repayment on winter sales could squeeze you hard for months after buying the truck. Winter card sales drop sharply, and repayment can stretch from 6 to 10-14 months. Stacking debt or locking in a daily debit could cripple expansion. Compare cheaper financing first, and apply in March-April with real numbers.",
+        "key_points": [
+          "Winter volume can fall about 85%, so repayment may take 10-14 months instead of 6 (F3).",
+          "A fixed daily debit against seasonal sales is the most common way food truck owners get into trouble (F6).",
+          "A new truck needs time to earn cash, yet MCA debits start immediately (F7)."
+        ],
+        "risks": [
+          "Debits continue during winter, forcing you to borrow again or cut staff to cover payments.",
+          "A second advance on top of the first could take a larger share of January deposits (F9).",
+          "Using the truck as the owner's only route could lock you into a costly contract that is hard to unwind."
+        ],
+        "pushback": "Are you assuming the second truck will earn enough in winter to cover the debit? Test that with the prior December-February card statements before signing.",
+        "confidence": 80
+      },
+      "devils_advocate": {
+        "stance": "conditional",
+        "headline": "Take it only if terms are percentage-based and events cover payments.",
+        "summary": "Expansion can pay off, and waiting has a cost too. Use the advance only if repayment is a percentage of card sales, not a fixed daily debit, and booked events cover the payments. Get the real factor rate in writing first. Confirm county and DC permit timelines before signing.",
+        "key_points": [
+          "F9 says a second truck for peak season can be a defensible use of a short advance, but only if booked events cover it.",
+          "F3 and F6 show the danger is winter cash flow; a percentage holdback shrinks with sales, while a fixed daily debit does not.",
+          "F8 argues waiting forgoes revenue, though it comes from a lender that sells financing."
+        ],
+        "risks": [
+          "Winter card sales can fall far below summer levels, so a fixed debit could outrun income.",
+          "At the cited 1.28-1.40 factor range (F2), fees could reach $16,800-$24,000 unless the real offer is cheaper.",
+          "Maryland county and DC permits may delay the truck past spring (unverified; confirm with the county health department and DC agencies)."
+        ],
+        "pushback": "That the instant approval proves the deal is sound. Fast approval mostly shows the lender is confident in its own collection, not that your business can carry winter payments.",
+        "confidence": 55
+      }
+    },
+    "round2": {
+      "industry_expert": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "devils_advocate",
+            "their_claim": "Take the advance only if repayment is percentage-based and booked events cover the payments.",
+            "response": "Percentage holdback helps, but the offer's terms are unknown and F2's fee figures are a source range. Booked events are not shown in the evidence. Without both, the conditions are not met yet."
+          },
+          {
+            "target": "ai_tools_expert",
+            "their_claim": "Question whether instant approval reflects the truck's real profit; ask for margins and December-February card sales.",
+            "response": "I agree on the checks. I add that a peer would also price the truck's margins after payroll and commissary costs, since card sales alone do not show profit."
+          },
+          {
+            "target": "strategist",
+            "their_claim": "Winter volume can fall about 85%, so repayment may take 10-14 months instead of 6.",
+            "response": "The 85% drop is the F3 example from one guide's sample truck, not a rule for your truck. Your own December-February statements should replace it."
+          }
+        ],
+        "concessions": [
+          "Percentage-of-card-receipts holdback is materially safer than a fixed daily ACH debit (F3), and I would insist on it if any advance is considered.",
+          "Waiting carries a real cost in forgone revenue (F8), though that source sells financing."
+        ],
+        "stance": "oppose",
+        "headline": "Don't take the $60,000 advance now; check winter cash and cheaper loans first.",
+        "summary": "Buying a second truck can make sense, but this advance is a poor fit. Truck purchases are usually financed with equipment loans or SBA loans, which cost far less (F1). Daily debits can outrun winter sales, when card volume falls sharply (F3). Before deciding, get the real factor rate, pull your December through February card statements, and price the debit at those volumes. Confirm permits with the county health department and DC agencies.",
+        "key_points": [
+          "Equipment financing or an SBA 7(a) loan uses the truck as collateral and can cut fee costs by 70-85% per one guide's estimate (F1, F5).",
+          "A fixed daily debit against seasonal sales is a common trouble point (F6); winter repayment can stretch to 10-14 months (F3).",
+          "Instant approval shows the lender's willingness, not the truck's profitability (F7)."
+        ],
+        "risks": [
+          "A fixed daily debit could take more cash than payroll and the first truck need in February.",
+          "Personal guarantee and UCC lien terms could put personal and business assets at risk (F12, unverified; an attorney should confirm).",
+          "Second truck may sit idle before booked events exist, and county and DC permits could delay spring launch (unverified; county health department and DC licensing agency should confirm)."
+        ],
+        "pushback": "Are you assuming the second truck will double sales? Revenue must cover the payment in the worst month, and the board has no evidence of booked events or winter profit on the first truck.",
+        "confidence": 80
+      },
+      "ai_tools_expert": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "devils_advocate",
+            "their_claim": "Take the advance only if repayment is percentage-based and booked events cover the payments.",
+            "response": "Percentage holdback is safer than a fixed debit (F3), but the board has no booked events, card sales, or real factor rate yet. Those conditions are unmet, so the condition does not yet hold."
+          },
+          {
+            "target": "realist",
+            "their_claim": "The offer is unaffordable as described until the holdback is confirmed as percentage-based.",
+            "response": "Agreed on the sequence. I would add that even a percentage holdback needs December-February card statements to test whether the second truck's share of sales covers payments."
+          }
+        ],
+        "concessions": [
+          "A percentage-of-card-receipts holdback is materially safer than a fixed daily debit (F3).",
+          "Expansion could pay off if booked events or catering cover the new truck before spring (F9)."
+        ],
+        "stance": "oppose",
+        "headline": "Oppose the advance: no AI tool fixes the seasonal cash risk.",
+        "summary": "No AI tool would make this advance safer, so I list none. The real risk is winter cash flow, shown by a holdback falling from $216 to $30 a day (F3). Your Square sales reports already hold the December-February numbers you need; pull them first. Compare equipment financing or an SBA 7(a) loan, and do not sign until the factor rate and holdback type are in writing.",
+        "key_points": [
+          "Card volume can fall from $1,800 to $250 a day between August and February, so a fixed debit can outrun income (F3).",
+          "Fixed daily debits against seasonal sales are the most common way food truck owners get into trouble (F6).",
+          "Cheaper truck financing with the truck as collateral is the standard route to test first (F5, F1)."
+        ],
+        "risks": [
+          "A fixed daily debit could leave too little cash for four employees and the first truck in winter (F3).",
+          "A personal guarantee and UCC lien could reach personal and business assets if payments fail (F12, unverified; an attorney should confirm).",
+          "A second truck without booked events could sit idle before spring while costs continue."
+        ],
+        "pushback": "Are you assuming the second truck will double sales? Test the payback against the worst month, using your own Square December-February numbers, before believing the spring rebound.",
+        "confidence": 80,
+        "tools": []
+      },
+      "realist": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "devils_advocate",
+            "their_claim": "Take the advance only if repayment is percentage-based and booked events cover payments.",
+            "response": "Agreed on the conditions, but they are not yet met. No offer terms, holdback type, or booked events are shown, so a conditional yes has nothing to test against today. Get those first."
+          },
+          {
+            "target": "ai_tools_expert",
+            "their_claim": "Equipment financing is generally more accessible than unsecured borrowing, so check it before signing an advance (F5).",
+            "response": "F5 supports this, but it also says lenders want a down payment and underwrite a working-capital route on 3-4 months of statements. The owner's own qualification is still unknown."
+          },
+          {
+            "target": "industry_expert",
+            "their_claim": "A truck purchase is a wrong-fit use of an MCA, and cheaper SBA or equipment financing can cut fee costs sharply (F1).",
+            "response": "F1 is one industry guide with a vendor-style claim of 70-85% savings. Treat the percentage as a guide estimate, not a quote for this owner."
+          }
+        ],
+        "concessions": [
+          "Devil's advocate is right that waiting until March-April has a real cost, and F8 frames it, though from a lender with an interest in selling financing.",
+          "Strategist is right that the first debit starts before a new truck earns cash (F7)."
+        ],
+        "stance": "oppose",
+        "headline": "Don't sign this advance now; winter cash risk and unknown terms are too big.",
+        "summary": "The offer may be fast, but a fixed daily debit could outrun winter sales. Food truck sales can fall sharply from summer to February (F3). The real factor rate, holdback type, and any personal guarantee are unknown. Compare an equipment loan or SBA 7(a) first, and apply in March-April with last December through February card statements in hand.",
+        "key_points": [
+          "A fixed daily debit against seasonal sales is the most common way food truck owners get into trouble (F6).",
+          "Winter card-based holdback can fall from $216 a day to $30 a day in one guide's example (F3).",
+          "Equipment financing with the truck as collateral is the usual route for buying a truck (F5)."
+        ],
+        "risks": [
+          "Daily debits in February could leave too little cash for four employees and the first truck.",
+          "Personal guarantee and UCC lien could reach personal assets on default (F12, unverified; an attorney should confirm).",
+          "Maryland county and DC permits may delay the second truck past spring (F10, F11, unverified; county health department and DC agencies should confirm)."
+        ],
+        "pushback": "Are you assuming the second truck will double sales? Test that against the first truck's December-February card sales and margins after payroll and commissary costs.",
+        "confidence": 80,
+        "checks": [
+          {
+            "area": "legal",
+            "status": "flag",
+            "note": "Offer terms, confession-of-judgment clause, and any Maryland disclosure rules are unknown; an attorney should review the contract before signing (F12, unverified)."
+          },
+          {
+            "area": "compliance",
+            "status": "flag",
+            "note": "Second truck needs county health permits and an approved commissary in Maryland, plus DC permits if it sells there; the county health department should confirm timing (F10, F11, unverified)."
+          },
+          {
+            "area": "financial",
+            "status": "block",
+            "note": "A fixed daily debit against seasonal sales is a confirmed risk pattern (F3, F6); the offer is unaffordable as described until the holdback is confirmed as percentage-based."
+          },
+          {
+            "area": "financial",
+            "status": "flag",
+            "note": "The $16,800-$24,000 fee figure is arithmetic on a source range, not the owner's factor rate (F2, unverified)."
+          },
+          {
+            "area": "goals",
+            "status": "flag",
+            "note": "Doubling revenue needs booked events or catering before spring (F9); none are shown in the evidence."
+          }
+        ]
+      },
+      "strategist": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "devils_advocate",
+            "their_claim": "Take the advance only if repayment is a percentage of card sales and booked events cover the payments.",
+            "response": "Conditions help, but they don't fix the 6-12 month problem. Even a percentage holdback leaves the truck's own cash flow unproven, and F7 says new investments usually don't earn cash for 12+ months. Booked events must be shown first, not hoped for."
+          },
+          {
+            "target": "realist",
+            "their_claim": "The winter drop in F3 makes the offer unaffordable as described until the holdback is confirmed as percentage-based.",
+            "response": "I agree on the condition, but I'd go further: even a percentage holdback locks in a cost for a year. Reversing a signed MCA is hard, so the cost of a wrong move is high."
+          },
+          {
+            "target": "industry_expert",
+            "their_claim": "Pursue cheaper financing or wait, and check December-February card sales.",
+            "response": "Right, but the bigger issue is what follows the purchase. Once a second truck is financed, the owner carries that debt into next year's season, limiting future options like a line of credit or a third truck."
+          }
+        ],
+        "concessions": [
+          "Winter card sales and the daily debit are the main near-term threat, as the Devil's Advocate and Realist both note.",
+          "Booked events or catering are needed before a second truck can be justified, per F9."
+        ],
+        "stance": "oppose",
+        "headline": "Don't take the advance now; lock-in and winter debits outweigh the speed.",
+        "summary": "Buying a second truck is a 6-12 month commitment. A fixed or even percentage debit ties up cash through winter, when F3 shows card sales can fall sharply. Once signed, an MCA is hard to unwind and could block cheaper options later. A better sequence: confirm the first truck's winter numbers, secure booked events, and compare an equipment loan or SBA 7(a) (F5, F1). Apply in March-April with real figures.",
+        "key_points": [
+          "Winter debits could force new borrowing, limiting growth in year one (F3, F6).",
+          "A new truck needs time to earn cash, yet MCA debits start right away (F7).",
+          "Equipment financing, with the truck as collateral, is generally more accessible (F5)."
+        ],
+        "risks": [
+          "Lock-in: a signed advance could block a line of credit or SBA loan for the next year.",
+          "Staff cuts or borrowing again if January debits outrun income (F3).",
+          "Permits in Maryland and DC may delay the truck past spring (F10, F11, unverified)."
+        ],
+        "pushback": "Are you assuming the second truck will earn enough in winter to cover the debit, and that the first truck's profits will support two trucks?",
+        "confidence": 78
+      },
+      "devils_advocate": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "industry_expert",
+            "their_claim": "A truck purchase is a wrong-fit use of an MCA, and SBA or equipment financing could cut fee costs sharply (F1).",
+            "response": "F1 is one industry guide with an interested view. Cheaper routes usually need a down payment and time (F5). Check whether the owner can meet those terms before spring, and compare total cost honestly."
+          },
+          {
+            "target": "realist",
+            "their_claim": "The offer is unaffordable as described until the holdback is confirmed as percentage-based, so it should be blocked.",
+            "response": "I agree the holdback type decides everything. But the offer's structure is unknown (F2). Treat it as a condition to request, not a reason to block without seeing the terms."
+          },
+          {
+            "target": "strategist",
+            "their_claim": "Winter volume can fall about 85%, so repayment may take 10-14 months instead of 6 (F3).",
+            "response": "F3 is one guide's August-to-February example, not this owner's sales. Pull the owner's own December-February statements before assuming the drop applies here."
+          }
+        ],
+        "concessions": [
+          "A fixed daily ACH debit is the main danger in winter, per F3 and F6, and I would reject that structure.",
+          "Instant approval says nothing about profitability, as the AI-tools seat notes."
+        ],
+        "stance": "conditional",
+        "headline": "Conditional yes: take it only with percentage holdback and booked events.",
+        "summary": "The board's fear of winter debits is valid, but it is not yet proven for this owner. Sign only if repayment is a percentage of card sales, the factor rate is in writing, and booked events cover payments. Pull last December-February statements first. Waiting until March-April has its own cost: a missed season.",
+        "key_points": [
+          "F3: the guide's winter drop is one example; a percentage holdback shrinks with sales, while a fixed debit does not.",
+          "F9: a second truck for peak season is defensible only when booked events cover it.",
+          "F2: the real factor rate is unknown, so the $16,800-$24,000 fee range is not yet the owner's cost."
+        ],
+        "risks": [
+          "A fixed daily debit could outrun winter income if the offer is not percentage-based.",
+          "Maryland county and DC permits may delay launch past spring (unverified; county health department and DC agencies should confirm).",
+          "A personal guarantee and UCC lien could reach personal assets if the business struggles (F12, unverified; an attorney should confirm)."
+        ],
+        "pushback": "Are you assuming the spring season will refill the winter cash gap? Test it with your own December-February card statements before believing the revenue doubling.",
+        "confidence": 55
+      }
+    },
+    "verdict": {
+      "decision": "defer",
+      "headline": "Defer: don't sign this advance until terms, winter sales and cheaper loans are checked.",
+      "confidence": 76,
+      "rationale": "Instant approval shows the lender is willing, not that a second truck will pay. The board has no real offer terms, no December-February sales and no booked events. A fixed daily debit against seasonal sales is the most common way food truck owners get into trouble (F6). One guide's example shows a card-sales holdback falling from $216 a day in August to $30 in February (F3). Buying a truck is normally an equipment-financing deal (F5). Get the facts, price the cheaper routes, and decide in March-April.",
+      "decisive_arguments": [
+        {
+          "seat": "realist",
+          "point": "A fixed daily debit against seasonal sales is the most common way food truck owners get into trouble (F6). One guide's example shows the holdback falling from $216 a day to $30 (F3). The offer is unaffordable as described until the holdback is confirmed as percentage-based."
+        },
+        {
+          "seat": "industry_expert",
+          "point": "One industry guide lists truck purchase as a wrong-fit use of an MCA and says SBA 7(a) or equipment financing at 8-14% APR cuts fee cost by 70-85% (F1). That is a guide's estimate, not a quote for this owner."
+        },
+        {
+          "seat": "strategist",
+          "point": "MCA debits start immediately, but a new truck needs time to earn cash (F7)."
+        },
+        {
+          "seat": "devils_advocate",
+          "point": "A second truck is a defensible use of a short advance only if booked events cover it (F9). The board has seen no booked events."
+        }
+      ],
+      "dissent": [
+        {
+          "seat": "devils_advocate",
+          "point": "The block is premature because the offer's terms are unknown. A percentage holdback shrinks with sales, and F3's winter drop is one guide's example, not this owner's sales. Treat the holdback type as a condition to request, not a reason to refuse unseen."
+        },
+        {
+          "seat": "devils_advocate",
+          "point": "Waiting has a cost in missed spring revenue (F8). That source is a lender that sells financing, so the weight is limited."
+        },
+        {
+          "seat": "realist",
+          "point": "Equipment financing needs a down payment, and the owner's qualification is unknown (F5). Cheaper may not be available before spring."
+        }
+      ],
+      "conditions": [
+        "The advance repays as a percentage of card receipts, not a fixed daily ACH debit (F3, F6).",
+        "The owner's own December-February Square card sales show the holdback or debit is affordable after payroll for four employees and commissary costs, including a 20% slow month (F4, F7).",
+        "Booked events, catering or lunch locations cover the second truck's payments before it is a spring-season bet (F9).",
+        "The $60,000 covers the full truck cost, including wrap, equipment, permits, insurance, commissary and inventory, and staffing is lined up.",
+        "An attorney reviews the contract for the personal guarantee, UCC lien and any confession-of-judgment clause. These are common MCA terms, and details vary by state (F12, unverified).",
+        "County health and any DC license and location rules are confirmed for the second truck's start date (F10, F11, unverified).",
+        "Costs are compared in the same units. At the guide's 1.28-1.40 factor, a $60,000 advance repays $76,800-$84,000, or $16,800-$24,000 in fees (F2, unverified; the owner's actual rate is unknown). One site's example puts a 1.30 factor at roughly 55% APR (F7). Equipment or SBA financing is guided at 8-14% APR over 48-60 months (F1)."
+      ],
+      "next_steps": [
+        {
+          "when": "this week",
+          "action": "Ask the funder for the offer in writing: factor rate, total payback, percentage holdback vs fixed daily ACH debit, term, fees, personal guarantee, UCC lien, confession of judgment. Do not sign or click accept yet."
+        },
+        {
+          "when": "this week",
+          "action": "Export last December, January and February card sales from Square, and list payroll and commissary costs. Calculate the daily holdback or debit at those volumes, plus a 20% slower month."
+        },
+        {
+          "when": "this week",
+          "action": "Tell the funder about any existing advance or debt, and check whether your current contracts limit new advances."
+        },
+        {
+          "when": "next 30 days",
+          "action": "Call the Maryland SBDC (free, confidential) to review the numbers and the options. Request quotes from an equipment lender and an SBA 7(a) lender with the truck as collateral. Ask how long approval takes and what down payment is required."
+        },
+        {
+          "when": "next 30 days",
+          "action": "Line up booked events, catering or lunch spots for a second truck. Ask your county health department and, if you plan to sell in DC, the DC agencies about licensing steps and timing. Price a used truck against a new build."
+        },
+        {
+          "when": "next 90 days",
+          "action": "Decide in March-April, when statements show shoulder-season averages (F4). Take the cheapest financing that passes the worst-month test. Have an attorney review any MCA contract first."
+        }
+      ],
+      "ai_tools": [],
+      "escalate_to": "attorney",
+      "escalation_reason": "Any MCA contract can carry a personal guarantee, a UCC lien and possibly a confession-of-judgment clause. Disclosure rules vary by state (F12, unverified). An attorney should read the actual contract and say whether Maryland or county rules apply before you sign. The local SBDC can help with the financing comparison.",
+      "would_change": [
+        "A written offer with a percentage-of-card-receipts holdback and a low factor rate, where your own December-February sales cover payments with room in a 20% slow month.",
+        "Booked events or catering contracts that would give the second truck revenue before spring and through winter.",
+        "Equipment or SBA financing is unavailable or too slow for you, and the advance is the only workable route with an affordable structure."
+      ],
+      "no_new_tool": "No AI tool is needed. Your Square POS already holds the December-February sales you need. Export those reports and model the holdback in a spreadsheet by hand. Cost: $0 beyond a few hours of your time."
+    }
+  },
+  "board_error": null,
+  "baseline_research": "# Recommendation\n\n**Don't take the $60,000 MCA as offered. Treat the instant approval as a sign the funder is comfortable with its pricing, not that the deal fits your business.** Pursue a second truck, but fund it with equipment financing or an SBA 7(a) loan secured by the truck, or buy a cheaper used truck with smaller or lender-backed financing. Your goal of doubling revenue is reasonable. The MCA is the wrong tool for it.\n\n## Why\n\n- **Truck purchases are a known wrong-fit use of an MCA (F1, F5).** Equipment financing with the truck as collateral is the normal route and is generally more accessible than unsecured money. F1 says an SBA or specialty equipment loan at 8-14% APR over 48-60 months can cut the financing cost by 70-85%.\n- **The cost is high.** At the guide's 1.28-1.40 factor range, you'd repay roughly $76,800-$84,000, or $16,800-$24,000 in fees (F2). Your actual factor is unknown. One example puts a 1.30 factor at about 55% APR (F7). A second truck would have to earn well above that return, and it won't earn anything until it is licensed, staffed and operating.\n- **The payments start before the revenue does (F7).** Daily debits begin immediately, but a new truck needs permits, inspection, a wrap, hiring and time to build a customer base.\n- **Seasonality is the biggest danger for a food truck.**\n  - In F3's example, a 12% holdback goes from $216 a day in August to $30 a day in February. An advance that repays in 6 months at summer volume can take 10-14 months at winter volume.\n  - If your offer uses a fixed daily ACH debit instead of a percentage holdback, winter becomes \"genuinely unsustainable\" (F3). The funder's pull ignores weather and festival calendars (F6).\n  - Because you're buying \"before spring,\" you'd be taking on debt at the weakest point in the year. F4 advises applying in March-April and checking your December and January card volumes first.\n- **Stacking and cash tightness compound it.** If you ever need a second advance, it will cost more and take a larger share of deposits, about 19.8% of January deposits versus 14.9% in an average month in one example (F9).\n\n## Main risks\n\n1. **Unknown terms.** We don't know the factor rate, holdback versus fixed debit, term, personal guarantee, UCC lien or any confession-of-judgment clause (F12, unverified but common). A personal guarantee and a lien could put your first truck and personal assets at risk if the second truck underperforms.\n2. **Winter cash crunch.** A debit sized on summer sales could drain a one-truck operation in the slow months, which could jeopardize payroll for your four employees and the first truck itself.\n3. **The $60,000 may not cover everything.** F1 puts used outfitted trucks at $40,000-$80,000. Wrap, permits, insurance, commissary fees, inventory and a hiring ramp could push the true cost higher.\n4. **Permitting delays (F10, F11, unverified).** Maryland county health departments license and inspect mobile units, rules differ by county, and a commissary is usually required. Working in DC proper means separate DC licensing. A truck you've paid for but can't operate is the worst case.\n5. **Staffing and management.** Can your current team run two trucks, and what does the added payroll cost? Doubling revenue doesn't double profit.\n6. **Bias in the sources.** Lender and MCA-provider sources have an interest. F8's argument that waiting costs you revenue is fair in principle, but it comes from a lender and its figures were garbled, so I wouldn't rely on it. The direction of the evidence, though, is consistent across independent sources.\n\n## Next steps\n\n1. **Get the full MCA contract and read it, or have an attorney review it.** Find the factor, total payback, holdback versus fixed ACH, term, fees, guarantee, lien and default remedies. Ask whether Maryland's commercial-financing disclosure rules apply (open question).\n2. **Stress-test it with your own numbers.** Pull your December-February card sales and calculate the daily holdback or debit at those volumes. Model a 20% slow month at the debit amount (F7), and size payments against your worst realistic month (F6). If the debit hurts in January, that settles it.\n3. **Apply for alternatives now, in parallel.** Request quotes from equipment lenders and an SBA 7(a) lender. Expect a down payment (F5). Underwriting will look at 3-4 months of bank statements, and 6-12 months of deposits opens more options. Ask how long approval takes, since SBA can be slower than an MCA.\n4. **Look at a used truck.** A cheaper used truck lowers the amount you need to finance and the risk if the expansion is slow.\n5. **Confirm demand before buying.** Line up booked events, catering contracts or lunch locations that would give a second truck revenue from day one. Funders like this too (F9), and it improves your loan terms.\n6. **Check licensing early.** Contact the county health department where the truck would be based, and DC agencies if you'll sell there. Get timelines and fees, and confirm your commissary has capacity.\n7. **Check first-truck profitability.** Confirm that after payroll, commissary and food costs, truck #1 generates enough margin to carry new debt through winter.\n8. **If you still end up with an MCA, set conditions.** Take a smaller advance, insist on a percentage-of-card-receipts holdback and no fixed ACH debit, and prefer a short term. Don't stack advances. Ideally apply in March-April (F4) and use it only for a booked-event, peak-season launch (F9).\n\n## What would change my view\n\nI'd reconsider only if the offer turns out to be a low-factor, percentage-holdback deal, you have booked revenue for the second truck, your winter numbers show the holdback is comfortably affordable, and conventional financing is genuinely unavailable or too slow. Even then, a smaller advance paired with a used truck is safer than $60,000 for a new purchase.\n\nWaiting a few weeks to compare financing costs a little revenue. A bad MCA signed in winter can cost you the business you already have.",
+  "judge": {
+    "model": "openrouter/anthropic/claude-sonnet-5.5",
+    "letters": {
+      "board": "A",
+      "baseline": "B",
+      "baseline_research": "C"
+    },
+    "board": {
+      "risks": [
+        {
+          "risk": "True cost of capital (APR / factor rate)",
+          "score": 2,
+          "quote": "don't sign this advance until terms, winter sales and cheaper loans are checked."
+        },
+        {
+          "risk": "SBA-backed alternatives",
+          "score": 2,
+          "quote": "Request quotes from an equipment lender and an SBA 7(a) lender with the truck as collateral."
+        }
+      ],
+      "actionable": 5,
+      "errors": []
+    },
+    "baseline": {
+      "risks": [
+        {
+          "risk": "True cost of capital (APR / factor rate)",
+          "score": 2,
+          "quote": "$60,000 \u00d7 1.35 = **$81,000 repaid**, a $21,000 cost."
+        },
+        {
+          "risk": "SBA-backed alternatives",
+          "score": 2,
+          "quote": "SBA microloan or 7(a) small loan.** Slower, but far cheaper."
+        }
+      ],
+      "actionable": 4,
+      "errors": []
+    },
+    "baseline_research": {
+      "risks": [
+        {
+          "risk": "True cost of capital (APR / factor rate)",
+          "score": 2,
+          "quote": "One example puts a 1.30 factor at about 55% APR (F7). A second truck would have to earn well above that return"
+        },
+        {
+          "risk": "SBA-backed alternatives",
+          "score": 2,
+          "quote": "fund it with equipment financing or an SBA 7(a) loan secured by the truck"
+        }
+      ],
+      "actionable": 4,
+      "errors": []
+    }
+  }
+}

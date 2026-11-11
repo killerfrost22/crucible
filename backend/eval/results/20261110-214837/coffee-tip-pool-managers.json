@@ -1,0 +1,671 @@
+{
+  "scenario": {
+    "id": "coffee-tip-pool-managers",
+    "intake": {
+      "question": "Should my two shift managers start sharing in the baristas' tip pool? They work the floor too.",
+      "leaning": "Yes, it feels fair",
+      "profile": {
+        "industry": "coffee shop",
+        "location": "College Park, Maryland",
+        "size": "1 location, 9 employees",
+        "current_tools": [
+          "Square POS",
+          "7shifts"
+        ],
+        "goals": [
+          "keep staff morale high",
+          "reduce turnover"
+        ]
+      }
+    },
+    "must_catch": [
+      {
+        "label": "Managers/supervisors may not keep tips from a pool (FLSA)",
+        "any": [
+          "FLSA",
+          "Fair Labor Standards",
+          "managers? (and|or) supervisors? (may|can)not",
+          "(cannot|can't|may not|prohibit\\w*) .{0,60}(manager|supervisor)",
+          "(manager|supervisor)s? .{0,60}(cannot|can't|may not|prohibit\\w*)"
+        ]
+      }
+    ]
+  },
+  "seat_model": "openrouter/anthropic/claude-haiku-5.5",
+  "researcher_model": "openrouter/anthropic/claude-sonnet-5.5:online",
+  "chair_model": "openrouter/anthropic/claude-sonnet-5.5",
+  "web_search": true,
+  "baseline": "## Recommendation\n\n**Don't add them yet. Whether it's legal depends on their actual duties, and the \"fair\" instinct could create wage liability.**\n\n### The legal issue\nUnder the federal FLSA, managers and supervisors can't take any part of employees' tips. Maryland's wage law is enforced alongside it and doesn't give you more room. The DOL treats someone as a manager or supervisor if they meet the executive-duties test:\n- Their **primary duty is management** (scheduling, directing work, handling problems, closing out, and so on).\n- They **regularly direct two or more employees**.\n- They **can hire or fire, or their recommendations on hiring, firing, or promotion carry real weight**.\n\nIf your shift managers meet that test, they **cannot** receive money from the baristas' pool, even if everyone agrees and even though they work the floor. The usual exception is tips a customer gives *directly to that person* for their own service, such as a tip left specifically for them.\n\nIf they're really \"lead baristas\" who mostly make drinks, can't hire or fire, and don't have recommendations that carry weight, they can legitimately be in the pool. The title doesn't decide it. What they actually do does.\n\n### Main risks\n- **Back wages plus double damages.** Misappropriated tips must be repaid, usually with an equal amount in liquidated damages, and the lookback is 2 to 3 years. Attorney's fees can be added. One unhappy ex-employee can trigger a claim.\n- **Morale and turnover.** Baristas may see their share shrink. Even if it's legal, it can look like a cut unless you explain it.\n- **Tip credit complications.** If you pay below full minimum wage and use a tip credit, you also lose the credit for improper pooling. Maryland's rules are strict here.\n- **Record-keeping.** Your Square and 7shifts data will show who was in the pool. Sloppy documentation hurts you in a dispute.\n\n### Better ways to get the same fairness\nIf they're true managers, reward them another way:\n- **Raise their base pay** or add a **shift-lead differential** of $1 to $3 per hour.\n- Offer a **bonus tied to sales, labor cost, or customer scores**, paid from the business and not from tips.\n- Offer **perks** such as better shift choice, a paid break, or a path to assistant manager.\n\nIf they truly aren't supervisors, add them to the pool using **hours worked** (simplest) or a **points system**, and write down the reasoning.\n\n### Next steps\n1. **List each shift manager's actual duties.** Do they hire, fire, or discipline, or make recommendations that are followed? Do they spend most of their time on management?\n2. **Check your tip-credit status.** Do you pay full minimum wage ($15/hr in Maryland) or use a tip credit?\n3. **Get a quick opinion** from an employment attorney, your payroll provider, or the Maryland Department of Labor's wage and hour office. This should be a short, inexpensive consult.\n4. **If they're managers, don't change the pool.** Offer a pay raise or bonus instead.\n5. **If they qualify, put the policy in writing.** Cover who participates, how shares are calculated, and how often tips are paid out. Get staff input before rolling it out, and set it up in Square and 7shifts so payouts are tracked.\n6. **Talk to the baristas first.** Whatever you decide, explaining it openly protects morale.\n\nThis is general guidance, not legal advice, so confirm the specifics for your shop before changing anything.",
+  "seconds": 73,
+  "board_state": {
+    "intake": {
+      "question": "Should my two shift managers start sharing in the baristas' tip pool? They work the floor too.",
+      "leaning": "Yes, it feels fair",
+      "profile": {
+        "name": "",
+        "industry": "coffee shop",
+        "location": "College Park, Maryland",
+        "size": "1 location, 9 employees",
+        "current_tools": [
+          "Square POS",
+          "7shifts"
+        ],
+        "budget": "",
+        "goals": [
+          "keep staff morale high",
+          "reduce turnover"
+        ],
+        "constraints": ""
+      }
+    },
+    "evidence_mode": "web",
+    "evidence": {
+      "decision": "Whether to let the two floor-working shift managers receive a share of the baristas' tip pool at a College Park, Maryland coffee shop.",
+      "options": [
+        "Do nothing: keep the two shift managers out of the tip pool and leave pay and roles as they are.",
+        "Keep the managers out of the pool, but raise their hourly pay or add a non-tip bonus to make up the difference.",
+        "Restructure the shift manager roles so they do not meet the executive duties test (primary duty not management, no hire/fire input, not directing two or more full-time equivalents), then include them in the pool as ordinary tipped staff.",
+        "Keep the managers out of the shared pool but let them keep tips they receive directly and solely from customers for their own service, such as an individual tip line, if the POS can separate those tips."
+      ],
+      "facts": [
+        {
+          "claim": "The federal FLSA prohibits a manager or supervisor from receiving any portion of other employees' tips, including from a tip pool or tip jar. This applies whether or not the employer takes a tip credit.",
+          "source": "https://www.dol.gov/agencies/whd/fact-sheets/15b-managers-supervisors-tips-flsa",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:52:12Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "For FLSA tip purposes, a manager or supervisor is anyone who meets the executive duties test. That means they customarily and regularly direct the work of two or more full-time employees or their equivalent, they can hire or fire (or their recommendations carry particular weight), and their primary duty is managing the business or a recognized department. No minimum pay level or salary basis is required.",
+          "source": "https://www.dol.gov/agencies/whd/fact-sheets/15b-managers-supervisors-tips-flsa",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:52:12Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "A manager who does tip-producing work such as serving customers can still be a manager for tip purposes. The DOL fact sheet's caf\u00e9 example says a manager who supervises while working the counter may not keep tips from a shared jar or card tips at the counter, because they cannot be attributed solely to that manager's own service.",
+          "source": "https://www.dol.gov/agencies/whd/fact-sheets/15b-managers-supervisors-tips-flsa",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:52:12Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "The DOL says a manager may keep tips received directly from customers for service the manager directly and solely provides. An employer may also require managers who earn their own tips to contribute some to a mandatory pool for non-managerial staff, but the manager may not receive anything from the pool.",
+          "source": "https://www.dol.gov/agencies/whd/fact-sheets/15b-managers-supervisors-tips-flsa",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:52:12Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "The federal regulation 29 CFR 531.54 says an employer may not allow managers and supervisors to receive tips from a tip pool, whether or not it takes a tip credit. It also says an employer that collects and redistributes tips must distribute them in full by the regular payday for the period in which they were collected.",
+          "source": "https://www.law.cornell.edu/cfr/text/29/531.54",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:52:12Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Job titles do not decide the question; actual duties do. Employees titled 'shift supervisor' or 'assistant manager' who do mostly line work with a few extra duties such as scheduling or breaks may not qualify as managers, and the more supervisory duties they have, the less likely they can legally share in a pool.",
+          "source": "https://www.nolo.com/legal-encyclopedia/should-supervisor-sharing-tips.html",
+          "verified": true,
+          "check": {
+            "status": "unreachable",
+            "checked_at": "2026-11-11T02:52:12Z",
+            "http_status": 403
+          }
+        },
+        {
+          "claim": "A law firm's summary of the DOL opinion letter says an employee whose primary duty is not management does not meet the executive duties test and is not a 'manager or supervisor' for tip purposes. The opinion letter itself did not address staff who are mainly baristas, servers or bartenders and occasionally work shifts in a managerial capacity.",
+          "source": "https://www.phelps.com/insights/dol-managers-cannot-share-in-employee-tip-pools-even-when-performing-tipped-work.html",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:52:13Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "A law firm summary says the manager-exclusion rule applies even if the manager is working the floor, helped serve customers, or is paid hourly rather than salaried.",
+          "source": "https://www.lawgroup.biz/can-managers-share-tips-in-a-tip-pool-what-employers-and-employees-need-to-know",
+          "verified": true,
+          "check": {
+            "status": "unreachable",
+            "checked_at": "2026-11-11T02:52:12Z",
+            "http_status": 403
+          }
+        },
+        {
+          "claim": "Many states have their own tip and tip-pooling laws, including rules on who counts as a manager who cannot share tips, so state law must be checked separately from federal law.",
+          "source": "https://www.nolo.com/legal-encyclopedia/should-supervisor-sharing-tips.html",
+          "verified": true,
+          "check": {
+            "status": "unreachable",
+            "checked_at": "2026-11-11T02:52:12Z",
+            "http_status": 403
+          }
+        },
+        {
+          "claim": "Maryland's wage and hour law (Labor and Employment Article, Title 3) has its own tipped-employee provisions, including a tip credit and a requirement that tips plus cash wage meet the state minimum. This summary is from general knowledge and was not confirmed by search; whether the state or Prince George's County defines 'manager' or limits pool participants more strictly than federal law has not been verified.",
+          "source": "",
+          "verified": false
+        },
+        {
+          "claim": "Under the FLSA, employees can generally recover unlawfully kept tips plus an equal amount as liquidated damages, and the DOL can assess civil money penalties for violations. This is from general knowledge, not a search result.",
+          "source": "",
+          "verified": false
+        },
+        {
+          "claim": "Square and 7shifts both advertise tip-tracking or tip-pooling reporting. Current plan prices and exact pooling features were not retrieved from vendor pricing pages, so none are stated here.",
+          "source": "",
+          "verified": false
+        }
+      ],
+      "open_questions": [
+        "Do the two shift managers meet the executive duties test in practice? That means directing two or more full-time equivalents, having hire/fire authority or recommendations given particular weight, and having management as their primary duty. The answer is likely decisive.",
+        "What share of each manager's hours is spent on management tasks (scheduling, training, discipline, cash and inventory) versus making drinks?",
+        "Does the shop take a tip credit, or pay all staff full minimum wage? Maryland's and Prince George's County's current minimum and tipped wages should be confirmed.",
+        "Do Maryland or Prince George's County rules on tip pooling or on who counts as a manager differ from the federal rules? A local employment attorney or the Maryland Department of Labor could confirm.",
+        "How are tips collected today: a shared jar, POS card tips, or both? Can Square attribute card tips to the individual who rang up the sale?",
+        "Are baristas informed of and agreeable to the current pooling rules? A change in how tips are split could affect morale and turnover, and no data on this was retrieved.",
+        "What do the managers earn now, and would a wage increase or bonus be affordable as an alternative to sharing tips?",
+        "Does the shop have written tip-pool policies, and is the pool distributed by each regular payday as the regulation requires?"
+      ]
+    },
+    "round1": {
+      "industry_expert": {
+        "stance": "oppose",
+        "headline": "Don't add the shift managers to the pool as they are now.",
+        "summary": "As managers who direct staff, they likely cannot legally take pool tips under federal rules (F1, F2). Sharing would also expose the shop to back-pay claims. Pay them more instead, or restructure roles only if their real duties change. Confirm the facts with a local employment attorney before any change.",
+        "key_points": [
+          "Federal law bars managers who meet the executive duties test from any pool share, even if they work the floor (F1, F8).",
+          "Serving customers does not remove manager status; the DOL caf\u00e9 example says counter-working managers cannot keep shared tips (F3).",
+          "Recovery can include the unlawfully kept tips plus an equal amount in damages (F11, unverified)."
+        ],
+        "risks": [
+          "Back-pay and damages claims from baristas or managers if the change is made while managers still qualify as managers.",
+          "Morale loss if the fix is a pay cut or a rule that feels arbitrary to the floor team.",
+          "Maryland or county rules may be stricter than federal rules, and this is not yet checked (F10, unverified)."
+        ],
+        "pushback": "The owner assumes the managers are fair to include. The real question is their actual duties: how many staff they direct, whether they hire or fire, and how much of their time is management. Fairness does not decide legality.",
+        "confidence": 80
+      },
+      "ai_tools_expert": {
+        "stance": "oppose",
+        "headline": "Don't add managers to the tip pool; fix their pay instead.",
+        "summary": "Your fairness instinct is reasonable, but federal law bars true managers from sharing in tips, even when they work the floor (F1, F2, F8). Whether they qualify depends on their actual duties, not their titles (F6). Keep them out of the pool and consider a raise or bonus. Maryland rules are unverified, so confirm them with an employment attorney or the Maryland Department of Labor.",
+        "key_points": [
+          "Federal law bars anyone meeting the executive duties test from receiving pool tips (F1, F2).",
+          "Floor work does not disqualify a manager; the rule applies even when they serve customers or are paid hourly (F3, F8).",
+          "Restructuring roles only works if duties truly change; retitling them is not enough (F6)."
+        ],
+        "risks": [
+          "If the managers are true managers, sharing pool tips could mean repaying tips plus an equal amount in damages (F11, unverified).",
+          "Splitting tips by title alone invites a complaint from baristas or a wage claim.",
+          "Baristas may resent a change in splits, which could hurt morale and turnover; no data was retrieved on this."
+        ],
+        "pushback": "Assume the managers mostly make drinks. Check their hours on scheduling, training, discipline, and cash work before deciding anything.",
+        "confidence": 75,
+        "tools": []
+      },
+      "realist": {
+        "stance": "oppose",
+        "headline": "Do not add shift managers to the tip pool as they work now.",
+        "summary": "Federal law bars managers and supervisors from receiving tips from a pool, and this applies even when they work the floor (F1, F8). Whether your two shift managers count as managers depends on their actual duties, not their titles (F6). If they direct two or more full-time staff, have hiring or firing input, and management is their main job, sharing the pool is not allowed. Check their duties before acting, and consider raising their pay instead.",
+        "key_points": [
+          "Managers may not receive any portion of the pool, even hourly and even on the floor (F1, F8).",
+          "Job titles do not decide it; duties do (F6).",
+          "Pay raise or a non-tip bonus is a lawful way to make the managers whole (F4 allows managers to keep only direct customer tips)."
+        ],
+        "risks": [
+          "If they are managers and share the pool, back pay plus equal damages may be owed (F11, unverified; confirm with an employment attorney).",
+          "Maryland or Prince George's County may be stricter than federal rules (F10, unverified; confirm with a local attorney or the Maryland Department of Labor).",
+          "Changing pool rules without written policy and clear pay communication could hurt baristas' morale and turnover."
+        ],
+        "pushback": "Assumes the managers are truly non-managers. Their scheduling, training, discipline and cash duties may make them managers, which would bar them from the pool entirely.",
+        "confidence": 80,
+        "checks": [
+          {
+            "area": "legal",
+            "status": "block",
+            "note": "Federal rule (F1, F5) bars managers from the pool; whether these two qualify is unknown, so the proposal cannot be confirmed lawful as stated."
+          },
+          {
+            "area": "legal",
+            "status": "flag",
+            "note": "Maryland and Prince George's County rules on managers and pooling are unverified (F10); confirm with a local employment attorney or the Maryland Department of Labor."
+          },
+          {
+            "area": "compliance",
+            "status": "flag",
+            "note": "Written pool policy and timely distribution by each regular payday (F5) are unknown; check with the shop's records and an accountant."
+          },
+          {
+            "area": "compliance",
+            "status": "flag",
+            "note": "Square and 7shifts tip-attribution features are unverified (F12); confirm with the vendors before relying on them."
+          },
+          {
+            "area": "financial",
+            "status": "flag",
+            "note": "Manager pay and the cost of a raise or bonus are not in the evidence; the owner should compare costs before deciding."
+          },
+          {
+            "area": "goals",
+            "status": "flag",
+            "note": "Sharing the pool may lift managers' morale, but baristas' reaction and turnover effects are unknown (no data retrieved)."
+          }
+        ]
+      },
+      "strategist": {
+        "stance": "oppose",
+        "headline": "Don't add shift managers to the pool; fix pay another way first.",
+        "summary": "Federal rules bar managers from pool tips, and the test depends on actual duties, not titles. If your two managers direct staff and handle hiring input, sharing tips is illegal. Restructuring them to fit the pool would shrink their authority and could be hard to undo. A raise or non-tip bonus reaches the same fairness goal with less risk. Confirm state rules with an attorney first.",
+        "key_points": [
+          "Federal law bars managers from receiving any pool tips, even when they work the floor (F1, F3, F8).",
+          "Whether they qualify depends on duties: directing two or more full-time equivalents, hire/fire input, and management as primary duty (F2, F6).",
+          "Maryland tip rules are unverified and may be stricter; an employment attorney or the Maryland Department of Labor should confirm (F10, F9)."
+        ],
+        "risks": [
+          "Stripping real management duties to fit the pool would weaken supervision and make the restructure costly to reverse.",
+          "If managers are found ineligible, the shop could owe back tips plus equal damages (F11, unverified).",
+          "Baristas may resent a pool-sharing change if its legal basis is unclear, hurting the morale goal."
+        ],
+        "pushback": "Assumes the managers' fairness gap is best solved through tips. Ask whether a higher base wage or bonus fixes the real issue without changing who legally shares the pool.",
+        "confidence": 80
+      },
+      "devils_advocate": {
+        "stance": "conditional",
+        "headline": "Share the pool only if managers truly aren't managers.",
+        "summary": "Sharing the pool with managers is illegal if they truly manage. Your fairness goal is valid, so the lawful routes are a real role change, or a raise or bonus outside the pool. Confirm their actual duties with an employment attorney before any change.",
+        "key_points": [
+          "Federal law bars managers from any pool share, whether or not you take a tip credit (F1, F5).",
+          "Job titles don't decide it; actual duties do, so floor work alone doesn't disqualify a role (F6, F7).",
+          "Managers may keep tips given directly and solely for their own service, which can be a fair middle path (F4)."
+        ],
+        "risks": [
+          "If the managers still schedule, train, or discipline, pool sharing exposes you to back pay and penalties (F11, unverified; confirm with an attorney).",
+          "A paper-only role change invites scrutiny; the change must match real daily duties.",
+          "Square's ability to attribute card tips to one person is unverified, so a direct-tip line may not work (F12, unverified)."
+        ],
+        "pushback": "You assume the pool split is the only fairness fix. A non-tip raise or bonus may achieve the same morale goal with less legal exposure.",
+        "confidence": 35
+      }
+    },
+    "round2": {
+      "industry_expert": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "devils_advocate",
+            "their_claim": "Managers may keep tips given directly and solely for their own service, which can be a fair middle path (F4).",
+            "response": "Agreed on the direct-tip point, but it needs a caveat: F4 says managers may keep only tips from service they directly and solely provide. Counter-working tips are not solely theirs (F3). Confirm Square can separate them first."
+          },
+          {
+            "target": "realist",
+            "their_claim": "Pay raise or a non-tip bonus is a lawful way to make the managers whole (F4 allows managers to keep only direct customer tips).",
+            "response": "The raise idea holds, but F4 does not support it. F4 covers tips managers keep, not raises. Cite raises as a general business choice, and confirm pay costs first, since no manager pay data is in the evidence."
+          },
+          {
+            "target": "ai_tools_expert",
+            "their_claim": "Restructuring roles only works if duties truly change; retitling them is not enough (F6).",
+            "response": "Correct, and F6 backs it: duties decide, not titles. I would add that any restructure must change real daily work, and an attorney should review it before you rely on it."
+          }
+        ],
+        "concessions": [
+          "A direct-tip line for a manager's own service could be a fair middle path, if the POS can separate those tips (F4)."
+        ],
+        "stance": "oppose",
+        "headline": "Don't share the pool with shift managers until their real duties are checked.",
+        "summary": "If your two shift managers direct staff, hire or fire, and mainly manage, federal law bars them from any pool share, even when they work the floor (F1, F2, F8). Titles do not decide it; duties do (F6). Check their hours on scheduling, training, discipline, and cash work. A raise or non-tip bonus meets the fairness goal with less legal risk. Maryland and county rules are unverified, so confirm with an employment attorney or the Maryland Department of Labor.",
+        "key_points": [
+          "Federal law bars anyone meeting the executive duties test from pool tips, even on the floor (F1, F2, F8).",
+          "Duties decide manager status, not titles (F6); counter work does not remove it (F3).",
+          "Managers may keep only tips from service they directly and solely provide (F4)."
+        ],
+        "risks": [
+          "If they qualify as managers, back tips plus an equal amount in damages could be owed (F11, unverified).",
+          "Baristas may resent a split change made without clear written policy, hurting morale and turnover.",
+          "Maryland or Prince George's County rules may be stricter; unverified (F10), so confirm with an attorney or the Maryland Department of Labor."
+        ],
+        "pushback": "Fairness does not decide legality. Ask how many staff they direct, whether they hire or fire, and what share of their hours is management. Your leaning depends on those answers, and you have not checked them yet.",
+        "confidence": 82
+      },
+      "ai_tools_expert": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "realist",
+            "their_claim": "A pay raise or non-tip bonus is a lawful way to make the managers whole, citing F4.",
+            "response": "I agree a raise or bonus is lawful, but F4 only covers managers keeping tips from direct customer service. It does not support raises. Cite F4 only for that point."
+          },
+          {
+            "target": "devils_advocate",
+            "their_claim": "Square's ability to attribute card tips to one person is unverified, so a direct-tip line may not work.",
+            "response": "Agreed. F12 says Square and 7shifts tip-tracking features were not confirmed. Check with Square before relying on any individual tip line."
+          }
+        ],
+        "concessions": [
+          "A direct-tip line depends on POS attribution that F12 leaves unverified, so it is not a sure option.",
+          "A real role change is lawful only if the managers' daily duties actually change, not just their titles."
+        ],
+        "stance": "oppose",
+        "headline": "Oppose adding managers to the pool; raise their pay instead.",
+        "summary": "Keep the two shift managers out of the tip pool and consider a raise or non-tip bonus. No AI tool here helps: Square POS and 7shifts are tools you already have, not AI tools, so none are listed. Whether the managers qualify depends on their real duties (F2, F6). Confirm with an employment attorney or the Maryland Department of Labor.",
+        "key_points": [
+          "Managers who meet the executive duties test may not receive any pool share, even on the floor (F1, F8).",
+          "Whether managers qualify turns on duties, not titles (F6); Square tip attribution is unverified (F12).",
+          "A raise or non-tip bonus meets the fairness goal without the pool question; its cost is not in the evidence."
+        ],
+        "risks": [
+          "Back pay plus equal damages if the managers still qualify as managers (F11, unverified).",
+          "Baristas may resent a change in tip splits, hurting morale and turnover.",
+          "Maryland or Prince George's County rules may be stricter than federal rules (F10, unverified)."
+        ],
+        "pushback": "Assume the managers mostly make drinks. First check their hours on scheduling, training, discipline and cash work.",
+        "confidence": 72,
+        "tools": []
+      },
+      "realist": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "devils_advocate",
+            "their_claim": "Managers may keep direct solely-earned customer tips as a fair middle path (F4).",
+            "response": "Agreed that F4 allows keeping direct, solely earned customer tips, but a shared tip-line split only works if POS can attribute card tips to one person; F12 is unverified, so that path is not yet confirmed."
+          },
+          {
+            "target": "strategist",
+            "their_claim": "Restructuring managers to fit the pool would shrink their authority and be hard to undo.",
+            "response": "Correct on the risk, but it is a separate point: F6 says duties decide status, so any restructure must match real daily work, not just paper changes, or it fails the test."
+          },
+          {
+            "target": "industry_expert",
+            "their_claim": "Recovery can include unlawfully kept tips plus an equal amount in damages (F11, unverified).",
+            "response": "Fair warning, but F11 is unverified general knowledge. Confirm with an employment attorney before relying on the exposure figure, and do not treat it as established."
+          }
+        ],
+        "concessions": [
+          "Restructuring roles is only lawful if actual duties change, not just titles (F6), as the Strategist and Devil's Advocate noted.",
+          "A direct-tip line depends on POS attribution that is unverified (F12), as the Devil's Advocate noted."
+        ],
+        "stance": "oppose",
+        "headline": "Don't share the pool with managers; fix their pay instead.",
+        "summary": "Federal law bars anyone who truly manages from receiving pool tips, even if they work the floor (F1, F8). Titles don't decide it; duties do (F6). Your two managers likely qualify if they direct staff, hire or fire, and management is their main job. Fairness matters, but a raise or non-tip bonus is the safer way to fix it. Maryland and county rules are unverified; confirm with an employment attorney or the Maryland Department of Labor.",
+        "key_points": [
+          "Managers may not receive any pool share, even hourly or on the floor (F1, F8).",
+          "Duties decide manager status; title does not (F6).",
+          "A raise or non-tip bonus is a lawful way to reward managers (F4 limits direct tips to solely earned service)."
+        ],
+        "risks": [
+          "If managers qualify and share the pool, back pay and damages may be owed (F11, unverified).",
+          "Maryland or Prince George's County rules may be stricter than federal rules (F10, unverified).",
+          "Baristas or managers may lose morale if the change feels arbitrary or is poorly explained."
+        ],
+        "pushback": "Assume the managers mostly make drinks. Their scheduling, training, discipline and cash duties may make them managers, which would bar them from the pool entirely.",
+        "confidence": 80,
+        "checks": [
+          {
+            "area": "legal",
+            "status": "block",
+            "note": "Federal rule (F1, F5) bars managers from the pool; whether these two managers qualify is unknown, so the proposal cannot be confirmed lawful as stated."
+          },
+          {
+            "area": "legal",
+            "status": "flag",
+            "note": "Maryland and Prince George's County rules on managers and pooling are unverified (F10); confirm with a local employment attorney or the Maryland Department of Labor."
+          },
+          {
+            "area": "compliance",
+            "status": "flag",
+            "note": "Written pool policy and distribution by each regular payday (F5) are unknown; check the shop's records with an accountant."
+          },
+          {
+            "area": "compliance",
+            "status": "flag",
+            "note": "Square and 7shifts tip-attribution features are unverified (F12); confirm with the vendors before relying on them."
+          },
+          {
+            "area": "financial",
+            "status": "flag",
+            "note": "Manager pay and the cost of a raise or bonus are not in the evidence; compare costs before deciding."
+          },
+          {
+            "area": "goals",
+            "status": "flag",
+            "note": "Pool sharing may lift managers' morale, but barista reaction and turnover effects are unknown; no data was retrieved."
+          }
+        ]
+      },
+      "strategist": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "realist",
+            "their_claim": "A pay raise or non-tip bonus is a lawful way to make the managers whole, citing F4.",
+            "response": "Your F4 citation covers managers keeping their own direct customer tips, not raises. A raise can be lawful on its own, but its cost is unknown, so compare it with a bonus before deciding."
+          },
+          {
+            "target": "industry_expert",
+            "their_claim": "Restructure the manager roles only if their real duties change.",
+            "response": "Agreed, but a restructure built to fit the pool shrinks real supervision and is costly to undo. That cost is not yet weighed in your proposal."
+          },
+          {
+            "target": "devils_advocate",
+            "their_claim": "A non-tip raise or bonus may reach the same morale goal with less legal exposure.",
+            "response": "Agreed on the bonus path. A permanent raise also sets a base pay that is hard to lower later, so compare a one-time bonus with a raise first."
+          }
+        ],
+        "concessions": [
+          "Devil's Advocate: a non-tip raise or bonus may reach the morale goal with less legal exposure.",
+          "Realist: baristas' reaction and turnover effects are unknown, so staff input should come before any change."
+        ],
+        "stance": "oppose",
+        "headline": "Don't share the pool; raise managers' pay instead.",
+        "summary": "Over the next year, sharing the pool commits you to a split that is hard to reverse, and federal rules (F1) bar it if your managers really manage. Restructuring roles to fit would weaken supervision. A raise or non-tip bonus meets the fairness goal with less lock-in. Have an employment attorney confirm duties and Maryland rules first.",
+        "key_points": [
+          "Federal rule bars managers from any pool share, even when they work the floor (F1, F3).",
+          "Once baristas plan around a pool split, reversing it later is harder than starting it.",
+          "A raise or non-tip bonus keeps managers' pay fair without changing who legally shares tips; cost is unknown because manager pay is not in the evidence."
+        ],
+        "risks": [
+          "A restructure that strips real management duties weakens supervision and is costly to reverse.",
+          "If the managers still qualify, back tips plus equal damages may be owed (F11, unverified; confirm with an employment attorney).",
+          "Baristas may see a new split as unfair if its legal basis is unclear, hurting the turnover goal."
+        ],
+        "pushback": "Assumes fairness requires a tip split. Ask whether a higher base wage or bonus closes the real gap, since manager pay and hours are not in the evidence.",
+        "confidence": 80
+      },
+      "devils_advocate": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "industry_expert",
+            "their_claim": "Managers who direct staff likely cannot legally take pool tips, so pay them more instead.",
+            "response": "Agreed on the law, but 'likely' hides the real question. The executive test turns on facts we lack: how many staff they direct and how much time goes to management. Don't let the pay fix close the door before those facts are checked."
+          },
+          {
+            "target": "strategist",
+            "their_claim": "Restructuring managers to fit the pool would shrink their authority and be hard to undo.",
+            "response": "True, but a restructure that matches real duties is not a paper trick. If the managers truly do not manage, the pool may be lawful. Stripping duties is the wrong route; checking duties is the right one."
+          },
+          {
+            "target": "realist",
+            "their_claim": "Pay raise or non-tip bonus is a lawful way to make managers whole.",
+            "response": "Lawful, yes, but not proven to be the cheapest or most fair fix. Nobody has checked the managers' pay or the cost of a raise. A raise could cost more than the pool share and still leave baristas feeling unfairly treated."
+          }
+        ],
+        "concessions": [
+          "Federal law bars anyone meeting the executive duties test from any pool share (F1, F2).",
+          "Job titles do not decide the question; actual duties do (F6).",
+          "Maryland and Prince George's County rules are unverified and must be checked (F10)."
+        ],
+        "stance": "conditional",
+        "headline": "Share the pool only if managers truly aren't managers.",
+        "summary": "Federal law bars true managers from any pool share, even on the floor (F1, F8). Whether your two qualify depends on their real duties, not titles (F6). If they truly don't direct staff or hire, the pool may be lawful. A direct-tip line for their own service may also work (F4), if Square can separate tips (F12, unverified). A raise or bonus is the safe fallback. An employment attorney should confirm before any change.",
+        "key_points": [
+          "Federal law bars managers from any pool share, whether or not you take a tip credit (F1, F5).",
+          "Duties decide it; floor work alone doesn't disqualify a manager (F6, F7).",
+          "Managers may keep tips received directly and solely for their own service (F4)."
+        ],
+        "risks": [
+          "If the managers still schedule, train, or discipline, pool sharing could mean back pay and penalties (F11, unverified; confirm with an attorney).",
+          "A paper-only role change invites scrutiny; the change must match real daily duties.",
+          "Square's ability to attribute card tips to one person is unverified (F12)."
+        ],
+        "pushback": "You assume the pool split is the only fairness fix. A non-tip raise or bonus may reach the same morale goal with less legal exposure, and its cost is unknown.",
+        "confidence": 40
+      }
+    },
+    "verdict": {
+      "decision": "defer",
+      "headline": "Don't add managers to the pool until an attorney checks their real duties.",
+      "confidence": 72,
+      "rationale": "Federal rules bar anyone who meets the executive duties test from taking any share of a tip pool, even when they work the floor and are paid hourly (F1, F2, F8). Titles don't decide it; actual duties do (F6). Nobody knows yet how many staff your managers direct, whether they hire or fire, or how much of their time is management. Until that is checked, a raise or non-tip bonus meets your fairness goal without the pool risk. Maryland and county rules are unverified (F10).",
+      "decisive_arguments": [
+        {
+          "seat": "industry_expert",
+          "point": "Federal law bars managers who meet the executive duties test from any pool share, even if they work the counter or are paid hourly (F1, F3, F8). Fairness does not decide legality."
+        },
+        {
+          "seat": "realist",
+          "point": "Duties decide manager status, not titles (F6). The proposal cannot be confirmed lawful as stated, because whether these two qualify as managers is unknown."
+        },
+        {
+          "seat": "strategist",
+          "point": "Restructuring the roles just to fit the pool would weaken real supervision and be costly to reverse. A raise or non-tip bonus reaches the fairness goal without changing who shares tips."
+        },
+        {
+          "seat": "ai_tools_expert",
+          "point": "A raise or non-tip bonus meets the fairness goal without the pool question. Its cost is not in the evidence, so it must be priced first."
+        }
+      ],
+      "dissent": [
+        {
+          "seat": "devils_advocate",
+          "point": "'Likely managers' hides the real question. If the two truly don't direct staff or hire, the pool may be lawful, and a pay fix shouldn't close that door before the facts are checked."
+        },
+        {
+          "seat": "devils_advocate",
+          "point": "A raise is not proven to be cheaper or fairer than a pool share. It could cost more and still leave baristas feeling unfairly treated. Manager pay is not in the evidence."
+        },
+        {
+          "seat": "strategist",
+          "point": "A permanent raise sets a base pay that is hard to lower later, so compare it with a one-time bonus. Baristas' reaction is unknown, so staff input should come before any change."
+        }
+      ],
+      "conditions": [
+        "Managers stay out of the pool unless an attorney confirms they do not meet the executive duties test: directing two or more full-time equivalents, hire/fire input, and management as primary duty (F1, F2). The reason is that federal law bars managers from any pool share.",
+        "Any role change must change real daily duties, not just titles (F6). A paper-only change invites scrutiny.",
+        "Maryland and Prince George's County rules on tip pooling and on who counts as a manager must be confirmed before any change (F9, F10 unverified). An employment attorney or the Maryland Department of Labor can confirm.",
+        "The pool must be paid out in full by each regular payday for the period collected (F5). Keep a written pool policy.",
+        "A direct-tip line for managers' own service works only if Square can attribute those tips to one person (F4, F12 unverified), and the tips must come directly and solely from customers for that manager's own service (F3, F4)."
+      ],
+      "next_steps": [
+        {
+          "when": "this week",
+          "action": "Keep managers out of the pool as it stands. Have each manager log their tasks for two weeks (scheduling, training, discipline, cash, inventory vs. making drinks), and write down who they direct and whether they hire, fire or recommend either."
+        },
+        {
+          "when": "this week",
+          "action": "Write down how tips are collected today (shared jar, Square card tips, or both) and how and when the pool is paid out. Check it is paid by each regular payday (F5)."
+        },
+        {
+          "when": "this week",
+          "action": "Pull the managers' current pay and hours from 7shifts or payroll. Price a raise and a one-time bonus against what a pool share would be worth."
+        },
+        {
+          "when": "next 30 days",
+          "action": "Book a consult with an employment attorney or the Maryland Department of Labor. Bring the duty logs and ask whether the managers meet the executive duties test, and whether Maryland or county rules are stricter (F10 unverified)."
+        },
+        {
+          "when": "next 30 days",
+          "action": "Ask Square whether card tips can be attributed to the person who rang up the sale. Also confirm Maryland and Prince George's County minimum and tipped wages with the Maryland SBDC or the Department of Labor."
+        },
+        {
+          "when": "next 90 days",
+          "action": "Pick the path the facts support: a raise or bonus, a direct-tip line if Square allows it, or a pool share only if the attorney confirms the managers are not managers. Explain the change to baristas in writing before it starts."
+        }
+      ],
+      "ai_tools": [],
+      "escalate_to": "attorney",
+      "escalation_reason": "Whether your two managers meet the executive duties test, and whether Maryland or Prince George's County rules are stricter than federal rules, are legal questions with back-pay exposure. An employment attorney should confirm before any change. The Maryland SBDC can help with pay planning at no cost.",
+      "would_change": [
+        "Your duty logs and an attorney confirm the managers do not direct two or more full-time equivalents, have no hire/fire input, and management is not their primary duty. Then a pilot of including them in the pool becomes reasonable.",
+        "An attorney or the Maryland Department of Labor finds Maryland or county rules stricter than federal rules. That would narrow or remove the pool options.",
+        "Pricing shows a raise or bonus is unaffordable while a lawful direct-tip line is available through Square."
+      ],
+      "no_new_tool": "No new AI tool is needed. Use the Square POS and 7shifts you already have to pull manager hours and tip reports. Whether they can attribute tips to one person is unverified (F12), so ask the vendors. A raise or bonus costs whatever you set it at, which depends on manager pay not yet known. The SBDC consult is free."
+    }
+  },
+  "board_error": null,
+  "baseline_research": "# Recommendation: Don't add them yet. Compensate them another way unless they clearly fail the manager test.\n\nYour instinct is reasonable, but the law doesn't turn on fairness or on whether they work the floor. It turns on whether they count as managers or supervisors.\n\n## Why the answer is probably \"no\"\n\n- Federal law bars a manager or supervisor from receiving any part of a tip pool or tip jar, whether or not you take a tip credit (F1, F5).\n- \"Manager\" means someone who meets the executive duties test (F2):\n  - They customarily and regularly direct two or more full-time employees or the equivalent.\n  - They can hire or fire, or their recommendations carry particular weight.\n  - Management is their primary duty.\n  - No salary level is required, so being hourly doesn't help.\n- Working the floor doesn't exempt them. The DOL's caf\u00e9 example says a manager working the counter can't take from a shared jar or counter card tips (F3, F8).\n- Titles don't decide this. Actual duties do (F6). A \"shift manager\" who mostly makes drinks and only does some scheduling or breaks may not be a manager for tip purposes (F6, F7). That is the one path to \"yes.\"\n\nYour two shift managers may be on either side of that line. Whether they meet the test in practice is the deciding question, and I can't answer it from here.\n\n## Main risks of just adding them\n\n1. **Legal exposure.** If they meet the test, the pool is unlawful. You'd likely owe the baristas the diverted tips, and possibly an equal amount in damages plus DOL penalties (F11, general knowledge, not verified). For a 9-person shop, that could hurt.\n2. **Morale, the opposite of your goal.** Baristas would see their share shrink. Turnover could rise if they learn it was improper.\n3. **Maryland and Prince George's County rules are unconfirmed.** State law may be stricter than federal (F9, F10). Don't assume federal compliance is enough.\n4. **Relabeling on paper.** Stripping hire/fire input or the supervisory role just to qualify them (Option 3) only works if their duties really change. It would also weaken your shift coverage.\n\n## Options, ranked\n\n1. **Best default: keep them out of the pool and pay them for the difference (Option 2).** A raise or a non-tip bonus is legal either way. It also lets you reward the extra responsibility directly and predictably.\n2. **Option 4 (individual tips) is probably impractical.** Counter jar and card tips can't be attributed solely to one person's service (F3), so this only works if a customer tip is truly for that manager alone. It's worth checking whether Square can separate these, but don't count on it.\n3. **Option 3 (restructure roles)** only makes sense if you'd actually prefer them as senior baristas with limited authority. Get legal advice first.\n4. **Do nothing** is legally safe if they are managers, but it leaves your fairness concern unaddressed and may hurt retention.\n\n## Next steps\n\n1. **This week: audit their actual duties.** For each manager, document:\n   - How many people they direct per shift.\n   - Whether they hire, fire, or recommend either.\n   - What share of their hours goes to management work versus making drinks.\n2. **Check whether the baristas' current pool is clean.** Confirm that no manager is already receiving pool money. If one is, talk to an attorney about correcting it. Also confirm you distribute tips by the regular payday (F5) and have a written tip policy.\n3. **Confirm Maryland and Prince George's County rules.** Ask a local employment attorney or the Maryland Department of Labor about who may be in a pool, who counts as a manager, and the current minimum and tipped wages. Also confirm whether you take a tip credit.\n4. **Price the alternative.** Look at what each manager earns now and what a raise or bonus would cost. Pegging a shift-lead differential to hours worked is simple to run in 7shifts.\n5. **Check Square's tip reporting.** Confirm it can attribute card tips by employee, and decide how tips will be collected going forward. I haven't verified current features or pricing (F12).\n6. **Communicate openly.** Whatever you decide, explain it to both the managers and the baristas. That does more for morale and turnover than the pool structure itself.\n\n**Bottom line:** Unless the audit shows these two clearly fail the executive duties test, keep them out of the pool and pay them more some other way. If you do add them, get legal sign-off first.",
+  "judge": {
+    "model": "openrouter/anthropic/claude-sonnet-5.5",
+    "letters": {
+      "baseline": "A",
+      "baseline_research": "B",
+      "board": "C"
+    },
+    "baseline": {
+      "risks": [
+        {
+          "risk": "Managers/supervisors may not keep tips from a pool (FLSA)",
+          "score": 2,
+          "quote": "If your shift managers meet that test, they **cannot** receive money from the baristas' pool, even if everyone agrees and even though they work the floor."
+        }
+      ],
+      "actionable": 4,
+      "errors": [
+        {
+          "claim": "Maryland's wage law is enforced alongside it and doesn't give you more room.",
+          "correction": "Maryland law may be stricter than federal in some respects; the claim is unsupported and overconfident."
+        },
+        {
+          "claim": "If you pay below full minimum wage and use a tip credit, you also lose the credit for improper pooling.",
+          "correction": "Under the FLSA, an invalid pool does cost you the tip credit, so this is roughly right; it was not wrong. The 'strict Maryland rules' phrasing is vague but not clearly wrong."
+        }
+      ]
+    },
+    "baseline_research": {
+      "risks": [
+        {
+          "risk": "Managers/supervisors may not keep tips from a pool (FLSA)",
+          "score": 2,
+          "quote": "Don't add them yet. Compensate them another way unless they clearly fail the manager test."
+        }
+      ],
+      "actionable": 4,
+      "errors": []
+    },
+    "board": {
+      "risks": [
+        {
+          "risk": "Managers/supervisors may not keep tips from a pool (FLSA)",
+          "score": 2,
+          "quote": "Managers stay out of the pool unless an attorney confirms they do not meet the executive duties test"
+        }
+      ],
+      "actionable": 4,
+      "errors": []
+    }
+  }
+}

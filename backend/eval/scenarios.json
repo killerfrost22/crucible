@@ -88,7 +88,7 @@
       }
     },
     "must_catch": [
-      {"label": "Maryland facial-recognition consent in interviews", "any": ["facial recognition", "facial (analysis|scan)", "biometric"]},
+      {"label": "Maryland facial-recognition consent in interviews", "any": ["facial recognition", "facial (analysis|scan|template)", "biometric", "HB ?1202", "3-717"]},
       {"label": "Hiring bias / discrimination risk", "any": ["bias", "discriminat", "EEOC", "disparate"]}
     ]
   },

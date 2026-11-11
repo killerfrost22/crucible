@@ -1,0 +1,767 @@
+{
+  "scenario": {
+    "id": "dental-ai-receptionist",
+    "intake": {
+      "question": "Should we replace our front-desk phone line with an AI receptionist that answers, books appointments, and records calls?",
+      "leaning": "Yes \u2014 sign up for an AI receptionist this month",
+      "profile": {
+        "name": "Bright Smile Family Dental",
+        "industry": "dental practice",
+        "location": "Silver Spring, Maryland",
+        "size": "2 dentists, 6 staff",
+        "current_tools": [
+          "Dentrix",
+          "Google Workspace",
+          "RingCentral"
+        ],
+        "budget": "$400/month",
+        "goals": [
+          "stop missing new-patient calls",
+          "free up front-desk time"
+        ],
+        "constraints": "Front desk is one person"
+      }
+    },
+    "must_catch": [
+      {
+        "label": "Maryland all-party recording consent",
+        "any": [
+          "all[- ]party",
+          "two[- ]party",
+          "consent of all",
+          "every party",
+          "both parties"
+        ]
+      },
+      {
+        "label": "HIPAA business associate agreement",
+        "any": [
+          "\\bBAA\\b",
+          "business associate"
+        ]
+      }
+    ]
+  },
+  "seat_model": "openrouter/anthropic/claude-haiku-5.5",
+  "researcher_model": "openrouter/anthropic/claude-sonnet-5.5:online",
+  "chair_model": "openrouter/anthropic/claude-sonnet-5.5",
+  "web_search": true,
+  "baseline": "# Recommendation\n\n**Yes to an AI receptionist this month, but as a 60-day pilot that backs up your front desk, not a replacement for it.** Your goals (stop missing new-patient calls, free up the front desk) are what these tools do well. Replacing the human line outright is where practices get burned.\n\n## Setup\n- **AI answers** when the front desk is on another call or with a patient, at lunch, and before and after hours.\n- **AI handles:** new-patient intake and booking, office hours, location and parking, accepted insurance list, and appointment confirmations or reschedules.\n- **AI hands off to a human or on-call number for:** dental emergencies (severe pain, swelling, trauma, bleeding), clinical questions, billing disputes, upset patients, and anyone who asks for a person.\n- **Use RingCentral to route calls.** Overflow and after-hours forwarding rules are standard, so you likely don't need to change your number.\n\n## Main risks\n\n1. **Call recording consent (Maryland).** Maryland requires all-party consent to record calls. The AI must announce recording at the start of every call (\"This call may be recorded\u2026\"). Confirm this is built in and can't be turned off by accident.\n2. **HIPAA.** Calls contain PHI. Require a signed **Business Associate Agreement** before any patient call touches the system. Ask where recordings and transcripts are stored, for how long, who can access them, and whether your data trains their models. No BAA means no deal.\n3. **Dentrix integration.** This is the biggest practical issue. If the AI can't read and write to your Dentrix schedule, it will book into a separate calendar. That creates double-bookings and extra work for your one front-desk person. Ask for proof of a working integration with your specific Dentrix version (G7 vs. Ascend), not \"we integrate with most PMS systems.\" Without a true integration, limit the AI to taking messages and requests, not booking.\n4. **Emergencies and edge cases.** A missed emergency is a patient-safety and liability issue. Test the escalation path yourself.\n5. **Patient experience.** Silver Spring is linguistically diverse and many patients are older. Check Spanish and other language support and accent handling, and make sure reaching a human is always easy.\n6. **Cost creep.** $400/month is workable, but watch per-minute or per-call overages, setup fees, and annual lock-ins.\n7. **Vendor fit.** Dental-specific vendors usually integrate better than generic ones. Since you already use RingCentral, check its own AI receptionist and its BAA terms as a baseline comparison.\n\n## Next steps\n\n1. **This week: get your baseline.** Pull RingCentral logs for the last 60\u201390 days: missed calls, after-hours calls, and peak times. Estimate the value of a new patient (often well over $1,000 in first-year revenue) to see what the tool needs to deliver.\n2. **Shortlist 3 vendors** (a dental-specific one, RingCentral's option, and one general one). Ask each:\n   - Do you sign a BAA?\n   - Which Dentrix version do you integrate with, and can you demo booking live into it?\n   - How is recording disclosure handled?\n   - What is the total monthly cost at my call volume?\n   - Can I cancel monthly?\n3. **Insist on a trial.** Choose a month-to-month plan or a 30-day out. Avoid annual contracts.\n4. **Configure conservatively.** Write the emergency script and escalation rules with your dentists, and load your insurance list and new-patient requirements. Place test calls, including emergencies, insurance questions, and non-English speakers.\n5. **Tell your front-desk employee early.** Present it as a tool that handles overflow, not a replacement. They'll catch problems fastest, and their buy-in matters.\n6. **Update your patient-facing paperwork.** Add a line to your privacy notice or website about call recording and AI use.\n7. **Review at 30 and 60 days:**\n   - New-patient calls answered or booked vs. baseline\n   - Booking errors or double-bookings\n   - Escalations handled correctly\n   - Front-desk hours saved\n   - Patient complaints\n\nExpand the AI's role only if it clearly beats your baseline. If the Dentrix integration or BAA isn't there, wait and keep your current setup rather than compromise on either.",
+  "board_state": {
+    "intake": {
+      "question": "Should we replace our front-desk phone line with an AI receptionist that answers, books appointments, and records calls?",
+      "leaning": "Yes \u2014 sign up for an AI receptionist this month",
+      "profile": {
+        "name": "Bright Smile Family Dental",
+        "industry": "dental practice",
+        "location": "Silver Spring, Maryland",
+        "size": "2 dentists, 6 staff",
+        "current_tools": [
+          "Dentrix",
+          "Google Workspace",
+          "RingCentral"
+        ],
+        "budget": "$400/month",
+        "goals": [
+          "stop missing new-patient calls",
+          "free up front-desk time"
+        ],
+        "constraints": "Front desk is one person"
+      }
+    },
+    "evidence_mode": "web",
+    "evidence": {
+      "decision": "Whether Bright Smile Family Dental should replace its front-desk phone line with an AI receptionist that answers calls, books appointments and records calls.",
+      "options": [
+        "Do nothing: keep the current RingCentral line and single front-desk person, and accept the missed new-patient calls.",
+        "Pilot an AI receptionist for after-hours and overflow calls only, with the front desk still answering the main line, for about two weeks before deciding.",
+        "Use a live or hybrid answering service (human agents, optionally with AI first) for overflow and after-hours calls.",
+        "Fully replace the front-desk line with an AI receptionist that books into Dentrix and records calls."
+      ],
+      "facts": [
+        {
+          "claim": "Maryland is an all-party (two-party) consent state under its Wiretapping and Electronic Surveillance Act (Courts and Judicial Proceedings, Title 10). Every party must agree before a private call is recorded, and violations can be charged as a felony. An AI receptionist that records calls must therefore play a disclosure and capture consent before recording starts, and many out-of-state vendors are built for one-party consent.",
+          "source": "https://www.dentalbase.ai/blogs/practice-management/ai-receptionist-for-dental-practices-maryland",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:09:05Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "HIPAA requires a signed Business Associate Agreement and encrypted call data before an AI receptionist handles patient information. A Maryland-specific checklist also asks whether the vendor treats call data under the state Confidentiality of Medical Records Act rather than as generic call-center logs.",
+          "source": "https://www.dentalbase.ai/blogs/practice-management/ai-receptionist-for-dental-practices-maryland",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:09:05Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "An AI receptionist that books appointments needs read-and-write access to the practice software schedule. Guidance says to get a written list of what it reads and writes, how it connects and how access is switched off. It also says to test it against the practice's real appointment types (hygiene recall, new-patient exam, emergency exam), because a demo on the vendor's sample schedule proves nothing.",
+          "source": "https://www.legendnt.com/blog/dental-ai-receptionist-answering-service",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:09:06Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "The BAA should be signed for the exact plan being bought, not only a higher tier. Other questions to ask in writing: who the sub-processors are (speech-to-text, language model, hosting), whether recordings or transcripts train any model, retention and deletion terms, who at the vendor can listen to calls, and whether multifactor authentication is enforced on portal logins.",
+          "source": "https://www.legendnt.com/blog/dental-ai-receptionist-answering-service",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:09:06Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "The same guidance recommends having counsel approve the greeting, any 'you are speaking with an automated assistant' notice and the recording process for every call route (daytime overflow, after-hours and transfers to the office) before go-live.",
+          "source": "https://www.legendnt.com/blog/dental-ai-receptionist-answering-service",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:09:06Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Recommended pilot design: run a two-week pilot on a slice of calls (after-hours or overflow only) on the real phone system while staff still answer the main line. Measure answered-call rate, correct bookings, transfers to staff, emergency handoffs and patient complaints, and agree success criteria with the vendor beforehand.",
+          "source": "https://www.legendnt.com/blog/dental-ai-receptionist-answering-service",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:09:06Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Three models exist. A live answering service uses human agents who take messages and sometimes book. An AI receptionist is voice software that books directly when integrated. A hybrid puts software first and hands harder calls and urgent cases to people. After-hours emergency quality for AI depends on the prompts and testing.",
+          "source": "https://www.legendnt.com/blog/dental-ai-receptionist-answering-service",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:09:06Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "A vendor-published case study (AgentZap blog, a seller of AI receptionists) reports a practice that cut missed calls with an AI receptionist and saw new-patient bookings rise 34% in the first quarter. This is a single vendor-authored example, not an independent benchmark.",
+          "source": "https://agentzap.ai/blog/ai-receptionist-vs-human-receptionist-90-day-comparison",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:09:06Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Vendors describe dental AI receptionists as answering inbound calls in natural language, booking and rescheduling in the practice management system, answering basic questions on hours, insurance and services, and capturing new-patient information. These are vendor marketing descriptions.",
+          "source": "https://www.dentalbase.ai/blogs/practice-management/ai-receptionist-vs-human-staff-pros-and-cons-for-dentists",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:09:05Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Guidance on AI phone staffing advises letting callers reach a human early and routing emergencies and clinical complaints directly to humans rather than forcing callers through automated menus.",
+          "source": "https://www.themorninggrind.com/p/the-risks-and-rewards-of-hiring-an-ai-helper-to-staff-your-phones",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:09:09Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "AI receptionist and answering-service pricing is commonly per-minute, per-conversation or tiered flat monthly. Current prices for specific products were not retrieved from vendor pricing pages in this session, so no product price is confirmed here.",
+          "source": "",
+          "verified": false
+        },
+        {
+          "claim": "RingCentral, the practice's existing phone vendor, markets its own AI receptionist add-on, which may offer a path that avoids changing phone systems. Availability, plan and price were not verified.",
+          "source": "",
+          "verified": false
+        }
+      ],
+      "open_questions": [
+        "What are current monthly prices on vendor pricing pages for the leading dental AI receptionists, and does any fit within the budget at the practice's call volume?",
+        "How many calls and new-patient calls does the practice miss today, and when (lunch, after-hours, peak times)? Without this, the benefit can't be sized.",
+        "Does the candidate vendor have a supported, current integration with the practice's Dentrix version, and can it write new-patient appointments with correct type, provider and chair?",
+        "Will the vendor sign a BAA on the specific plan, and will it capture Maryland all-party recording consent at the start of every call, including transfers?",
+        "Do recordings or transcripts train any model, and what are the retention and deletion terms?",
+        "Does the practice need call recording at all? Turning it off may reduce legal exposure, and counsel's view on that is unknown.",
+        "Do Maryland dental board rules or Montgomery County/Silver Spring requirements add anything beyond HIPAA and the state wiretap law? No local-specific rule was found in the search results, so counsel should confirm.",
+        "How will urgent dental emergencies and after-hours calls reach a dentist, and who is on call?",
+        "What do patients and the single front-desk employee think of an automated assistant, and are there language needs (for example Spanish) in the patient base?",
+        "Can RingCentral's existing plan route overflow and after-hours calls to a third-party AI service, or would the phone setup have to change?"
+      ]
+    },
+    "round1": {
+      "industry_expert": {
+        "stance": "conditional",
+        "headline": "Conditional yes: pilot after-hours overflow first, not full replacement",
+        "summary": "Missed new-patient calls are a real problem, so act, but don't sign this month. Run a two-week pilot on after-hours and overflow calls only, with staff still on the main line. Require a signed BAA, Maryland recording consent, and a tested Dentrix booking check before go-live. Pricing is unconfirmed, so verify it fits $400/month first.",
+        "key_points": [
+          "Pilot on overflow and after-hours calls with agreed success criteria, as F6 recommends, keeps the front desk on the main line.",
+          "Test booking against real appointment types like hygiene recall and new-patient exam; vendor demos don't prove Dentrix fit (F3).",
+          "Hybrid models that hand emergencies to humans fit dental better than full automation (F7, F10)."
+        ],
+        "risks": [
+          "Recording without all-party consent is a felony risk under Maryland law (F1); confirm the process with an attorney.",
+          "Weak BAA terms or model training on call data exposes patient information (F2, F4).",
+          "Emergency or clinical calls get trapped in automated menus, hurting patients and reputation (F10)."
+        ],
+        "confidence": 65,
+        "pushback": "You assume missed calls cost you enough to justify $400/month. Nobody has counted how many new-patient calls you miss or when. The 34% gain (F8) is a vendor's own example, not proof for your practice."
+      },
+      "ai_tools_expert": {
+        "stance": "conditional",
+        "headline": "Pilot after-hours overflow first; don't replace the front desk this month.",
+        "summary": "Don't switch the whole front desk to AI this month. Run a two-week pilot on after-hours and overflow calls only, with staff still answering the main line (F6). Before go-live, get a signed BAA for the exact plan, Maryland all-party recording consent, and counsel's sign-off on the greeting and recording (F1, F2, F4, F5). Emergencies must reach a dentist directly (F10).",
+        "key_points": [
+          "A two-week pilot on after-hours and overflow calls tests the idea at low risk and keeps the front desk on the main line (F6).",
+          "Maryland is all-party consent, so any AI that records must disclose and get consent on every call, including transfers (F1, F5).",
+          "The 34% bookings rise (F8) comes from a vendor's own case study, so it does not prove results for this practice."
+        ],
+        "risks": [
+          "Recording calls without proper consent or a BAA could create legal and HIPAA exposure (F1, F2).",
+          "An AI that books wrong appointment types into Dentrix could create scheduling errors; test on real appointment types first (F3).",
+          "Urgent or emergency calls handled poorly by automation could harm patients and draw complaints (F10)."
+        ],
+        "confidence": 70,
+        "pushback": "Are you sure the missed new-patient calls are mostly after-hours or overflow? Count the missed calls and their timing before you pay for any full replacement.",
+        "tools": [
+          {
+            "name": "RingCentral AI Receptionist",
+            "use": "Could handle after-hours and overflow calls on the phone system you already use, so the pilot needs no new phone vendor.",
+            "monthly_cost": "unknown; confirm on the vendor pricing page",
+            "works_with": "RingCentral (current phone vendor)",
+            "caveat": "Availability, plan, price, and Dentrix booking support were not verified (F12).",
+            "url": "https://www.ringcentral.com",
+            "price_fact": "",
+            "pilot_test": "Keep it if it books at least 5 more new patients from after-hours calls over 2 weeks with zero unhandled emergencies; decide at day 14 and cancel before the first renewal otherwise."
+          },
+          {
+            "name": "Smith.ai",
+            "use": "Human-plus-AI answering for overflow and after-hours calls, with urgent cases passed to people.",
+            "monthly_cost": "$100-400/mo (estimate)",
+            "works_with": "Standalone; would need call forwarding from RingCentral and a Dentrix booking path",
+            "caveat": "Human-first handling costs more per call, and booking into Dentrix may need manual steps.",
+            "url": "https://smith.ai",
+            "price_fact": "",
+            "pilot_test": "Keep it if at least 90% of overflow calls are answered and routed correctly over 2 weeks; cancel at the end of the month otherwise."
+          }
+        ]
+      },
+      "realist": {
+        "stance": "conditional",
+        "headline": "Pilot after-hours and overflow only, after legal and BAA checks pass.",
+        "summary": "Don't sign a full replacement this month. Missed new-patient calls are a real problem, but the benefit is unsized and the risks are legal and patient-data related. Maryland requires every caller to consent before a call is recorded (F1), and HIPAA needs a signed BAA on the exact plan you buy (F2, F4). Run a two-week pilot on after-hours and overflow calls only, with your front desk still answering the main line (F6). Get counsel to approve the greeting and recording notice first (F5).",
+        "key_points": [
+          "Maryland is all-party consent, so recording and disclosure must be built in from day one (F1).",
+          "A BAA for the exact plan, plus encryption and clear data terms, must be in writing before any patient data flows (F2, F4).",
+          "A two-week pilot on a slice of calls tests bookings and emergency handoffs before you commit money (F6). Price is unverified, so check it against the $400 budget first (F11)."
+        ],
+        "risks": [
+          "Recording calls without proper all-party consent could create criminal exposure under Maryland law (F1).",
+          "Booking into Dentrix with wrong appointment types or chairs could create scheduling errors; the vendor's demo proves nothing until tested on your real appointment types (F3).",
+          "Urgent dental emergencies routed poorly could harm patients; emergencies must reach a human directly (F10)."
+        ],
+        "confidence": 72,
+        "pushback": "The assumption that new-patient calls are being missed in meaningful numbers. No call data exists yet (open question), and the 34% bookings rise comes from a single vendor-authored case study (F8).",
+        "checks": [
+          {
+            "area": "legal",
+            "status": "block",
+            "note": "Maryland all-party consent (F1) means no call can be recorded until a disclosure and consent step is live on every route, including transfers; counsel must confirm this before go-live."
+          },
+          {
+            "area": "compliance",
+            "status": "block",
+            "note": "HIPAA requires a signed BAA for the exact plan and encrypted call data (F2, F4); the vendor must also answer sub-processor, training and retention questions in writing."
+          },
+          {
+            "area": "compliance",
+            "status": "flag",
+            "note": "Counsel should approve the greeting and AI-disclosure notice, and confirm whether call recording is needed at all (F5); Maryland dental board or Montgomery County rules are unverified and need counsel confirmation."
+          },
+          {
+            "area": "financial",
+            "status": "flag",
+            "note": "No vendor price is confirmed (F11), so fit within the $400/month budget is unknown; check current pricing pages and ask RingCentral about its add-on (F12, unverified)."
+          },
+          {
+            "area": "goals",
+            "status": "pass",
+            "note": "A pilot on after-hours and overflow calls addresses the missed new-patient calls goal and frees front-desk time without replacing staff (F6, F7)."
+          },
+          {
+            "area": "operational",
+            "status": "flag",
+            "note": "Dentrix integration, appointment-type testing and emergency on-call routing are unverified and must be tested before any patient-facing use (F3, F10)."
+          }
+        ]
+      },
+      "strategist": {
+        "stance": "conditional",
+        "headline": "Pilot after-hours calls first; do not sign a full replacement this month.",
+        "summary": "Yes to AI help, but not yet to a full phone swap. Maryland requires every caller's consent before recording (F1), and booking needs deep access to Dentrix (F3). Run a two-week after-hours pilot with staff still on the main line (F6). Get the BAA and consent steps in writing first (F2, F4). Then decide with real numbers.",
+        "key_points": [
+          "Benefit is unsized: no missed-call data yet, and the 34% bookings rise is a vendor's own example (F8).",
+          "A pilot limits lock-in: after-hours and overflow only, on the live phone system, with success measures agreed in advance (F6).",
+          "Emergencies and clinical complaints must reach a human early, so on-call routing must be designed first (F10)."
+        ],
+        "risks": [
+          "Recording without all-party consent creates felony exposure; counsel must approve the greeting and recording flow for every route (F1, F5).",
+          "Wrong bookings in Dentrix (wrong appointment type, provider or chair) if the integration is not tested on real appointment types (F3).",
+          "A full swap leaves the single front-desk role dependent on software, and contract terms may lock in fees (unverified; check the contract with an attorney or accountant)."
+        ],
+        "confidence": 70,
+        "pushback": "Assumes missed new-patient calls are costly enough to justify the legal, integration and lock-in risk. Count the missed calls and their dollar value before signing anything."
+      },
+      "devils_advocate": {
+        "stance": "oppose",
+        "headline": "Don't sign a full AI receptionist this month; pilot first.",
+        "summary": "The idea may help, but signing up now skips the hard checks. Maryland requires every caller to consent before recording, and HIPAA needs a signed BAA for the exact plan. Nobody has sized the missed calls or confirmed Dentrix integration or the price. A two-week after-hours pilot, with staff still answering the main line, would show whether the benefit is real.",
+        "key_points": [
+          "Maryland is all-party consent, so the vendor must capture consent on every call, including transfers (F1, F5).",
+          "A BAA must cover the exact plan bought, and Dentrix booking must be tested on your real appointment types (F2, F3, F4).",
+          "The only win figure is a vendor-written case study (F8); a pilot with agreed success measures gives your own numbers (F6)."
+        ],
+        "risks": [
+          "Recording without valid consent or a proper BAA could create legal and patient-privacy exposure, and signing too fast makes that more likely.",
+          "An AI that books wrong chair or appointment type, or misses a dental emergency, could hurt patients and the schedule.",
+          "Patients or your one front-desk employee may reject an automated assistant, and you pay $400 a month for a tool that goes unused."
+        ],
+        "confidence": 72,
+        "pushback": "Assumption to question: that the practice is losing enough new-patient calls to justify a full phone replacement. Nobody has counted missed calls or their value yet. Also check whether RingCentral's own add-on (F12, unverified) or a live answering service solves the problem with less change.\n\nNote: legal and consent points need confirmation from a Maryland attorney; integration and pricing need confirmation from the vendor and your Dentrix support contact, or the local Small Business Development Center."
+      }
+    },
+    "round2": {
+      "industry_expert": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "devils_advocate",
+            "their_claim": "Check whether RingCentral's add-on or a live answering service solves the problem with less change.",
+            "response": "Fair challenge. Both are worth pricing in the pilot. Keep the pilot scope narrow, though, so you can measure one option against the missed-call baseline."
+          },
+          {
+            "target": "ai_tools_expert",
+            "their_claim": "Keep the pilot tool only if it books at least 5 more new patients from after-hours calls over 2 weeks.",
+            "response": "Five bookings is too low a bar to judge a $400 tool. Set the threshold from your missed-call count and the value of one new patient, then judge against that."
+          },
+          {
+            "target": "realist",
+            "their_claim": "Maryland consent must be live on every route, including transfers, before any call is recorded.",
+            "response": "Agreed, and it may decide the choice. If counsel says recording is unnecessary, a no-recording pilot or a live service may be simpler and lower risk."
+          }
+        ],
+        "concessions": [
+          "A live or hybrid answering service may be a lower-risk pilot than AI for overflow calls (F7).",
+          "RingCentral's add-on could avoid a new phone vendor, but its fit and price must be confirmed first (F12, unverified)."
+        ],
+        "stance": "conditional",
+        "headline": "Conditional yes: pilot after-hours overflow only after consent, BAA and Dentrix checks.",
+        "summary": "Missed new-patient calls may be costing you, but nobody has counted them. Do not sign a full replacement this month. Run a two-week pilot on after-hours and overflow calls only, with staff still on the main line (F6). Before go-live, get a signed BAA for the exact plan, Maryland consent on every call route, and a Dentrix booking test on your real appointment types (F1-F4). Confirm the price against $400 first.",
+        "key_points": [
+          "Pilot after-hours and overflow calls only, with agreed success criteria and staff on the main line (F6).",
+          "Count missed new-patient calls and their dollar value before paying; the 34% gain is a vendor example only (F8).",
+          "Require a BAA for the exact plan and a Dentrix booking test on real appointment types before any patient data flows (F2, F3, F4)."
+        ],
+        "risks": [
+          "Recording without valid all-party consent creates legal exposure under Maryland law (F1); confirm with a Maryland attorney.",
+          "Wrong appointment types, providers or chairs written into Dentrix cause scheduling errors (F3).",
+          "Emergency or clinical calls trapped in automated menus could harm patients and your reputation (F10)."
+        ],
+        "confidence": 66,
+        "pushback": "That missed new-patient calls are frequent enough, and at the right times, to justify $400 a month. Count them first."
+      },
+      "ai_tools_expert": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "strategist",
+            "their_claim": "Contract terms may lock in fees, leaving the front desk dependent on software.",
+            "response": "Agreed that lock-in is a risk. The pilot avoids it: month-to-month terms only, and cancel before any renewal or second invoice if the pilot test fails. Check the contract with an attorney or accountant."
+          },
+          {
+            "target": "devils_advocate",
+            "their_claim": "You pay $400 a month for a tool that may go unused, and a live service or RingCentral add-on may solve this with less change.",
+            "response": "Fair point, and I agree the RingCentral add-on and a live service should be priced alongside. The pilot caps spending, and both options are on the table before any full replacement."
+          },
+          {
+            "target": "industry_expert",
+            "their_claim": "Nobody has counted missed new-patient calls, so the $400 benefit is unsized.",
+            "response": "Agreed. Pull two weeks of call logs first, counting missed calls by time of day. Without that count, no tool pilot can prove value."
+          }
+        ],
+        "concessions": [
+          "Missed-call volume is unknown, so the benefit cannot be sized yet.",
+          "The 34% bookings figure is a vendor-written case study and should not drive the decision.",
+          "Consent and BAA terms need attorney and vendor confirmation before any tool goes live."
+        ],
+        "stance": "conditional",
+        "headline": "Pilot after-hours overflow first; verify price, RingCentral fit and BAA before buying.",
+        "summary": "Do not sign a full AI receptionist this month. Start with a short, cancellable pilot on after-hours and overflow calls only, with staff still answering the main line (F6). First, count your missed new-patient calls and get the vendor's price in writing. Confirm the BAA, Maryland all-party consent and counsel's greeting approval before go-live (F1, F2, F5). Test whether RingCentral's add-on or a hybrid service meets the goal with less change.",
+        "key_points": [
+          "Pilot only after-hours and overflow calls, with agreed success measures, so the front desk stays on the main line (F6, F7).",
+          "Test any booking tool against real appointment types in Dentrix before patients use it (F3).",
+          "Hybrid models that hand emergencies to humans fit dental practice better than full automation (F7, F10)."
+        ],
+        "risks": [
+          "Recording without valid Maryland all-party consent creates legal exposure (F1); confirm with a Maryland attorney.",
+          "Wrong appointment types or chairs written into Dentrix cause scheduling errors (F3).",
+          "Prices and integration support are unverified, so a tool may not fit the $400 budget or work with Dentrix (F11, F12)."
+        ],
+        "confidence": 72,
+        "pushback": "Assume the practice needs a new tool at all. Count the missed new-patient calls and their dollar value first; RingCentral's add-on or a live answering service may be enough.",
+        "tools": [
+          {
+            "name": "RingCentral AI Receptionist",
+            "use": "Could answer after-hours and overflow calls on the phone system the practice already uses, so the pilot needs no new phone vendor.",
+            "monthly_cost": "unknown",
+            "works_with": "RingCentral (existing phone line); Dentrix booking support unverified",
+            "caveat": "Availability, plan, price and Dentrix booking support were not verified (F12).",
+            "url": "https://www.ringcentral.com",
+            "price_fact": "",
+            "pilot_test": "Keep it if it books at least 5 more new patients from after-hours calls over 2 weeks with zero unhandled emergencies; decide at day 14 and cancel before the first renewal otherwise."
+          },
+          {
+            "name": "Smith.ai",
+            "use": "Human-plus-AI answering for overflow and after-hours calls, with urgent cases passed to people.",
+            "monthly_cost": "$100-400/mo (estimate)",
+            "works_with": "Forwarding from RingCentral; Dentrix booking may need manual entry",
+            "caveat": "Human-first handling costs more per call, and booking into Dentrix may need manual steps.",
+            "url": "https://smith.ai",
+            "price_fact": "",
+            "pilot_test": "Keep it if at least 90% of overflow calls are answered and routed correctly over 2 weeks; cancel at the end of the month otherwise."
+          }
+        ]
+      },
+      "realist": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "ai_tools_expert",
+            "their_claim": "Keep the RingCentral AI pilot only if it books at least 5 more new patients from after-hours calls over 2 weeks.",
+            "response": "The 5-patient threshold is a guess, not a baseline. Count your current missed new-patient calls first, then set the success bar from that number, with the vendor agreed in writing (F6, F8)."
+          },
+          {
+            "target": "industry_expert",
+            "their_claim": "A hybrid service that hands emergencies to humans fits dental better than full automation.",
+            "response": "Agreed on emergencies (F10). But a hybrid still records calls and may handle patient data, so it needs the same consent and BAA checks. Compare total cost against the $400 budget first (F11)."
+          },
+          {
+            "target": "devils_advocate",
+            "their_claim": "Signing too fast makes legal and patient-privacy exposure more likely, and a pilot gives real numbers.",
+            "response": "Agreed that signing now is premature. A pilot only gives real numbers if the missed-call baseline is counted before it starts, so that step comes first."
+          }
+        ],
+        "concessions": [
+          "RingCentral's own AI add-on (F12) should be checked before any new vendor is signed, since it may avoid a phone system change.",
+          "A live or hybrid answering service is a fair fallback to compare on cost and consent exposure.",
+          "The missed-call count must come before any pilot success test is set."
+        ],
+        "stance": "conditional",
+        "headline": "Pilot after-hours calls only after consent and BAA checks pass.",
+        "summary": "Not a full phone swap this month. Maryland requires every caller's consent before a call is recorded (F1), and HIPAA needs a signed BAA for the exact plan (F2, F4). Count your missed calls first. Then run a two-week after-hours pilot with staff still on the main line (F6). Price is unconfirmed (F11).",
+        "key_points": [
+          "Legal consent and BAA terms must be in writing before any call is recorded or patient data flows (F1, F2, F4).",
+          "Nobody has sized the missed new-patient calls, so no pilot result can be judged yet (F6, F8).",
+          "Vendor price, Dentrix booking fit and RingCentral's add-on are all unverified (F3, F11, F12)."
+        ],
+        "risks": [
+          "Recording without all-party consent is criminal exposure under Maryland law (F1).",
+          "Wrong Dentrix bookings if the integration is not tested on real appointment types (F3).",
+          "Emergency or clinical calls trapped in automated menus (F10)."
+        ],
+        "confidence": 72,
+        "pushback": "That missed new-patient calls are frequent enough to justify $400 a month; no call data exists yet.",
+        "checks": [
+          {
+            "area": "legal",
+            "status": "block",
+            "note": "Maryland all-party consent (F1) means no call can be recorded until a disclosure and consent step is live on every route, including transfers; a Maryland attorney must confirm."
+          },
+          {
+            "area": "compliance",
+            "status": "block",
+            "note": "HIPAA needs a signed BAA for the exact plan and encrypted call data (F2, F4); sub-processor, training and retention answers must be in writing."
+          },
+          {
+            "area": "compliance",
+            "status": "flag",
+            "note": "Counsel should approve the greeting, AI notice and recording process (F5); Maryland dental board or Montgomery County rules are unverified."
+          },
+          {
+            "area": "financial",
+            "status": "flag",
+            "note": "No vendor price is confirmed (F11), so fit within the $400 monthly budget is unknown; check pricing pages and RingCentral's add-on (F12, unverified)."
+          },
+          {
+            "area": "goals",
+            "status": "flag",
+            "note": "A pilot targets missed new-patient calls and front-desk time (F6), but the benefit is unsized because no call count exists yet."
+          }
+        ]
+      },
+      "strategist": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "devils_advocate",
+            "their_claim": "A RingCentral add-on or live answering service may solve the problem with less change.",
+            "response": "Fair test, but run it inside the pilot, not as a replacement for it. All options still need the missed-call count first. Compare them on bookings and exit cost, not feature lists."
+          },
+          {
+            "target": "industry_expert",
+            "their_claim": "Pilot success criteria are enough to protect the practice.",
+            "response": "Pilot criteria only cover this month. Next year's exposure sits in the contract: renewal terms, setup fees, data retention after cancellation, and who holds recordings. Get those in writing before day one."
+          },
+          {
+            "target": "ai_tools_expert",
+            "their_claim": "Keep the RingCentral add-on if it books five more new patients in two weeks.",
+            "response": "Five bookings in two weeks is too small a sample to judge against $400 a month. Set the bar as net revenue per booked patient, and agree that number with the owner before go-live."
+          }
+        ],
+        "concessions": [
+          "Devil's Advocate: a live answering service or RingCentral add-on may reduce change, so both should be priced and tested in the pilot.",
+          "Industry Expert: hybrid models that hand emergencies to humans fit dental better than full automation (F7, F10)."
+        ],
+        "stance": "conditional",
+        "headline": "Pilot after-hours calls with an exit clause; no full swap yet.",
+        "summary": "Next week, signing a vendor contract commits you to a Maryland consent process and a BAA. Next quarter, a two-week pilot shows whether calls are really being missed and whether bookings land correctly in Dentrix. Next year, a full swap means lock-in and a harder exit. Keep the pilot short, with a written exit clause and agreed success numbers. Counsel must confirm recording consent before any call is recorded.",
+        "key_points": [
+          "Count missed new-patient calls by hour for two weeks before the pilot starts; no call data exists yet.",
+          "Run the pilot on after-hours and overflow calls with agreed success criteria, as F6 recommends.",
+          "Consent capture (F1) and a signed BAA for the exact plan (F2, F4) must be live before any patient data flows."
+        ],
+        "risks": [
+          "Auto-renewal or setup fees lock in cost beyond the pilot (unverified; an attorney or accountant should read the contract).",
+          "Dentrix booking errors can build up quietly over a month of bookings (F3).",
+          "Recording starts before consent capture is live on every route, including transfers (F1, F5)."
+        ],
+        "confidence": 70,
+        "pushback": "You assume a clean pilot result will settle the decision. Ask what you will do if results are mixed, such as many bookings but several wrong appointment types or unhandled emergencies."
+      },
+      "devils_advocate": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "industry_expert",
+            "their_claim": "A two-week after-hours pilot is the right first step, after verifying price and BAA terms.",
+            "response": "The pilot still spends staff time and legal review on a benefit nobody has sized. Count missed calls first; that costs nothing and tells you whether any pilot is worth running."
+          },
+          {
+            "target": "ai_tools_expert",
+            "their_claim": "RingCentral's AI add-on could handle after-hours calls without changing phone vendors.",
+            "response": "Worth checking, but F12 is unverified on availability, price and Dentrix support. Checking it still needs the missed-call count first, or you pilot a tool you cannot size."
+          },
+          {
+            "target": "realist",
+            "their_claim": "Price and fit against the $400 budget are unknown until checked.",
+            "response": "Right, and that cuts against signing. Unknown price, unknown Dentrix fit, unknown call volume: three open items should close before any pilot clock starts."
+          }
+        ],
+        "concessions": [
+          "The two-week after-hours pilot design with agreed success measures is sound (F6).",
+          "Emergencies and clinical calls must reach a human directly (F10)."
+        ],
+        "stance": "oppose",
+        "headline": "Oppose any AI pilot until missed calls are counted.",
+        "summary": "Even the pilot assumes a problem nobody has measured. Start with a two-week count of missed new-patient calls and their timing from RingCentral logs. Then price the fix: RingCentral's add-on (F12, unverified) or a human answering service may solve it with less legal and integration work. Recording needs Maryland consent steps (F1) and a BAA (F2) first.",
+        "key_points": [
+          "The missed-call benefit is unsized; the 34% figure is a vendor case study (F8).",
+          "Maryland all-party consent must be live on every route before any recording (F1).",
+          "Dentrix booking is unverified until tested on real appointment types (F3)."
+        ],
+        "risks": [
+          "Felony exposure if calls are recorded without valid consent (F1).",
+          "Wrong chair or appointment type booked, or a dental emergency missed by automation (F3, F10).",
+          "A $400/month tool goes unused if patients reject it or the front-desk role resists it."
+        ],
+        "confidence": 72,
+        "pushback": "That a pilot is needed at all: if a call count shows few missed new-patient calls, the $400 tool and the legal work are not worth it."
+      }
+    },
+    "verdict": {
+      "decision": "pilot",
+      "headline": "Pilot AI on after-hours and overflow calls only, after counting missed calls and clearing legal checks.",
+      "confidence": 72,
+      "rationale": "Missed new-patient calls are a real goal, but nobody has counted them, and no price is confirmed (F11). Maryland requires every caller to consent before recording (F1), and a BAA is needed for the exact plan (F2, F4). A full swap this month skips all of that. The board agrees on a two-week pilot on after-hours and overflow calls, with staff still on the main line (F6). Count missed calls first. Counsel should approve the greeting and recording flow (F5). Emergencies must reach a human (F10).",
+      "decisive_arguments": [
+        {
+          "seat": "realist",
+          "point": "No call may be recorded until a consent step is live on every route, including transfers, and a BAA covers the exact plan (F1, F2, F4). That rules out signing a full replacement this month."
+        },
+        {
+          "seat": "strategist",
+          "point": "A short pilot with agreed success numbers and a written exit limits lock-in and tests Dentrix booking before the practice depends on it (F3, F6)."
+        },
+        {
+          "seat": "devils_advocate",
+          "point": "The only win figure is a vendor's own case study (F8). Count missed new-patient calls by hour first, so the pilot has a baseline."
+        },
+        {
+          "seat": "industry_expert",
+          "point": "Hybrid or human handoff models fit dental emergencies better than full automation (F7, F10). Price RingCentral's add-on and a live service next to the AI option."
+        }
+      ],
+      "dissent": [
+        {
+          "seat": "devils_advocate",
+          "point": "Even a pilot spends staff time and legal review on a benefit nobody has sized. If the call count shows few missed new-patient calls, drop the whole idea."
+        },
+        {
+          "seat": "strategist",
+          "point": "Pilot criteria only cover this month. Renewal terms, setup fees, data retention after cancellation and who holds recordings need to be in writing before day one."
+        },
+        {
+          "seat": "industry_expert",
+          "point": "A live or hybrid answering service, or a no-recording setup, may be a lower-risk pilot than AI. It could beat AI on legal exposure if counsel says recording is unnecessary (F7)."
+        }
+      ],
+      "conditions": [
+        "Missed new-patient calls are counted by hour from RingCentral logs, and a dollar value per new patient is set, before the pilot starts.",
+        "A Maryland attorney approves the greeting, the AI notice and the consent flow for every route, including transfers, or confirms recording can be turned off (F1, F5).",
+        "The vendor signs a BAA for the exact plan and answers sub-processor, model-training, retention and portal-security questions in writing (F2, F4).",
+        "Monthly price is confirmed in writing and fits within $400, with month-to-month terms and no auto-renewal or setup fee lock-in (F11).",
+        "Dentrix booking is tested on real appointment types (hygiene recall, new-patient exam, emergency exam) before real patients use it (F3).",
+        "After-hours emergencies route to the dentist on call, and callers can reach a human early (F10)."
+      ],
+      "next_steps": [
+        {
+          "when": "this week",
+          "action": "Pull the last 2-4 weeks of RingCentral call logs. Count missed and abandoned calls by hour, and estimate how many were new patients. Check whether your plan keeps enough log history."
+        },
+        {
+          "when": "this week",
+          "action": "Ask your RingCentral rep in writing whether its AI receptionist add-on is available on your plan, its price, whether it signs a BAA on that plan, and whether it books into your Dentrix version (F12 is unverified)."
+        },
+        {
+          "when": "this week",
+          "action": "Book a Maryland attorney to review recording consent, the AI notice and greeting, and whether you need call recording at all. The Maryland SBDC can help find one."
+        },
+        {
+          "when": "next 30 days",
+          "action": "Get written quotes and BAA terms from RingCentral and Smith.ai, plus one dental-specific AI vendor if you want a third. Use the F4 question list and compare total monthly cost against $400."
+        },
+        {
+          "when": "next 30 days",
+          "action": "Name who is on call for after-hours emergencies, write the emergency script, and test Dentrix booking on your real appointment types. Then start a two-week pilot on after-hours and overflow calls only, with the front desk still on the main line (F6)."
+        },
+        {
+          "when": "next 90 days",
+          "action": "Compare pilot results with the missed-call baseline. Decide to expand, switch to a hybrid or live service, or stop. Do not go to a full replacement unless emergency handoffs and bookings were clean."
+        }
+      ],
+      "ai_tools": [
+        {
+          "name": "RingCentral AI Receptionist",
+          "use": "Answer after-hours and overflow calls on the phone system you already use, so the pilot needs no new phone vendor.",
+          "monthly_cost": "unknown; confirm on the vendor pricing page",
+          "works_with": "RingCentral, your current phone system; Dentrix booking support not verified",
+          "caveat": "Availability, plan, price and Dentrix booking support were not verified (F12), and it still needs a BAA and Maryland consent handling.",
+          "url": "https://www.ringcentral.com",
+          "price_fact": "",
+          "pilot_test": "Before starting, set a target from your missed-call count and the value of one new patient. Keep it if after two weeks it answers most after-hours and overflow calls, books new patients correctly in Dentrix, has zero unhandled emergencies, and its cost is below the value of the added bookings. Otherwise cancel before the first renewal."
+        },
+        {
+          "name": "Smith.ai",
+          "use": "Human-plus-AI answering for overflow and after-hours calls, with urgent cases passed to people.",
+          "monthly_cost": "$100-400/mo (estimate)",
+          "works_with": "Standalone; calls would be forwarded from RingCentral. Dentrix booking may need manual steps.",
+          "caveat": "Human-first handling costs more per call, and booking into Dentrix may need manual steps. It also needs a BAA and Maryland consent review.",
+          "url": "https://smith.ai",
+          "price_fact": "",
+          "pilot_test": "Keep it if at least 90% of overflow and after-hours calls are answered and routed correctly over two weeks, with zero mishandled emergencies, and the monthly cost stays within the $400 budget. Cancel at month end otherwise."
+        }
+      ],
+      "escalate_to": "attorney",
+      "escalation_reason": "Maryland is an all-party consent state, and recording without consent can be charged as a felony (F1). HIPAA needs a signed BAA for the exact plan (F2, F4). Counsel should approve the greeting, the AI notice and the recording flow for every route (F5), and confirm any Maryland dental board or Montgomery County rules (unverified).",
+      "would_change": [
+        "The call log shows very few missed new-patient calls, or most occur during staffed hours. Then drop the pilot and fix staffing or the phone routing instead.",
+        "Counsel says recording is unnecessary or too risky, or no vendor will sign a BAA on an affordable plan. Then choose a live answering service or do nothing.",
+        "A quote shows all realistic options cost over $400 a month, or none integrates with your Dentrix version. Then defer."
+      ],
+      "no_new_tool": "Use what you have. In RingCentral, set an after-hours greeting that gives the emergency number and promises a callback by a set time, add voicemail-to-email, and ring overflow calls to a dentist or office manager's phone (check your plan, unverified). Add a new-patient request form on your Google Workspace site (Google Forms). Review the call log each morning and return missed calls first. Cost is about $0 in software plus 15-30 minutes of staff time a day, and it adds no recording-consent or BAA risk beyond what you have."
+    }
+  },
+  "board_error": null,
+  "seconds": 80,
+  "baseline_research": "# Recommendation\n\n**Don't fully replace the front-desk line. Start a two-week pilot of an AI receptionist for overflow and after-hours calls only, with your front-desk person still answering the main line.** Your instinct to act this month is fine, as long as what you start this month is the pilot, not a full cutover.\n\n## Why a pilot instead of a full replacement\n\n- **Your goals are met by the pilot.** You want to stop missing new-patient calls and free up your one front-desk person. Missed calls happen when she's on another call, at lunch, or after hours, and an overflow/after-hours pilot covers exactly those gaps (F6, F7).\n- **The evidence for full replacement is thin.** The only result I found is a 34% rise in new-patient bookings, and it comes from a vendor's own blog (F8). Treat it as marketing, not a benchmark. Vendor feature claims (F9) are also unproven for your office.\n- **The legal and technical risks are real and can be checked before you commit.** Maryland requires all-party consent to record calls, and violations can be a felony (F1). Many vendors are built for one-party states. A pilot limits your exposure while you verify the vendor.\n- **Dentrix integration is unproven.** A vendor demo on a sample schedule proves nothing (F3). It needs to book your real appointment types correctly.\n- **Pricing is unknown.** I couldn't confirm any vendor's price (F11), so I can't tell you $400/month is enough. Pricing is often per-minute or per-conversation, so costs scale with call volume.\n- **A single front-desk person is a single point of failure.** Removing her phone role means that if the AI mishandles an emergency or a frustrated patient, nobody is positioned to catch it (F10).\n\n## Main risks\n\n1. **Illegal recording.** The AI must play a disclosure and capture consent before recording starts, on every call route, including transfers (F1, F5). If you don't need recordings, turning recording off may reduce exposure. Ask your attorney.\n2. **HIPAA and data handling.** You need a signed BAA on the exact plan you buy, not a higher tier (F2, F4). Get written answers on sub-processors, whether recordings or transcripts train models, retention and deletion, who at the vendor can listen to calls, and whether multifactor authentication is enforced (F4).\n3. **Bad bookings.** The AI needs read-and-write access to your schedule. Wrong appointment type, provider, or chair creates cleanup work that could cost more time than it saves (F3).\n4. **Emergencies.** After-hours emergency handling depends on how the AI is prompted and tested (F7). Dental emergencies and clinical complaints should go straight to a human (F10), so you need a defined on-call dentist.\n5. **Patient experience.** Some patients won't like an automated assistant, and you may have Spanish-speaking patients. Your front-desk employee's buy-in matters too, since this affects her job.\n6. **Budget.** The $400/month figure is unverified against real products at your call volume.\n\n## Next steps\n\n**Week 1: size the problem and screen vendors (free)**\n1. Pull RingCentral call logs for the last 30\u201360 days. Count missed and abandoned calls, when they happened, and how many were likely new patients. This sizes the benefit and shows whether you need after-hours coverage, lunch/peak overflow coverage, or both.\n2. Ask RingCentral whether its AI receptionist add-on exists for your plan, what it costs, and whether it integrates with Dentrix (F12, unverified). It could avoid changing phone systems. Also ask whether your current plan can route overflow and after-hours calls to a third party.\n3. Get written quotes from two or three dental-specific vendors, plus one hybrid or live answering service as a comparison (F7). Check each against $400/month at your actual call volume.\n4. Ask each vendor, in writing:\n   - Do you have a current Dentrix integration for my version? What exactly does it read and write, and how is access switched off? (F3)\n   - Will you sign a BAA on this plan? (F4)\n   - Do you capture Maryland all-party consent at the start of every call, including transfers?\n   - Do you train on our data? What are your retention terms? Do you enforce MFA? (F4)\n\n**Week 2: legal and setup**\n5. Have your attorney review the greeting, the \"automated assistant\" notice, and the recording process for every call route before go-live (F5). Ask whether you can skip recording entirely, and whether Maryland dental board or local rules add anything. I found none, but counsel should confirm.\n6. Define the emergency path: what counts as an emergency, who is on call, and how the AI reaches them. Make sure callers can reach a human early (F10).\n7. Test the vendor against your real appointment types: hygiene recall, new-patient exam, emergency exam (F3).\n\n**Weeks 3\u20134: run the pilot**\n8. Agree on success criteria with the vendor beforehand (F6). Measure:\n   - answered-call rate\n   - correct bookings in Dentrix\n   - transfers to staff\n   - emergency handoffs\n   - patient complaints\n9. Have your front-desk person review every AI booking daily during the pilot. Her input also tells you whether the tool helps or creates cleanup work.\n\n**Decision point:** Expand only if bookings are accurate, emergencies are handled safely, complaints are low, and the real cost fits your budget. If it works, the next step is expanding to daytime overflow, not eliminating the front-desk role. If the vendor won't sign a BAA, can't handle Maryland consent, or can't write to Dentrix reliably, move to the hybrid answering service or stay with the current setup.\n\n## Bottom line\n\nDoing nothing keeps the missed-call problem, and a full replacement now takes on legal and operational risk before you've verified anything. The pilot gets you real data on your own calls within about a month, at limited risk and cost.",
+  "judge": {
+    "model": "openrouter/anthropic/claude-sonnet-5.5",
+    "letters": {
+      "baseline_research": "A",
+      "board": "B",
+      "baseline": "C"
+    },
+    "baseline_research": {
+      "risks": [
+        {
+          "risk": "Maryland all-party recording consent",
+          "score": 2,
+          "quote": "The AI must play a disclosure and capture consent before recording starts, on every call route, including transfers"
+        },
+        {
+          "risk": "HIPAA business associate agreement",
+          "score": 2,
+          "quote": "If the vendor won't sign a BAA, can't handle Maryland consent, or can't write to Dentrix reliably, move to the hybrid answering service"
+        }
+      ],
+      "actionable": 4,
+      "errors": []
+    },
+    "board": {
+      "risks": [
+        {
+          "risk": "Maryland all-party recording consent",
+          "score": 2,
+          "quote": "No call may be recorded until a consent step is live on every route, including transfers"
+        },
+        {
+          "risk": "HIPAA business associate agreement",
+          "score": 2,
+          "quote": "The vendor signs a BAA for the exact plan and answers sub-processor, model-training, retention and portal-security questions in writing."
+        }
+      ],
+      "actionable": 5,
+      "errors": []
+    },
+    "baseline": {
+      "risks": [
+        {
+          "risk": "Maryland all-party recording consent",
+          "score": 1,
+          "quote": "The AI must announce recording at the start of every call (\"This call may be recorded\u2026\"). Confirm this is built in"
+        },
+        {
+          "risk": "HIPAA business associate agreement",
+          "score": 2,
+          "quote": "Require a signed **Business Associate Agreement** before any patient call touches the system. No BAA means no deal."
+        }
+      ],
+      "actionable": 4,
+      "errors": [
+        {
+          "claim": "Announcing 'This call may be recorded' at the start satisfies Maryland all-party consent.",
+          "correction": "Maryland requires all parties' consent; a prior notice with the caller continuing is generally accepted, but 'may be recorded' wording is weak and counsel should confirm."
+        }
+      ]
+    }
+  }
+}

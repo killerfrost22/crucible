@@ -1,0 +1,729 @@
+{
+  "scenario": {
+    "id": "food-truck-merchant-cash-advance",
+    "intake": {
+      "question": "Should I take a $60,000 merchant cash advance to buy a second food truck before spring?",
+      "leaning": "Yes, the approval was instant",
+      "profile": {
+        "industry": "food truck",
+        "location": "Washington, DC area (Maryland side)",
+        "size": "1 truck, 4 employees",
+        "current_tools": [
+          "Square POS"
+        ],
+        "goals": [
+          "double revenue next year"
+        ]
+      }
+    },
+    "must_catch": [
+      {
+        "label": "True cost of capital (APR / factor rate)",
+        "any": [
+          "APR",
+          "factor rate",
+          "annual(ized)? (percentage|cost|rate)",
+          "effective (interest|rate)"
+        ]
+      },
+      {
+        "label": "SBA-backed alternatives",
+        "any": [
+          "SBA",
+          "microloan",
+          "7\\(a\\)",
+          "CDFI",
+          "Small Business Development Center",
+          "SBDC"
+        ]
+      }
+    ]
+  },
+  "seat_model": "openrouter/anthropic/claude-haiku-5.5",
+  "researcher_model": "openrouter/anthropic/claude-sonnet-5.5:online",
+  "chair_model": "openrouter/anthropic/claude-sonnet-5.5",
+  "web_search": true,
+  "baseline": "# Recommendation: Don't take the MCA, at least not as your first or only option\n\nInstant approval means the lender is protected by daily or weekly withdrawals from your sales and by broad liens. It says nothing about whether the deal is good for you. Your goal of doubling revenue is reasonable, but this is probably the most expensive way to fund it.\n\n## Why I'd say no\n\n**1. The real cost is high.**\nMCAs use a factor rate, typically 1.2 to 1.5, not an interest rate. On $60,000:\n- At 1.35, you repay about $81,000, a $21,000 cost.\n- If that is repaid over 6 to 9 months, the effective APR is often 50% to 100% or more.\n- That works out to roughly $2,000 or more per week pulled from your sales.\n\n**2. Payments start before the second truck earns anything.**\nRepayment starts within days. A second truck still needs to be bought, wrapped, outfitted, permitted, inspected, and staffed. For months, your one existing truck would be funding the payments, and that cash flow is also what pays your 4 employees.\n\n**3. The timing is risky.**\nSpring is the start of your busy season, but you would be borrowing during the slowest months. Fixed daily withdrawals hurt most when sales dip because of weather or a slow week.\n\n**4. $60k may not cover the whole project.**\nA used, functional truck often runs $50k to $100k or more. Add permits, health inspections, a commissary agreement, insurance, a POS setup, initial inventory, and hiring. If you run short, you may end up stacking a second advance, which is how owners get into trouble.\n\n**5. Running two trucks is a different business.**\nYou would need a reliable manager or lead, consistent quality, and enough high-volume locations or events for both trucks. Revenue doesn't double just because you add a truck.\n\n## Main risks\n\n- **Cash flow squeeze:** Fixed withdrawals against variable sales can leave you short on payroll, food costs, and commissary fees.\n- **Contract terms:** Look for personal guarantees, blanket liens on business assets, confessions of judgment, restrictions on other financing, and no prepayment discount.\n- **Cascade failure:** If the new truck underperforms, the debt can sink the profitable truck too.\n- **Permitting and location risk:** Maryland counties and DC have different mobile vending rules, and good spots or events may not be available to a second truck.\n\n## Next steps\n\n1. **Get the full MCA terms in writing.** Find the factor rate, total payback, withdrawal frequency and amount, fees, and the guarantee and lien terms. Calculate the effective APR.\n2. **Check the unit economics of your current truck.** Know your average weekly revenue by season, food and labor cost, and net profit per truck-day. A second truck should be able to cover the debt payments with room to spare.\n3. **Get quotes for cheaper financing:**\n   - Equipment financing or a truck loan, where the truck is the collateral\n   - An SBA microloan or SBA Express loan\n   - Local CDFIs and Maryland or county small business loan programs\n   - Square Loans, since you already use Square, which are usually cheaper than a typical MCA and repaid as a percentage of sales\n   - Buying a used truck or leasing\n4. **Test demand before spending.** Add catering, private events, breweries, or office-park lunches with your current truck. If you're already turning down bookings or maxing out your schedule, that's strong evidence for a second truck.\n5. **Cost out the full project.** Include the truck, build-out, licensing, insurance, staffing, working capital for 2 to 3 months, and a cushion.\n6. **Consider delaying a few months.** Starting the second truck in early summer or after the spring season begins may be better than rushing before spring, if cheaper financing takes longer.\n\n## When an MCA might be acceptable\n\nOnly if you have signed contracts or committed event revenue, high margins, no cheaper option, a total cost you can absorb, and a plan that works even if the second truck takes three months to ramp up. Otherwise, wait and fund this more cheaply.\n\nIf you share the MCA's factor rate, term, and your current truck's monthly revenue and profit, I can help you run the numbers.",
+  "board_state": {
+    "intake": {
+      "question": "Should I take a $60,000 merchant cash advance to buy a second food truck before spring?",
+      "leaning": "Yes, the approval was instant",
+      "profile": {
+        "name": "",
+        "industry": "food truck",
+        "location": "Washington, DC area (Maryland side)",
+        "size": "1 truck, 4 employees",
+        "current_tools": [
+          "Square POS"
+        ],
+        "budget": "",
+        "goals": [
+          "double revenue next year"
+        ],
+        "constraints": ""
+      }
+    },
+    "evidence_mode": "web",
+    "evidence": {
+      "decision": "Whether to take a $60,000 merchant cash advance (MCA) to buy a second food truck before spring, or to do something else.",
+      "options": [
+        "Do nothing: keep running one truck and build cash reserves, then revisit the second truck later.",
+        "Take the $60,000 MCA now and buy the second truck before spring.",
+        "Use lower-cost financing for the second truck instead (SBA microloan or 7(a), or equipment financing with the truck as collateral). This may mean a later start.",
+        "Scale more cheaply first: buy a smaller or used unit, lease, or add catering and event capacity on the existing truck. Buy the second truck once the demand is proven."
+      ],
+      "facts": [
+        {
+          "claim": "MCAs are priced with a factor rate, typically 1.10 to 1.50, rather than an interest rate. Effective APR is commonly cited at 40% to 150%+, depending on how fast the advance is repaid. Daily or weekly deductions can strain cash flow. By simple arithmetic, a $60,000 advance at a 1.30 factor means $78,000 repaid, an $18,000 cost.",
+          "source": "https://www.supermoney.com/reviews/merchant-cash-advance",
+          "verified": true,
+          "check": {
+            "status": "unreachable",
+            "checked_at": "2026-11-11T02:24:01Z",
+            "http_status": 403
+          }
+        },
+        {
+          "claim": "The same factor rate gets more expensive the faster you repay. One source puts a 1.30 factor at roughly 45% APR over 12 months and about 90% over 4 to 6 months. The dollar cost is fixed regardless of early payoff. Sources differ on the exact APR for a given term.",
+          "source": "https://axiantpartners.com/merchant-cash-advance/articles/typical-merchant-cash-advance-rates-2026/",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:24:02Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "On default, MCA funders can use UCC-1 liens, frozen bank accounts, confessions of judgment and personal guarantees. Personal guarantees and confession-of-judgment clauses are often required in these contracts. Owners should check the contract for them.",
+          "source": "https://www.singerlawgroup.com/what-are-the-consequences-of-defaulting-on-a-merchant-cash-advance",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:24:01Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Maryland's MCA disclosure rules are disputed across sources. A tracker dated Oct 20, 2026 says Maryland has no commercial financing disclosure law: SB 881 passed the Senate 42-0 in 2026 but not the House. Another dataset also lists Maryland as having no enacted law. Other sites claim Maryland enacted one in 2023 or 2025. The board should not assume the funder must show an estimated APR. A 2020 legislative analysis said MCAs were not addressed by Maryland law at that time.",
+          "source": "https://businessfunders.app/rules/state-disclosure-laws",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:24:02Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Montgomery County, MD requires a Mobile Food Service license before operating. The unit must pass inspection, and new or altered units go through plan review at Permitting Services. A county-certified Food Service Manager must be on the premises whenever the unit operates. A separate Chapter 47 vendor license from Permitting Services also applies. Each added truck means its own licensing, plan review and inspection timeline. Gaithersburg, Rockville and Takoma Park may have their own rules.",
+          "source": "https://www.montgomerycountymd.gov/HHS/LandR/MobileFood.html",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:24:02Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Maryland's Mobile Reciprocity License (SB 262) lets a licensed truck get a license in another Maryland county within 90 miles of its home commissary or base county. This is relevant to where a second truck could operate.",
+          "source": "https://www.montgomerycountymd.gov/HHS-Special/LandRMobileFood.html",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:24:02Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Prince George's County requires a county-certified Food Service Manager on duty for Class III mobile units. Its Special Food Service Facility Mobile Unit license (food truck hubs and special events) is listed with no fee. A 2020 county webinar listed a $300 DPIE mobile food permit fee that includes health inspection. A March 2025 health fee schedule has separate fees, including a Mobile Vendor/Food Truck line. Confirm the current fee with the county.",
+          "source": "https://dev.princegeorgescountymd.gov/departments-offices/licensing/business-licenses/business-licensing-requirements",
+          "verified": true,
+          "check": {
+            "status": "unreachable",
+            "checked_at": "2026-11-11T02:24:01Z",
+            "http_status": 403
+          }
+        },
+        {
+          "claim": "Food truck prices in 2026 are commonly cited as $30,000 to $100,000 used and $75,000 to $200,000 new. One source suggests budgeting an extra $5,000 to $15,000 for repairs and code work on a used rig, such as suppression recertification, plumbing and brakes. A $60,000 advance covers only the lower-to-mid used range before permits, inventory, the extra staffing a second truck needs, and the advance's own fee.",
+          "source": "https://merchants.doordash.com/en-us/blog/how-much-does-a-food-truck-cost",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:24:02Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Cheaper alternatives exist. SBA Microloans go up to $50,000 at about 8% to 13% but can take weeks. SBA 7(a) maximum rates are 10% to 15% as of Oct 2026, with prime at 7.00%. Equipment financing uses the truck as collateral, with cited ranges of 6% to 20% APR, terms of 24 to 84 months, and funding in 1 to 5 days.",
+          "source": "https://www.lendio.com/blog/sba-loan-interest-rates",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:24:02Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Equipment financing for a truck typically needs a 10% to 20% down payment and runs 3 to 7 years. It closes faster than SBA loans but usually costs more.",
+          "source": "https://revenuemap.app/blog/food-truck-startup-costs",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:24:02Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Benchmark: the average US food truck grosses about $346,000 a year. Net margin is about 6% to 9% for trucks with employees, and higher for owner-operators. At those margins, an $18,000 advance fee equals roughly half to all of a year's profit on an average truck. Estimates vary widely by source (some report 10% to 20%).",
+          "source": "https://openingdaykit.com/most-profitable-food-trucks/",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:24:02Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Square for Restaurants (the owner's current POS) is listed at $0 per month for Free, $49 per month per location for Plus, and $149 per month per location for Premium. Square's FAQ on the same page also mentions Plus plans starting at $60, so the page is inconsistent. In-person processing is about 2.6% + 15\u00a2 on Free and 2.5% + 15\u00a2 on Plus. A second truck is billed per location on paid plans, and Free has no monthly fee.",
+          "source": "https://squareup.com/us/en/campaigns/discover-restaurants",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:24:02Z",
+            "http_status": 200
+          }
+        }
+      ],
+      "open_questions": [
+        "What are the offer's actual factor rate, holdback percentage or fixed daily or weekly debit, term, fees and prepayment terms? These set the true APR and cash drain.",
+        "Does the contract include a personal guarantee, a confession of judgment, a blanket UCC lien, or a governing-law clause outside Maryland?",
+        "What are the current truck's monthly revenue, net profit, and card-sales share? Would daily debits plus the existing truck's costs leave enough cash for payroll, food and commissary costs?",
+        "Is $60,000 enough for the specific truck considered (new or used)? What is the all-in cost, including repairs, permits, insurance and the added hires needed?",
+        "Which county or city will the second truck be based in and operate in? Montgomery County, Prince George's County and municipalities differ. How long do plan review and inspection take against the spring target?",
+        "Is there proven demand beyond the first truck, such as events, catering contracts, hubs or locations, to fill a second truck? Is it spring-seasonal?",
+        "What is the owner's credit and time in business? Could an SBA microloan, equipment loan or line of credit realistically be approved, and how fast?",
+        "Does the owner have other existing advances or debts (risk of stacking), and what cash reserve is available if the second truck ramps slowly?",
+        "Could the existing commissary arrangement and the owner's management time handle two trucks?"
+      ]
+    },
+    "round1": {
+      "industry_expert": {
+        "stance": "oppose",
+        "headline": "Don't take the $60,000 MCA; scale cheaper first.",
+        "summary": "An MCA's fixed fee would likely eat half or more of an average truck's yearly profit, and the contract terms are unknown. Instant approval is a sales feature, not proof the deal is cheap. Prove demand on one truck, use equipment financing or an SBA loan, and buy the second truck when cash and events justify it.",
+        "key_points": [
+          "An $18,000 fee on a $60,000 advance (F1) roughly equals half to all of an average truck's yearly profit (F11).",
+          "Equipment financing uses the truck as collateral at 6% to 20% APR, funds in 1 to 5 days (F9, F10). It is a faster and cheaper route than an MCA.",
+          "A used second truck needs $5,000 to $15,000 more for repairs, plus staff and permits, which $60,000 may not cover (F8, F5)."
+        ],
+        "risks": [
+          "Daily or weekly debits can drain cash needed for payroll and food on the existing truck (F1).",
+          "Personal guarantees and confessions of judgment are common in MCA contracts, putting home assets at risk (F3).",
+          "Each new truck needs its own county license, plan review and inspection before spring, which may slip (F5, F7)."
+        ],
+        "confidence": 85,
+        "pushback": "You assume the spring truck will earn back its cost. Test that with real event and catering bookings on the current truck before borrowing at any price."
+      },
+      "ai_tools_expert": {
+        "stance": "oppose",
+        "headline": "Don't take the $60,000 advance; the instant approval is the warning sign.",
+        "summary": "An instant yes is how these advances are sold, not proof the deal is cheap. A $60,000 advance at a 1.30 factor costs $18,000 extra, and fast repayment can push the true rate far higher. The average truck grosses about $346,000 a year, so that fee could eat most of a year's profit. Get the contract terms first, then compare cheaper loans.",
+        "key_points": [
+          "The $18,000 fee is fixed, and at 6-9% margins it can equal half to all of a year's profit (F1, F11).",
+          "Short repayment terms push the effective APR toward 90% or more, and daily debits can strain payroll and food costs (F1, F2).",
+          "Cheaper options exist: SBA microloans up to $50,000 at about 8-13%, or equipment financing with the truck as collateral (F9)."
+        ],
+        "risks": [
+          "Personal guarantees and confession-of-judgment clauses can put your personal assets and bank accounts at risk if you fall behind (F3).",
+          "Montgomery and Prince George's licensing, plan review and inspection may not finish before spring (F5, F7).",
+          "$60,000 likely misses repairs, permits, inventory and extra hires for a used truck (F8)."
+        ],
+        "confidence": 85,
+        "pushback": "Assume instant approval means the deal is good; speed is how MCAs are sold, and the total cost is the real test.",
+        "tools": [
+          {
+            "name": "QuickBooks Online",
+            "use": "Forecasts weekly cash so you can see whether daily or weekly debits would leave enough for payroll and food costs.",
+            "monthly_cost": "about $30-60/mo (unverified)",
+            "works_with": "Connects to Square for sales data.",
+            "caveat": "Forecasts are only as good as the numbers you enter, and it does not set up financing.",
+            "url": "https://quickbooks.intuit.com",
+            "price_fact": "",
+            "pilot_test": "Keep it if the 6-week cash forecast stays within $1,000 of actual cash; decide by week 6."
+          }
+        ]
+      },
+      "realist": {
+        "stance": "oppose",
+        "headline": "Do not take the MCA now; the cost and cash drain are too high.",
+        "summary": "The $60,000 advance likely costs about $18,000 or more in fees (F1), and repayment can be fast and expensive (F2). Average trucks earn about 6-9% net margin (F11), so the fee could wipe out most of a year's profit. Cheaper options exist (F9), and the contract may include a personal guarantee (F3). Confirm the real terms and demand first.",
+        "key_points": [
+          "The $18,000 fee is roughly half to all of an average truck's annual profit (F1, F11).",
+          "Cheaper financing, such as equipment loans or SBA microloans, is available (F9, F10).",
+          "A $60,000 advance may not cover a used truck plus repairs and permits (F8)."
+        ],
+        "risks": [
+          "Daily or weekly debits could strain payroll and food costs on the existing truck.",
+          "Personal guarantees or confessions of judgment could put personal assets at risk (F3).",
+          "Permits, inspections and plan review may not finish before spring (F5)."
+        ],
+        "confidence": 80,
+        "pushback": "Speed of approval is not the same as a good deal. Ask what the true APR is at your expected repayment speed, and whether demand for a second truck is proven.",
+        "checks": [
+          {
+            "area": "financial",
+            "status": "block",
+            "note": "A $60,000 advance at a 1.30 factor costs about $18,000 (F1), and its effective APR rises sharply with fast repayment (F2); the owner must confirm the exact terms before signing."
+          },
+          {
+            "area": "legal",
+            "status": "flag",
+            "note": "The contract may include a personal guarantee, confession of judgment, or UCC lien (F3); an attorney should review the contract, and Maryland disclosure rules remain unsettled (F4)."
+          },
+          {
+            "area": "compliance",
+            "status": "flag",
+            "note": "Montgomery County requires a separate license, plan review and inspection for each new unit, and a certified Food Service Manager on site (F5); the county or city of operation must be confirmed (unverified)."
+          },
+          {
+            "area": "goals",
+            "status": "flag",
+            "note": "Doubling revenue depends on proven demand for a second truck, which is not shown in the evidence; the owner's current net profit is unknown."
+          },
+          {
+            "area": "financial",
+            "status": "flag",
+            "note": "Lower-cost options such as equipment financing at 6-20% APR with 24-84 month terms (F9, F10) would cost far less, though they may delay the start."
+          }
+        ]
+      },
+      "strategist": {
+        "stance": "oppose",
+        "headline": "Don't take the MCA; prove demand before buying a second truck",
+        "summary": "The $60,000 advance costs about $18,000 at a typical 1.30 factor (F1), roughly half or more of an average truck's yearly profit (F11). Daily debits and possible personal guarantees (F3) could strain cash flow. Instant approval is speed, not a good price. Get the real contract terms, compare cheaper equipment financing (F9), and grow the current truck first.",
+        "key_points": [
+          "The $18,000 fee is fixed even if you repay early, and early repayment raises the effective rate (F1, F2).",
+          "A $60,000 advance may not cover a used truck plus $5,000 to $15,000 in repairs, permits, and extra staff (F8, F5).",
+          "Equipment financing with the truck as collateral costs 6% to 20% and funds in 1 to 5 days (F9, F10), so speed is not a reason to pick the MCA."
+        ],
+        "risks": [
+          "Daily debits could leave too little for payroll and food costs on two trucks, and default can freeze accounts or trigger liens (F3).",
+          "Maryland disclosure rules are unclear, so you may not see a clear APR before signing (F4); an attorney should review the contract.",
+          "Locking in a second truck before spring means paying fixed costs before proven demand exists, and selling a truck later is costly."
+        ],
+        "confidence": 80,
+        "pushback": "Assumes the second truck will double revenue. Test that first with catering or event bookings on the current truck before committing to a $60,000 debt.','pushback_check':''}"
+      },
+      "devils_advocate": {
+        "stance": "oppose",
+        "headline": "Do not take the $60,000 MCA; the cost and cash drain are too high.",
+        "summary": "An MCA is a costly way to fund a truck. A $60,000 advance at a 1.30 factor repays $78,000 (F1), and the fee can equal half or more of a typical year's profit (F11). Repayment is deducted daily or weekly, which strains cash. Cheaper options exist, including SBA microloans and equipment financing that uses the truck as collateral (F9). Fast approval is not the same as a good deal.",
+        "key_points": [
+          "The $18,000 fee on a 1.30 factor is fixed and gets pricier the faster you repay (F1, F2).",
+          "A $60,000 advance covers only a lower-to-mid used truck before permits, repairs, staff and inventory (F8).",
+          "Equipment financing can close in 1 to 5 days and costs less than most MCAs (F9, F10)."
+        ],
+        "risks": [
+          "Daily debits plus a second truck's costs could drain payroll and food money during slow months.",
+          "Default can bring liens, frozen accounts, personal guarantees or confessions of judgment (F3); check the contract.",
+          "Second-truck licensing and inspection in Montgomery or Prince George's could delay revenue past spring (F5, F7)."
+        ],
+        "confidence": 78,
+        "pushback": "You assume the fast approval means the deal is worth it. Ask what the true factor, holdback, term and fees are, and whether a faster equipment loan could close just as fast at lower cost. Have an accountant model the cash flow under daily debits.(unverified)"
+      }
+    },
+    "round2": {
+      "industry_expert": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "realist",
+            "their_claim": "Doubling revenue depends on proven demand, and the owner's current net profit is unknown.",
+            "response": "Agreed on the core point, but I'd go further: the $18,000 fee is a fixed cost that doesn't depend on demand. Even a good truck can't outrun that cost during a slow spring. Test demand on the current truck first (F11 margins make this critical)."
+          },
+          {
+            "target": "devils_advocate",
+            "their_claim": "Equipment financing can close in 1 to 5 days and costs less than most MCAs.",
+            "response": "Correct, and this is the fair comparison. Speed is not a reason to pick the MCA. Get an equipment loan quote this week; it likely closes as fast as the advance (F9, F10)."
+          },
+          {
+            "target": "ai_tools_expert",
+            "their_claim": "Speed is how MCAs are sold; the total cost is the real test.",
+            "response": "Agreed. I'd add that the owner should ask for the total payback amount in writing before signing, not just the factor rate (F1)."
+          }
+        ],
+        "concessions": [
+          "Equipment financing is a realistic faster-and-cheaper path, not just a slower one (F9, F10).",
+          "Demand for a second truck is unproven in the evidence, so the growth goal is a hypothesis, not a plan."
+        ],
+        "stance": "oppose",
+        "headline": "Don't take the $60,000 MCA; prove demand, then use cheaper financing.",
+        "summary": "The $60,000 advance costs about $18,000 in fees (F1), which can equal half or more of an average truck's yearly profit (F11). Daily debits could starve payroll and food costs on your current truck. Instant approval is how these deals are sold, not proof of a good price. Equipment financing (F9, F10) or an SBA microloan (F9) costs far less. Test demand on the current truck with catering and events first. Confirm the contract terms, including any personal guarantee (F3), with an attorney.",
+        "key_points": [
+          "The $18,000 fee on a $60,000 advance is fixed and gets pricier the faster you repay (F1, F2).",
+          "Equipment financing uses the truck as collateral at 6% to 20% APR and can fund in 1 to 5 days (F9, F10).",
+          "A used second truck needs $5,000 to $15,000 more for repairs, plus permits and staff (F8, F5)."
+        ],
+        "risks": [
+          "Daily or weekly debits drain cash needed for payroll and food on the current truck (F1).",
+          "Personal guarantees or confessions of judgment could put your home and accounts at risk (F3).",
+          "Montgomery or Prince George's licensing and inspection may not finish before spring (F5, F7)."
+        ],
+        "confidence": 85,
+        "pushback": "You assume the second truck will earn back its cost. Prove that with real event and catering bookings on the current truck before borrowing at any price."
+      },
+      "ai_tools_expert": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "devils_advocate",
+            "their_claim": "Equipment financing can close just as fast as an MCA at lower cost.",
+            "response": "F9 shows equipment loans funding in 1 to 5 days, but approval depends on credit and time in business, which the owner has not shared. Confirm approval odds before assuming speed matches."
+          },
+          {
+            "target": "realist",
+            "their_claim": "Equipment financing would cost far less but may delay the start.",
+            "response": "F9 and F10 show 1 to 5 day funding for equipment loans, so the delay is not established. The real cost is the 10% to 20% down payment (F10), which the owner must cover."
+          }
+        ],
+        "concessions": [
+          "Demand for a second truck is not proven in the evidence, so the spring timing rests on an assumption.",
+          "A used second truck may cost $5,000 to $15,000 more than the purchase price (F8), so $60,000 may not be enough.",
+          "Daily or weekly debits could strain payroll and food money on the existing truck (F1)."
+        ],
+        "stance": "oppose",
+        "headline": "Oppose the MCA; test demand and compare lower-cost equipment financing first.",
+        "summary": "The $60,000 advance costs about $18,000 in fees at a 1.30 factor (F1), which can equal half or more of an average truck's yearly profit (F11). The cost rises the faster you repay (F2). Equipment financing uses the truck as collateral at 6% to 20% APR and can fund in 1 to 5 days (F9, F10). Prove demand on the current truck first, then borrow the cheaper way.",
+        "key_points": [
+          "The $18,000 fee is fixed and the effective rate rises with fast repayment (F1, F2).",
+          "Equipment financing at 6% to 20% APR is a cheaper route to a second truck (F9, F10).",
+          "A $60,000 advance may not cover a used truck plus repairs, permits and staff (F8)."
+        ],
+        "risks": [
+          "Daily debits could leave too little for payroll and food costs (F1).",
+          "Default can bring personal guarantees, frozen accounts or confessions of judgment (F3).",
+          "Licensing and inspection in each county may slip past spring (F5, F7)."
+        ],
+        "confidence": 85,
+        "pushback": "Assume the fast approval means the deal is worth it. Ask for the factor rate, holdback, term and fees, and get an accountant to model cash flow under daily debits.",
+        "tools": [
+          {
+            "name": "QuickBooks Online",
+            "use": "Forecast weekly cash to see whether daily or weekly debits would leave enough for payroll and food costs.",
+            "monthly_cost": "$30-60/mo (unverified)",
+            "works_with": "Connects to bank accounts and can import Square sales data through integrations (unverified).",
+            "caveat": "Forecasts are only as good as the numbers entered, and it does not arrange financing.",
+            "url": "https://quickbooks.intuit.com",
+            "price_fact": "",
+            "pilot_test": "Keep it if the 6-week cash forecast stays within $1,000 of actual cash; decide by week 6."
+          }
+        ]
+      },
+      "realist": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "devils_advocate",
+            "their_claim": "Equipment financing can close in 1 to 5 days and costs less than most MCAs, so take that route instead.",
+            "response": "Agreed on cost, but equipment loans still need a 10-20% down payment and proof of credit and time in business (F10). Confirm eligibility before counting on that speed."
+          },
+          {
+            "target": "ai_tools_expert",
+            "their_claim": "Fast repayment pushes the true APR toward 90% or more, so daily debits are the real danger.",
+            "response": "F2 supports higher APR with faster repayment, but sources differ widely. Say 'may reach' rather than a fixed figure; the exact APR depends on the actual contract terms."
+          },
+          {
+            "target": "strategist",
+            "their_claim": "Selling a second truck later is costly, so locking in before demand is proven is risky.",
+            "response": "Partly unverified. Resale value of used trucks is not in the evidence. The stronger point is that fixed debt is due regardless of demand (F1)."
+          }
+        ],
+        "concessions": [
+          "Equipment financing is the most realistic lower-cost route, and the industry expert's point about it is sound (F9, F10).",
+          "Demand for a second truck is unproven, so the goals check must stay flagged."
+        ],
+        "stance": "oppose",
+        "headline": "Don't take the $60,000 MCA now; prove demand and get the real terms first.",
+        "summary": "The advance costs about $18,000 at a 1.30 factor (F1), which could equal half or more of a typical truck's yearly profit (F11). Daily debits could starve payroll and food costs (F2). Instant approval is speed, not a better price. Confirm the contract terms, check cheaper equipment financing (F9, F10), and prove demand on the current truck first.",
+        "key_points": [
+          "The $18,000 fee is fixed and costs more per year the faster you repay (F1, F2).",
+          "Equipment financing costs 6-20% and can fund in 1-5 days (F9, F10), so speed alone is no reason to choose the MCA.",
+          "Second-truck licensing and inspection in Montgomery or Prince George's must finish before spring (F5, F7)."
+        ],
+        "risks": [
+          "Daily or weekly debits could leave too little for payroll and food costs (F1).",
+          "Personal guarantees or confessions of judgment could put personal assets at risk (F3).",
+          "A $60,000 advance may not cover a used truck plus $5,000 to $15,000 in repairs, permits and staff (F8)."
+        ],
+        "confidence": 82,
+        "pushback": "That a second truck will double revenue. No evidence in the briefing shows demand beyond the first truck, and the owner's current net profit is unknown.",
+        "checks": [
+          {
+            "area": "financial",
+            "status": "block",
+            "note": "A $60,000 advance at a 1.30 factor costs about $18,000 and repays $78,000 (F1); the exact factor, holdback, term and fees must be confirmed before signing."
+          },
+          {
+            "area": "legal",
+            "status": "flag",
+            "note": "The contract may include a personal guarantee, confession of judgment or blanket UCC lien (F3); an attorney should review it, since Maryland disclosure rules are unsettled (F4)."
+          },
+          {
+            "area": "compliance",
+            "status": "flag",
+            "note": "Montgomery County requires a separate license, plan review and inspection for each new unit plus a certified Food Service Manager (F5); the second truck's county is unverified and the owner should confirm with the county."
+          },
+          {
+            "area": "goals",
+            "status": "flag",
+            "note": "Doubling revenue depends on proven demand for a second truck, which the evidence does not show; current net profit is unknown (F11)."
+          },
+          {
+            "area": "financial",
+            "status": "flag",
+            "note": "Equipment financing at 6-20% APR over 24-84 months (F9, F10) would cost far less, though it needs a 10-20% down payment and may delay the start."
+          }
+        ]
+      },
+      "strategist": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "ai_tools_expert",
+            "their_claim": "Short repayment pushes the effective APR toward 90% or more.",
+            "response": "Partly right, but F2 ties the 90% figure to a 4 to 6 month payoff, and sources differ on exact APRs. Get the actual repayment term before quoting any rate."
+          },
+          {
+            "target": "realist",
+            "their_claim": "Equipment loans would cost far less but may delay the start.",
+            "response": "Agreed on rate, but equipment loans run 24 to 84 months (F9, F10). Compare total interest over the full term, not just the APR, before calling it cheaper."
+          },
+          {
+            "target": "industry_expert",
+            "their_claim": "Each new truck needs its own county license, plan review and inspection before spring, which may slip (F5).",
+            "response": "Correct, and this is the strongest timing argument. A cheaper loan does not help if the permit slips past spring, so check the county timeline first."
+          }
+        ],
+        "concessions": [
+          "Devil's Advocate is right that an accountant should model cash flow under daily debits before any signing.",
+          "Realist is right that the county or city of operation is unconfirmed, so permit timing must be checked before the spring target."
+        ],
+        "stance": "oppose",
+        "headline": "Don't take the MCA now; prove demand and compare cheaper loans first.",
+        "summary": "Stay with one truck for now. The $60,000 advance adds a fixed cost of about $18,000 (F1), which is half or more of an average truck's yearly profit (F11). Daily debits could squeeze payroll, and a personal guarantee may be required (F3). Speed is how these deals are sold, not proof of a good price. Next week, get the written terms and price an equipment loan (F9).",
+        "key_points": [
+          "The fee is fixed at about $18,000 and gets more expensive per month if repaid fast (F1, F2).",
+          "Equipment loans can close in 1 to 5 days at 6% to 20% APR, so speed does not require an MCA (F9, F10).",
+          "A second truck needs its own licensing and inspection, which may miss spring (F5)."
+        ],
+        "risks": [
+          "Daily debits could starve payroll and food costs on the current truck.",
+          "Default can freeze accounts, trigger liens, or enforce personal guarantees (F3).",
+          "Paying fixed costs before demand is proven, then selling a truck later at a loss."
+        ],
+        "confidence": 80,
+        "pushback": "Assumes the second truck will double revenue. Test that first with event or catering bookings on the current truck before taking on $60,000 of debt."
+      },
+      "devils_advocate": {
+        "changed_position": true,
+        "changed_because": "Realist's point that the contract terms are unknown and that the fee's share of profit swings with repayment speed (F2) moved me from flat opposition to a conditional stance.",
+        "rebuttals": [
+          {
+            "target": "industry_expert",
+            "their_claim": "The $18,000 fee would eat half or more of an average truck's yearly profit, so equipment financing is the better route.",
+            "response": "That compares the fee to an average truck, not your truck. Your profit is unknown. Equipment loans also need a 10-20% down payment (F10), which you may not have. Speed and cost both depend on your numbers."
+          },
+          {
+            "target": "strategist",
+            "their_claim": "Prove demand on the current truck first, since locking in a second truck means fixed costs before demand exists.",
+            "response": "Waiting has a cost too. Your goal is doubling revenue next year. A season spent proving demand may miss spring events, and the cheaper route still means paying for the truck later at a higher price."
+          },
+          {
+            "target": "realist",
+            "their_claim": "Cheaper options such as SBA microloans and equipment loans are available (F9, F10).",
+            "response": "F9 gives rate ranges, not approvals. SBA microloans can take weeks. Whether you qualify depends on credit and time in business, which the evidence does not show. Cheaper on paper is not cheaper if it never closes."
+          }
+        ],
+        "concessions": [
+          "Your current net profit and credit are unknown, so the average-truck comparison may not apply to you.",
+          "Equipment financing is cheaper per dollar than an MCA at similar terms (F9).",
+          "Daily or weekly debits can strain payroll and food money (F1)."
+        ],
+        "stance": "conditional",
+        "headline": "Fast MCA may beat waiting, if terms and cash hold.",
+        "summary": "The board says no to the MCA, but waiting also costs money. The fee is about $18,000 on the average-truck benchmark (F1, F11), yet your own profit is unknown. If the real factor is low, the term is long, and your current truck covers the daily debits, a fast advance could beat a slow loan that may not close before spring. If not, do not sign.",
+        "key_points": [
+          "The fee is fixed, so the true cost depends on repayment speed (F1, F2).",
+          "Equipment loans and SBA microloans may close slower or need down payments you may not have (F9, F10).",
+          "Demand for a second truck is unproven, so waiting has a real cost too."
+        ],
+        "risks": [
+          "Daily debits could leave too little for payroll and food on two trucks (F1).",
+          "Personal guarantees or confessions of judgment could put personal assets at risk (F3).",
+          "Permits and inspections in Montgomery or Prince George's may slip past spring (F5, F7)."
+        ],
+        "confidence": 55,
+        "pushback": "You assume the fee is the main cost. Ask whether the second truck's added revenue would cover the fee and debits within the first few months, and have an accountant model that cash flow (unverified)."
+      }
+    },
+    "verdict": {
+      "decision": "reject",
+      "headline": "Don't take this advance; get cheaper financing quotes and prove demand first.",
+      "confidence": 80,
+      "rationale": "At a typical 1.30 factor, $60,000 costs $18,000 extra (F1). That is roughly half to all of an average truck's yearly profit (F11). Daily debits could starve payroll on your current truck, and a personal guarantee may be buried in the contract (F3). Equipment loans can fund in 1 to 5 days at 6% to 20% (F9, F10), so instant approval is not a reason to choose the advance. Demand for a second truck is unproven, and $60,000 may not cover a used truck plus repairs, permits and hires (F8).",
+      "decisive_arguments": [
+        {
+          "seat": "industry_expert",
+          "point": "The fee is fixed at about $18,000 and gets pricier the faster you repay (F1, F2). It could equal half or more of an average truck's yearly profit (F11). Even a good truck struggles to outrun that in a slow spring."
+        },
+        {
+          "seat": "realist",
+          "point": "Equipment financing with the truck as collateral costs 6% to 20% APR and can fund in 1 to 5 days (F9, F10). Speed alone does not justify the advance. The real hurdles are the 10% to 20% down payment and your credit, which are not yet known."
+        },
+        {
+          "seat": "strategist",
+          "point": "A second truck needs its own license, plan review and inspection (F5, F7). A cheaper or faster loan does not help if the permit slips past spring. Check the county timeline first."
+        },
+        {
+          "seat": "ai_tools_expert",
+          "point": "$60,000 likely misses repairs of $5,000 to $15,000, permits, inventory and extra staff on a used truck (F8). Doubling revenue is a hypothesis until event or catering demand is shown."
+        }
+      ],
+      "dissent": [
+        {
+          "seat": "devils_advocate",
+          "point": "Waiting has a cost too. If the real factor is low, the term is long and your truck covers the debits, a fast advance could beat a slow loan that misses spring. The average-truck profit figures may not apply to you (F11), and cheaper loans need credit, down payments and time (F9, F10)."
+        },
+        {
+          "seat": "strategist",
+          "point": "Equipment loans run 24 to 84 months (F9, F10). Compare total interest over the full term, not just the APR, before calling them cheaper."
+        }
+      ],
+      "conditions": [
+        "Do not sign anything until you hold the written contract showing factor, total payback, holdback or debit amount, term, fees and prepayment terms.",
+        "An attorney must review the contract for a personal guarantee, confession of judgment, blanket UCC lien and out-of-state governing law (F3). Maryland disclosure rules are disputed, so do not count on a stated APR (F4).",
+        "Your current truck must cover payroll, food and commissary costs after any debits, based on your own Square numbers.",
+        "The second truck's base county or city must be confirmed, along with realistic licensing and inspection time before spring (F5, F6, F7)."
+      ],
+      "next_steps": [
+        {
+          "when": "this week",
+          "action": "Don't sign. Ask the funder for the full written contract and total payback amount. Ask specifically about a personal guarantee, confession of judgment, UCC lien and prepayment terms."
+        },
+        {
+          "when": "this week",
+          "action": "Export 12 months of Square sales. Work out monthly revenue, net profit and card-sales share. This tells you what debits or loan payments you can carry."
+        },
+        {
+          "when": "this week",
+          "action": "Book a free, confidential session with the Maryland SBDC. Ask for help comparing financing and modeling cash flow under daily debits."
+        },
+        {
+          "when": "next 30 days",
+          "action": "Get written quotes for equipment financing and an SBA microloan or 7(a) (F9, F10). Compare total cost over the full term, down payment and closing speed."
+        },
+        {
+          "when": "next 30 days",
+          "action": "Call the county or city health and permitting office where the second truck would be based. Ask for plan review and inspection timelines and the manager certification rules (F5, F7). Have an attorney review any contract you are still considering."
+        },
+        {
+          "when": "next 90 days",
+          "action": "Line up paid catering, event or hub bookings on your current truck. Reprice a used, smaller or leased unit once demand is shown (F8). Buy the second truck with cheaper financing."
+        }
+      ],
+      "ai_tools": [
+        {
+          "name": "QuickBooks Online",
+          "use": "Forecast weekly cash to see whether loan or advance payments would leave enough for payroll and food costs.",
+          "monthly_cost": "$30-60/mo (unverified)",
+          "works_with": "Square sales can likely be brought in by export or connection (unverified); otherwise standalone.",
+          "caveat": "Forecasts are only as good as the numbers you enter, and it does not arrange financing.",
+          "url": "https://quickbooks.intuit.com",
+          "price_fact": "",
+          "pilot_test": "Keep it if the 6-week cash forecast stays within $1,000 of actual cash; decide by week 6 and cancel before the second invoice otherwise."
+        }
+      ],
+      "escalate_to": "attorney",
+      "escalation_reason": "MCA contracts often carry personal guarantees, confession-of-judgment clauses and UCC liens that can reach personal assets and freeze accounts (F3). Maryland's disclosure rules are disputed (F4). An attorney should review the actual contract before any signature.",
+      "would_change": [
+        "A contract with a low factor, long term, no personal guarantee or confession of judgment, and debits your current truck clearly covers, plus equipment and SBA loans shown to be unavailable or too slow for spring.",
+        "Your Square numbers show strong net profit and signed event or catering demand that would repay the full payback within months of the second truck launching.",
+        "The county confirms permit and inspection timelines that make a spring start impossible with cheaper financing but possible with the advance (F5)."
+      ],
+      "no_new_tool": "You can skip QuickBooks. Build a simple weekly cash sheet in a free spreadsheet from Square sales reports, using your Square Free plan (no monthly fee) (F12). List expected sales, payroll, food, commissary and any loan payment, then check the balance stays positive. It costs about $0 and a couple of hours a week. An SBDC advisor can help you set it up for free."
+    }
+  },
+  "board_error": null,
+  "seconds": 97,
+  "baseline_research": "# Recommendation: Don't take the $60,000 MCA. Pursue cheaper financing, even if the second truck launches later than spring.\n\n## Why\n\n**1. Instant approval says little about whether this is good for you.** MCA funders approve quickly because they are paid first, by daily or weekly deductions from your sales, and they hold strong remedies if you default (F3). The speed is the product, not a sign the deal fits your business.\n\n**2. The cost is large relative to what a truck earns.**\n- At a 1.30 factor, you repay $78,000 on $60,000, an $18,000 cost that is fixed even if you pay early (F1, F2).\n- The effective APR is about 45% over 12 months and about 90% if repaid in 4 to 6 months (F2). Sources differ on the exact figures, but all are far above bank or SBA pricing.\n- The average truck nets about 6\u20139% on roughly $346,000 in sales, so $18,000 is about half to nearly all of a year's profit (F11). Some sources report higher margins, but even at 10\u201320% the fee still takes a big share.\n\n**3. The cash drain is the real danger.** Repaid over about 6 months, $78,000 is roughly $3,000 a week, or about $13,000 a month. That comes out of the existing truck's sales while the second truck is still being permitted, staffed and ramped up. Compare a $60,000 equipment loan at an assumed 12% over 5 years: about $1,335 a month. The total interest can be similar, but the monthly burden is about 10 times lighter. That is the difference between a slow ramp-up and a missed payroll.\n\n**4. $60,000 probably doesn't cover the project.** Used trucks run $30,000\u2013$100,000, plus $5,000\u2013$15,000 for repairs and code work. New trucks run $75,000\u2013$200,000 (F8). On top of that come permits, inventory, insurance and the added staff a second truck needs. The advance's own fee, and any origination fees that reduce the net you receive, widen the gap. You could end up with a truck and no working capital, which is the situation where MCA stacking starts.\n\n**5. Spring is a tight timeline anyway.** Each added truck needs its own license, plan review and inspection (F5). A new or altered unit goes through plan review at Permitting Services, and the timeline is uncertain. Rushing money in doesn't speed up the county. Rules also differ by jurisdiction. Montgomery County, Prince George's County and cities like Rockville and Gaithersburg each have their own (F5, F7). The Maryland reciprocity license may help with where the truck can operate (F6).\n\n**6. Don't count on legal protections.** Maryland's MCA disclosure rules are disputed across sources (F4), so don't assume the funder must show you an APR. Personal guarantees and confession-of-judgment clauses are common in these contracts (F3). Default could put your personal assets and your existing truck's bank account at risk, not just the new truck.\n\n## Better paths, in order\n\n1. **Equipment financing with the truck as collateral.** Rates run 6\u201320% APR, terms 3\u20137 years, funding in 1\u20135 days, and you typically put 10\u201320% down (F9, F10). This is the best fit if you have decent credit and a specific truck picked out.\n2. **SBA microloan (up to $50,000, about 8\u201313%) or 7(a) (max 10\u201315%).** These are cheapest but slower, taking weeks (F9). Start now and the second truck may still launch in late spring or summer.\n3. **Scale cheaply first.** Use a used or smaller unit, a lease, or more catering and events on your current truck. This proves demand before you take on a second truck's fixed costs.\n4. **Do nothing yet.** This is legitimate if the current truck's cash flow is thin.\n\nA blend is likely best: pursue options 1 or 2 while booking catering and events that would fill a second truck.\n\n## Main risks of waiting or going cheaper\n- You might miss part of the spring season. That is a real cost, but a recoverable one.\n- Bank or SBA approval depends on your credit and time in business, which I don't know yet.\n- Two trucks strain your management time and your commissary arrangement.\n- A second truck may not double revenue if demand is limited to your current spots and events.\n\n## Next steps (next 1\u20132 weeks)\n1. **Get the MCA offer in writing and read it**, even if you don't sign. Find the factor rate, the daily or weekly debit or holdback percentage, fees, prepayment terms, and any personal guarantee, confession of judgment, blanket UCC lien or out-of-state governing law. Calculate the real APR yourself. Have a small-business attorney review it before signing anything.\n2. **Pull your numbers.** Know the last 12 months' revenue, net profit, card-sales share (Square will show this) and cash reserves. Test whether you could afford the payments if the second truck earned nothing for 2\u20133 months.\n3. **Apply for quotes** from at least two equipment lenders and one SBA lender or microlender, such as a local CDFI or SBA resource partner. Ask how fast each can fund.\n4. **Price the truck all-in.** Include the vehicle, repairs, permits, insurance, inventory, and 2\u20133 months of added payroll.\n5. **Call the permitting office** for the county or city where the truck will be based. Ask about plan review and inspection timelines, and the manager certification requirement (F5, F7).\n6. **Line up demand** before buying: signed catering, event or hub commitments that would fill the second truck.\n7. **Square is a minor cost.** A second location on a paid plan is about $49\u2013$149 a month, though Square's own page is inconsistent (F12). It is not a factor in this decision.\n\n**When I'd change my mind:** if you are declined for cheaper financing, I would still lean toward waiting or a cheaper used unit. If the numbers still pointed to an MCA, I would want a low factor rate, no personal guarantee or confession of judgment, and payments that your existing truck's sales could cover on their own.",
+  "judge": {
+    "model": "openrouter/anthropic/claude-sonnet-5.5",
+    "letters": {
+      "board": "A",
+      "baseline": "B",
+      "baseline_research": "C"
+    },
+    "board": {
+      "risks": [
+        {
+          "risk": "True cost of capital (APR / factor rate)",
+          "score": 2,
+          "quote": "At a typical 1.30 factor, $60,000 costs $18,000 extra. That is roughly half to all of an average truck's yearly profit."
+        },
+        {
+          "risk": "SBA-backed alternatives",
+          "score": 2,
+          "quote": "Get written quotes for equipment financing and an SBA microloan or 7(a). Compare total cost over the full term, down payment and closing speed."
+        }
+      ],
+      "actionable": 5,
+      "errors": [
+        {
+          "claim": "The fee is fixed at about $18,000 and gets pricier the faster you repay.",
+          "correction": "A fixed factor-rate fee does not get pricier with faster repayment in dollar terms; only the effective APR rises."
+        }
+      ]
+    },
+    "baseline": {
+      "risks": [
+        {
+          "risk": "True cost of capital (APR / factor rate)",
+          "score": 2,
+          "quote": "At 1.35, you repay about $81,000, a $21,000 cost. If that is repaid over 6 to 9 months, the effective APR is often 50% to 100%"
+        },
+        {
+          "risk": "SBA-backed alternatives",
+          "score": 2,
+          "quote": "An SBA microloan or SBA Express loan"
+        }
+      ],
+      "actionable": 4,
+      "errors": []
+    },
+    "baseline_research": {
+      "risks": [
+        {
+          "risk": "True cost of capital (APR / factor rate)",
+          "score": 2,
+          "quote": "The effective APR is about 45% over 12 months and about 90% if repaid in 4 to 6 months"
+        },
+        {
+          "risk": "SBA-backed alternatives",
+          "score": 2,
+          "quote": "SBA microloan (up to $50,000, about 8\u201313%) or 7(a) (max 10\u201315%). These are cheapest but slower, taking weeks"
+        }
+      ],
+      "actionable": 5,
+      "errors": [
+        {
+          "claim": "A $60,000 equipment loan at 12% over 5 years has total interest that can be similar to the MCA's cost.",
+          "correction": "Total interest at 12% over 5 years is about $20,000, which is similar to the MCA fee. The claim is therefore roughly correct, though the MCA's APR is much higher."
+        }
+      ]
+    }
+  }
+}

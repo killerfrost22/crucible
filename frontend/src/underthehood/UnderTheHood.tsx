@@ -18,6 +18,7 @@ import {
   DENTAL_STREAM,
   DENTAL_CHECKED,
   DENTAL_VERDICT,
+  EVAL_RUN,
   EVAL_SCENARIOS,
   REALIST_R2_TARGETS,
 } from './recorded'
@@ -439,11 +440,11 @@ function Models() {
             <dl className="uth-meter__stats">
               <div>
                 <dt>Cost per meeting, measured</dt>
-                <dd>$0.06–0.12</dd>
+                <dd>about $0.12</dd>
               </div>
               <div>
                 <dt>Time per meeting, measured</dt>
-                <dd>75–100 s</dd>
+                <dd>70–120 s</dd>
               </div>
             </dl>
             <p className="uth-meter__cap">
@@ -695,32 +696,36 @@ function Evaluation({ onReplay }: { onReplay: (name: string) => void }) {
     <section className="uth-sec" id="eval" tabIndex={-1} aria-labelledby="eval-title">
       <div className="uth-wrap">
         <SectionHead id="eval" file="backend/eval/run_eval.py" title="Ten traps. The board against one prompt.">
-          Each eval scenario hides a risk a careful advisor has to raise. The harness asks the full board and a single plain prompt the same
-          question, on the same model as the Chairman, and checks each answer for the planted risks.
+          Each eval scenario hides a risk a careful advisor has to raise. The harness puts the same question to the board and to two single
+          prompts on the Chairman’s model, one of them given the board’s own research. A judge model grades the three final answers blind:
+          shuffled, unlabeled, fact numbers removed.
         </SectionHead>
 
         <div className="uth-results">
           <figure className="uth-result" data-part data-rail="v">
-            <figcaption>Early test · lightweight model · dental scenario</figcaption>
-            <div className="uth-score">
-              <div>
-                <span className="uth-score__who">Single prompt</span>
-                <span className="uth-score__pips" aria-hidden="true">
-                  <i />
-                  <i />
-                </span>
-                <span className="uth-score__n">0 of 2</span>
-              </div>
-              <div className="is-board">
-                <span className="uth-score__who">The board</span>
-                <span className="uth-score__pips" aria-hidden="true">
-                  <i className="on" />
-                  <i className="on" />
-                </span>
-                <span className="uth-score__n">2 of 2</span>
-              </div>
+            <figcaption>
+              {EVAL_RUN.date} · 10 scenarios · judged by {EVAL_RUN.judge}
+            </figcaption>
+            <div className="uth-score uth-score--eval">
+              {EVAL_RUN.arms.map((a) => (
+                <div key={a.id} className={a.id === 'board' ? 'is-board' : undefined}>
+                  <span className="uth-score__who">{a.label}</span>
+                  <span className="uth-score__meta">
+                    {a.note} · <span>actionable {a.actionable.toFixed(1)} of 5</span> ·{' '}
+                    <span>
+                      {a.errors} {a.errors === 1 ? 'error' : 'errors'}
+                    </span>
+                  </span>
+                  <span className="uth-score__n">
+                    {a.points}/{EVAL_RUN.most}
+                  </span>
+                </div>
+              ))}
             </div>
-            <p>Planted risks: Maryland’s all-party call-recording consent and the HIPAA business associate agreement.</p>
+            <p>
+              Points for the planted risks: 2 when the recommendation is built around a risk, 1 when it’s only mentioned. Errors are claims
+              the judge was confident are wrong.
+            </p>
           </figure>
 
           <figure className="uth-result" data-part>
@@ -744,9 +749,35 @@ function Evaluation({ onReplay }: { onReplay: (name: string) => void }) {
         </div>
 
         <p className="uth-status" data-part="text">
-          <span className="uth-status__pill">Not run yet</span>
-          The full ten-scenario eval hasn’t been run yet. Until it has, these two results are the only ones we quote.
+          <span className="uth-status__pill">What it shows</span>
+          On these traps one good prompt catches the risks too. Where the board did better was fewer wrong claims and steps the owner can
+          act on this week. The judge is a Claude model grading Claude answers, so read those two columns as a signal, not a proof.
         </p>
+
+        <div className="uth-notes">
+          <div className="uth-note" data-part>
+            <h3>Read, not just scored</h3>
+            <p>
+              Every transcript of the first run was read by hand: 101 problems, each logged with a quote. The commonest was a fact number on
+              a claim the fact doesn’t make. Seats are now told to cite a fact only for what it says, and in four scenarios checked again,
+              those miscitations fell from 42 to 24.
+            </p>
+          </div>
+          <div className="uth-note" data-part>
+            <h3>A real devil’s advocate</h3>
+            <p>
+              In all ten scenarios the five seats opened with the same plan. Now, when caution is the obvious answer, the Devil’s Advocate
+              argues for what the owner wanted to do. Its stance differed from the majority’s in 5 of 10 scenarios, up from 3.
+            </p>
+          </div>
+          <div className="uth-note" data-part>
+            <h3>One bug, found by reading</h3>
+            <p>
+              17 answers had stray JSON in them, like “…may be enough.<code>{'}'}</code>”. The cause: the field the model wrote last was
+              text. With a number last, the rerun had none.
+            </p>
+          </div>
+        </div>
 
         <div className="uth-table-wrap" data-part>
           <table className="uth-scen">

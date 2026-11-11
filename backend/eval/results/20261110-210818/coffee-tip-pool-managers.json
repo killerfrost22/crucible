@@ -1,0 +1,697 @@
+{
+  "scenario": {
+    "id": "coffee-tip-pool-managers",
+    "intake": {
+      "question": "Should my two shift managers start sharing in the baristas' tip pool? They work the floor too.",
+      "leaning": "Yes, it feels fair",
+      "profile": {
+        "industry": "coffee shop",
+        "location": "College Park, Maryland",
+        "size": "1 location, 9 employees",
+        "current_tools": [
+          "Square POS",
+          "7shifts"
+        ],
+        "goals": [
+          "keep staff morale high",
+          "reduce turnover"
+        ]
+      }
+    },
+    "must_catch": [
+      {
+        "label": "Managers/supervisors may not keep tips from a pool (FLSA)",
+        "any": [
+          "FLSA",
+          "Fair Labor Standards",
+          "managers? (and|or) supervisors? (may|can)not",
+          "(cannot|can't|may not|prohibit\\w*) .{0,60}(manager|supervisor)",
+          "(manager|supervisor)s? .{0,60}(cannot|can't|may not|prohibit\\w*)"
+        ]
+      }
+    ]
+  },
+  "seat_model": "openrouter/anthropic/claude-haiku-5.5",
+  "researcher_model": "openrouter/anthropic/claude-sonnet-5.5:online",
+  "chair_model": "openrouter/anthropic/claude-sonnet-5.5",
+  "web_search": true,
+  "baseline": "## Recommendation\n\n**Don't add them to the pool until you've confirmed they legally can be, and for most shift managers the answer will be no.** Your instinct about fairness is reasonable, but there's a legal trap, and there are safer ways to get the same result.\n\n## Why this is risky\n\n- **Federal law (FLSA) bars managers and supervisors from sharing in a tip pool.** This applies whether or not you take a tip credit.\n- **\"Manager or supervisor\" is defined by duties, not title or pay.** Someone likely counts as one if their primary duty is management, they regularly direct two or more employees, and they can hire or fire, or their recommendations on hiring, firing, scheduling, or discipline carry real weight. Shift managers who run the shift, assign tasks, approve breaks, and handle discipline or schedule issues often meet this, even if they're hourly and work the floor.\n- **Penalties:** back pay of the tips, an equal amount in liquidated damages, possible loss of the tip credit if you take one, and attorney's fees. Baristas, including former ones, can bring claims. Maryland's wage laws add their own remedies, including potentially treble damages.\n- **Morale risk:** if a dispute surfaces later, it damages the trust you're trying to protect. Baristas may also resent a smaller share even if it's legal.\n\n## When the answer could be yes\n\nIf your \"shift managers\" are really **lead baristas**, with no authority to hire, fire, discipline, or meaningfully influence those decisions, and their primary duty is making drinks and serving customers, they may be eligible. This is a fact-specific call, so document it.\n\n## Better ways to be fair\n\n1. **Raise their base pay or add a shift-lead differential** (e.g., $1.50\u2013$3/hr) to reflect the floor work they do.\n2. **Add a bonus** tied to sales, labor-cost targets, or retention, paid from business funds rather than tips.\n3. **Let them keep tips left directly for them.** Tips given to a manager for their own service are generally allowed, but they can't draw from the pooled money.\n4. **Restructure roles.** If you want them in the pool, make them non-supervisory leads and have the owner or GM handle hiring, firing, and discipline.\n\n## Next steps\n\n1. **Write down what each shift manager actually does:** who they supervise, whether they affect hiring and firing, and what share of their time is floor work versus management.\n2. **Check your current setup.** Do you take a tip credit or pay full minimum wage? Is your pool policy written down? Do the baristas understand it?\n3. **Get a quick opinion** from an employment attorney or the Maryland Department of Labor wage and hour division. An hour of advice is cheap next to a back-pay claim.\n4. **Pick an alternative** (differential or bonus) and model the cost. A $2/hr raise for two managers is probably less than the risk you'd be taking.\n5. **Talk to the team.** Tell baristas and managers what you decided and why. Transparency helps morale more than any particular formula.\n6. **Set it up in your tools.** Configure tip tracking and distribution in Square and 7shifts so the allocation is auditable, and keep records.\n\nThis is general guidance, not legal advice. Confirm the specifics for your situation before changing anything.",
+  "board_state": {
+    "intake": {
+      "question": "Should my two shift managers start sharing in the baristas' tip pool? They work the floor too.",
+      "leaning": "Yes, it feels fair",
+      "profile": {
+        "name": "",
+        "industry": "coffee shop",
+        "location": "College Park, Maryland",
+        "size": "1 location, 9 employees",
+        "current_tools": [
+          "Square POS",
+          "7shifts"
+        ],
+        "budget": "",
+        "goals": [
+          "keep staff morale high",
+          "reduce turnover"
+        ],
+        "constraints": ""
+      }
+    },
+    "evidence_mode": "web",
+    "evidence": {
+      "decision": "Whether to let the coffee shop's two floor-working shift managers receive a share of the baristas' tip pool.",
+      "options": [
+        "Do nothing: keep the current pool for baristas and other non-managerial staff only, and leave shift managers out.",
+        "Include the shift managers in the pool only after confirming, role by role, that they do not meet the federal manager/supervisor duties test. That could mean changing their duties, authority or job titles.",
+        "Keep the managers out of the pool and pay them another way, such as a higher hourly rate, a bonus, or a pay premium tied to floor hours. They would also keep any tips a customer gives them directly for service they personally provide, such as a separate counter tip jar or tip line.",
+        "Add the managers to the pool as proposed, without restructuring their duties."
+      ],
+      "facts": [
+        {
+          "claim": "Federal law (FLSA section 3(m)(2)(B)) bars managers and supervisors from receiving money from a tip pool. This applies whether or not the employer takes a tip credit. Managers may contribute to a pool but may not receive from it.",
+          "source": "https://www.workplacefairness.org/tip-pooling-laws/",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:11:02Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "DOL Opinion Letter FLSA2026-13 (Sept 2026) concluded that a restaurant shift supervisor who meets the manager/supervisor duties test may not take part in a tip pool, even when working tipped duties such as bartending. A manager does not lose managerial status just because they also do frontline work.",
+          "source": "https://www.littler.com/news-analysis/asap/dol-confirms-supervisors-and-managers-who-also-work-tipped-shifts-cannot",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:10:59Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Manager status turns on duties, not title. The test is the FLSA executive-employee duties test, and the salary requirements of that exemption do not apply. A senior or highest-ranking employee on a shift who does not meet the test is not automatically a manager. Shift-lead titles alone don't decide eligibility.",
+          "source": "https://www.cbia.com/news/hr-safety/dol-clarifies-tip-pool-rules/",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:10:59Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Managers and supervisors may keep tips customers give them directly for services they 'directly and solely' provide. A pool made up only of managers and supervisors is also not permitted.",
+          "source": "https://ogletree.com/insights-resources/blog-posts/dol-clarifies-that-managers-and-supervisors-cant-wear-two-hats-when-it-comes-to-tips/",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:10:59Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Maryland law prohibits employers from keeping or controlling tips except through a valid tip pool. Employers must tell employees about a tip pool in advance. Secondary sources say managers and supervisors are excluded in Maryland as well. Complaints go to the Maryland Department of Labor, Division of Labor and Industry. One older site says Maryland has no tip-pool statute of its own, so the federal rule is the main constraint. I did not locate the primary Maryland statute text.",
+          "source": "https://www.7shifts.com/blog/maryland-tip-laws/",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:10:59Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Local rates: College Park is in Prince George's County, whose minimum wage is $15.30/hr for all employers in 2026. The county rate is indexed to CPI and adjusts each January 1, capped at 5%. The Maryland tipped cash wage floor is $3.63/hr, and the employer must make up any shortfall to the full minimum wage. The 2027 county rate has not been announced.",
+          "source": "https://www.recordinglaw.com/us-laws/minimum-wage/maryland-minimum-wage/",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:10:59Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "If an employer takes a tip credit, only employees who customarily and regularly receive tips may be in the pool. If no tip credit is taken, back-of-house staff can join. Managers and supervisors are excluded in both cases.",
+          "source": "https://www.workplacefairness.org/tip-pooling-laws/",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:11:02Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Starbucks pools tips among baristas and shift supervisors and keeps store managers out. A New York appeals court ruled for that arrangement around 2013. That was before the 2018 FLSA amendment and the stricter DOL guidance since, so it should not be treated as current federal authority.",
+          "source": "https://www.today.com/money/starbucks-baristas-must-split-tips-supervisors-court-rules-6C10457026",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:10:59Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Turnover benchmark from a coffee-industry blog, not a rigorous study: average barista tenure at independent shops is about 12-18 months, restaurant-category turnover is above 75% a year, and replacement cost is about $5,000-$6,000 per hire. Coffee-shop tip rates are cited at 15-25% on tipped tickets.",
+          "source": "https://mycoffeeexplorer.com/blog/barista-wages-pay-guide-2026",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:10:59Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "7shifts (already in use): the Tip Management add-on is $49.99 per month per location, and it syncs tip data from Square. Third-party sites quote different base-plan and tip-add-on prices, so confirm the shop's current plan on the 7shifts pricing page.",
+          "source": "https://www.7shifts.com/blog/tip-pooling-tools-manage-tips-at-restaurant/",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:10:59Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Square Payroll (full-service plan): $35 per month plus $6 per person paid per month. For 9 employees that is about $89 per month. It imports tips and timecards from Square POS, but one review could not confirm support for tip pooling or tip-credit makeup.",
+          "source": "https://squareup.com/us/en/payroll/pricing",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:11:00Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Penalties and liability for an unlawful pool: under the FLSA the employer can owe back tips plus an equal amount in liquidated damages, plus attorney fees. The DOL can also assess civil money penalties for repeated or willful violations. Good-faith intent is generally not a defense.",
+          "source": "",
+          "verified": false
+        }
+      ],
+      "open_questions": [
+        "Do the two shift managers meet the executive duties test? That means directing the work of two or more employees, a primary duty of management, and hiring/firing authority or recommendations given particular weight. Do they schedule, discipline, approve time off, close out the shop or handle cash and complaints?",
+        "If they would not meet the test, would the owner be willing to remove or avoid those duties, and would that still be workable operationally?",
+        "Does the shop take a tip credit (pay $3.63/hr cash wage) or pay full minimum wage? Is the tip pool mandatory or voluntary?",
+        "Are the managers salaried or hourly, and what is the pay gap versus the baristas? Could a raise or bonus replace the tip share at a similar cost?",
+        "What share of take-home pay do tips make up for baristas, and how much would the pool shrink per barista if two more people joined?",
+        "Do the baristas currently support or oppose including the managers? Is there any history of complaints about tips?",
+        "Do the managers currently get tips directly from customers, and is there a written tip policy that was given to employees in advance as Maryland requires?",
+        "Can Square and 7shifts be set up to handle the tip rules the owner chooses, and what is the shop's current 7shifts plan and tip-add-on cost?",
+        "Does Maryland or Prince George's County have a primary-source rule on managers in tip pools that is stricter than the federal one? Local counsel or the Maryland Division of Labor and Industry can confirm."
+      ]
+    },
+    "round1": {
+      "industry_expert": {
+        "stance": "oppose",
+        "headline": "Don't add shift managers to the tip pool as proposed; pay them another way.",
+        "summary": "Federal law bars managers and supervisors from receiving pool money (F1, F2). Being on the floor does not make them non-managers (F2, F3). Adding them as proposed risks back tips plus damages (F12). Fix fairness another way: a floor-hours premium or bonus, and let managers keep tips customers give them directly (F4). Confirm their duties first.",
+        "key_points": [
+          "Managers who meet the duties test cannot take pool money, even while working the floor (F1, F2).",
+          "Shift-lead titles don't decide eligibility; actual duties do (F3).",
+          "A raise or floor-hours premium gives the fairness the owner wants without legal exposure (F4, F7)."
+        ],
+        "risks": [
+          "If the managers do meet the duties test, pool payouts could mean back tips plus equal liquidated damages and attorney fees (F12).",
+          "Baristas may feel a cut in their share if managers join; that can hurt morale and turnover goals (F9).",
+          "Maryland's own rules are unconfirmed at primary-source level; a local attorney or the Maryland Division of Labor and Industry should confirm (F5)."
+        ],
+        "confidence": 80,
+        "pushback": "Assuming the managers feel 'fair' is the right test. Ask whether they actually meet the executive duties test: do they schedule, discipline, approve time off, or handle cash? If yes, the answer is settled regardless of fairness.(F2, F3)"
+      },
+      "ai_tools_expert": {
+        "stance": "oppose",
+        "headline": "Don't add the shift managers to the tip pool as proposed.",
+        "summary": "Federal law bars managers and supervisors from taking tip pool money (F1, F2). Being on the floor does not change that; duties decide it, not titles (F3). Adding them as proposed risks back pay, damages, and fees (F12). Pay the managers another way, like a raise, bonus, or floor-hours premium, and confirm their duties with an employment attorney or the Maryland Division of Labor and Industry first.",
+        "key_points": [
+          "Managers who meet the duties test cannot take part in a tip pool, even when working floor shifts (F2).",
+          "Good intentions are not a defense; back tips plus equal damages and fees can apply (F12).",
+          "A raise or floor-hours bonus can meet the fairness goal without touching the pool (F1, F4)."
+        ],
+        "risks": [
+          "Managers may already meet the duties test by scheduling, disciplining, or closing, so joining the pool would be unlawful.",
+          "Baristas may lose tip income if the pool is split more ways, which could hurt morale.",
+          "Maryland requires advance written notice of pool changes; skipping it creates a separate problem (F5)."
+        ],
+        "confidence": 80,
+        "pushback": "Assuming that because the managers work the floor, they are not managers. Their actual duties decide that, and the owner has not checked them yet.",
+        "tools": [
+          {
+            "name": "7shifts Tip Management add-on",
+            "use": "Tracks tips synced from Square and documents how each pool is split, so any change is recorded and auditable.",
+            "monthly_cost": "$49.99/mo per location",
+            "works_with": "Square POS and the existing 7shifts plan",
+            "caveat": "Does not decide legal eligibility; it only tracks what the owner configures.",
+            "url": "",
+            "price_fact": "F10",
+            "pilot_test": "Keep it if a monthly tip report reconciles to Square within $5 for two months; decide at the end of the second month before the next renewal."
+          }
+        ]
+      },
+      "realist": {
+        "stance": "oppose",
+        "headline": "Not as proposed; confirm manager duties before any tip sharing.",
+        "summary": "Federal law bars managers and supervisors from receiving tip-pool money if they meet the duties test, and job titles don't decide it (F1, F3). Shift managers who work the floor can still be managers. Confirm each person's duties first. If they are managers, pay them another way, such as a raise, bonus, or floor-hours premium. Tell staff in writing before any pool change, as Maryland requires (F5).",
+        "key_points": [
+          "Managers who meet the duties test cannot take pool money, even when working tipped shifts (F1, F2).",
+          "Shift-lead titles don't settle eligibility; duties do (F3).",
+          "Raise or bonus pay for managers avoids the tip-pool legal risk (F1, F4)."
+        ],
+        "risks": [
+          "Back tips plus equal liquidated damages and attorney fees if the pool is unlawful (F12, unverified; an employment attorney can confirm).",
+          "Maryland requires advance written notice of any pool change (F5); skipping it creates a compliance gap.",
+          "Turnover benchmarks are weak evidence, so the morale gain is unproven (F9)."
+        ],
+        "confidence": 80,
+        "pushback": "Assuming the two managers are 'floor staff' rather than managers. Their duties decide the answer, not their titles or how fair it feels.",
+        "checks": [
+          {
+            "area": "legal",
+            "status": "block",
+            "note": "Adding managers who meet the duties test to the pool is barred by FLSA; the duties review (F1, F2, F3) must happen before any change."
+          },
+          {
+            "area": "compliance",
+            "status": "flag",
+            "note": "Maryland requires advance notice of any pool and bars employers from controlling tips outside a valid pool (F5); a written policy is needed first."
+          },
+          {
+            "area": "financial",
+            "status": "flag",
+            "note": "Tip-management tools cost extra: 7shifts Tip Management is $49.99/month (F10) and Square Payroll is about $89/month (F11); confirm current plan costs and whether they support pool rules."
+          },
+          {
+            "area": "goals",
+            "status": "flag",
+            "note": "Turnover and morale gains are plausible but unmeasured; benchmark data is a blog, not a study (F9). Pay raise alternatives can be compared against the tip-pool cost."
+          }
+        ]
+      },
+      "strategist": {
+        "stance": "oppose",
+        "headline": "Don't add shift managers to the tip pool as proposed; restructure or pay another way.",
+        "summary": "Federal law bars managers and supervisors from receiving tip-pool money (F1). Shift managers who meet the duties test cannot join, and the Starbucks precedent (F8) is outdated. Calling them fair is not enough; their actual duties decide eligibility (F3). Fix the duties question first, then choose a legal pay route. Mistakes carry back tips plus liquidated damages (F12, unverified).",
+        "key_points": [
+          "Eligibility depends on duties, not titles; check whether they direct staff and hire, fire, or discipline (F2, F3).",
+          "If they meet the test, adding them to the pool exposes you to back pay and damages (F1, F12).",
+          "A raise, bonus, or floor-hours premium paid outside the pool keeps morale without legal risk (F4)."
+        ],
+        "risks": [
+          "Shift managers who meet the test get pushed out of the pool, and morale drops if the change is not explained well.",
+          "Reworking duties may hurt operations if managers lose scheduling or closing authority.",
+          "Turnover could rise if baristas see the change as a loss; the 75% restaurant turnover benchmark is weak evidence (F9)."
+        ],
+        "confidence": 80,
+        "pushback": "You assume fairness is the test. The real question is whether these two managers meet the federal duties test, and that has not been checked yet.','pushback_note':'Owner should confirm duties with an employment attorney or the Maryland Division of Labor and Industry before any change.'}  Note: this response contains a formatting error and is not valid JSON as delivered; see corrected version below.{"
+      },
+      "devils_advocate": {
+        "stance": "oppose",
+        "headline": "Don't add shift managers to the tip pool as proposed; pay them another way.",
+        "summary": "Federal law bars managers and supervisors from taking tip pool money, and that rule applies even if they also work the floor (F1, F2). Whether your two shift managers count as managers depends on their actual duties, not their titles (F3). Adding them now risks back pay, doubled damages, and attorney fees if they qualify (F12). A raise, bonus, or floor-hours premium gets you the fairness you want with far less legal exposure.",
+        "key_points": [
+          "Managers who meet the duties test cannot receive pool money, even while working tipped shifts (F2).",
+          "Titles don't decide it. Schedules, discipline, hiring input, and cash handling do (F3, open questions).",
+          "A pay premium tied to floor hours can match the tip share's value without touching the pool (Option 3)."
+        ],
+        "risks": [
+          "If they meet the duties test, pooled tips could create back-pay claims with liquidated damages and attorney fees (F12).",
+          "Baristas may see the pool shrink and resent it, hurting the morale and turnover goals (F9).",
+          "Maryland requires advance written notice of pool changes, so a rushed rollout could create a second violation (F5)."
+        ],
+        "confidence": 80,
+        "pushback": "You assume the managers' fairness concern is best solved by sharing tips. Ask whether they actually want tips or simply want to be paid for floor work; a premium may solve that more cleanly and safely.](ignore)"
+      }
+    },
+    "round2": {
+      "industry_expert": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "ai_tools_expert",
+            "their_claim": "The 7shifts Tip Management add-on is a useful tracking tool once the owner settles the legal question.",
+            "response": "Agreed the tool tracks but cannot decide eligibility (F10). Settle duties first; a tracker does not cure a barred pool, so keep the cost out of the decision until duties are confirmed."
+          },
+          {
+            "target": "devils_advocate",
+            "their_claim": "Pooled tips could create back-pay claims with doubled damages and attorney fees if managers qualify.",
+            "response": "Right about exposure, but the doubled amount is an unverified figure from F12, so present it as possible, not certain. Confirm with an employment attorney before relying on the number."
+          },
+          {
+            "target": "strategist",
+            "their_claim": "The Starbucks precedent (F8) is outdated and should not be treated as current authority.",
+            "response": "Correct. F8 predates the 2018 FLSA amendment, so I would not cite it as support. Coffee chains are not a safe template for a single shop's pool design."
+          }
+        ],
+        "concessions": [
+          "Maryland notice requirements (F5) must be met before any pool change, even if duties are confirmed as non-managerial.",
+          "Turnover and morale benefits of pool changes are unmeasured (F9), so the owner should not expect a guaranteed retention gain."
+        ],
+        "stance": "oppose",
+        "headline": "Don't add the shift managers to the pool as proposed; check duties and pay them another way.",
+        "summary": "Federal law bars managers and supervisors from taking tip-pool money, even when they work the floor (F1, F2). Titles don't decide it; duties do, like scheduling, discipline, time off, closing, and cash (F3). Adding them as proposed risks back tips and possibly damages and fees (F12, unverified). Fix the fairness concern with a raise, bonus, or floor-hours premium, and let managers keep tips customers give them directly (F4). Before any change, have an employment attorney or the Maryland Division of Labor and Industry confirm duties, and give staff written notice (F5).",
+        "key_points": [
+          "Managers who meet the duties test cannot take pool money, even on tipped shifts (F1, F2).",
+          "A floor-hours premium or raise delivers fairness without pool legal risk (F4, F7).",
+          "Maryland requires advance written notice of any pool change (F5)."
+        ],
+        "risks": [
+          "If the managers meet the duties test, pooled payouts could bring back-tip claims and damages (F12, unverified).",
+          "Baristas may see their share shrink and morale could drop (F9).",
+          "Reworking manager duties could hurt scheduling or closing coverage."
+        ],
+        "confidence": 82,
+        "pushback": "Assuming the managers are 'floor staff' because they work the floor. Their actual duties decide eligibility, and fairness does not. Ask whether they schedule, discipline, approve time off, or handle cash."
+      },
+      "ai_tools_expert": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "devils_advocate",
+            "their_claim": "Managers should be paid a floor-hours premium rather than sharing tips, which may solve their fairness concern more cleanly.",
+            "response": "Agreed on the outcome, but the premium only works if duties are checked first. Pay for floor work is safe whatever the duties review shows, so it is the sound fallback (F4)."
+          },
+          {
+            "target": "realist",
+            "their_claim": "Back tips plus equal damages and fees apply if the pool is unlawful; this is unverified and needs an attorney.",
+            "response": "Fair flag. Your point that the damages exposure is unverified is right, so I would keep it as a stated risk rather than settled fact (F12)."
+          },
+          {
+            "target": "industry_expert",
+            "their_claim": "Shift-lead titles don't decide eligibility; actual duties do.",
+            "response": "Correct, and I agree. Duties decide eligibility, so the review of scheduling, discipline and cash handling is the first step (F3)."
+          }
+        ],
+        "concessions": [
+          "Titles do not decide manager status; the duties review must come first (F3).",
+          "A floor-hours premium or raise is a safer route to fairness than sharing the pool (F4)."
+        ],
+        "stance": "oppose",
+        "headline": "Don't add shift managers to the tip pool until duties are checked.",
+        "summary": "Federal law bars managers and supervisors from taking tip-pool money, even when they work the floor (F1, F2). Whether these two qualify depends on their actual duties, not their titles (F3). If they do, adding them risks back tips and damages (F12, unverified). A raise, bonus, or floor-hours premium gives them fair pay without that risk. Confirm duties with an employment attorney or the Maryland Division of Labor and Industry first.",
+        "key_points": [
+          "Managers who meet the duties test cannot take pool money, even on floor shifts (F1, F2).",
+          "Duties decide eligibility, not titles; check scheduling, discipline, time off and cash handling (F3).",
+          "A floor-hours premium or raise meets the fairness goal without touching the pool (F4)."
+        ],
+        "risks": [
+          "If they meet the duties test, pooled tips could mean back tips plus damages and fees (F12, unverified).",
+          "Baristas may resent a smaller share, hurting morale and turnover goals (F9, weak evidence).",
+          "Maryland requires advance written notice of any pool change; skipping it is a separate problem (F5)."
+        ],
+        "confidence": 82,
+        "pushback": "Assuming the managers are 'floor staff' and that fairness is the test. Their actual duties decide eligibility, and that has not been checked yet.",
+        "tools": [
+          {
+            "name": "7shifts Tip Management add-on",
+            "use": "Tracks Square tip data and records how any pool is split, so changes are documented.",
+            "monthly_cost": "$49.99/mo per location",
+            "works_with": "Syncs tip data from Square POS; already used with 7shifts",
+            "caveat": "Does not decide legal eligibility; it only tracks what the owner configures.",
+            "url": "",
+            "price_fact": "F10",
+            "pilot_test": "Keep it if the monthly tip report reconciles to Square within $5 for two months; decide at the end of the second month before renewal."
+          }
+        ]
+      },
+      "realist": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "strategist",
+            "their_claim": "Restructuring the managers' duties could make them eligible to join the tip pool.",
+            "response": "Only real changes to duties count. Retitling or paper changes will not pass the test (F3). Change duties only if the owner truly wants that and operations still work."
+          },
+          {
+            "target": "ai_tools_expert",
+            "their_claim": "Managers may already meet the duties test, so pooling their tips would be unlawful.",
+            "response": "The risk is real but unverified until duties are checked (F3). The check should decide, not a guess. The 7shifts add-on tracks splits but does not decide eligibility (F10)."
+          },
+          {
+            "target": "devils_advocate",
+            "their_claim": "Managers may want a premium for floor work more than a share of tips.",
+            "response": "Good question, and it supports my position. A premium answers that directly. Pool access stays the riskiest route under F1 and F2 if they qualify."
+          }
+        ],
+        "concessions": [
+          "A floor-hours premium or bonus is cleaner than a pool, as the Industry Expert and Devil's Advocate argue (F4).",
+          "The Starbucks precedent is outdated and should not be relied on (F8), as the Strategist notes."
+        ],
+        "stance": "oppose",
+        "headline": "Not as proposed: confirm manager duties before any tip-pool change.",
+        "summary": "Do not add the shift managers to the tip pool yet. If they meet the federal duties test, they cannot receive pool money, and floor work does not change that (F1, F2). Have an employment attorney or the Maryland Division of Labor and Industry confirm their duties first. If they are managers, pay them a raise, bonus, or floor-hours premium instead.",
+        "key_points": [
+          "Managers who meet the duties test cannot take pool money, even on the floor (F1, F2).",
+          "Titles do not decide eligibility; duties do, including scheduling, discipline, and closing (F3).",
+          "A raise or floor-hours premium meets the fairness goal without pool legal exposure (F4)."
+        ],
+        "risks": [
+          "Back tips plus equal liquidated damages and attorney fees if the pool is unlawful (F12, unverified).",
+          "Skipping Maryland's advance written notice creates a separate compliance gap (F5).",
+          "Baristas may see a smaller share and morale could fall; turnover data is a blog benchmark (F9)."
+        ],
+        "confidence": 85,
+        "pushback": "That fairness to the managers is the right test. Federal duties rules decide it (F3), and the managers' duties have not been checked.",
+        "checks": [
+          {
+            "area": "legal",
+            "status": "block",
+            "note": "Adding managers who meet the duties test to the pool is barred under F1 and F2; the duties review must happen before any change."
+          },
+          {
+            "area": "compliance",
+            "status": "flag",
+            "note": "Maryland requires advance notice of any pool and bars control of tips outside a valid pool (F5); a written policy is needed first."
+          },
+          {
+            "area": "financial",
+            "status": "flag",
+            "note": "7shifts Tip Management is $49.99/mo (F10) and Square Payroll is about $89/mo (F11), with pool support unconfirmed; confirm current costs with vendors."
+          },
+          {
+            "area": "goals",
+            "status": "flag",
+            "note": "Morale and turnover gains are plausible but unmeasured; benchmarks come from a blog, not a study (F9)."
+          }
+        ]
+      },
+      "strategist": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "devils_advocate",
+            "their_claim": "A pay premium tied to floor hours can match the tip share's value without touching the pool.",
+            "response": "Agreed on direction. But a premium pegged to tip totals would recreate the pool problem. Tie it to hours or a flat rate, and have counsel check the design (unverified)."
+          },
+          {
+            "target": "industry_expert",
+            "their_claim": "Baristas may feel a cut in their share if managers join, which can hurt morale and turnover.",
+            "response": "Right risk, but it is hardest to undo after payouts start. Settle the design and the duties answer before any money moves from the pool."
+          },
+          {
+            "target": "ai_tools_expert",
+            "their_claim": "The 7shifts Tip Management add-on documents how each pool is split, so changes are auditable.",
+            "response": "Useful for records, but it cannot decide eligibility (F10). Paying $49.99 monthly before the duties review buys tracking for a choice that may be unlawful."
+          }
+        ],
+        "concessions": [
+          "The 7shifts tool tracks splits but does not decide legal eligibility; the duties review does.",
+          "A floor-hours premium is a cleaner fix than a shared pool if the managers meet the test."
+        ],
+        "stance": "oppose",
+        "headline": "Oppose adding managers to the pool; check duties, then pay a premium instead.",
+        "summary": "Do not add the two shift managers to the tip pool yet. If they meet the federal duties test, federal law bars them from pool money, even while they work the floor (F1, F2). Titles don't decide it; actual duties do (F3). Check their duties first with an employment attorney or the Maryland Division of Labor and Industry. If they qualify, a floor-hours premium is the safer fix.",
+        "key_points": [
+          "Next week: review both managers' scheduling, discipline, time-off, closing, cash, and hiring duties with counsel (F2, F3).",
+          "Next quarter: if they qualify, pay a floor-hours premium and give staff written notice before any pool change (F4, F5).",
+          "Next year: the county wage rate adjusts each January 1 (F6), so price the premium to track it; a pool is hard to unwind once staff expect it."
+        ],
+        "risks": [
+          "Back tips plus equal liquidated damages and attorney fees if managers qualify and the pool goes ahead (F12, unverified).",
+          "Barista morale drops if the pool shrinks without a clear explanation; the turnover benchmark is weak evidence (F9).",
+          "Rushed duty changes made to fit the pool could look like a sham and draw DOL scrutiny (unverified)."
+        ],
+        "confidence": 80,
+        "pushback": "Ask whether you want to share tips or just pay the managers for floor work; a premium may solve that more cleanly and safely (F2)."
+      },
+      "devils_advocate": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "industry_expert",
+            "their_claim": "Paying managers a raise or floor-hours premium gives the fairness the owner wants without legal exposure.",
+            "response": "A floor-hours premium is still an owner-funded cost that scales with hours. You haven't priced it against the tip share, which costs the owner nothing. Price both before calling it safer."
+          },
+          {
+            "target": "realist",
+            "their_claim": "Turnover benchmarks are weak evidence, so the morale gain from tip sharing is unproven.",
+            "response": "Agreed the morale gain is unproven, but that cuts against your own plan. A raise is also unproven as a retention fix. Nobody has shown the premium keeps anyone."
+          },
+          {
+            "target": "strategist",
+            "their_claim": "Reworking duties may hurt operations if managers lose scheduling or closing authority.",
+            "response": "You treat restructuring as the costly path, but it may be the cheapest lawful one. Two managers losing closing duties is a smaller change than a permanent raise. Test it before ruling it out."
+          }
+        ],
+        "concessions": [
+          "Duties must be confirmed before any tip-sharing change (F3).",
+          "Maryland requires advance written notice of any pool change (F5)."
+        ],
+        "stance": "oppose",
+        "headline": "Consensus rushes to pay managers out of pocket; test restructuring first.",
+        "summary": "The board agrees duties decide this, and that is right. But it jumps to a raise without pricing it. A raise is a permanent owner cost; the tip share is not. Restructuring is dismissed without a look. If the duties check says they are not managers, the owner's leaning may be lawful and cheapest.",
+        "key_points": [
+          "No evidence in the file sizes a raise or premium against the tip share, so the consensus cost comparison is missing (open questions).",
+          "Restructuring duties was never costed, yet F3 says duties, not titles, decide eligibility, so a lawful change may be possible.",
+          "Damages in F12 are unverified and apply only if the managers meet the test, which is still unchecked."
+        ],
+        "risks": [
+          "A permanent raise or floor-hours premium could cost more than the tip share and squeeze margins.",
+          "Restructuring may remove shift-lead authority and frustrate the managers, pushing them out.",
+          "Waiting for a duties review delays any morale fix while baristas stay unhappy."
+        ],
+        "confidence": 55,
+        "pushback": "That a raise is the safe, cheap default. Price the raise, the tip share, and a duties restructure side by side before choosing."
+      }
+    },
+    "verdict": {
+      "decision": "defer",
+      "headline": "Don't add managers to the tip pool yet; confirm their duties first.",
+      "confidence": 78,
+      "rationale": "Federal law bars managers and supervisors from receiving tip-pool money, even when they work the floor (F1, F2). Duties decide who is a manager, not titles (F3). Nobody has checked your two managers' duties yet. Until someone does, adding them risks back tips and possible damages (F12, unverified). Hold the pool as it is. Get the duties reviewed, price a floor-hours premium against the tip share, and give written notice before any change (F5). If the managers turn out not to meet the test, including them may become lawful.",
+      "decisive_arguments": [
+        {
+          "seat": "realist",
+          "point": "A manager who meets the duties test cannot take pool money, and floor work does not change that (F1, F2). No seat answered this block, so 'proceed' as proposed is ruled out."
+        },
+        {
+          "seat": "industry_expert",
+          "point": "Titles do not decide eligibility, duties do (F3). Scheduling, discipline, time off, closing and cash handling are the facts to check, and they are still unknown."
+        },
+        {
+          "seat": "strategist",
+          "point": "A premium tied to hours or a flat rate pays managers for floor work without touching the pool (F4). A premium pegged to tip totals would recreate the problem, so counsel should check the design."
+        },
+        {
+          "seat": "devils_advocate",
+          "point": "The cost of a raise or premium versus the tip share has not been priced, so the cheapest lawful route is unknown. That is why this is a defer, not a flat reject."
+        }
+      ],
+      "dissent": [
+        {
+          "seat": "devils_advocate",
+          "point": "A permanent raise or premium may cost more than the tip share. Restructuring duties may be the cheapest lawful route and was never costed. Waiting also delays any morale fix for baristas."
+        },
+        {
+          "seat": "strategist",
+          "point": "Duty changes made just to fit the pool could look like a sham and draw DOL scrutiny (unverified). Only real changes to duties count (F3)."
+        },
+        {
+          "seat": "realist",
+          "point": "The morale and turnover gain from any option is unproven because the benchmark is a blog, not a study (F9). A premium is no surer a retention fix than tip sharing."
+        }
+      ],
+      "conditions": [
+        "Both managers' actual duties are reviewed against the federal executive duties test (F3) before any tip money moves.",
+        "Any pool change is announced to staff in writing in advance (F5).",
+        "Any premium is set by hours or a flat rate, not as a share of tips, and an attorney has reviewed the design.",
+        "Managers keep only tips customers give them directly for service they personally and solely provide (F4).",
+        "If the managers do meet the test, they stay out of the pool, though they may contribute to it (F1)."
+      ],
+      "next_steps": [
+        {
+          "when": "this week",
+          "action": "Write down what each manager really does: scheduling, discipline, hiring or firing input, time-off approval, closing, cash and complaints. Note whether each directs two or more employees (F3)."
+        },
+        {
+          "when": "this week",
+          "action": "Check whether the shop takes a tip credit or pays full minimum wage ($15.30/hr in Prince George's County). Check whether a written tip policy was given to staff (F5, F6, F7)."
+        },
+        {
+          "when": "this week",
+          "action": "Book a free, confidential session with the Maryland SBDC. Ask for a referral to an employment attorney to confirm the duties test and Maryland's rules (F5)."
+        },
+        {
+          "when": "next 30 days",
+          "action": "Use Square tip reports to work out how much each barista would lose if two more people joined the pool. Price a flat floor-hours premium for the managers next to that figure."
+        },
+        {
+          "when": "next 30 days",
+          "action": "If either manager meets the test, set a flat premium or bonus and give written notice to all staff before the change. Ask the attorney whether a separate counter tip jar for service the managers personally provide is allowed (F4)."
+        },
+        {
+          "when": "next 90 days",
+          "action": "Ask staff how they feel about the change. Track turnover and morale against your goals, and reprice the premium each January when the county wage rate adjusts (F6, F9)."
+        }
+      ],
+      "ai_tools": [],
+      "escalate_to": "attorney",
+      "escalation_reason": "Whether the managers meet the federal duties test, and what Maryland requires, are legal questions. The Maryland rules rest on secondary sources, and the damages exposure in F12 is unverified (F5). An employment attorney or the Maryland Division of Labor and Industry should confirm before any tip money moves.",
+      "would_change": [
+        "A duties review, confirmed by an attorney, showing the managers do not meet the executive duties test, which would make including them lawful.",
+        "A primary-source Maryland or Prince George's County rule that is stricter than the federal rule, or a clear safe harbor for shift leads.",
+        "Pricing that shows a flat premium costs far more than the owner can carry, which would push toward a real duties restructure."
+      ],
+      "no_new_tool": "No new tool is needed. Use Square's existing tip reports and a simple spreadsheet to compare the tip share, a flat premium, and pool sizes for $0 plus about an hour or two of your time. Your 7shifts Tip Management add-on is $49.99/mo (F10). It only tracks splits and cannot decide who is eligible, so wait until the duties review is done."
+    }
+  },
+  "board_error": null,
+  "seconds": 89,
+  "baseline_research": "# Recommendation\n\n**Don't add the shift managers to the pool as proposed. Fairness is a good instinct, but the legal exposure is real.** Instead, pay them for the floor work another way, such as a higher hourly rate or a floor-hours premium. Only put them in the pool if a duties review shows they are not managers under the federal test.\n\n## Why\n\n- **Federal law bars managers and supervisors from receiving pool money**, whether or not you take a tip credit (F1, F7). A 2026 DOL opinion letter confirmed that working the floor or making drinks doesn't cancel manager status (F2). Your reasoning that \"they work the floor too\" is exactly the argument the DOL rejected.\n- **Duties decide eligibility, not titles** (F3). A manager is someone who directs two or more employees, has management as a primary duty, and can hire or fire or have their recommendations given particular weight. The salary requirement doesn't apply. If your shift managers schedule, discipline, approve time off, close out, or handle complaints, they likely qualify as managers and must stay out. If they are really lead baristas with no real authority, they might be eligible.\n- **Maryland adds notice rules and probably doesn't loosen the federal one** (F5). You must tell employees about the pool in advance, and secondary sources say managers are excluded there too. I couldn't verify the primary Maryland text, so confirm it.\n- **The downside outweighs the upside.** A bad pool can mean back tips plus an equal amount in liquidated damages, plus attorney fees, and good intentions generally aren't a defense (F12, not verified, so have counsel confirm). With about 7 baristas, one complaint could cover everyone.\n- **It could hurt the morale you're trying to protect.** If baristas split the pool 7 ways and it becomes 9, each share falls by roughly 22%, all else equal. A cut like that is how you create the turnover you want to avoid. Replacing a barista costs about $5,000\u2013$6,000 (F9, a rough blog benchmark).\n\n## Options ranked\n\n1. **Pay managers another way (best default).** Give them a raise, a floor-hours premium, or a bonus. A $1.50\u2013$2/hr premium over about 30 hours a week costs roughly $2,300\u2013$3,100 per manager per year. That is predictable, legal, and doesn't touch the baristas' income. These figures are illustrative, so use your own hours.\n2. **Include them only after a role-by-role duties check.** This is viable only if they truly fail the test and you're willing to keep it that way. Document it, because a later promotion or added duties can flip the answer.\n3. **Do nothing.** This is legally safe, but if the managers feel shortchanged, you risk losing them.\n4. **Add them as proposed.** I don't recommend this. It has the highest legal risk and the likeliest morale damage.\n\n## Main risks\n\n- **Misjudging manager status.** In a 9-person shop where the shift manager runs the shift, they probably meet the test.\n- **A separate \"manager tip jar.\"** Managers can keep tips given directly for services they personally and solely provide (F4), but a counter jar customers use for the whole shop probably won't qualify. Don't set one up without advice.\n- **Weak tip policy or notice.** Maryland requires advance notice of the pool, and you can't keep or control tips outside a valid pool.\n- **Tool gaps.** Square Payroll may not support pooling or tip-credit makeup (F11).\n- **Wage changes.** The Prince George's County minimum wage ($15.30 in 2026) adjusts each January, and the tipped cash wage floor is $3.63 (F6). If you take a tip credit, the pool and makeup pay need to be watched.\n- **Don't lean on Starbucks.** The 2013 case that allowed supervisors in the pool predates the 2018 FLSA amendment and current DOL guidance (F8).\n\n## Next steps\n\n1. **Audit the duties this week.** For each manager, list whether they schedule, discipline, approve time off, recommend hires or firings, direct others, close out, or handle cash and complaints. If they do the core management tasks, treat them as managers.\n2. **Answer the open facts:** do you take a tip credit, is the pool mandatory, and do you have a written tip policy?\n3. **Get a short confirmation** from the Maryland Division of Labor and Industry or an employment attorney on Maryland rules and your duties analysis. It should be cheap compared with the downside.\n4. **Design the alternative pay.** Price a premium or bonus and compare it to the barista pool dilution.\n5. **Tell baristas and managers what you decided and why.** Put the tip policy in writing, with advance notice. Ask the baristas how they feel, since you haven't said whether they support the idea.\n6. **Fix your tools.** Check your current 7shifts plan. Its Tip Management add-on is about $49.99/month and syncs from Square (F10). Don't count on Square Payroll for pooling until confirmed.\n7. **Review each January** when the county minimum wage updates, and again if the managers' duties change.",
+  "judge": {
+    "model": "openrouter/anthropic/claude-sonnet-5.5",
+    "letters": {
+      "baseline": "A",
+      "baseline_research": "B",
+      "board": "C"
+    },
+    "baseline": {
+      "risks": [
+        {
+          "risk": "Managers/supervisors may not keep tips from a pool (FLSA)",
+          "score": 2,
+          "quote": "Don't add them to the pool until you've confirmed they legally can be, and for most shift managers the answer will be no."
+        }
+      ],
+      "actionable": 4,
+      "errors": [
+        {
+          "claim": "Maryland's wage laws add their own remedies, including potentially treble damages.",
+          "correction": "Treble damages are available under the Maryland Wage Payment and Collection Law, so this is largely accurate; not a clear error."
+        }
+      ]
+    },
+    "baseline_research": {
+      "risks": [
+        {
+          "risk": "Managers/supervisors may not keep tips from a pool (FLSA)",
+          "score": 2,
+          "quote": "Don't add the shift managers to the pool as proposed.",
+          "note": "Only put them in the pool if a duties review shows they are not managers under the federal test."
+        }
+      ],
+      "actionable": 5,
+      "errors": [
+        {
+          "claim": "The Prince George's County minimum wage is $15.30 in 2026 and the tipped cash wage floor is $3.63.",
+          "correction": "Maryland's tipped cash wage is $3.63 only under the state rule, and the county minimum figure is uncertain; the exact figures should be verified."
+        }
+      ]
+    },
+    "board": {
+      "risks": [
+        {
+          "risk": "Managers/supervisors may not keep tips from a pool (FLSA)",
+          "score": 2,
+          "quote": "Don't add managers to the tip pool yet; confirm their duties first.",
+          "note": "Both managers' actual duties are reviewed against the federal executive duties test before any tip money moves."
+        }
+      ],
+      "actionable": 4,
+      "errors": [
+        {
+          "claim": "If the managers do meet the test, they stay out of the pool, though they may contribute to it.",
+          "correction": "This is correct under FLSA; not an error."
+        }
+      ]
+    }
+  }
+}

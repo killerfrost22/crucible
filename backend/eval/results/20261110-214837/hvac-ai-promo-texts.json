@@ -1,0 +1,719 @@
+{
+  "scenario": {
+    "id": "hvac-ai-promo-texts",
+    "intake": {
+      "question": "Should we use an AI marketing tool to text all our past customers a fall tune-up promo?",
+      "leaning": "Yes, blast the whole list next week",
+      "profile": {
+        "industry": "HVAC repair and installation",
+        "location": "Frederick, Maryland",
+        "size": "4 technicians",
+        "current_tools": [
+          "Housecall Pro",
+          "QuickBooks Online"
+        ],
+        "budget": "$150/month",
+        "goals": [
+          "fill the fall schedule"
+        ]
+      }
+    },
+    "must_catch": [
+      {
+        "label": "TCPA / prior express written consent for marketing texts",
+        "any": [
+          "TCPA",
+          "Telephone Consumer Protection",
+          "express (written )?consent",
+          "opt[- ]in"
+        ]
+      },
+      {
+        "label": "Opt-out handling",
+        "any": [
+          "opt[- ]out",
+          "STOP",
+          "unsubscribe"
+        ]
+      }
+    ]
+  },
+  "seat_model": "openrouter/anthropic/claude-haiku-5.5",
+  "researcher_model": "openrouter/anthropic/claude-sonnet-5.5:online",
+  "chair_model": "openrouter/anthropic/claude-sonnet-5.5",
+  "web_search": true,
+  "baseline": "# Recommendation\n\n**Run the fall tune-up promo, but don't blast the whole list next week.** Send it in phases, to customers you can legally and sensibly text, using the tools you already have where possible. Past customers are your cheapest source of fall bookings, so the channel is right. The risk is in how you send.\n\n## Why not a full blast next week\n\n1. **Legal exposure (the biggest risk).** Marketing texts sent through automated platforms generally require prior express written consent under the federal TCPA. Statutory damages are $500 to $1,500 per message, and small businesses are routinely targeted by class-action firms. A customer who gave you their number for a service appointment hasn't necessarily agreed to promotional texts. Maryland also has its own telemarketing rules, so have a lawyer or your tool's compliance team confirm your list is covered.\n2. **Carrier registration takes time.** US carriers require business registration (A2P 10DLC) before texting at volume. Approval can take days to a few weeks, and unregistered traffic gets filtered or blocked. \"Next week\" may not be realistic.\n3. **Capacity.** With 4 techs, a response to 100% of your list could overbook you in a few days, push out emergency calls, and sour customers with long waits.\n4. **List quality.** Old numbers, landlines, people who've moved out of the Frederick area, and customers with a bad past experience will generate opt-outs and complaints.\n5. **\"AI\" adds little here.** A tune-up promo needs a good offer, a clean list, and easy booking. An AI tool that writes copy or sends at \"optimal times\" isn't worth much of your $150/month if it replaces a feature you already pay for.\n\n## What I'd do instead\n\n**Tool:** Check Housecall Pro first. It has built-in text and email campaigns and ties directly to your customer records and booking, so there's less data export and you can track which jobs came from the promo. Only add a separate tool if it clearly does something Housecall Pro can't, and make sure it handles opt-outs and registration.\n\n**Audience, in waves:**\n- **Wave 1:** Customers who have explicitly opted in to texts, plus recent customers (last 12 to 24 months) with a documented relationship. Send about 15 to 25% of the list.\n- **Wave 2:** Expand a few days later if bookings are healthy and you have capacity.\n- **Everyone without clear text consent:** Use email, a postcard, or a phone call instead. A mailer to older customers is cheap and low-risk.\n\n**Offer:** Make it a fall tune-up with a clear price and deadline, such as \"$89 furnace tune-up, book by Oct 15.\" Consider pushing a maintenance plan, since it creates recurring revenue and fills future off-peak slots. Include a link or number for booking.\n\n**Message requirements:**\n- Your business name in the first line\n- \"Reply STOP to opt out,\" honored immediately\n- Sent only between roughly 9am and 8pm local time, not on early mornings or late evenings\n- Short and personal, such as \"Hi Sarah, it's Frederick [Company]. Fall furnace tune-ups are $89 through Oct 15. Book here: [link]\"\n\n## Other risks to manage\n\n- **Overbooking:** Cap tune-up slots per day and keep room for no-heat emergencies, which are more profitable.\n- **Discount training:** If you always discount, customers wait for deals. Tie the price to a deadline.\n- **Reputation:** Complaints about unwanted texts can show up in reviews. Honor opt-outs fast.\n- **Data handling:** Don't upload your whole QuickBooks or customer export to a tool you haven't vetted. Send only the fields you need.\n\n## Next steps\n\n1. **This week:** Export your customer list from Housecall Pro. Mark who has opted in to texts, who has been served in the last 24 months, and who has a mobile number. Remove duplicates and anyone who's opted out.\n2. **This week:** Check Housecall Pro's marketing features and registration status. If you consider another tool, ask about A2P 10DLC registration, opt-out handling, and pricing for your list size.\n3. **Next week:** Have an attorney or a compliance-savvy advisor briefly review your consent language and message template. This is a small cost compared with the exposure.\n4. **Within 1 to 2 weeks:** Launch Wave 1 to opted-in and recent customers. Block out tune-up slots in your schedule first.\n5. **Days later:** Review bookings, opt-out rate, and replies. Then send Wave 2, and use email or mail for the rest.\n6. **Going forward:** Add a text-consent checkbox to your booking and intake forms so your list gets stronger each season.\n\n## How to measure it\n\nTrack bookings per wave, revenue per message sent, opt-out rate (under 1 to 2% is healthy), and how many tune-ups convert to repairs or maintenance plans. Texting 1,000 to 2,000 customers should cost well under your $150/month, so the real return is in filled slots and follow-on work.\n\n**Bottom line:** The promo is a good idea. Do it with proper consent and a phased send, and use that same list to build a repeatable seasonal campaign.",
+  "seconds": 104,
+  "board_state": {
+    "intake": {
+      "question": "Should we use an AI marketing tool to text all our past customers a fall tune-up promo?",
+      "leaning": "Yes, blast the whole list next week",
+      "profile": {
+        "name": "",
+        "industry": "HVAC repair and installation",
+        "location": "Frederick, Maryland",
+        "size": "4 technicians",
+        "current_tools": [
+          "Housecall Pro",
+          "QuickBooks Online"
+        ],
+        "budget": "$150/month",
+        "goals": [
+          "fill the fall schedule"
+        ],
+        "constraints": ""
+      }
+    },
+    "evidence_mode": "web",
+    "evidence": {
+      "decision": "Whether to use an AI marketing tool to text a fall tune-up promotion to the entire past-customer list next week, or to take a different approach.",
+      "options": [
+        "Do nothing new: keep filling the fall schedule through current Housecall Pro workflows, inbound calls and word of mouth.",
+        "Blast the whole past-customer list by text next week, using Housecall Pro Campaigns or a third-party AI/SMS tool.",
+        "Text only the customers who can show written, signed opt-in for marketing texts. Run a consent-capture step first for everyone else, and send the rest the offer by email, postcard or a manual call.",
+        "Run a staggered or multi-channel promo: email and postcards to the whole list, plus texts only to consented customers, with compliance steps (opt-out wording, send hours, records) set up before launch."
+      ],
+      "facts": [
+        {
+          "claim": "Maryland's Stop the Spam Calls Act (Md. Code, Commercial Law \u00a714-4501 to 14-4503, effective Jan 1, 2024) bars a telephone solicitation that uses an automated system to select or dial numbers, or a recorded message, without the called party's prior express written consent. The statute's consent definition expressly covers solicitations delivered by call, text message or voicemail.",
+          "source": "https://mgaleg.maryland.gov/2024RS/Statute_Google/gcl/14-4502.pdf",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:54:31Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "The Maryland existing-business-relationship exemption is narrow. The enacted text exempts a communication between a business and an existing customer only when it began as informational and became a solicitation after the customer's further inquiry. One compliance guide reads this to mean the federal 18-month established-business-relationship rule does not excuse automated marketing texts to past customers in Maryland. Counsel should confirm how this applies to a promo blast.",
+          "source": "https://www.shipkevich.com/maryland-stop-the-spam-calls-act-compliance-guide/",
+          "verified": true,
+          "check": {
+            "status": "unreachable",
+            "checked_at": "2026-11-11T02:54:31Z",
+            "http_status": null
+          }
+        },
+        {
+          "claim": "Maryland's 2024 amendment (HB 1228, Ch. 214, effective April 25, 2024) gives an injured called party a private right of action. Damages are the greater of $500 or actual damages, up to three times that for willful or knowing violations, and the remedies cannot be waived. Violations are also enforceable under the Maryland Consumer Protection Act. Maryland's separate Telephone Consumer Protection Act also makes federal TCPA violations a state violation.",
+          "source": "https://www.trellus.ai/calling-laws/maryland",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:54:31Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Beyond consent, Maryland's solicitation rules include a bar on solicitations between 8 p.m. and 8 a.m., a cap of three solicitations to the same called party in 24 hours on the same subject, and caller-ID transmission requirements. Secondary sources say the consent-rule exemptions do not apply to the hours and frequency rules. One source notes that the hours and frequency provisions do not name text messages, so how they apply to texts is not stated in the statute.",
+          "source": "https://numberbroom.com/state-tcpa-laws/maryland",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:54:31Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Federal TCPA: automated marketing texts require prior express written consent, and a stop request made by any reasonable means must be honored within 10 business days (in force since April 11, 2025). FCC order FCC 26-67, effective Nov 25, 2026, lets senders designate reply-text keywords (stop, quit, end, revoke, opt out, cancel, unsubscribe) as the exclusive opt-out method if they disclose it in each message. It also narrows the 'revoke all' rule for informational messages.",
+          "source": "https://commlawgroup.com/2026/fccs-new-tcpa-consent-revocation-rules-on-category-specific-opt-outs/",
+          "verified": true,
+          "check": {
+            "status": "unreachable",
+            "checked_at": "2026-11-11T02:54:31Z",
+            "http_status": null
+          }
+        },
+        {
+          "claim": "Federal TCPA damages are $500 per violation, up to $1,500 if willful or knowing, with a private right of action. Per-message exposure scales with list size, since each text can be a separate violation.",
+          "source": "https://biglysales.com/tcpa-state-guide/",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:54:32Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Carrier rules: business texts from local numbers need A2P 10DLC brand and campaign registration, or unregistered texts are blocked. On Twilio, brand registration is $4.50 (low-volume) or $46 (standard), campaign vetting is $15 one-time, and campaigns cost $1.50 to $10 per month. Campaign approval has been quoted at about 10 to 15 days. Per-message carrier fees of about $0.0035 to $0.0045 apply on top of per-segment sending fees. Toll-free verification is quoted at 3 to 5 business days. This timeline matters for a send 'next week'.",
+          "source": "https://loopvoice.ai/blog/twilio-a2p-registration-guide",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:54:33Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Housecall Pro's own help center lists Campaigns (SMS and email) message limits and add-on prices by plan: Basic 150 SMS and 500 emails ($9/mo), Essentials 350 SMS and 1,500 emails ($19/mo), Max 1,000 SMS and 5,000 emails ($49/mo), and Max+ 5,000 SMS and 15,000 emails ($89/mo). Plan limits and add-on prices should be confirmed against the owner's current account.",
+          "source": "https://help.housecallpro.com/en/articles/7974676-campaigns-overview-and-faq",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:54:31Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Housecall Pro base plans, per third-party reviews of its pricing page (the vendor page itself was not retrieved): Basic $59/mo annual ($79 monthly, 1 user); Essentials $149/mo annual ($189 monthly, 5 users); MAX $299/mo annual ($329 monthly, 8 users). Essentials is where QuickBooks sync is reported to start. Sources disagree on whether marketing tools are bundled in Essentials or sold as add-ons.",
+          "source": "https://www.workzen.io/en/blog/housecall-pro-pricing/",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:54:31Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Podium (SMS and reviews platform): Core $399/mo and Pro $599/mo on 12-month annual contracts, with Signature on custom pricing. Third-party reviewers report that HVAC businesses are told to contact sales, plus a $5/mo 10DLC fee per location. Pro is where text marketing and AI features are reported to start. Both plans exceed a $150/mo budget. The vendor page itself was not retrieved.",
+          "source": "https://skillmammoth.com/blog/podium-pricing",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:54:33Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Lower-cost marketing add-ons: Mailchimp (email) has a free tier (500 contacts) and Essentials at $13/mo. Jobber's Marketing Suite add-on is quoted at $79/mo by one source and $99/mo by another (Campaigns alone at $29/mo), on top of a Jobber base plan. Jobber would mean replacing Housecall Pro. Vendor pricing pages were not retrieved.",
+          "source": "https://myquoteiq.com/best-email-marketing-software-hvac-businesses-2026/",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:54:31Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Benchmarks (vendor and agency claims, not independent audits): HVAC SMS maintenance campaigns cite response rates of 10-25%, conversion of 5-15% on general lists (15-25% for maintenance-plan members), and about $89 average tune-up value in one example. Brevo cites about 55% SMS open rates for urgent campaigns. Many sources cite 98% open rates. Maintenance-plan members are reported to convert at several times the rate of one-time customers.",
+          "source": "https://resultcalls.com/blog/how-to-fill-your-schedule-with-hvac-leads-using-sms-campaigns",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:54:31Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Federal law (general knowledge): telemarketing calls and texts are restricted to 8 a.m.\u20139 p.m. recipient local time, and the National Do Not Call Registry applies to texts to residential mobile numbers. The FCC's 'one-to-one consent' lead-generator rule was vacated by a federal appeals court in January 2025 and is not in effect.",
+          "source": "",
+          "verified": false
+        }
+      ],
+      "open_questions": [
+        "Does the shop hold signed or electronic written consent for marketing texts from each customer, and how was it captured (job forms, Housecall Pro opt-in, online booking)? Texting 'customers' is different from texting 'customers who opted in to marketing'.",
+        "How large is the list, and how many numbers are mobile versus landline, stale, reassigned or on the Do Not Call Registry? Per-message exposure scales with list size.",
+        "Which Housecall Pro plan is the shop on, and does its Campaigns add-on (and message cap) cover the list size? Does Housecall Pro handle 10DLC registration, STOP handling and consent records, or is a separate tool needed?",
+        "Can 10DLC or toll-free registration be approved by next week, given approval timelines of days to weeks?",
+        "Would the attorney or insurer accept the 'existing business relationship' reading for a promotional text in Maryland? Does the shop's insurance cover TCPA or Maryland statutory claims?",
+        "How many open tune-up slots does the fall schedule have, and what is the target booking rate? That sets whether a 5-15% conversion on a consented subset is enough, or whether the full list is needed.",
+        "Is the promo a discount offer (solicitation) or partly informational, such as an appointment reminder for customers already on maintenance agreements? Reminders for existing agreements may be treated differently.",
+        "Is a $150/month all-in budget realistic once messaging fees, 10DLC fees and any add-on are counted?"
+      ]
+    },
+    "round1": {
+      "industry_expert": {
+        "stance": "oppose",
+        "headline": "Don't blast the whole list next week; text only consented customers.",
+        "summary": "Blasting every past customer by text is risky in Maryland. Texts need prior express written consent, and the existing-customer exception is narrow. Registration may not clear by next week. Send the offer by email and postcard now, and text only customers with written opt-in. Start a consent step for everyone else.",
+        "key_points": [
+          "Maryland requires prior express written consent for automated marketing texts, and the existing-customer exception looks narrow (F1, F2).",
+          "Damages run $500 per violation, up to $1,500 if willful, and each text can count separately, so a full-list blast multiplies exposure (F3, F6).",
+          "Business texts need 10DLC registration, which is quoted at 10 to 15 days, so next week is unlikely (F7)."
+        ],
+        "risks": [
+          "Statutory and TCPA claims per text, with no waiver, could cost far more than the $150 monthly budget saves.",
+          "Texts blocked or filtered if registration is not approved, wasting the promo and the sending fees.",
+          "Unhappy customers opting out or complaining, hurting reviews and repeat maintenance bookings."
+        ],
+        "pushback": "Are we sure past customers gave written marketing consent at all? A job invoice or service call is not the same as agreeing to promo texts.",
+        "confidence": 80
+      },
+      "ai_tools_expert": {
+        "stance": "oppose",
+        "headline": "Don't blast the whole list by text next week; go consent-first.",
+        "summary": "Don't text the whole list next week. Maryland law appears to bar automated promo texts without prior written consent, and penalties run per message. Carrier texting registration also takes about 10 to 15 days. Send the offer by email or postcard now, and text only customers with signed opt-in. Have an attorney or the local Small Business Development Center confirm.",
+        "key_points": [
+          "Maryland's statute bars automated solicitation texts without prior express written consent (F1). Being a past customer may not be enough (F2).",
+          "Maryland damages are the greater of $500 or actual damages per violation, up to three times for willful violations (F3). Exposure grows with list size.",
+          "Business texts need carrier registration that is quoted at 10 to 15 days (F7), so a text blast next week is not realistic anyway."
+        ],
+        "risks": [
+          "Per-message statutory claims from customers who never opted in, possibly uninsured (unverified; check policy with insurer).",
+          "Carrier blocking of unregistered texts would waste the send and the budget.",
+          "A rushed blast could damage trust with long-term customers and cut into the fall schedule."
+        ],
+        "pushback": "Are past customers actually consented to marketing texts? Pull the signed or electronic opt-in records before assuming the list is usable.",
+        "confidence": 80,
+        "tools": []
+      },
+      "realist": {
+        "stance": "conditional",
+        "headline": "Not a blast next week; text only consented customers after compliance steps.",
+        "summary": "Blasting the whole list by text is likely unlawful in Maryland without written consent, and carries per-message damages. Texting consented customers only is workable, but registration may not clear by next week. Use email and postcards for everyone else now, and build a consent list before any texts.",
+        "key_points": [
+          "Maryland requires prior express written consent for automated marketing texts (F1), and the past-customer exemption is narrow (F2).",
+          "Damages run per violation, with a private right of action and possible treble damages (F3, F6), so list size multiplies exposure.",
+          "Text registration (F7) and Housecall Pro plan limits (F8) may not fit a next-week send or the $150 budget."
+        ],
+        "risks": [
+          "Per-text statutory damages across a full past-customer list could far exceed the promo's revenue.",
+          "Texts to unregistered 10DLC numbers get blocked, so the send could fail and still cost money.",
+          "Housecall Pro Essentials or Podium pricing (F9, F10) could push total cost over $150 per month."
+        ],
+        "pushback": "Does the shop actually hold signed written consent for marketing texts? If not, the 'past customers' assumption is the core legal problem, not the tool.",
+        "confidence": 80,
+        "checks": [
+          {
+            "area": "legal",
+            "status": "block",
+            "note": "Blasting all past customers by text without signed written consent is a likely Maryland violation (F1, F2, F3); counsel must confirm before any text is sent."
+          },
+          {
+            "area": "compliance",
+            "status": "flag",
+            "note": "10DLC registration timelines of 10 to 15 days (F7) and STOP handling and records are unconfirmed for Housecall Pro; the shop must verify both."
+          },
+          {
+            "area": "compliance",
+            "status": "flag",
+            "note": "Maryland's 8 p.m. to 8 a.m. hours and three-per-24-hour cap (F4) and the federal calling window (F13, unverified) need checking; whether they apply to texts is unclear."
+          },
+          {
+            "area": "financial",
+            "status": "flag",
+            "note": "Housecall Pro's Campaigns add-on plus 10DLC and per-message fees may exceed $150/month (F7, F8, F9); the shop's current plan is unknown."
+          },
+          {
+            "area": "goals",
+            "status": "pass",
+            "note": "A consent-based or multi-channel promo can still fill the fall schedule, though the expected booking rate is unknown and benchmarks are vendor claims (F12)."
+          }
+        ]
+      },
+      "strategist": {
+        "stance": "oppose",
+        "headline": "Don't blast the whole list; build consented, multi-channel outreach first.",
+        "summary": "A text blast to every past customer next week exposes you to statutory damages per message, and approvals may not clear in time anyway. Next year's customer list is the asset at risk. Start with consented customers, send email and postcards to everyone else, and build consent capture into every job from now on.",
+        "key_points": [
+          "Maryland bars solicitation texts without prior express written consent, and the existing-customer exception is narrow (F1, F2).",
+          "Damages run per violation, with private suits and treble damages for willful cases (F3, F6), so list size multiplies risk.",
+          "Carrier 10DLC approval can take 10 to 15 days, which likely misses a next-week send (F7)."
+        ],
+        "risks": [
+          "Lawsuits or Consumer Protection Act claims from texts sent without written consent, with exposure scaling by list size.",
+          "Customer backlash and carrier blocking that damages your number's deliverability for future campaigns.",
+          "Locking the shop into a tool priced above budget, such as Podium at $399 or more (F10), which is hard to unwind after a year."
+        ],
+        "pushback": "The assumption that past customers are reachable by text at all. Ask whether any written consent exists, because 'past customer' does not equal 'consented to marketing texts'.",
+        "confidence": 80
+      },
+      "devils_advocate": {
+        "stance": "conditional",
+        "headline": "Promo yes, but text only consented customers, not the whole list",
+        "summary": "Run the fall promo, but not as a whole-list text blast next week. Maryland bars automated solicitation texts without prior written consent (F1), and past-customer status may not count (F2). Text only customers with written opt-in, and email or postcard everyone else. Have an attorney confirm before sending.",
+        "key_points": [
+          "Maryland requires prior express written consent for automated solicitation texts, and its past-customer exemption is narrow (F1, F2).",
+          "Texting only consented customers keeps the fall offer alive while limiting exposure; email and postcards reach the rest (F3, F6).",
+          "Carrier text registration is quoted at 10 to 15 days, so a send next week is unlikely (F7)."
+        ],
+        "risks": [
+          "Each text can carry $500 or more in damages, up to triple if willful, so a full list multiplies exposure (F3, F6).",
+          "Unregistered texts get blocked, so the promo may miss the send window entirely (F7).",
+          "Budget can break: Housecall Pro SMS caps are small and Podium exceeds $150/month (F8, F10)."
+        ],
+        "pushback": "The assumption that past customers are reachable by text. Check your job forms and Housecall Pro records for signed marketing opt-ins before assuming any of them exist.",
+        "confidence": 70
+      }
+    },
+    "round2": {
+      "industry_expert": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "devils_advocate",
+            "their_claim": "Texting only consented customers keeps the offer alive while limiting exposure, with email and postcards for the rest.",
+            "response": "Agreed on the structure. But the consent-only text step needs a real opt-in record per number. Cite F8 limits: Basic's 150 SMS cap may not cover even a consented subset of a small list."
+          },
+          {
+            "target": "strategist",
+            "their_claim": "Locking into a tool priced above budget, such as Podium at $399 or more, is hard to unwind after a year.",
+            "response": "Fair risk, but the bigger cost issue is Housecall Pro's own add-on pricing (F8, F9). Compare the current plan first before adding any new vendor; Podium is likely off the table at $150 (F10)."
+          },
+          {
+            "target": "realist",
+            "their_claim": "Housecall Pro Essentials or Podium pricing (F9, F10) could push total cost over $150 per month.",
+            "response": "Right to flag cost. Note that F9 sources disagree on whether marketing is bundled, so confirm the shop's actual plan and add-ons before budgeting."
+          }
+        ],
+        "concessions": [
+          "Consent-first is the right default; the whole-list blast should not run next week.",
+          "Past-customer status may not satisfy Maryland's consent rule (F2), so the consent check comes first."
+        ],
+        "stance": "oppose",
+        "headline": "Don't blast the whole list next week; text only consented customers.",
+        "summary": "Maryland requires prior express written consent for automated marketing texts (F1). The past-customer exception looks narrow (F2). Damages run per text, so a full-list blast multiplies exposure (F3, F6). Texts also need carrier registration that is quoted at 10 to 15 days (F7), so next week is unlikely. Send the offer by email and postcard now. Text only customers with signed opt-in records, and start a consent step for everyone else. Have an attorney confirm before any texts.",
+        "key_points": [
+          "Maryland requires prior express written consent for automated solicitation texts (F1, F2).",
+          "Each text can carry $500 or more in damages, up to triple if willful (F3, F6).",
+          "Registration of 10 to 15 days (F7) likely misses a next-week send."
+        ],
+        "risks": [
+          "Per-text statutory claims from customers who never gave written consent.",
+          "Texts blocked if registration is not approved, wasting the promo and fees.",
+          "Angry customers opting out or complaining, hurting reviews and repeat maintenance bookings."
+        ],
+        "pushback": "Do we have signed or electronic marketing opt-ins at all? A paid job or service call is not agreement to promo texts.",
+        "confidence": 82
+      },
+      "ai_tools_expert": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "industry_expert",
+            "their_claim": "Damages run $500 per violation, up to $1,500 if willful, so a full-list blast multiplies exposure.",
+            "response": "The $1,500 figure is the federal TCPA cap (F6). Maryland's state rule is the greater of $500 or actual damages, up to triple for willful violations (F3). Name the governing law when citing numbers."
+          },
+          {
+            "target": "devils_advocate",
+            "their_claim": "Budget can break: Housecall Pro SMS caps are small and Podium exceeds $150/month.",
+            "response": "Podium's price is correct (F10). But Housecall Pro's SMS cap depends on the shop's plan, which is unknown (F8). Check the plan before calling the cap a budget problem."
+          }
+        ],
+        "concessions": [
+          "Realist: the shop's current Housecall Pro plan and add-on cost are unknown, so the $150 budget fit is unproven until checked."
+        ],
+        "stance": "oppose",
+        "headline": "No whole-list text blast; email now, texts only to opted-in customers.",
+        "summary": "Don't text the whole list next week. Texts need written consent in Maryland, and carrier registration may not clear in time. Send the offer by email or postcard now. Text only customers who have signed opt-in records. Housecall Pro Campaigns is a tool you already have, so it is not a new AI purchase. Have an attorney confirm the consent rules before any text.",
+        "key_points": [
+          "Maryland bars automated promo texts without prior express written consent, and the past-customer exemption is narrow (F1, F2).",
+          "Texting unregistered numbers risks blocking, and 10DLC approval is quoted at 10 to 15 days (F7).",
+          "Housecall Pro Campaigns caps depend on plan, so check the shop's plan before assuming the list fits (F8)."
+        ],
+        "risks": [
+          "Per-text Maryland statutory claims from customers who never opted in (F3).",
+          "Carrier blocking of unregistered texts wastes the send and the budget (F7).",
+          "A rushed blast could damage trust with long-term customers and hurt repeat maintenance bookings."
+        ],
+        "pushback": "Do the shop's job forms or Housecall Pro records contain signed marketing opt-ins? Without them, the text list does not exist yet.",
+        "confidence": 80,
+        "tools": [
+          {
+            "name": "Mailchimp",
+            "use": "Send the fall tune-up offer by email to the full past-customer list, which is the consent-free channel.",
+            "monthly_cost": "$0 free tier (500 contacts), or $13/mo Essentials per the cited fact",
+            "works_with": "Standalone; import the customer list exported from Housecall Pro or QuickBooks Online.",
+            "caveat": "It is an email tool, not a text tool. Its AI writing features are not verified here, and the list size may exceed the free tier.",
+            "url": "",
+            "price_fact": "F11",
+            "pilot_test": "Keep it if the email offer books at least 5 tune-ups within 4 weeks; cancel the paid tier before the next billing date otherwise."
+          }
+        ]
+      },
+      "realist": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "ai_tools_expert",
+            "their_claim": "Maryland law appears to bar automated promo texts without written consent, and penalties run per message.",
+            "response": "Agree on the consent bar (F1). Per-message damages are real under F3, but whether each text counts as a separate violation is unverified. An attorney should confirm the exposure math."
+          },
+          {
+            "target": "industry_expert",
+            "their_claim": "Each text can count separately, so a full-list blast multiplies exposure.",
+            "response": "Right that exposure scales with list size (F6). But the Maryland figure is the greater of $500 or actual damages (F3), and per-text counting is unverified. An attorney should confirm it."
+          },
+          {
+            "target": "devils_advocate",
+            "their_claim": "Texting only consented customers keeps the offer alive while limiting exposure.",
+            "response": "Agreed in principle. But the consented subset may be small, and the 5-15% conversion figure is a vendor claim (F12). Count the opt-ins before assuming they can fill the schedule."
+          }
+        ],
+        "concessions": [
+          "Strategist: a blast can damage carrier deliverability for future campaigns, so consent capture must come first."
+        ],
+        "stance": "conditional",
+        "headline": "Consented texts only, after compliance steps; no whole-list blast next week.",
+        "summary": "Don't blast the whole list by text next week. Maryland requires prior express written consent for automated marketing texts, and past-customer status may not be enough (F1, F2). Send the fall offer by email and postcard now. Text only customers who can show written opt-in, once registration and STOP handling are confirmed. An attorney should confirm the rules.",
+        "key_points": [
+          "Maryland requires prior express written consent for automated solicitation texts, and the existing-customer exception is narrow (F1, F2).",
+          "Damages scale with list size: the greater of $500 or actual damages per violation, up to triple if willful (F3, F6).",
+          "Carrier registration is quoted at 10 to 15 days, so a next-week text send is unlikely (F7)."
+        ],
+        "risks": [
+          "Per-text statutory claims could exceed the promo's revenue.",
+          "Unregistered texts get blocked, wasting the send and its fees (F7).",
+          "Housecall Pro add-ons or Podium pricing could push total cost above $150 per month (F8, F9, F10)."
+        ],
+        "pushback": "Do the shop's job forms or Housecall Pro records contain signed marketing opt-ins? If not, the consented list may be close to zero.",
+        "confidence": 80,
+        "checks": [
+          {
+            "area": "legal",
+            "status": "block",
+            "note": "Texting all past customers without signed written consent is a likely Maryland violation (F1, F2, F3); an attorney must confirm before any such send."
+          },
+          {
+            "area": "compliance",
+            "status": "flag",
+            "note": "10DLC registration timing (F7) and Housecall Pro's STOP handling and consent records are unconfirmed; the shop should verify both."
+          },
+          {
+            "area": "compliance",
+            "status": "flag",
+            "note": "Maryland's 8 p.m. to 8 a.m. hours and three-per-24-hour cap (F4) do not clearly name texts; the federal calling window (F13, unverified) should be confirmed by an attorney."
+          },
+          {
+            "area": "financial",
+            "status": "flag",
+            "note": "Housecall Pro's Campaigns add-on plus 10DLC and per-message fees (F7, F8, F9) may exceed $150 per month; the shop's current plan is unknown."
+          },
+          {
+            "area": "goals",
+            "status": "pass",
+            "note": "A consent-based or multi-channel promo can still fill the fall schedule, though the booking rate is unknown and the benchmarks are vendor claims (F12)."
+          }
+        ]
+      },
+      "strategist": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "realist",
+            "their_claim": "Housecall Pro Campaigns plus 10DLC and per-message fees may push total cost past the $150 monthly budget.",
+            "response": "Agreed on cost, and the lock-in risk is bigger. Podium is $599/mo on 12-month contracts (F10). Avoid any tool with a year-long term until consent and budget are confirmed."
+          },
+          {
+            "target": "devils_advocate",
+            "their_claim": "Texting only consented customers keeps the fall offer alive while limiting exposure.",
+            "response": "Partly agree. The consented subset is the asset you keep. Build it now, or next year's campaign starts from zero again."
+          },
+          {
+            "target": "industry_expert",
+            "their_claim": "Are past customers actually consented to marketing texts? A job invoice is not agreement to promo texts.",
+            "response": "Agreed. Make that the first check. Without signed opt-ins, the list is not reachable by text at all."
+          }
+        ],
+        "concessions": [
+          "Past-customer status does not establish consent to marketing texts, so the consent check must come first.",
+          "Email and postcards are the right channel for customers without signed opt-in."
+        ],
+        "stance": "oppose",
+        "headline": "Don't blast the whole list; build consent first, then text.",
+        "summary": "Don't text the whole list next week. A blast puts your best asset, your past-customer list, at legal risk, and carrier approval may not clear in time anyway. Start capturing signed opt-ins on every job now. Send the offer by email and postcard to everyone. Add texts once consent exists and counsel confirms the rules. That builds a list you own for next season.",
+        "key_points": [
+          "Maryland requires prior express written consent for automated marketing texts, and the past-customer exception is narrow (F1, F2).",
+          "Damages are $500 per violation, up to $1,500 if willful, so exposure scales with list size (F6).",
+          "Carrier 10DLC approval is quoted at 10 to 15 days, which likely misses a next-week send (F7)."
+        ],
+        "risks": [
+          "A year-long tool contract, such as Podium at $599/mo, locks in costs well above budget (F10).",
+          "A blast without consent can burn customer trust, which is hard to rebuild for future seasons.",
+          "Carrier blocking of unregistered numbers could push the promo past the fall booking window (F7)."
+        ],
+        "pushback": "Assume the list is not reachable by text until you find signed opt-in records. Is that true for your customers?",
+        "confidence": 82
+      },
+      "devils_advocate": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "industry_expert",
+            "their_claim": "Past customers may never have given written consent to marketing texts, so the list may not be usable.",
+            "response": "If past customers lack written consent, the consent-only text list may be small. The board should size that list before treating texts as the core fall channel."
+          },
+          {
+            "target": "realist",
+            "their_claim": "Texts to unregistered 10DLC numbers get blocked, so the send could fail and still cost money.",
+            "response": "Blocking is real, but it argues for starting registration now, not postponing the whole fall push. Email and postcards can run this week while texts wait (F7)."
+          }
+        ],
+        "concessions": [
+          "A blast to the whole list next week is not defensible under Maryland's consent rule (F1).",
+          "Carrier registration is a real timing limit for any text campaign (F7)."
+        ],
+        "stance": "conditional",
+        "headline": "Consent-only texting may miss the fall window; send email and postcards now.",
+        "summary": "The board agrees on a consent-only text plan, but that plan is slow too. Carrier registration takes 10 to 15 days (F7), and written consent records may not exist. Texts may reach few customers. Send the offer by email and postcard now. Add texts only after records are checked and registration clears. Ask an attorney to confirm before any text goes out.",
+        "key_points": [
+          "Registration timing (F7) blocks consented texts as well as a blast, so the consent path is not a faster fall option.",
+          "Maryland's text rule covers automated sends (F1), and the board has not sized how many customers have written opt-in.",
+          "Maintenance-plan members reportedly convert at several times one-time customers (F12, vendor claim)."
+        ],
+        "risks": [
+          "Email and postcards may cost money and reach fewer customers than expected.",
+          "Slow consent capture could let competitors book the fall schedule first.",
+          "Rushed consent forms could produce weak records that fail if challenged."
+        ],
+        "pushback": "The assumption that a consent-only text list is worth waiting for. Count the signed opt-ins you actually hold before planning the fall around texts.",
+        "confidence": 60
+      }
+    },
+    "verdict": {
+      "decision": "pilot",
+      "headline": "Don't blast the list. Email and mail everyone now; text only customers with written opt-in.",
+      "confidence": 78,
+      "rationale": "A whole-list text blast next week is not defensible. Maryland bars automated promo texts without prior express written consent (F1), and the existing-customer exception is narrow (F2). Damages are per violation, can be tripled if willful, and cannot be waived (F3). Carrier registration is quoted at 10 to 15 days, so next week is unlikely anyway (F7). Run the promo by email, postcard and calls now. Text only customers whose signed opt-in you can produce, once registration clears and an attorney confirms the rules.",
+      "decisive_arguments": [
+        {
+          "seat": "industry_expert",
+          "point": "Maryland requires prior express written consent for automated solicitation texts, and the existing-customer exemption is narrow (F1, F2). A paid job is not agreement to promo texts."
+        },
+        {
+          "seat": "ai_tools_expert",
+          "point": "Maryland damages are the greater of $500 or actual damages, up to triple for willful violations (F3). The $1,500 cap is the federal TCPA figure (F6). Either way, exposure grows with list size."
+        },
+        {
+          "seat": "devils_advocate",
+          "point": "Carrier registration is quoted at 10 to 15 days (F7), so even a consented text send will not be ready next week. Start email and postcards now and start registration at the same time."
+        },
+        {
+          "seat": "realist",
+          "point": "Housecall Pro message caps and add-on prices depend on plan (F8). The $150 budget fit is unproven until the shop's actual plan is checked."
+        }
+      ],
+      "dissent": [
+        {
+          "seat": "devils_advocate",
+          "point": "The consent-only text path may be small and slow. Count the signed opt-ins before planning the fall around texts, and don't let rushed consent forms create weak records."
+        },
+        {
+          "seat": "realist",
+          "point": "Whether each text counts as a separate violation is unverified, so the exposure math needs an attorney. Vendor conversion benchmarks (F12) may overstate what a small consented list can book."
+        },
+        {
+          "seat": "strategist",
+          "point": "Avoid any year-long tool contract, such as Podium at $399 to $599/mo (F10), until consent and budget are confirmed. Building a consented list you own matters more than this one send."
+        }
+      ],
+      "conditions": [
+        "No automated marketing text goes to any customer unless you can produce their signed or electronic written marketing consent (F1, F5).",
+        "An attorney confirms the consent and existing-customer reading for a promo text in Maryland before any text is sent (F2).",
+        "Carrier registration (10DLC or toll-free) is approved before texts go out; unregistered texts are blocked (F7).",
+        "Every text has opt-out wording, and stop requests are honored within 10 business days (F5). Records of consent and opt-outs are kept.",
+        "Send outside Maryland's 8 p.m. to 8 a.m. window, with no more than three texts to one person in 24 hours on the same subject, and with caller ID transmitted (F4). Whether these rules cover texts is not stated in the statute, so the attorney confirms. The federal 8 a.m. to 9 p.m. window and Do Not Call rules are unverified (F13).",
+        "Total monthly cost stays within $150 once plan add-ons, registration and per-message fees are counted (F7, F8)."
+      ],
+      "next_steps": [
+        {
+          "when": "this week",
+          "action": "Search Housecall Pro, job forms and online booking for signed marketing-text opt-ins. Count how many customers have one and how it was captured."
+        },
+        {
+          "when": "this week",
+          "action": "Check your Housecall Pro plan, Campaigns message cap and add-on price. Ask support whether they handle 10DLC registration, STOP replies and consent records (F8)."
+        },
+        {
+          "when": "this week",
+          "action": "Send the fall tune-up offer by email to the whole list. Order a postcard run, or have the office call maintenance-plan customers by hand. Confirm with your attorney that manual calls are fine."
+        },
+        {
+          "when": "this week",
+          "action": "Book a call with an attorney, and contact the Maryland SBDC for free help. Ask about the consent rules, the existing-customer exception, and whether your insurance covers texting claims."
+        },
+        {
+          "when": "next 30 days",
+          "action": "Add a clear marketing-text opt-in checkbox with date record to every job form and booking flow. Start registration so texts are ready for consented customers."
+        },
+        {
+          "when": "next 90 days",
+          "action": "Text the offer only to consented customers once registration clears and the attorney approves. Compare bookings by channel and decide what to keep."
+        }
+      ],
+      "ai_tools": [
+        {
+          "name": "Mailchimp",
+          "use": "Send the fall tune-up offer by email to the full past-customer list, the channel with no text-consent problem.",
+          "monthly_cost": "$0 free tier (500 contacts), or $13/mo Essentials per the cited fact",
+          "works_with": "Standalone; export your customer list from Housecall Pro (unverified that the export fits).",
+          "caveat": "It is an email tool, not a text tool. Its AI writing features are not verified here, and your list may exceed the free tier.",
+          "url": "",
+          "price_fact": "F11",
+          "pilot_test": "Keep it if the email offer books at least 5 tune-ups within 4 weeks; cancel the paid tier before the next billing date otherwise."
+        }
+      ],
+      "escalate_to": "attorney",
+      "escalation_reason": "Maryland allows private suits with damages of at least $500 per violation, and the remedies cannot be waived (F3). An attorney must confirm whether past-customer status excuses a promo text (F2), how the hours and frequency rules apply to texts (F4), and how exposure is counted. Also ask whether your insurance covers these claims (unverified).",
+      "would_change": [
+        "You find signed or electronic marketing-text opt-ins for most of the list, which would make a larger consented text send realistic.",
+        "An attorney confirms in writing that Maryland's rules allow a promo text to existing customers without written consent. That would reopen a wider send.",
+        "Housecall Pro confirms it handles registration, STOP replies and consent records within your plan and the $150 budget, which would speed up consented texting."
+      ],
+      "no_new_tool": "Use what you already have. Housecall Pro Campaigns can send email, with add-on prices of $9 to $89/mo depending on plan (F8, confirm on your account). Have the office call maintenance-plan customers by hand, and mail postcards through a local print shop (cost unverified). This keeps the promo within $150/mo and avoids text-consent risk."
+    }
+  },
+  "board_error": null,
+  "baseline_research": "# Recommendation: don't blast the whole list by text next week\n\nRun a multi-channel promo instead (your option 4). Send email and postcards to the full list, and text only customers who can show written marketing consent. You can still fill the fall schedule this way, and you avoid a legal exposure that could cost far more than the promo would earn.\n\n## Why not the blast\n\n- **Maryland requires prior express written consent for automated marketing texts (F1).** Being a past customer is not the same as having opted in to marketing texts.\n- **The \"existing customer\" exemption is narrow (F2).** It covers communications that began as informational and turned into a solicitation after the customer's own inquiry. A cold fall promo to past customers likely doesn't fit. One compliance guide says the federal 18-month business-relationship rule won't save you in Maryland. Have an attorney confirm, but don't plan around the exemption.\n- **The penalties are real and scale with list size (F3, F5, F6).**\n  - Maryland gives a private right of action: at least $500 per violation, up to 3x for willful or knowing violations, and it can't be waived.\n  - Federal TCPA adds $500 to $1,500 per violation.\n  - Each text can count as a violation. As an illustration, 2,000 unconsented texts is a theoretical $1M or more, and even a handful of complaints would be painful for a 4-technician shop.\n- **Timing is a problem (F7).** Carrier registration (10DLC) can take 10 to 15 days. Unregistered texts get blocked, so \"next week\" is unrealistic with a third-party tool. Ask Housecall Pro whether it handles registration for you.\n- **A new \"AI tool\" isn't needed, and may not fit the budget (F10, F11).** Podium starts at $399/mo, well over your $150. Your goal is filling the schedule, and the compliance and consent steps matter more than the software.\n\n## Recommended plan\n\n1. **Email the whole list.** Use Housecall Pro Campaigns email or Mailchimp (free up to 500 contacts, $13/mo Essentials) (F8, F11). This is your cheapest broad-reach channel.\n2. **Text only customers with documented written consent.** Use Housecall Pro Campaigns. Confirm your plan's SMS cap and add-on price ($19 to $49/mo covers 350 to 1,000 texts) (F8). Include opt-out wording, send only between roughly 9 a.m. and 7 p.m., and keep consent records (F4, F5).\n3. **Send postcards or make personal calls to the rest.** Prioritize your best customers, especially maintenance-plan members, who convert at several times the rate of one-time customers (F12). Postcard printing and postage aren't in the research, so get a quote. This is likely where most of your budget goes.\n4. **Start collecting consent now.** Add a clear marketing-text checkbox to job forms, online booking and invoices. Send a one-time email asking customers to opt in to text offers. Each opt-in makes the next campaign easier.\n5. **Treat reminders for existing maintenance agreements separately.** These may count as informational rather than promotional (an open question). Don't assume that. Get your attorney's view.\n\n## Main risks\n\n- **Consent records may be thin.** If Housecall Pro doesn't show how and when each customer opted in, treat them as unconsented.\n- **List quality.** Landlines, reassigned numbers and Do Not Call numbers add exposure (F13, unverified general knowledge, so confirm it).\n- **Unclear rules.** It's unclear whether Maryland's hours and frequency rules apply to texts (F4), so follow them anyway. Opt-out rules are also changing (F5).\n- **Insurance.** Your policy may not cover TCPA or statutory claims. Ask your agent.\n- **Benchmarks are optimistic (F12).** The 10-25% response and 5-15% conversion figures come from vendors and agencies. Plan on lower.\n- **The budget is tight.** Software, messaging fees and postcards together may exceed $150/mo, so scale postcards to your best segment.\n\n## Next steps\n\n**This week**\n- Export your list from Housecall Pro. Tag each customer by consent status, mobile vs. landline, and maintenance-plan membership.\n- Ask Housecall Pro support: which plan you're on, your Campaigns SMS cap, whether they handle 10DLC registration, STOP handling and consent logs.\n- Book a short call with a Maryland attorney about the promo wording and the existing-customer question. Check your insurance too.\n- Launch the email promo and start personal calls to your top customers.\n\n**Next 2 to 3 weeks**\n- Send texts to the consented segment once registration and opt-out handling are confirmed.\n- Send postcards to the highest-value non-consented customers.\n- Add consent capture to all forms.\n\n**Before you spend more**\n- Count your open fall tune-up slots and set a booking target. If a consented subset at 5-10% conversion doesn't fill them, add postcards and calls rather than unconsented texts.\n\nThis is business guidance, not legal advice. Have counsel confirm the Maryland points before any text goes out.",
+  "judge": {
+    "model": "openrouter/anthropic/claude-sonnet-5.5",
+    "letters": {
+      "baseline_research": "A",
+      "board": "B",
+      "baseline": "C"
+    },
+    "baseline_research": {
+      "risks": [
+        {
+          "risk": "TCPA / prior express written consent for marketing texts",
+          "score": 2,
+          "quote": "Text only customers who can show written marketing consent."
+        },
+        {
+          "risk": "Opt-out handling",
+          "score": 2,
+          "quote": "Send texts to the consented segment once registration and opt-out handling are confirmed."
+        }
+      ],
+      "actionable": 5,
+      "errors": [
+        {
+          "claim": "Maryland requires prior express written consent for automated marketing texts; Maryland gives a private right of action of at least $500 per violation, up to 3x for willful violations.",
+          "correction": "Maryland's Stop the Spam Calls Act does provide a private right of action, but the statutory damages figures are not certain. Not confident enough to call this an error."
+        }
+      ]
+    },
+    "board": {
+      "risks": [
+        {
+          "risk": "TCPA / prior express written consent for marketing texts",
+          "score": 2,
+          "quote": "No automated marketing text goes to any customer unless you can produce their signed or electronic written marketing consent."
+        },
+        {
+          "risk": "Opt-out handling",
+          "score": 2,
+          "quote": "Every text has opt-out wording, and stop requests are honored within 10 business days. Records of consent and opt-outs are kept."
+        }
+      ],
+      "actionable": 5,
+      "errors": []
+    },
+    "baseline": {
+      "risks": [
+        {
+          "risk": "TCPA / prior express written consent for marketing texts",
+          "score": 2,
+          "quote": "Wave 1: Customers who have explicitly opted in to texts, plus recent customers (last 12 to 24 months) with a documented relationship."
+        },
+        {
+          "risk": "Opt-out handling",
+          "score": 1,
+          "quote": "\"Reply STOP to opt out,\" honored immediately"
+        }
+      ],
+      "actionable": 4,
+      "errors": [
+        {
+          "claim": "Wave 1 can include recent customers with a documented relationship, not just those who opted in.",
+          "correction": "A business relationship does not substitute for prior express written consent for automated marketing texts, so texting recent non-opted-in customers is risky."
+        }
+      ]
+    }
+  }
+}

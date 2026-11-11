@@ -142,6 +142,11 @@ export function Board({ source, onNew, onEdit, onRetry, onAskAgain, onReplay, on
           <a className="skip" href="#board-main">
             Skip to the board
           </a>
+          {board.verdict && (
+            <a className="skip" href="#your-call">
+              Skip to your call
+            </a>
+          )}
           <header className="frame" ref={frameRef}>
             <div className="frame__row">
               <button type="button" className="frame__back" onClick={onNew}>

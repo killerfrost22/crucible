@@ -42,7 +42,7 @@
 | **Devil's Advocate** | The strongest honest case against the leading option |
 | **Chairman** | Weighs the debate and recommends: *proceed / pilot / defer / reject* |
 
-One meeting is **12 model calls** (Researcher + 5 + 5 + Chairman) plus a link check. With the default models, measured runs cost **$0.06–0.12** and take **75–100 s** (four runs on Nov 10; it was 50–85 s before the link check and the longer tool and verdict fields), mostly the Researcher's web search and the Chairman.
+One meeting is **12 model calls** (Researcher + 5 + 5 + Chairman) plus a link check. With the default models a meeting costs about **$0.12**, summed from OpenRouter's per-call charges for two eval meetings on Nov 10. It takes **70–120 s**: the board alone took 72–120 s in 22 eval runs, and one live meeting took 103 s end to end. Most of it is the Researcher's web search and the Chairman.
 
 ## How it works
 
@@ -147,7 +147,9 @@ All routes come from ADK (sessions, `/run_sse`, session PATCH/GET/DELETE) except
 
 > [!TIP]
 > ADK's developer UI lets you inspect single runs, events, and state:
-> `cd backend && .venv/Scripts/adk web --port 8001 agents`. On first launch it asks about telemetry; answer `n`.
+> `cd backend && .venv/Scripts/adk web --port 8001 agents`. On first launch it asks about telemetry; answer `n`. If the
+> `adk` launcher fails with "Unable to create process" (the `.venv` was created in another folder), run
+> `.venv/Scripts/python.exe -m google.adk.cli web --port 8001 agents` instead.
 
 ### Configuration
 
@@ -200,23 +202,36 @@ Settings live in the repo-root `.env` locally, or in environment variables when 
 
 ## Evaluate
 
-Ten trap scenarios in `eval/scenarios.json`, each with planted risks (`must_catch`), e.g. Maryland's all-party call-recording consent, or the FLSA rule against managers taking from a tip pool.
+Ten trap scenarios in `eval/scenarios.json`, each with planted risks (`must_catch`), e.g. Maryland's all-party call-recording consent, or the FLSA rule against managers taking from a tip pool. `bakery-price-increase` is the control: no legal trap.
 
 ```bash
 cd backend
-.venv/Scripts/python.exe eval/run_eval.py                               # all 10 scenarios (130 calls)
-.venv/Scripts/python.exe eval/run_eval.py --only bakery-price-increase  # one scenario
+.venv/Scripts/python.exe eval/run_eval.py                                   # all 10 scenarios
+.venv/Scripts/python.exe eval/run_eval.py --only bakery-price-increase      # one scenario
+.venv/Scripts/python.exe eval/run_eval.py --repeat 3                        # three board runs per scenario
+.venv/Scripts/python.exe eval/run_eval.py --rejudge eval/results/<run>      # grade an earlier run again
 ```
 
-The report counts the planted risks each approach surfaced:
+Each scenario gets three answers, all on the Chairman's model or from it:
 
-| Column | What it scores |
+| Answer | What it is |
 |---|---|
-| Baseline | One plain prompt, same model as the Chairman |
-| Board | Anywhere in the full board's evidence or debate |
-| Verdict | The Chairman's final recommendation alone |
+| Baseline | One plain prompt, no research |
+| Baseline + research | The same prompt, given the board's own research, so sources alone don't decide the comparison |
+| Board | The Chairman's verdict |
 
-Output: `eval/results/<timestamp>/report.md`, plus a full transcript per scenario.
+A judge model (`--judge-model`, the Chairman's model by default) grades the three blind: shuffled, unlabeled, fact IDs removed. For each planted risk, 2 = the recommendation is gated on it or changed by it, 1 = only mentioned, 0 = absent. It also scores how actionable each answer is (1–5) and lists claims it's confident are wrong. For the control, it checks for an invented legal blocker. A regex keyword check stays in the report as a secondary column.
+
+- **Output:** `eval/results/<timestamp>/report.md`, plus a full transcript per scenario, the judge's grades and quotes, the board's time and what OpenRouter charged (board, and the whole scenario).
+- **Reading the transcripts:** `review.md` next to a report logs the problems found by hand, each with a quote and a fix.
+
+| Run (Nov 10) | What it is | Risk points: one prompt · + research · board | Confident errors |
+|---|---|---|---|
+| [`20261110-210818`](backend/eval/results/20261110-210818/report.md) | Before the prompt fixes; read by hand in [`review.md`](backend/eval/results/20261110-210818/review.md) | 29 · 30 · 30 of 30 | 5 · 5 · 2 |
+| [`20261110-214837`](backend/eval/results/20261110-214837/report.md) | After the fixes from `review.md` | 28 · 30 · 30 of 30 | 4 · 3 · 0 |
+| [`20261110-221043`](backend/eval/results/20261110-221043/report.md) | The control and the chatbot scenario again, after narrowing the Chairman's legal-condition rule | 4 · 4 · 4 of 4 | 0 · 0 · 0 |
+
+On these traps a single prompt on Claude Sonnet 5.5 catches the planted risks too; the board's measured edge is fewer wrong claims and more actionable answers. Both of those are graded by a Claude judge, and each scenario ran once.
 
 ## Recorded replays
 

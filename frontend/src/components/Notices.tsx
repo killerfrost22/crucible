@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'motion/react'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
 import type { HumanError } from '../lib/errors'
 import { factId, hostOf, SourceLink, SourceTag, useFacts } from './facts'
 import { EASE_OUT } from './motion'
@@ -66,10 +66,14 @@ export function ErrorNotice({ error, kept, onRetry, onEdit, onReplay }: ErrorNot
   )
 }
 
-/** When the cited fact is off-screen (always on small screens), show it in a strip at the bottom. */
+/**
+ * When the cited fact is off-screen (always on small screens), show it in a strip at the bottom. Pinned from the
+ * keyboard, the strip takes focus so "Open source" is one Tab away; Escape, ✕ or tabbing out returns to the chip.
+ */
 export function FactPeek() {
-  const { facts, active, setActive, pinned } = useFacts()
+  const { facts, active, setActive, pinned, opener } = useFacts()
   const [offscreen, setOffscreen] = useState(false)
+  const ref = useRef<HTMLElement>(null)
 
   useEffect(() => {
     if (active === null) return
@@ -79,20 +83,44 @@ export function FactPeek() {
     setOffscreen(r.bottom < 72 || r.top > window.innerHeight - 24)
   }, [active])
 
+  const close = useCallback(() => {
+    setActive(null)
+    opener.current?.focus()
+    opener.current = null
+  }, [setActive, opener])
+
   useEffect(() => {
     if (!pinned) return
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setActive(null)
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && close()
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [pinned, setActive])
+  }, [pinned, close])
 
   const fact = active !== null ? facts[active - 1] : undefined
+  const shown = Boolean(fact && offscreen)
+
+  useEffect(() => {
+    if (shown && pinned && opener.current) ref.current?.querySelector<HTMLElement>('a[href], button')?.focus()
+  }, [shown, pinned, active, opener])
+
+  // The strip sits at the end of the page, so tabbing past either end goes back to the chip instead of the page footer.
+  const onKeyDown = (e: ReactKeyboardEvent<HTMLElement>) => {
+    if (e.key !== 'Tab' || !opener.current) return
+    const stops = [...e.currentTarget.querySelectorAll<HTMLElement>('a[href], button')]
+    const leaving = e.shiftKey ? document.activeElement === stops[0] : document.activeElement === stops.at(-1)
+    if (!leaving) return
+    e.preventDefault()
+    close()
+  }
+
   return (
     <AnimatePresence>
-      {fact && offscreen && (
+      {shown && fact && (
         <motion.aside
+          ref={ref}
           className="peek"
           aria-label={`Fact F${active}`}
+          onKeyDown={onKeyDown}
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 24 }}
@@ -107,7 +135,7 @@ export function FactPeek() {
             </p>
           </div>
           {pinned && (
-            <button type="button" className="peek__close" onClick={() => setActive(null)} aria-label="Close fact">
+            <button type="button" className="peek__close" onClick={close} aria-label="Close fact">
               ✕
             </button>
           )}

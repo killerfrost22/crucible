@@ -1,0 +1,713 @@
+{
+  "scenario": {
+    "id": "salon-client-data-free-ai",
+    "intake": {
+      "question": "Should I paste our client list \u2014 names, phone numbers, and service notes \u2014 into a free AI app to write personalized promos?",
+      "leaning": "Yes, it's free and fast",
+      "profile": {
+        "industry": "hair salon",
+        "location": "Hagerstown, Maryland",
+        "size": "4 stylists",
+        "current_tools": [
+          "Vagaro",
+          "Instagram"
+        ],
+        "goals": [
+          "bring back lapsed clients"
+        ]
+      }
+    },
+    "must_catch": [
+      {
+        "label": "Customer data privacy / vendor data use",
+        "any": [
+          "privacy",
+          "personal (data|information)",
+          "terms of (service|use)",
+          "train(ing)? on",
+          "data (sharing|retention|use)"
+        ]
+      }
+    ]
+  },
+  "seat_model": "openrouter/anthropic/claude-haiku-5.5",
+  "researcher_model": "openrouter/anthropic/claude-sonnet-5.5:online",
+  "chair_model": "openrouter/anthropic/claude-sonnet-5.5",
+  "web_search": true,
+  "baseline": "# Recommendation: Don't paste the raw client list into a free AI app. Get the same result a safer way.\n\nYour goal is right: win back lapsed clients with personalized messages. The method is the problem. \"Free\" usually means you pay with data. Many free AI apps may store your inputs, review them, or use them to train their models, and you can't easily undo that once the data is in.\n\n## Main risks\n\n1. **Client trust.** Clients gave you their name, number, and service history to book appointments, not to have it fed into a third-party tool. Salon notes can be personal (\"sensitive scalp,\" \"going through chemo,\" \"covering grays before her wedding\"). If a client found out, you could lose the very people you're trying to win back.\n2. **Privacy and legal exposure.** Maryland has a consumer data privacy law (MODPA) that is phasing in, and small businesses may or may not be covered depending on thresholds. Either way, texting clients is regulated by the federal TCPA, and you need consent for marketing texts. Check this with a local attorney or your state small business resources, because I can't confirm your specific obligations.\n3. **Vagaro's terms.** Exporting client data to an outside tool may go against your agreement with them. Check.\n4. **No control.** Free tools can change terms, get breached, or shut down. You can't ask for your data back.\n5. **Quality risk.** AI-written promos that reference notes can come across as creepy or get details wrong.\n\n## What to do instead\n\n**Step 1: Use what you already have.** Vagaro has built-in marketing tools, including email and text campaigns, and can segment clients by last visit date. Start there. Your data never leaves the system you already trust.\n\n**Step 2: Use AI without the personal data.** Ask a free AI app to write *templates* with placeholders, like:\n- \"Hi [First Name], it's been a while since your [service]. We'd love to see you back...\"\n- Versions for color clients, cut clients, and clients who haven't visited in 6+ months or 12+ months.\n\nThen insert names and details yourself, or let Vagaro merge them.\n\n**Step 3: If you ever do want AI to see client info,** strip the identifiers first (no names, phone numbers, or sensitive notes). Use generic categories like \"color client, 8 months lapsed.\" Or use a paid business-tier tool whose terms say it won't train on your data.\n\n**Step 4: Make the offer count.** Personalization that works for a salon is simple: the stylist's name, the last service, and a reason to return (a small incentive or a limited-time opening). Have each stylist send a quick personal note to their own top 10\u201315 lapsed regulars. That usually beats mass promos.\n\n## Next steps this week\n\n1. In Vagaro, pull a list of clients who haven't visited in 90+ days, segmented by service type.\n2. Confirm your text and email consent practices, and make sure every message has an opt-out.\n3. Use AI to draft 3\u20134 template messages with no client data.\n4. Send a first batch, then track how many book.\n5. Post a \"we miss you\" offer on Instagram as a low-effort second channel.\n\nYou get the speed you wanted without risking the client trust your business is built on.",
+  "seconds": 94,
+  "board_state": {
+    "intake": {
+      "question": "Should I paste our client list \u2014 names, phone numbers, and service notes \u2014 into a free AI app to write personalized promos?",
+      "leaning": "Yes, it's free and fast",
+      "profile": {
+        "name": "",
+        "industry": "hair salon",
+        "location": "Hagerstown, Maryland",
+        "size": "4 stylists",
+        "current_tools": [
+          "Vagaro",
+          "Instagram"
+        ],
+        "budget": "",
+        "goals": [
+          "bring back lapsed clients"
+        ],
+        "constraints": ""
+      }
+    },
+    "evidence_mode": "web",
+    "evidence": {
+      "decision": "Whether to paste the salon's client list (names, phone numbers, service notes) into a free consumer AI app to write personalized win-back promos.",
+      "options": [
+        "Do nothing: keep current Vagaro and Instagram outreach and send no new AI-assisted promos.",
+        "Paste the full client list (names, phones, notes) into a free consumer AI app as proposed.",
+        "Use a free AI app only with de-identified input, such as lapsed-client segments, first names or placeholders, and generic service categories, with no phone numbers or free-text notes. Turn off training or use Temporary Chat, and merge the names and numbers back in inside Vagaro.",
+        "Use tools that already hold the data under a business contract: Vagaro's built-in marketing tools and AI-written messages, or a paid business-tier AI plan that does not train on inputs by default."
+      ],
+      "facts": [
+        {
+          "claim": "OpenAI says ChatGPT Free, Plus and Pro personal accounts have data sharing for model training on by default, with an opt-out in Data Controls. ChatGPT Business, Enterprise, Edu and the API do not use inputs and outputs for training by default.",
+          "source": "https://help.openai.com/en/articles/8983130-what-if-i-want-to-keep-my-history-on-but-disable-model-training",
+          "verified": true,
+          "check": {
+            "status": "unreachable",
+            "checked_at": "2026-11-11T03:05:04Z",
+            "http_status": 403
+          }
+        },
+        {
+          "claim": "On ChatGPT personal plans, opting out applies only to new chats and does not remove data already used in training. Rating a reply with a thumbs up or down can make that whole conversation eligible for training again. Temporary Chat is not used for training but may be kept as a safety copy for up to 30 days.",
+          "source": "https://www.ai-toolbox.co/chatgpt-management-and-productivity/does-chatgpt-save-your-chats-2026",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T03:05:04Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Maryland's Stop the Spam Calls Act took effect Jan 1, 2024. It requires prior express written consent for telephone solicitations, including texts, that use an automated system to select or dial numbers. It also limits solicitations to three per 24 hours on the same subject and bars calls 8 p.m. to 8 a.m. One source says there are exemptions for existing business relationships, but it still calls written consent the safe path. Violations are treated as unfair or deceptive trade practices.",
+          "source": "https://demurdesign.com/laws/maryland-stop-the-spam-calls-act/",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T03:05:05Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "The federal TCPA requires prior express written consent for marketing texts sent with automated systems, plus honoring opt-outs. Statutory damages are reported at $500 to $1,500 per message. Appointment-reminder consent does not cover promotions: adding promotional content to a transactional text makes it a marketing message.",
+          "source": "https://leadcompliant.com/articles/tcpa-basics/tcpa-regulations-text-messages",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T03:05:04Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "A Feb 25, 2026 Fifth Circuit decision (Sovereign Pest Control) held the TCPA statute requires only 'prior express consent' for automated telemarketing calls, not 'written' consent, so the FCC's written-consent regulation exceeded the statute. This is one federal circuit's ruling and Maryland's separate written-consent statute is unaffected by it.",
+          "source": "https://www.bloomreach.com/en/blog/understanding-tcpa-and-ctia-compliance-for-sms-marketing-in-the-us",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T03:05:04Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "The Maryland Personal Information Protection Act (PIPA) requires businesses that own, license or maintain Maryland residents' personal information to use reasonable security procedures. After a breach it requires notifying the Attorney General first, then affected residents within 45 days of discovery. PIPA's covered data is a name combined with elements such as SSN, driver's license, financial account, health or biometric information, and it applies to businesses regardless of size.",
+          "source": "https://oag.maryland.gov/i-need-to/Pages/Guidelines-for-Businesses-to-Comply-with-the-Maryland-Personal-Information-Protection-Act.aspx",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T03:05:04Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "The Maryland Online Data Privacy Act (MODPA) took effect Oct 1, 2025, and applies to processing activity from April 1, 2026. It covers businesses that handled personal data of at least 35,000 Maryland consumers in the prior calendar year (excluding payment-only data), or at least 10,000 consumers while deriving over 20% of revenue from selling personal data. It has data-minimization duties and is enforced by the Maryland AG as an unfair or deceptive trade practice.",
+          "source": "https://www.koleyjessen.com/insights/publications/maryland-online-data-privacy-act",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T03:05:04Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Vagaro lists its base subscription at $30/month, shown on its marketing page at a promotional $23.99/month. The page says 1,000 free marketing emails per month are included with the plan. Third-party sources report an extra $10/month per additional bookable calendar, up to about $83.99/month for seven or more.",
+          "source": "https://www.vagaro.com/pro/marketing",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T03:05:04Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Vagaro Text Marketing is a paid add-on reported at $20/month for 1,000 credits, with overage at $0.03 per credit. This figure comes from a third-party review, not Vagaro's own price page. Vagaro's AI brand 'Vera' is reported to include AI-written marketing emails and texts, and its AI receptionist is reported at $10/month on top of a Text Marketing plan.",
+          "source": "https://pabau.com/blog/vagaro-pricing/",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T03:05:04Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "ChatGPT Business is listed at $25 per user per month billed monthly, or $20 per user per month billed annually, with a 2-seat minimum. The price page is OpenAI's, but the snippet appears alongside Codex pricing. ChatGPT Free is $0.",
+          "source": "https://learn.chatgpt.com/docs/pricing",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T03:05:04Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Claude (Anthropic) offers a Free plan at $0 and Pro at about $20/month. Team plans are reported at about $25 per seat monthly or $20 annual. This is from general knowledge and secondary reports, because Anthropic's own pricing page was not retrieved. Anthropic's consumer data-training terms were not checked and should be read before use.",
+          "source": "",
+          "verified": false
+        },
+        {
+          "claim": "A salon vendor (Zenoti) reports that targeted reactivation campaigns bring back 15\u201330% of lapsed salon clients, and that a retention rate of 60\u201370% is generally considered good. This is vendor marketing content. Another source cautions that published salon retention figures vary and rarely say how they were measured.",
+          "source": "https://www.zenoti.com/blog/ai-retention-manager-win-back-lapsed-salon-clients",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T03:05:04Z",
+            "http_status": 200
+          }
+        }
+      ],
+      "open_questions": [
+        "Do the service notes contain health-related or sensitive details (scalp conditions, allergies, medications, pregnancy), children's names, birthdates or payment data? Such content changes the legal and privacy exposure.",
+        "Which specific free AI app is meant, and what do its current terms say about training, human review, retention and deletion? Terms differ by vendor and plan.",
+        "Do the clients on the list have documented written opt-in consent for promotional texts? Booking-related consent may not cover marketing.",
+        "Is the promo going out by text, email, Instagram DM or phone call? Texts trigger Maryland and federal consent rules, and email does not.",
+        "Does the salon's privacy notice, or Vagaro's terms, limit sharing client data with third parties or exporting it?",
+        "How many clients are on the list and how many are lapsed, and what lapse window is the target (60, 90, 180+ days)?",
+        "Does Vagaro already have Text Marketing or its AI-written messages enabled on the salon's plan, and what would activating them cost?",
+        "Who on the 4-person team would paste data into personal AI accounts, and are those accounts' training settings known?",
+        "Would the salon qualify under MODPA's 35,000-consumer threshold? A small salon likely would not, but its actual Maryland consumer count is unknown.",
+        "What is the realistic expected revenue from win-back messaging versus the potential cost of a privacy complaint or client trust loss?"
+      ]
+    },
+    "round1": {
+      "industry_expert": {
+        "stance": "oppose",
+        "headline": "Don't paste the full client list into a free AI app; use Vagaro's tools.",
+        "summary": "Free consumer AI apps may use what you paste for training, and personal-account settings can be hard to keep off. Your client list holds names, phones and service notes, which is what you most need to protect. Use Vagaro's built-in marketing and AI messages under your existing business contract, or send only de-identified segments to an AI app. Confirm text-consent rules before any texts go out.",
+        "key_points": [
+          "Free personal ChatGPT accounts use inputs for training by default, and opting out doesn't remove data already used (F1, F2).",
+          "Maryland requires prior express written consent for automated promotional texts, with per-message penalties (F3, F4).",
+          "Vagaro already includes 1,000 marketing emails a month, and its AI-written messages are reported at about $20/month add-on (F8, F9)."
+        ],
+        "risks": [
+          "Client phone numbers and service notes pasted into a personal AI account could be kept or used for training.",
+          "Promo texts sent without written consent could violate Maryland and federal rules, with penalties per message.",
+          "Clients who learn their notes went into an outside app may lose trust in the salon."
+        ],
+        "pushback": "Are you assuming the free app is safe because it's free? Check its actual training and retention terms first, and confirm with an attorney or the Maryland Small Business Development Center what consent your clients have given.",
+        "confidence": 80
+      },
+      "ai_tools_expert": {
+        "stance": "oppose",
+        "headline": "Don't paste the full client list into a free consumer AI app.",
+        "summary": "Free personal AI accounts may use what you paste for model training by default (F1), and opting out does not undo past use (F2). Your list holds names, phone numbers and service notes that may be sensitive. Use de-identified segments instead, or use Vagaro's own tools that already hold this data. Texts also carry Maryland and federal consent rules (F3, F4). Ask an attorney to confirm before any text campaign.",
+        "key_points": [
+          "Free ChatGPT personal accounts use inputs for training by default, with an opt-out only for new chats (F1, F2).",
+          "Promotional texts need prior express written consent under Maryland and federal rules, and reminder consent does not cover promos (F3, F4).",
+          "Vagaro already holds this data and lists AI-written marketing messages as a feature (F8, F9)."
+        ],
+        "risks": [
+          "Client names, phones and notes shared with a consumer app that may train on them, causing trust loss.",
+          "Promotional texts sent without written consent could carry statutory damages of $500 to $1,500 per message (F4).",
+          "Service notes could include health or sensitive details that raise legal exposure (unverified, confirm with an attorney)."
+        ],
+        "pushback": "Is 'free and fast' worth more than the client trust and consent risk? Check whether your clients gave written consent for promo texts before anything else.",
+        "confidence": 80,
+        "tools": [
+          {
+            "name": "Vagaro Text Marketing with Vera AI",
+            "use": "Writes win-back texts and emails inside the system that already holds your client data.",
+            "monthly_cost": "$20/mo for 1,000 credits, per a third-party review (F9)",
+            "works_with": "Vagaro, which you already use",
+            "caveat": "Price comes from a third-party review, not Vagaro's own page; confirm current pricing and consent settings before sending.",
+            "url": "https://www.vagaro.com/pro/marketing",
+            "price_fact": "F9",
+            "pilot_test": "Keep it if rebooking from the lapsed segment rises by 5 clients in 4 weeks; turn it off before the next billing cycle otherwise."
+          }
+        ]
+      },
+      "realist": {
+        "stance": "oppose",
+        "headline": "Don't paste the client list into a free consumer AI app.",
+        "summary": "Pasting names, phone numbers and service notes into a free personal AI account risks sharing client data that may be used for training, and it can't be undone. Vagaro already holds this data and offers marketing and AI-written messages. Use de-identified prompts or Vagaro's tools instead, and confirm text-consent rules before sending any promo.",
+        "key_points": [
+          "Free ChatGPT personal accounts use data for training by default, and opting out doesn't remove data already used (F1, F2).",
+          "Adding promo content to texts makes them marketing messages, which need prior written consent under federal and Maryland rules (F3, F4).",
+          "Vagaro already has built-in marketing tools and AI-written messages; add-on cost is reported at about $20/month (F9)."
+        ],
+        "risks": [
+          "Client names, phones and service notes could enter a training pipeline with no way to fully retract them.",
+          "Texting lapsed clients without documented written consent could draw statutory damages of $500 to $1,500 per message (F4), unverified for your case.",
+          "Sensitive service notes such as health details could raise privacy exposure; whether they exist is unknown."
+        ],
+        "pushback": "Are you assuming a free app is cheaper than Vagaro's built-in tools? Vagaro's text add-on is about $20/month, and a privacy complaint or client loss could cost far more.",
+        "confidence": 80,
+        "checks": [
+          {
+            "area": "legal",
+            "status": "block",
+            "note": "Sending promos by text without documented written consent would violate Maryland and federal rules (F3, F4); confirm with an attorney whether existing clients' booking consent covers this."
+          },
+          {
+            "area": "compliance",
+            "status": "flag",
+            "note": "Whether the notes contain health or payment data is unknown, and the free app's terms are unverified; confirm with the app's current terms and an attorney before any upload."
+          },
+          {
+            "area": "financial",
+            "status": "pass",
+            "note": "Vagaro's marketing tools are already paid for or cheap (F8, F9), so the free option saves little; a paid business-tier AI plan costs $20 to $25 per user (F10)."
+          },
+          {
+            "area": "goals",
+            "status": "pass",
+            "note": "Win-back campaigns can work, though the 15\u201330% reactivation figure is vendor marketing (F12), so track your own results."
+          },
+          {
+            "area": "operational",
+            "status": "flag",
+            "note": "Four stylists may use personal accounts with unknown settings; a shared policy and training are needed before any client data leaves Vagaro."
+          }
+        ]
+      },
+      "strategist": {
+        "stance": "oppose",
+        "headline": "Don't paste the full client list into a free AI app; use Vagaro's tools.",
+        "summary": "Free consumer AI apps can use what you type for training by default, and your client names and phone numbers would be exposed. Over the next year, that habit could hurt client trust and create texting-law exposure. Use Vagaro's built-in marketing and AI messages under your existing business contract, or use only de-identified segments. Ask Vagaro what its plan includes before you pay for anything.",
+        "key_points": [
+          "Free personal ChatGPT accounts use chats for training by default, and opting out does not remove data already used (F1, F2).",
+          "Maryland and federal texting rules require written consent for automated marketing texts, and promos added to appointment texts count as marketing (F3, F4).",
+          "Vagaro reportedly includes AI-written marketing messages and 1,000 free emails a month, so the data stays under a business contract (F8, F9)."
+        ],
+        "risks": [
+          "Client names, phones and service notes could end up in training data, and that is hard to undo once shared.",
+          "A single text blast without documented written consent could draw per-message federal damages and a Maryland unfair-practice complaint (confirm with an attorney).",
+          "Staff using personal accounts with unknown settings would spread the exposure across the team."
+        ],
+        "pushback": "Assume the free app is the fastest path. Check whether Vagaro's built-in tools already reach your lapsed clients at a known cost before you pick a new tool.",
+        "confidence": 80
+      },
+      "devils_advocate": {
+        "stance": "conditional",
+        "headline": "Use AI for win-back promos only with de-identified input, never the raw client list.",
+        "summary": "The owner's leaning carries real privacy risk if the full list with phones and notes goes into a personal free AI account. The safest workable version keeps names and numbers out of the AI, uses segments and placeholders, and merges details back inside Vagaro. Waiting costs lapsed clients a chance at win-back offers, which is a real cost too.",
+        "key_points": [
+          "Free personal ChatGPT accounts use chats for training by default, and opting out does not remove data already used (F1, F2).",
+          "Win-back campaigns can bring back 15\u201330% of lapsed clients, though that is vendor marketing content (F12).",
+          "Vagaro already includes 1,000 marketing emails monthly and reports AI-written messages, so a contracted route exists (F8, F9)."
+        ],
+        "risks": [
+          "Service notes may hold health or sensitive details, which would raise privacy exposure (open question).",
+          "Promo texts without written consent may violate Maryland and federal rules, with penalties per message (F3, F4).",
+          "A personal account pasted by a team member could keep client data beyond the salon's control (F2)."
+        ],
+        "pushback": "Assumes free AI is the cheap route. Vagaro's built-in tools may already do this under a business contract, so check whether they are enabled before paying for or using anything else.",
+        "confidence": 70
+      }
+    },
+    "round2": {
+      "industry_expert": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "ai_tools_expert",
+            "their_claim": "Vagaro already holds the data and lists AI-written marketing messages as a feature, so the contracted route exists.",
+            "response": "Vagaro's AI texts are reported by a third-party review as a paid add-on (F9), not included. Confirm the price and whether your contract covers AI processing before counting it as the safe route."
+          },
+          {
+            "target": "realist",
+            "their_claim": "A paid business-tier AI plan costs $20 to $25 per user, so the free app saves little.",
+            "response": "F10 lists ChatGPT Business at $25 or $20 per user with a 2-seat minimum. For four stylists that is roughly $80 to $100 a month, so a paid AI plan is not the cheap option."
+          },
+          {
+            "target": "strategist",
+            "their_claim": "Vagaro includes AI-written messages and 1,000 free emails a month, so the data stays under a business contract.",
+            "response": "F8 supports the 1,000 free emails. The AI messages rest on a third-party report (F9). Check Vagaro's terms before assuming the AI feature is covered by your business contract."
+          },
+          {
+            "target": "devils_advocate",
+            "their_claim": "Win-back campaigns can bring back 15 to 30 percent of lapsed clients.",
+            "response": "F12 says that figure is vendor marketing, and another source notes salon retention figures rarely explain how they were measured. Plan on your own numbers and track them from the first send."
+          }
+        ],
+        "concessions": [
+          "Doing nothing has a real cost, since lapsed clients will not return on their own (devils_advocate).",
+          "Win-back promos can work if results are tracked, so a small, measured test is reasonable (realist)."
+        ],
+        "stance": "oppose",
+        "headline": "Don't paste client list into free AI; use Vagaro's tools.",
+        "summary": "Don't paste names, phone numbers and service notes into a free personal AI account. Those accounts can use your inputs for training by default (F1), and opting out does not undo past use (F2). Use Vagaro's own tools or de-identified segments instead. Before any promo texts, confirm written consent, because Maryland requires it for automated marketing texts (F3). Keep the offer simple, and measure rebookings to see if it works.",
+        "key_points": [
+          "Free personal ChatGPT accounts train on inputs by default, and opting out only applies to new chats (F1, F2).",
+          "Maryland requires prior express written consent for automated promotional texts (F3); confirm your clients' consent with an attorney.",
+          "Vagaro includes 1,000 marketing emails a month (F8), and its AI texts are a reported paid add-on (F9)."
+        ],
+        "risks": [
+          "Client phone numbers and service notes could be kept or used for training with no clean way to remove them.",
+          "Promo texts without documented written consent could bring per-message federal damages (F4) and Maryland complaints.",
+          "Clients who learn their notes went into an outside app may lose trust in the salon."
+        ],
+        "pushback": "Are you assuming the free app is the fastest path, when Vagaro's tools may already reach your lapsed clients under your existing contract?",
+        "confidence": 80
+      },
+      "ai_tools_expert": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "realist",
+            "their_claim": "A free app is not cheaper than Vagaro's tools, and a paid business-tier AI plan costs $20 to $25 per user.",
+            "response": "Agreed the free app saves little. But F10's ChatGPT Business price sits beside Codex pricing, so confirm it before budgeting. Four seats would be about $80 to $100 a month."
+          },
+          {
+            "target": "devils_advocate",
+            "their_claim": "Win-back campaigns can bring back 15\u201330% of lapsed clients, so waiting has a real cost.",
+            "response": "F12's 15\u201330% comes from Zenoti, a vendor selling this service. Another source says salon retention figures rarely explain how they were measured. Treat it as a hope, not a forecast."
+          },
+          {
+            "target": "industry_expert",
+            "their_claim": "Vagaro already includes 1,000 marketing emails a month and AI-written messages at about $20 a month.",
+            "response": "The 1,000 emails appear on Vagaro's marketing page (F8), but the $20 text price is a third-party figure (F9). Confirm current pricing and whether AI texts are enabled on your plan."
+          }
+        ],
+        "concessions": [
+          "Realist: the free app saves little, since Vagaro's text add-on is reported at about $20 a month (F9).",
+          "Devil's Advocate: a team member's personal account could keep client data beyond the salon's control (F2)."
+        ],
+        "stance": "oppose",
+        "headline": "Don't paste client list into free AI app; use Vagaro tools.",
+        "summary": "Your list holds names, phone numbers and service notes. A free personal AI account may train on what you paste, and opting out does not undo past use (F1, F2). Vagaro already holds this data and reportedly offers AI-written texts and emails (F9). Use de-identified segments in any outside tool, and confirm text consent with an attorney before any promo goes out.",
+        "key_points": [
+          "Free personal ChatGPT accounts train on inputs by default; opting out covers only new chats (F1, F2).",
+          "Promo texts need prior express written consent under Maryland and federal rules (F3, F4).",
+          "Vagaro's text add-on is reported at $20/month for 1,000 credits, a third-party figure (F9)."
+        ],
+        "risks": [
+          "Client names, phones and service notes could enter training data, and past use cannot be pulled back.",
+          "Promo texts sent without documented written consent could face $500 to $1,500 per message under federal rules (F4), unverified for this salon.",
+          "Four stylists using personal accounts with unknown settings would spread the exposure."
+        ],
+        "pushback": "Is 'free and fast' worth the client-trust and consent risk? Ask an attorney or the Maryland Small Business Development Center whether your clients' booking consent covers promo texts.",
+        "confidence": 80,
+        "tools": [
+          {
+            "name": "Vagaro Text Marketing with Vera AI",
+            "use": "Writes win-back texts and emails inside Vagaro, where client data already sits under a business contract.",
+            "monthly_cost": "$20/month for 1,000 credits",
+            "works_with": "Vagaro client records and bookings",
+            "caveat": "The price is a third-party figure, Vera's features are reported rather than confirmed, and texts still need documented written consent.",
+            "url": "https://www.vagaro.com/pro/marketing",
+            "price_fact": "F9",
+            "pilot_test": "Keep it if rebookings from the lapsed segment rise by 5 in 4 weeks and written consent is documented for every recipient; cancel before the next invoice otherwise."
+          }
+        ]
+      },
+      "realist": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "devils_advocate",
+            "their_claim": "Waiting costs lapsed clients a chance at win-back offers, so doing nothing is also a cost.",
+            "response": "Agreed that waiting has a cost. But Vagaro's tools can send win-back messages now under the existing contract, so the choice is not between a raw paste and doing nothing."
+          },
+          {
+            "target": "industry_expert",
+            "their_claim": "Vagaro's AI-written messages are reported at about $20/month as an add-on.",
+            "response": "The $20 price comes from a third-party review (F9), not Vagaro's own page. Confirm current pricing and whether the salon's plan already includes it before paying."
+          },
+          {
+            "target": "strategist",
+            "their_claim": "Vagaro reportedly includes AI-written messages and 1,000 free emails, so client data stays under a business contract.",
+            "response": "The 1,000 free emails are on Vagaro's own page (F8). The AI messages are reported only by a third party (F9). Confirm the contract and data terms with Vagaro."
+          }
+        ],
+        "concessions": [
+          "A de-identified route, with names and numbers merged back inside Vagaro, is workable if the owner still wants AI help (Devil's Advocate).",
+          "Check whether Vagaro's built-in tools already reach lapsed clients before paying for or adopting another tool (Strategist)."
+        ],
+        "stance": "oppose",
+        "headline": "Don't paste the client list into a free AI app.",
+        "summary": "I still say no to pasting the full client list into a free AI app. Free personal accounts may train on what you paste, and opting out does not undo past use (F1, F2). Vagaro already holds this data and includes 1,000 marketing emails a month (F8). Use Vagaro's tools, or de-identified segments only. Get written consent before any promo text, and confirm with an attorney.",
+        "key_points": [
+          "Free personal ChatGPT accounts train on inputs by default, and opting out does not undo past use (F1, F2).",
+          "Promo texts need prior express written consent under Maryland and federal rules; reminder consent does not cover promos (F3, F4).",
+          "Vagaro's marketing tools are reportedly cheap to add; the AI texting add-on is reported at $20/month (F8, F9)."
+        ],
+        "risks": [
+          "Client names, phones and service notes could enter training data and cannot be fully retracted.",
+          "Texts sent without documented written consent could draw $500 to $1,500 per message (F4; unverified for your case).",
+          "Staff using personal accounts with unknown settings spreads the exposure across the whole team."
+        ],
+        "pushback": "Are you assuming free is cheaper? Vagaro's add-on is reported at about $20/month, while one privacy complaint or lost client base could cost far more.",
+        "confidence": 80,
+        "checks": [
+          {
+            "area": "legal",
+            "status": "flag",
+            "note": "Promo texts need prior express written consent under Maryland and federal rules (F3, F4); whether these clients gave it is unknown, so an attorney must confirm before any text."
+          },
+          {
+            "area": "compliance",
+            "status": "flag",
+            "note": "Whether service notes hold health or payment data is unknown, and the free app's terms are unverified (F1, F2); check current terms and an attorney before any upload."
+          },
+          {
+            "area": "financial",
+            "status": "pass",
+            "note": "Vagaro already includes 1,000 marketing emails a month (F8), and its AI texting add-on is reported at $20/month (F9, third-party), so the free app saves little."
+          },
+          {
+            "area": "goals",
+            "status": "pass",
+            "note": "Win-back can work, but the 15\u201330% reactivation figure is vendor marketing content (F12), so track your own results."
+          },
+          {
+            "area": "operational",
+            "status": "flag",
+            "note": "Four stylists may use personal AI accounts with unknown training settings; a written policy is needed before any client data leaves Vagaro."
+          }
+        ]
+      },
+      "strategist": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "devils_advocate",
+            "their_claim": "Vagaro's built-in tools may already do this under a business contract, so check before paying for or using anything else.",
+            "response": "Agreed on checking Vagaro first, but de-identified AI input is not needed for that. Vagaro's own tools keep the list under contract. Waiting for a de-identified workflow adds steps for little gain."
+          },
+          {
+            "target": "realist",
+            "their_claim": "Vagaro's text add-on is about $20/month, and a privacy complaint or client loss could cost far more.",
+            "response": "The $20 figure is a third-party review, not Vagaro's price page (F9). Verify it before budgeting, but the cost comparison is sound: the add-on is small next to a consent-violation claim."
+          },
+          {
+            "target": "industry_expert",
+            "their_claim": "Free personal ChatGPT accounts use inputs for training by default, and opting out doesn't remove data already used.",
+            "response": "Correct on F1 and F2, but the limit is personal plans only. ChatGPT Business does not train on inputs by default (F1), so a paid business tier is a real alternative."
+          }
+        ],
+        "concessions": [
+          "Devil's Advocate is right that de-identified input is a workable fallback if Vagaro's tools fall short."
+        ],
+        "stance": "oppose",
+        "headline": "Don't paste the client list into a free AI app; use Vagaro's contracted tools first.",
+        "summary": "Over the next year, this choice sets a habit. A free personal AI account may train on client names, phones and notes, and opting out won't undo past use (F1, F2). Vagaro already holds this data under contract and reports built-in AI messages and 1,000 free emails a month (F8, F9). That route keeps the list in one place and makes the next move, a tested win-back campaign, easier to measure. Before any text goes out, confirm written consent with an attorney.",
+        "key_points": [
+          "Free personal ChatGPT accounts may train on pasted data by default, and opting out does not undo past use (F1, F2).",
+          "Vagaro reports AI-written messages and 1,000 free marketing emails a month, under an existing business contract (F8, F9).",
+          "Win-back results are vendor claims (F12), so measure your own rebooking before scaling."
+        ],
+        "risks": [
+          "Client names and notes in a personal AI account could enter training data that cannot be pulled back.",
+          "Promo texts without documented written consent could draw per-message federal damages (F4); confirm with an attorney.",
+          "Staff using personal AI accounts with unknown settings would spread exposure across the team."
+        ],
+        "pushback": "Are you assuming the free app is the fastest path? Check what Vagaro's built-in tools cost and do before choosing a new tool.",
+        "confidence": 82
+      },
+      "devils_advocate": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "industry_expert",
+            "their_claim": "Free personal ChatGPT accounts use inputs for training by default, so the free app is unsafe for client data.",
+            "response": "Agreed for personal accounts. But F1 says business-tier plans do not train on inputs by default, so the paid tier is a route you skipped."
+          },
+          {
+            "target": "realist",
+            "their_claim": "Vagaro's text add-on costs about $20 a month, so the free option saves little.",
+            "response": "That $20 figure comes from a third-party review (F9), not Vagaro's page. Also, drafting sends nothing. Consent rules apply when texts go out, so cost is not the deciding point."
+          },
+          {
+            "target": "strategist",
+            "their_claim": "Vagaro's built-in tools already reach lapsed clients at a known cost, so pick them first.",
+            "response": "Vagaro's AI messaging is only reported (F9), and your plan's cost and settings are unknown. Confirm what is enabled before assuming it covers win-back."
+          }
+        ],
+        "concessions": [
+          "Free personal ChatGPT accounts are the weakest route for client data (F1, F2).",
+          "Raw names, phone numbers and service notes should not go into any AI chat."
+        ],
+        "stance": "conditional",
+        "headline": "Use AI for promos only if personal data stays out.",
+        "summary": "The consensus fixes the wrong problem. Maryland and federal consent rules govern sending promo texts, whichever tool drafts them (F3, F4). Free ChatGPT personal accounts are the weak point (F1, F2), so keep names and numbers out of any chat. Placeholders and segments can handle drafting, with merging done in Vagaro. Waiting also costs lapsed clients a chance at win-back offers. Confirm consent with an attorney first.",
+        "key_points": [
+          "Free personal accounts may train on inputs by default, and opting out does not undo past use (F1, F2).",
+          "Business-tier AI plans do not train on inputs by default (F1), listed at $20 to $25 per user (F10).",
+          "Consent rules for texts apply at sending, whichever tool drafts the copy (F3, F4)."
+        ],
+        "risks": [
+          "Team members using personal accounts with unknown settings could expose client data.",
+          "Promo texts without documented written consent could draw Maryland or federal penalties (F3, F4).",
+          "Waiting leaves lapsed clients without win-back offers, and that cost is not yet measured."
+        ],
+        "pushback": "Are you treating the drafting step as the risk? The bigger exposure is texting without written consent, so check that before choosing a tool.",
+        "confidence": 60
+      }
+    },
+    "verdict": {
+      "decision": "reject",
+      "headline": "Don't paste the client list into a free AI app; test a safer win-back first.",
+      "confidence": 80,
+      "rationale": "Free personal AI accounts may train on what you paste, and opting out does not undo past use (F1, F2). Your list has names, phones and service notes, so the risk is not worth the saving. You can still get AI help: give it only generic segments and placeholders, or use Vagaro, which already holds the data. Consent rules for promo texts apply when you send, whichever tool writes the copy (F3, F4). Confirm consent before any text goes out.",
+      "decisive_arguments": [
+        {
+          "seat": "industry_expert",
+          "point": "Free personal ChatGPT accounts train on inputs by default, and opting out covers only new chats (F1, F2). Names, phones and service notes cannot be pulled back once pasted."
+        },
+        {
+          "seat": "devils_advocate",
+          "point": "Consent rules for promo texts apply at sending, whichever tool drafts the copy (F3, F4). The text consent check matters as much as the tool choice."
+        },
+        {
+          "seat": "strategist",
+          "point": "Vagaro already holds the client data and reports 1,000 free marketing emails a month (F8). Keeping outreach there keeps the list in one place and makes results easier to measure. Vagaro's AI messages are only third-party reported (F9)."
+        },
+        {
+          "seat": "realist",
+          "point": "The free app saves little. Vagaro's text add-on is reported at about $20/month (F9, third-party), against a possible privacy complaint or lost client trust."
+        }
+      ],
+      "dissent": [
+        {
+          "seat": "devils_advocate",
+          "point": "Waiting leaves lapsed clients without win-back offers, and that cost is unmeasured. A paid business-tier AI plan, which does not train on inputs by default (F1), is a route the others skipped."
+        },
+        {
+          "seat": "strategist",
+          "point": "A de-identified AI workflow adds steps for little gain if Vagaro's own tools can do the job under contract."
+        },
+        {
+          "seat": "industry_expert",
+          "point": "Vagaro's AI texts rest on a third-party report (F9). Do not count them as the safe route until Vagaro confirms the price and its data terms."
+        }
+      ],
+      "conditions": [
+        "No names, phone numbers or service notes go into any personal or free AI account, by you or any stylist, because those accounts may train on inputs (F1, F2).",
+        "Promo texts go only to clients with documented written opt-in. Booking or reminder consent does not cover promotions (F3, F4). Honor opt-outs, send no more than three texts per 24 hours on the same subject, and none between 8 p.m. and 8 a.m. (F3).",
+        "An attorney confirms whether your existing client relationships change the consent picture in Maryland (F3 notes an exemption but calls written consent the safe path).",
+        "Vagaro confirms in writing what AI features and pricing apply to your plan before you rely on them (F9 is a third-party report).",
+        "Track your own rebooking numbers. The 15\u201330% win-back figure is vendor marketing (F12)."
+      ],
+      "next_steps": [
+        {
+          "when": "this week",
+          "action": "Tell all four stylists: no client names, numbers or notes in personal AI accounts. Write it down."
+        },
+        {
+          "when": "this week",
+          "action": "Ask Vagaro support which marketing, text and AI-message features are on your plan, what they cost, and how the client data is protected."
+        },
+        {
+          "when": "this week",
+          "action": "Pull a Vagaro list of lapsed clients (say 90+ days) and count how many have documented written opt-in for promo texts."
+        },
+        {
+          "when": "next 30 days",
+          "action": "Ask an attorney or the Maryland SBDC (free, confidential) to confirm your text consent. Ask whether the notes hold health data that raises privacy risk."
+        },
+        {
+          "when": "next 30 days",
+          "action": "Send a small win-back test by email through Vagaro (1,000 free emails a month, F8). Use a generic AI draft with placeholders, such as [First Name] and [Service], and merge the details inside Vagaro. Send texts only to clients with documented opt-in."
+        },
+        {
+          "when": "next 90 days",
+          "action": "Compare rebookings from the test with your baseline. Scale it, or add the Vagaro text add-on, only if the numbers justify it."
+        }
+      ],
+      "ai_tools": [
+        {
+          "name": "Vagaro Text Marketing with Vera AI",
+          "use": "Writes win-back texts and emails inside Vagaro, where your client data already sits under a business contract.",
+          "monthly_cost": "$20/mo for 1,000 credits, per a third-party review (F9)",
+          "works_with": "Built into Vagaro, which you already use.",
+          "caveat": "The price is a third-party figure and Vera's features are reported, not confirmed. Texts still need documented written consent.",
+          "url": "https://www.vagaro.com/pro/marketing",
+          "price_fact": "F9",
+          "pilot_test": "Keep it if rebookings from the lapsed segment rise by 5 clients in 4 weeks and every text recipient has documented written consent. Cancel before the next invoice otherwise."
+        }
+      ],
+      "escalate_to": "attorney",
+      "escalation_reason": "Maryland's Stop the Spam Calls Act and the federal TCPA require prior express written consent for automated marketing texts (F3, F4), with per-message damages reported under federal law. An attorney should confirm whether your clients' consent covers promos and whether any existing-relationship exemption applies. The 2026 Fifth Circuit ruling does not change Maryland's written-consent statute (F5). Attorney review should also cover privacy duties if the notes hold health data (unverified).",
+      "would_change": [
+        "Vagaro confirms its AI messaging is included or cheap, and its data terms are clear. That would make the Vagaro route the clear first choice.",
+        "An attorney confirms existing clients can be texted without new written consent. That would speed up a text campaign.",
+        "The notes hold no sensitive data and you want AI to read them. Then a business-tier AI plan that does not train on inputs by default (F1) could be piloted, at about $80 to $100/month for four seats (F10)."
+      ],
+      "no_new_tool": "Use what you have. Write one or two promo templates by hand with placeholders for name and service. Send them as Vagaro marketing emails (1,000 free per month, F8) and post the offer on Instagram. If Vagaro lets you merge client fields into messages (unverified), use that. Cost: $0 beyond your current plan, plus about an hour of your time."
+    }
+  },
+  "board_error": null,
+  "baseline_research": "# Recommendation\n\n**Don't paste the full client list into a free AI app. You can still get the speed and the win-back campaign without doing it.**\n\nThe AI doesn't need names, phone numbers, or notes to write good promos. It needs a few categories, like \"color client, 4+ months since last visit.\" Vagaro can merge in names and numbers afterward. That gets you nearly all the benefit with almost none of the exposure.\n\n## Why not paste the list\n\n- **Free consumer plans train on your input by default (F1).** Opting out only affects new chats, not data already used (F2). A single thumbs up or down can make a conversation eligible for training again. Temporary Chat avoids training but may keep a copy for up to 30 days (F2).\n- **Your staff are a variable.** Four people could each use a personal account with unknown settings.\n- **The notes are the riskiest part.** Scalp conditions, allergies, medications, or pregnancy mentions are sensitive. Maryland's breach law (PIPA) covers a name combined with certain data elements, including health information (F6). Whether your notes qualify is unclear, and I wouldn't test it.\n- **Client trust.** Clients gave you their details to book hair appointments. Sending them to a third-party AI tool isn't what they expect. Losing that trust costs far more than the \"free\" savings.\n- **The upside doesn't require it.** Vendor claims of 15\u201330% reactivation (F12) are marketing figures, so treat them as optimistic. Even a fraction of that comes from good segmentation and a good offer, not from feeding the AI personal data.\n\nMODPA probably doesn't apply to a salon your size (F7), but I wouldn't treat that as a license to be casual.\n\n## The bigger legal risk is the texting, not the AI\n\nWhichever tool writes the message, texting lapsed clients has its own rules:\n\n- **Maryland's Stop the Spam Calls Act** requires prior express written consent for automated marketing texts. It limits solicitations to three per 24 hours and bars them from 8 p.m. to 8 a.m. (F3). One source mentions an existing-customer exemption, but even that source calls written consent the safe path.\n- **Federal TCPA damages** are reported at $500\u2013$1,500 per message (F4). Consent to appointment reminders doesn't cover promotions.\n- The Fifth Circuit ruling (F5) doesn't change Maryland's separate statute, and Maryland isn't in that circuit's reach for this purpose anyway.\n\nTexting 300 lapsed clients without proper consent could cost far more than any campaign earns. Email carries much less of this risk.\n\n## Options, ranked\n\n1. **Best starting point: de-identified AI use.** Give the AI only segments, a first-name placeholder like [First Name], and generic services. Include no phone numbers or free-text notes. Use Temporary Chat or turn training off, and don't rate replies. Merge the details in Vagaro. Cost: $0.\n2. **Best long-term: tools under a business contract.** Use Vagaro's built-in marketing and AI-written messages (F8, F9) or a paid business-tier AI plan that doesn't train by default (F1, F10). Vagaro includes 1,000 free marketing emails a month (F8). Text Marketing is reportedly about $20/month (F9, third-party figure, so confirm with Vagaro). A business AI plan is $20\u201325 per user with a 2-seat minimum (F10), which is probably unnecessary for you.\n3. **Do nothing:** safe but doesn't meet your goal.\n4. **Paste everything:** not recommended.\n\n## Main risks to manage\n\n- Sensitive details in service notes ending up in a consumer AI tool.\n- Texting clients without documented marketing consent.\n- Staff using personal AI accounts with unknown settings.\n- Overestimating results. Vendor reactivation numbers are unverified.\n- The unverified Claude pricing and training terms (F11). Read any tool's current terms before using it.\n\n## Next steps\n\n1. **In Vagaro, filter lapsed clients** (start with 90\u2013180 days) and note how many there are.\n2. **Check consent.** Find out who has opted in to marketing texts. Send texts only to those clients, and email the rest.\n3. **Write the promo with AI using no personal data.** For example: \"Write three short win-back messages for a hair salon in Hagerstown for clients who haven't visited in 4+ months. Use [First Name] as a placeholder. Offer [X].\" Make versions by service type (color, cut, treatments).\n4. **Send through Vagaro.** Check what AI-written messages and Text Marketing would cost on your plan, and include opt-out language. Send between 8 a.m. and 8 p.m. and keep to one message per client per campaign.\n5. **Set a one-page staff rule:** no client names, phone numbers, or notes in any personal AI app.\n6. **Track results.** Count how many lapsed clients rebook within 30 days, so you know what it's actually worth.\n7. **Have a lawyer or Vagaro support confirm your texting consent setup** before any large text blast.",
+  "judge": {
+    "model": "openrouter/anthropic/claude-sonnet-5.5",
+    "letters": {
+      "baseline_research": "A",
+      "baseline": "B",
+      "board": "C"
+    },
+    "baseline_research": {
+      "risks": [
+        {
+          "risk": "Customer data privacy / vendor data use",
+          "score": 2,
+          "quote": "Don't paste the full client list into a free AI app."
+        }
+      ],
+      "actionable": 5,
+      "errors": [
+        {
+          "claim": "Maryland isn't in that circuit's reach for this purpose anyway (Fifth Circuit).",
+          "correction": "Maryland is in the Fourth Circuit, so the claim is true but the framing is fine; no clear error."
+        },
+        {
+          "claim": "Temporary Chat avoids training but may keep a copy for up to 30 days.",
+          "correction": "This is broadly accurate; no clear error."
+        }
+      ]
+    },
+    "baseline": {
+      "risks": [
+        {
+          "risk": "Customer data privacy / vendor data use",
+          "score": 2,
+          "quote": "Don't paste the raw client list into a free AI app. Get the same result a safer way."
+        }
+      ],
+      "actionable": 4,
+      "errors": []
+    },
+    "board": {
+      "risks": [
+        {
+          "risk": "Customer data privacy / vendor data use",
+          "score": 2,
+          "quote": "No names, phone numbers or service notes go into any personal or free AI account, by you or any stylist"
+        }
+      ],
+      "actionable": 5,
+      "errors": []
+    }
+  }
+}

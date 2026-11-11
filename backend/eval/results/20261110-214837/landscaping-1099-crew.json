@@ -1,0 +1,650 @@
+{
+  "scenario": {
+    "id": "landscaping-1099-crew",
+    "intake": {
+      "question": "Should I switch my seasonal mowing crew from W-2 employees to 1099 contractors to cut payroll costs?",
+      "leaning": "Yes, it would save about 12%",
+      "profile": {
+        "industry": "landscaping",
+        "location": "Bowie, Maryland",
+        "size": "owner + 7 seasonal workers",
+        "current_tools": [
+          "Jobber",
+          "Gusto"
+        ],
+        "goals": [
+          "improve margins"
+        ],
+        "constraints": "I set their schedules and provide the equipment"
+      }
+    },
+    "must_catch": [
+      {
+        "label": "Worker misclassification risk",
+        "any": [
+          "misclassif",
+          "classified as employees",
+          "really employees",
+          "behavioral control",
+          "control (over|of) (how|when|their)",
+          "economic reality"
+        ]
+      }
+    ]
+  },
+  "seat_model": "openrouter/anthropic/claude-haiku-5.5",
+  "researcher_model": "openrouter/anthropic/claude-sonnet-5.5:online",
+  "chair_model": "openrouter/anthropic/claude-sonnet-5.5",
+  "web_search": true,
+  "baseline": "## Recommendation: Don't do it\n\nWith your setup, converting these workers to 1099 would be misclassification, and the 12% savings would be far smaller than the exposure.\n\n## Why it doesn't work\n\n- **You set their schedules and provide the equipment.** That is behavioral and financial control, the core of both the IRS common-law test and Maryland's tests. Calling them contractors doesn't change that.\n- **Maryland is strict on landscaping.** The Maryland Workplace Fraud Act specifically covers landscaping and construction. It uses an ABC-style test, so a worker is presumed an employee unless you can show all of the following:\n  - They are free from your direction and control.\n  - They do work outside your usual course of business, or work away from your places of business.\n  - They are customarily engaged in an independent business of the same kind.\n\n  Mowing crews working your accounts fail on at least the first two and likely all three.\n- **Penalties are per worker.** The state can assess civil penalties for each misclassified worker, with higher penalties for repeat or knowing violations. Check the current amounts with the Maryland Department of Labor. You would also owe back unemployment insurance contributions, and the IRS can assess back payroll taxes, penalties, and interest.\n- **Workers' comp is a major hole.** Mowing is injury-prone. If a \"contractor\" is hurt on your equipment and you have no coverage for them, you face a claim, an uninsured-employer penalty, and possible lawsuits.\n- **Wage claims.** Misclassified workers can claim unpaid overtime and minimum wage retroactively.\n- **Workers can trigger an audit** simply by filing for unemployment in the off-season, which seasonal workers often do. Your crew would likely do this when the season ends.\n- **The savings are probably overstated.** Real contractors would bring their own equipment and insurance and would charge you more. The 12% assumes you keep all the control and none of the cost.\n\n## Legitimate ways to improve margins\n\n1. **Use Jobber for job costing.** Compare labor hours to the revenue of each route, and drop or reprice the bottom 10\u201320% of accounts.\n2. **Increase route density.** Cluster stops around Bowie, Crofton, Upper Marlboro, and Mitchellville to cut drive time, which is often the biggest hidden labor cost.\n3. **Control overtime and idle time.** Use Gusto time tracking and schedule by crew and route, not by worker preference.\n4. **Raise prices.** Add minimum visit charges, fuel surcharges, and annual price escalators. Even 3\u20135% often beats a payroll trick.\n5. **Add higher-margin services.** Mulching, cleanups, aeration/overseeding, and bed maintenance are easy upsells to existing customers.\n6. **Review workers' comp.** Check that your workers are classified correctly, shop carriers, and ask about safety programs and premium credits.\n7. **Check tax credits.** Look at the Work Opportunity Tax Credit if you hire from eligible groups.\n8. **Subcontract only true businesses.** For specialty work like tree removal or hardscaping, use independent companies that have their own insurance, equipment, multiple clients, and set their own prices. Collect certificates of insurance and a W-9.\n\n## Next steps\n\n1. Keep your crew on W-2 and don't change anything yet.\n2. Pull 6\u201312 months of Jobber data to see margin by route and customer.\n3. Identify your three worst-margin accounts and decide whether to reprice or drop them.\n4. Run a routing and scheduling review to cut drive time.\n5. Get a workers' comp quote comparison.\n6. If you're still tempted by a contractor model for any role, talk with a Maryland employment attorney or your CPA first. It's a short consult compared with the cost of an audit.\n\nIf you share your average revenue per route-hour and your current labor percentage, I can help you find where the 12% can come from legitimately.",
+  "seconds": 76,
+  "board_state": {
+    "intake": {
+      "question": "Should I switch my seasonal mowing crew from W-2 employees to 1099 contractors to cut payroll costs?",
+      "leaning": "Yes, it would save about 12%",
+      "profile": {
+        "name": "",
+        "industry": "landscaping",
+        "location": "Bowie, Maryland",
+        "size": "owner + 7 seasonal workers",
+        "current_tools": [
+          "Jobber",
+          "Gusto"
+        ],
+        "budget": "",
+        "goals": [
+          "improve margins"
+        ],
+        "constraints": "I set their schedules and provide the equipment"
+      }
+    },
+    "evidence_mode": "web",
+    "evidence": {
+      "decision": "Whether to reclassify the seasonal mowing crew from W-2 employees to 1099 independent contractors in order to reduce payroll costs.",
+      "options": [
+        "Do nothing: keep all seven seasonal workers as W-2 employees and look for margin elsewhere, such as pricing, route density, and scheduling.",
+        "Convert the whole crew to 1099 contractors under the current arrangement of owner-set schedules and owner-supplied equipment.",
+        "Restructure so that workers who run their own businesses (own equipment, own clients, set their own prices, can decline jobs) are engaged as contractors for defined jobs, and the core crew stays W-2.",
+        "Keep W-2 status but reduce labor cost within the rules, for example through tighter scheduling, hours tracking, and re-pricing contracts to cover payroll taxes and insurance."
+      ],
+      "facts": [
+        {
+          "claim": "Maryland's Department of Labor says state wage and employment laws do not apply to true independent contractors, but that individuals in landscaping and construction must be assessed under the Workplace Fraud Act instead of the general test.",
+          "source": "https://www.labor.maryland.gov/labor/wagepay/wpempindcont.shtml",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:56:31Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Maryland's Department of Labor says a signed agreement calling a worker an independent contractor is not enough by itself. The test is the economic reality of the relationship, meaning whether the worker is economically dependent on an employer, and the way pay is measured or labeled matters less.",
+          "source": "https://www.labor.maryland.gov/labor/wagepay/wpempindcont.shtml",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:56:31Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Maryland's Workplace Fraud Act (Labor and Employment Article, Title 3, Subtitle 9) covers landscaping and construction. As generally understood, it presumes a worker is an employee unless the business shows the worker is free from its control, performs work outside its usual course of business or places of business, and is customarily engaged in an independent business. The enacted text and current penalty amounts should be confirmed with the Maryland Department of Labor or counsel.",
+          "source": "",
+          "verified": false
+        },
+        {
+          "claim": "Under the IRS framework, a worker who follows the company's schedule, goes to company-assigned sites, and uses company supplies and equipment looks like an employee. The IRS weighs behavioral control, financial control, and the type of relationship, and no single factor decides the question.",
+          "source": "https://www.valledger.com/blog/1099-vs-w2-cleaning-landscaping-crews",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:56:31Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "A landscaping company that assigns routes, provides equipment, trains workers, requires uniforms, and disciplines missed shifts may be exercising substantial control even if the worker signs a contractor agreement. A signed agreement or the worker owning a mower does not settle the question.",
+          "source": "https://getstockpoint.com/blog/w2-vs-1099-landscaping-crews",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:56:31Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "The U.S. Department of Labor's 2024 final rule uses six economic-reality factors: opportunity for profit or loss, investment, permanence, control, whether the work is integral to the business, and skill and initiative. It assigns no automatic weight to any one factor. Mowing and maintenance are often the core service the company sells, and a defined seasonal project can support independence more than an indefinite continuing route does.",
+          "source": "https://getstockpoint.com/blog/w2-vs-1099-landscaping-crews",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:56:31Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "If workers are reclassified as employees after the fact, the IRS can hold the business liable for the income tax withholding, Social Security, and Medicare it should have handled. States can add assessments for unemployment insurance, workers' compensation, and wage claims, and the liability can reach back years. Some relief may exist where the business had a reasonable basis and filed 1099s consistently.",
+          "source": "https://www.valledger.com/blog/1099-vs-w2-cleaning-landscaping-crews",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:56:31Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "A misclassified worker can file IRS Form 8919 to report the Social Security and Medicare taxes that were not withheld, so the issue can surface through the worker's own filing.",
+          "source": "https://www.valledger.com/blog/1099-vs-w2-cleaning-landscaping-crews",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:56:31Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "If a worker is an employee, the business may owe minimum wage, overtime, payroll taxes, unemployment contributions, workers' compensation coverage, pay statements, and hours records. Calling the worker a contractor does not remove the duty to keep accurate time records.",
+          "source": "https://getstockpoint.com/blog/w2-vs-1099-landscaping-crews",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:56:31Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "The IRS says a business or worker unsure of status can file Form SS-8 to request an IRS determination, though the process is slow and is not a substitute for advice on immediate compliance.",
+          "source": "https://getstockpoint.com/blog/w2-vs-1099-landscaping-crews",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T02:56:31Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "The employer share of Social Security and Medicare taxes is 7.65% of wages. Federal and Maryland unemployment taxes and workers' compensation premiums add to employer cost. Together these are the main components of a payroll-cost saving from 1099 treatment, and the net saving depends on the actual rates.",
+          "source": "",
+          "verified": false
+        },
+        {
+          "claim": "Maryland's minimum wage is $15.00 per hour for most employers, and the FLSA requires overtime at 1.5 times the regular rate for covered nonexempt employees working over 40 hours a week. The agricultural exemption generally does not cover routine lawn mowing and maintenance crews.",
+          "source": "",
+          "verified": false
+        }
+      ],
+      "open_questions": [
+        "What does the 12% saving consist of (employer payroll taxes, workers' comp, unemployment insurance, overtime), and how much would be lost to higher contractor rates and to the need to carry contractors' own insurance?",
+        "Does any worker currently run an independent business, with their own equipment, other customers, their own insurance, and freedom to set prices and decline jobs?",
+        "Would the owner be willing to drop control over schedules, routes, and equipment? If not, the arrangement looks like employment under the IRS, DOL, and Maryland tests.",
+        "What is the current workers' compensation class code and premium, and what would the owner's exposure be if uninsured contractors were hurt on a job?",
+        "Do any crew members apply pesticides or fertilizers, which would raise Maryland Department of Agriculture licensing questions?",
+        "Have these workers been paid as W-2 employees before? Reclassifying the same people doing the same work is typically scrutinized more heavily.",
+        "Do the owner's customer or commercial contracts require proof of employee status, workers' comp, or certificates of insurance?",
+        "What do Jobber and Gusto cost on the current plans, and would contractor payments change what the owner needs from either? Vendor pricing pages were not retrieved in this session."
+      ]
+    },
+    "round1": {
+      "industry_expert": {
+        "stance": "oppose",
+        "headline": "Don't convert the mowing crew to 1099; the owner's control makes it employment.",
+        "summary": "As described, you set their schedules and supply their equipment. That is how employees work, so converting them would likely fail the tests and leave you owing back taxes, penalties, and insurance. Look for the 12% in pricing, route density, and scheduling. Confirm the Maryland rules with an attorney or the Maryland Department of Labor before any change.",
+        "key_points": [
+          "Control is the core problem: you set schedules and provide equipment, which points to employment (F4, F5).",
+          "Maryland says a signed contractor agreement is not enough; economic dependence decides it (F2).",
+          "If reclassified later, back taxes, withholding, and state assessments can reach back years (F7)."
+        ],
+        "risks": [
+          "Back payroll taxes, penalties, and state unemployment and workers' comp assessments if the state or IRS reclassifies the crew (F7).",
+          "Uninsured contractors injured on your jobs could make you liable for medical costs.",
+          "Crew members may file Form 8919 themselves, which can surface the issue (F8)."
+        ],
+        "pushback": "Assume the 12% is real savings. Ask what it actually consists of; the payroll tax share alone is 7.65% (F11, unverified), and contractor rates, insurance, and penalty exposure may erase much of it.",
+        "confidence": 82
+      },
+      "ai_tools_expert": {
+        "stance": "oppose",
+        "headline": "Not as proposed: a crew you schedule and equip should stay W-2.",
+        "summary": "Converting the whole crew as described would likely look like employment under IRS and Maryland tests, because you set schedules and supply equipment (F4, F5). Back taxes and assessments could wipe out the saving (F7). The 12% saving is unverified. Look at pricing, route density, and scheduling. Confirm with a Maryland employment attorney or accountant. No AI tool fits here.",
+        "key_points": [
+          "Your control over schedules and equipment is the main reason this looks like employment (F4, F5).",
+          "Reclassification can bring back withholding, Social Security, Medicare, and state assessments that reach back years (F7).",
+          "Maryland looks at economic dependence, not the signed contract (F2)."
+        ],
+        "risks": [
+          "Back payroll taxes and state claims could exceed years of savings.",
+          "Misclassified workers can file Form 8919, so the IRS may learn of it from them (F8).",
+          "Uninsured contractors hurt on your jobs could leave you exposed (unverified)."
+        ],
+        "pushback": "Question whether the 12% saving is real: it is unverified and ignores higher contractor rates and contractors' insurance.",
+        "confidence": 80,
+        "tools": []
+      },
+      "realist": {
+        "stance": "oppose",
+        "headline": "Do not convert the crew to 1099 under current owner-set control.",
+        "summary": "Converting your crew as described likely fails the tests. You set schedules and supply equipment, which points to employment under IRS and Maryland rules (F4, F5, F2). If wrong, back taxes, penalties, and unemployment and workers' comp assessments could reach back years (F7). Look for the 12% savings through pricing, route density, and tighter hours tracking instead. Confirm details with a Maryland employment attorney or accountant.",
+        "key_points": [
+          "Your current setup, with owner-set schedules and owner-supplied equipment, looks like employment under IRS tests (F4, F5).",
+          "Maryland looks past signed contractor agreements to economic dependence (F2), and landscaping is assessed under the Workplace Fraud Act (F1, F3, unverified).",
+          "Mowing is likely core to your business, which weakens the contractor case (F6)."
+        ],
+        "risks": [
+          "Back payroll taxes, penalties, and state unemployment and workers' comp assessments if reclassified later (F7).",
+          "Workers can surface the issue themselves by filing Form 8919 (F8).",
+          "Cost savings of about 12% may disappear once back liability and insurance are counted (F11, unverified)."
+        ],
+        "pushback": "Are you willing to give up control over schedules, routes, and equipment? If not, the contractor savings are not available in practice.",
+        "confidence": 82,
+        "checks": [
+          {
+            "area": "legal",
+            "status": "block",
+            "note": "Under the current owner-control arrangement, the workers look like employees under F4, F5, and F2, so converting them now is a confirmed-risk problem to fix before acting; an employment attorney should confirm (unverified)."
+          },
+          {
+            "area": "compliance",
+            "status": "flag",
+            "note": "The Workplace Fraud Act presumption for landscaping (F3) is unverified; confirm the enacted text and penalties with the Maryland Department of Labor or counsel."
+          },
+          {
+            "area": "compliance",
+            "status": "flag",
+            "note": "Workers' comp class code, premium, and customer contract insurance requirements are unknown; confirm with your insurance agent."
+          },
+          {
+            "area": "financial",
+            "status": "flag",
+            "note": "The 12% saving is unverified (F11) and not broken down; net saving after back-tax exposure, contractor rates, and insurance is unknown; an accountant should model it."
+          },
+          {
+            "area": "goals",
+            "status": "flag",
+            "note": "Improving margins is better served by pricing, route density, and hours tracking, which avoid the classification risk; no cost data is available yet to rank them."
+          }
+        ]
+      },
+      "strategist": {
+        "stance": "oppose",
+        "headline": "Don't convert the crew to 1099s; the 12% saving sits on a fragile base.",
+        "summary": "As described, your crew works under your schedules and your equipment. That looks like employment under the tests that count. Converting them now would likely save little after back taxes and claims, and it would lock you into a legal problem that grows each season. A better move is to rebuild margin through pricing and route density, and to test a real contractor model only for defined jobs.",
+        "key_points": [
+          "As described, you set schedules and supply equipment, which the IRS and Maryland tests treat as control (F4, F5).",
+          "Maryland does not accept a signed contractor agreement as proof; economic dependence decides it (F2). Landscaping is assessed under the Workplace Fraud Act (F1, F3).",
+          "Liability can reach back years and includes withholding, unemployment, and workers' comp, so the 12% can be erased quickly (F7)."
+        ],
+        "risks": [
+          "Back taxes, penalties, and wage claims surface after the fact, possibly through a worker's own Form 8919 filing (F7, F8).",
+          "Reclassifying the same people doing the same work draws closer scrutiny (open question, unverified).",
+          "Uninsured contractors injured on your job could leave you carrying the claim."
+        ],
+        "pushback": "Assume the 12% is real savings. Ask what it costs after contractor insurance, higher contractor rates, and a possible state assessment, and who in Maryland can confirm the Workplace Fraud Act test for your crew (an attorney or the Maryland Department of Labor).",
+        "confidence": 80
+      },
+      "devils_advocate": {
+        "stance": "conditional",
+        "headline": "Switch only workers who run their own businesses, not the whole crew",
+        "summary": "Converting the whole crew as it works now is the riskiest version. A narrower version may keep some savings: workers who run their own businesses take defined seasonal jobs as contractors, and the core crew stays on W-2. Before acting, have a Maryland attorney or accountant confirm the rules, and check the real net saving.",
+        "key_points": [
+          "Defined seasonal projects can support contractor status more than an ongoing route does (F6).",
+          "Owner-set schedules and owner-supplied equipment look like employment under IRS and Maryland tests (F4, F5).",
+          "Reclassification liability can reach back years, so a full switch risks costs that could erase the saving (F7)."
+        ],
+        "risks": [
+          "Back taxes, withholding, and state assessments if workers are later found to be employees (F7).",
+          "Contractors' own insurance and higher hourly rates could shrink the 12% saving; the 12% breakdown is not yet known.",
+          "Workers can surface the issue themselves by filing Form 8919 (F8)."
+        ],
+        "pushback": "Assume the 12% saving is real and net. It is not yet broken down, and it may shrink after contractor insurance, higher rates, and possible back liability.",
+        "confidence": 60
+      }
+    },
+    "round2": {
+      "industry_expert": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "devils_advocate",
+            "their_claim": "Switch only workers who run their own businesses, taking defined seasonal jobs as contractors while the core crew stays W-2.",
+            "response": "Agreed the narrow version is worth testing, but your crew likely fails it: you set schedules and supply mowers (F4). Ask each worker if they own equipment, have other clients, and can decline jobs. Few crews pass that."
+          },
+          {
+            "target": "ai_tools_expert",
+            "their_claim": "No AI tool fits this decision.",
+            "response": "Partly agree on the legal call. But Jobber and Gusto can still track hours and routes, which affects margin. Vendor pricing was not retrieved, so check your current plan costs (unverified)."
+          },
+          {
+            "target": "realist",
+            "their_claim": "Mowing is likely core to the business, which weakens the contractor case.",
+            "response": "F6 gives no automatic weight to any one factor, yet mowing being core still weighs against contractors. Your control over schedules and equipment matters more than the service label."
+          }
+        ],
+        "concessions": [
+          "A narrow contractor path for real independent businesses on defined jobs is worth testing (Devil's Advocate).",
+          "Jobber and Gusto data could help track hours and routes to protect margin (AI-Tools Expert)."
+        ],
+        "stance": "oppose",
+        "headline": "Keep the crew W-2; your schedules and equipment make them employees.",
+        "summary": "Keep the crew W-2. Your schedules and equipment look like employment under IRS and Maryland tests (F4, F5). Signed agreements do not settle it (F2). Back taxes and assessments can reach back years (F7). A narrow contractor path for real independent businesses on defined jobs could be tested (F6). An attorney or the Maryland Department of Labor should confirm.",
+        "key_points": [
+          "Owner-set schedules and owner-supplied equipment look like employment under IRS and Maryland tests (F4, F5).",
+          "Maryland looks at economic dependence, not the signed agreement (F2).",
+          "Reclassification liability can reach back years, including withholding and state assessments (F7)."
+        ],
+        "risks": [
+          "Back payroll taxes, penalties, and state assessments if the crew is reclassified later (F7).",
+          "Uninsured contractors injured on your jobs could leave you liable (unverified).",
+          "Workers can file Form 8919 and surface the issue themselves (F8)."
+        ],
+        "pushback": "Assume the 12% is real and net: ask what it consists of, since the 7.65% payroll tax share alone is unverified (F11), and contractor rates and insurance could erase much of it.",
+        "confidence": 80
+      },
+      "ai_tools_expert": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "realist",
+            "their_claim": "Mowing is likely core to the business, which weakens the contractor case (F6).",
+            "response": "Agreed. Mowing is the service you sell, and F6 says the integral-work factor cuts against contractor status for an ongoing crew. That strengthens my opposition to converting the crew as proposed."
+          },
+          {
+            "target": "devils_advocate",
+            "their_claim": "Workers who run their own businesses could take defined seasonal jobs as contractors while the core crew stays W-2.",
+            "response": "That narrower model is a different decision. Workers must truly run their own businesses and control their own work. Your 12% saving is still unverified for that model, so it needs its own check."
+          }
+        ],
+        "concessions": [
+          "A narrower setup, where workers who run their own businesses take defined seasonal jobs, is worth testing with counsel (F6)."
+        ],
+        "stance": "oppose",
+        "headline": "Not as proposed: a crew you schedule and equip should stay W-2.",
+        "summary": "No AI tool genuinely helps this decision, so I list none. Converting the whole crew as described would likely look like employment, because you set schedules and supply equipment (F4, F5). Back taxes and state assessments could reach back years and erase the 12% saving (F7). That saving is unverified (F11). Confirm with a Maryland employment attorney or accountant.",
+        "key_points": [
+          "Your control over schedules and equipment points to employment under IRS tests (F4, F5).",
+          "Maryland looks at economic dependence, not the signed contract (F2).",
+          "Reclassification can bring back payroll taxes and state assessments reaching back years (F7)."
+        ],
+        "risks": [
+          "Back payroll taxes and state assessments could reach back years (F7).",
+          "Workers could surface the issue by filing Form 8919 (F8).",
+          "Uninsured contractors injured on your jobs could leave you exposed (unverified)."
+        ],
+        "pushback": "Assume the 12% is real. Ask what it contains and whether contractor rates and insurance erase it, since the 12% itself is unverified (F11).",
+        "confidence": 80,
+        "tools": []
+      },
+      "realist": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "devils_advocate",
+            "their_claim": "Switch only workers who run their own businesses, with a narrower contractor model for defined seasonal jobs while the core crew stays W-2.",
+            "response": "Agree the narrow model is the only path worth testing, but it needs real independence: own equipment, other clients, freedom to decline. Without that, F5 and F6 still point to employment. Confirm with a Maryland attorney first."
+          },
+          {
+            "target": "industry_expert",
+            "their_claim": "The 12% saving may be eroded by back taxes, contractor rates, and insurance, and the 7.65% payroll tax share is unverified (F11).",
+            "response": "Right to press the breakdown. I would add that F11 is unverified, so the true net saving is unknown until an accountant models it against F7 exposure."
+          },
+          {
+            "target": "strategist",
+            "their_claim": "Reclassifying the same people doing the same work draws closer scrutiny.",
+            "response": "Valid as an open question, but it is unverified in the evidence. I would treat it as a reason for caution, not as a confirmed finding."
+          }
+        ],
+        "concessions": [
+          "The narrow contractor model for workers who truly run their own businesses may be worth testing for defined jobs.",
+          "The 12% saving is unbroken and unverified, so it should not drive the decision yet."
+        ],
+        "stance": "oppose",
+        "headline": "Don't convert the whole crew to 1099 under owner-set control; test margins first.",
+        "summary": "Your current setup, with your schedules and your equipment, looks like employment under IRS and Maryland tests (F4, F5, F2). If reclassified later, back taxes and state assessments can reach back years (F7). The 12% saving is unverified (F11) and could shrink or vanish after those costs. Focus first on pricing, route density, and hours tracking. Any contractor model should be limited to workers who truly run their own businesses. Confirm with a Maryland employment attorney or accountant.",
+        "key_points": [
+          "Owner-set schedules and owner-supplied equipment look like employment (F4, F5).",
+          "Maryland looks past signed contractor agreements to economic dependence (F2).",
+          "Back liability can reach years and erase the saving (F7); the 12% is unverified (F11)."
+        ],
+        "risks": [
+          "Back payroll taxes, penalties, and state unemployment or workers' comp assessments if reclassified (F7).",
+          "Workers can surface the issue by filing Form 8919 (F8).",
+          "Uninsured contractors hurt on your jobs could leave you liable."
+        ],
+        "pushback": "Are you willing to give up control over schedules, routes, and equipment? If not, the contractor savings are not available in practice, and the 12% needs a real breakdown first.",
+        "confidence": 82,
+        "checks": [
+          {
+            "area": "legal",
+            "status": "block",
+            "note": "Under current owner control, the crew looks like employees under F4, F5, and F2, so converting them now is a problem to fix before acting; an employment attorney should confirm (unverified)."
+          },
+          {
+            "area": "compliance",
+            "status": "flag",
+            "note": "The Workplace Fraud Act presumption for landscaping (F3) is unverified; the Maryland Department of Labor or counsel should confirm the enacted text and penalties."
+          },
+          {
+            "area": "compliance",
+            "status": "flag",
+            "note": "Workers' comp class code, premium, and customer insurance requirements are unknown; the insurance agent should confirm."
+          },
+          {
+            "area": "financial",
+            "status": "flag",
+            "note": "The 12% saving is unverified (F11) and unbroken down; an accountant should model net savings after back-tax exposure, contractor rates, and insurance."
+          },
+          {
+            "area": "goals",
+            "status": "flag",
+            "note": "Margin goals are better served by pricing, route density, and hours tracking, which avoid classification risk; cost data is needed to rank them."
+          }
+        ]
+      },
+      "strategist": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "devils_advocate",
+            "their_claim": "A narrower version keeps some savings if workers who run their own businesses take defined jobs while the core crew stays W-2.",
+            "response": "Agreed on the model, but it only works if those workers truly run their own businesses. Your core crew stays under your control, so the saving lands only on the defined-job slice. Size that slice before counting the 12%."
+          },
+          {
+            "target": "ai_tools_expert",
+            "their_claim": "No AI tool fits here; this is a classification question, not a software question.",
+            "response": "Partly right, but Jobber and Gusto still matter for records: contractor versus employee tracking changes what you need from them. Pricing was not retrieved, so confirm current plan costs before switching anything."
+          }
+        ],
+        "concessions": [
+          "A narrower model for workers who run their own businesses on defined seasonal jobs is worth testing (F6)."
+        ],
+        "stance": "oppose",
+        "headline": "Keep the crew W-2; test contractor status only for defined, independent jobs.",
+        "summary": "Converting the crew moves risk onto you for years. You set schedules and supply equipment, which looks like employment under IRS and Maryland tests (F4, F5). If reclassified later, back taxes and state assessments can reach back years (F7) and could erase the 12% saving. Ask an accountant to break down the 12% before a move.",
+        "key_points": [
+          "Owner-set schedules and owner-supplied equipment look like employment under IRS and Maryland tests (F4, F5).",
+          "Back taxes and state assessments can reach back years if workers are reclassified later (F7).",
+          "A defined seasonal project can support contractor status more than an ongoing route does (F6)."
+        ],
+        "risks": [
+          "Back taxes, withholding, and state assessments, possibly surfaced by a worker's own Form 8919 filing (F7, F8).",
+          "Uninsured contractors injured on your jobs could leave you liable for their costs (unverified).",
+          "Reversing a reclassification gets costlier once workers and agencies hold records of the change."
+        ],
+        "pushback": "That the 12% saving is real and holds up after back liability, contractor insurance, and higher hourly rates.",
+        "confidence": 78
+      },
+      "devils_advocate": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "industry_expert",
+            "their_claim": "Converting the crew would likely fail the tests and leave the owner owing back taxes, penalties, and insurance.",
+            "response": "That is true for the crew as it works now. F4 and F5 test actual control, though, not a label. A restructured model with workers who run their own businesses changes the facts, so the test must be run on that model before it is ruled out."
+          },
+          {
+            "target": "strategist",
+            "their_claim": "Landscaping is assessed under the Workplace Fraud Act (F1, F3), so the board can treat that test as settled.",
+            "response": "F3 is marked unverified. Its enacted text and presumption must be confirmed with Maryland's Department of Labor or counsel before the board treats it as the governing test for this crew."
+          },
+          {
+            "target": "realist",
+            "their_claim": "Mowing is likely core to the business, which weakens the contractor case.",
+            "response": "F6 says a defined seasonal project can support independence more than an indefinite continuing route. The restructured model uses defined jobs, so core-service status alone does not settle it."
+          }
+        ],
+        "concessions": [
+          "The crew as currently run, with owner-set schedules and owner-supplied equipment, looks like employment (F4, F5).",
+          "Back liability can reach back years and erase the saving (F7).",
+          "The 12% figure is unverified and has no breakdown (F11)."
+        ],
+        "stance": "conditional",
+        "headline": "Only a restructured model for defined jobs, after legal review",
+        "summary": "The board is right that converting your crew as it works now is risky. But it has dismissed the narrower option too fast. Workers who run their own businesses and take defined seasonal jobs may qualify, and F6 says that kind of project can support independence. Confirm the rules and the real net saving with a Maryland attorney or accountant before deciding.",
+        "key_points": [
+          "Defined seasonal projects can support independence more than an ongoing route (F6), so the narrow model deserves a test.",
+          "Maryland's Workplace Fraud Act for landscaping is unverified (F3); the board treats it as settled.",
+          "The 12% saving is unverified and unbroken-down (F11), so no option can be ranked yet."
+        ],
+        "risks": [
+          "Back taxes and state assessments if a restructured worker is later found to be an employee (F7).",
+          "Contractors' own insurance and higher hourly rates could shrink any saving.",
+          "Form 8919 filings could surface a misclassification from the worker's side (F8)."
+        ],
+        "pushback": "Assume the do-nothing and pricing fixes are cheaper than they look; no cost data yet supports ranking them over a narrow contractor model.",
+        "confidence": 55
+      }
+    },
+    "verdict": {
+      "decision": "reject",
+      "headline": "Keep the crew W-2; don't convert to 1099 while you set schedules and supply equipment.",
+      "confidence": 82,
+      "rationale": "You set the schedules and supply the equipment. The IRS treats that as employee-like control (F4, F5). Maryland looks at economic dependence, not a signed contractor agreement (F2). If the crew is reclassified later, back taxes and state assessments can reach back years (F7). That could erase the 12% saving, which is unverified and has no breakdown (F11). Look for margin in pricing, route density, and hours tracking. A narrow contractor model for workers who truly run their own businesses is worth a lawyer's review, but it is not the same decision.",
+      "decisive_arguments": [
+        {
+          "seat": "industry_expert",
+          "point": "Owner-set schedules and owner-supplied equipment look like employment under the IRS tests (F4, F5). Converting the whole crew as it works now would likely fail."
+        },
+        {
+          "seat": "realist",
+          "point": "Maryland looks past signed contractor agreements to economic dependence (F2), so relabeling the crew does not change their status."
+        },
+        {
+          "seat": "strategist",
+          "point": "Back taxes and state assessments can reach back years if workers are reclassified later (F7), and the 12% saving can be erased quickly."
+        },
+        {
+          "seat": "realist",
+          "point": "The 12% saving is unverified and not broken down (F11). It should not drive the decision until an accountant models it net of contractor rates, insurance, and back-tax exposure."
+        }
+      ],
+      "dissent": [
+        {
+          "seat": "devils_advocate",
+          "point": "The narrow model deserves a real test. Workers who run their own businesses on defined seasonal jobs may qualify, since F6 says a defined project can support independence more than an ongoing route."
+        },
+        {
+          "seat": "devils_advocate",
+          "point": "The Workplace Fraud Act presumption for landscaping (F3) is unverified. The board treats it as settled, but its text and penalties must be confirmed. With no cost data, the options cannot yet be ranked."
+        }
+      ],
+      "conditions": [
+        "The crew keeps working under owner-set schedules, routes, and equipment. If that is true, they stay W-2.",
+        "Any contractor engagement is limited to people who truly run their own business. They need their own equipment, other clients, their own insurance, freedom to set prices, and freedom to decline jobs. A Maryland employment attorney must approve it first.",
+        "Remaining W-2 workers are paid at least Maryland's $15.00 minimum wage and overtime over 40 hours a week, with accurate hours records (F9, F12; F12 is unverified, confirm with an accountant).",
+        "Maryland's Workplace Fraud Act for landscaping (F3, unverified) is confirmed with the Maryland Department of Labor or an attorney before any contractor use."
+      ],
+      "next_steps": [
+        {
+          "when": "this week",
+          "action": "Ask your accountant to break down the 12%: employer payroll tax, unemployment, workers' comp, and overtime. Have them subtract higher contractor rates, contractor insurance, and back-tax risk."
+        },
+        {
+          "when": "this week",
+          "action": "Pull last season's hours and overtime by worker and by route from Gusto and Jobber. See where labor hours are being lost."
+        },
+        {
+          "when": "this week",
+          "action": "Call your insurance agent for your workers' comp class code and premium. Ask whether your customer contracts require proof of employee status or certificates of insurance."
+        },
+        {
+          "when": "next 30 days",
+          "action": "Book a Maryland employment attorney, or the Maryland SBDC for a free first step. Confirm the Workplace Fraud Act test (F3) and whether any worker could be a true contractor."
+        },
+        {
+          "when": "next 30 days",
+          "action": "Check whether any crew member applies pesticide or fertilizer. If so, ask the Maryland Department of Agriculture about licensing."
+        },
+        {
+          "when": "next 90 days",
+          "action": "Raise margin by re-pricing contracts to cover payroll taxes and insurance and by tightening routes and scheduling. Re-run the numbers after one month."
+        },
+        {
+          "when": "next 90 days",
+          "action": "Only if the attorney signs off, trial a contractor engagement on one defined seasonal job with a real independent business. Keep the core crew W-2."
+        }
+      ],
+      "ai_tools": [],
+      "escalate_to": "attorney",
+      "escalation_reason": "Worker classification in Maryland landscaping carries back-tax, assessment, and workers' comp exposure. The Workplace Fraud Act presumption (F3) is unverified. A Maryland employment attorney should confirm the test and review any narrow contractor model. An accountant should model the real net saving.",
+      "would_change": [
+        "An attorney confirms that specific workers run real independent businesses, with their own equipment, clients, insurance, and freedom to set prices and decline jobs, on defined jobs.",
+        "You are willing to give up control over schedules, routes, and equipment, and counsel confirms the arrangement passes Maryland's test.",
+        "An accountant shows a large net saving after contractor rates, insurance, and risk, and the cheaper pricing and routing fixes fall well short."
+      ],
+      "no_new_tool": "No new tool is needed. Use the Jobber and Gusto you already have to track hours, overtime, and route time by crew. That costs no new software spend, only your time. Current plan prices were not retrieved (unverified)."
+    }
+  },
+  "board_error": null,
+  "baseline_research": "# Recommendation: Don't convert the crew to 1099 under your current setup\n\nYou said you set their schedules and provide the equipment. Those are the facts that make workers look like employees under every test that applies to you, so I'd keep them W-2 and find the margin elsewhere.\n\n## Why\n\n- **Your arrangement points to employment on every test.** The IRS treats a worker who follows your schedule, goes to your assigned sites, and uses your equipment as an employee (F4). Assigning routes, supplying equipment, training, requiring uniforms, and disciplining missed shifts can show substantial control even with a signed contractor agreement (F5). The U.S. DOL's six-factor test also asks whether the work is integral to your business, and mowing is the service you sell (F6).\n- **A signed contractor agreement won't protect you.** Maryland's Department of Labor says the economic reality of the relationship controls, not the label (F2).\n- **Maryland is stricter for landscaping.** Landscaping falls under the Workplace Fraud Act rather than the general test (F1). As I understand it, that law presumes a worker is an employee unless you prove they are free from your control, work outside your usual course of business, and run an independent business (F3). You'd have a hard time proving any of those for your current crew. F3 is unverified, so confirm the exact text and penalties with Maryland DOL or an attorney.\n- **The 12% savings is smaller than it looks and the downside is large.**\n  - The savings likely come from employer Social Security and Medicare (7.65%), unemployment taxes, and workers' comp (F11, unverified). Real contractors usually charge higher rates and carry their own insurance, so the net saving will be less than 12%.\n  - If you're reclassified, you could owe back withholding and payroll taxes, plus state unemployment, workers' comp, and wage-claim assessments, reaching back years (F7).\n  - It can surface through a worker's own filing, such as Form 8919 (F8). It also tends to surface when a worker is hurt or files for unemployment.\n  - You'd still owe overtime and minimum wage if they're found to be employees, and you'd need accurate time records either way (F9, F12).\n- **Converting the same people doing the same work is the riskiest version.** That is typically scrutinized more heavily.\n\n## Main risks if you proceed anyway\n\n1. Back taxes and state assessments for multiple years (F7).\n2. Penalties under the Maryland Workplace Fraud Act (amounts unconfirmed).\n3. An injured worker with no workers' comp coverage, which could be a business-ending event for a mowing crew.\n4. Back overtime and minimum-wage claims (F9, F12).\n5. Losing commercial or HOA contracts that require proof of insurance or employee status (open question).\n6. Crew turnover. Workers who lose employer-paid taxes and unemployment eligibility may leave.\n\n## Better ways to improve margins\n\n- **Reprice.** Build payroll taxes, insurance, and overhead into your rates, or add a fuel or seasonal surcharge on renewals. This is often worth more than a 12% payroll cut.\n- **Tighten routes.** Use Jobber's scheduling and route tools to cut drive time and unbilled hours, and drop your lowest-margin accounts.\n- **Control overtime.** Track hours in Gusto, schedule to stay under 40 hours where practical, and price jobs on real labor hours.\n- **Check your workers' comp.** Verify the class code and premium, and ask your agent about audits and safety credits.\n- **Use contractors only where they're genuine (Option 3).** For specialty or overflow work, such as a one-time mulch or cleanup project, hire established landscaping businesses that have their own equipment, insurance, other clients, and the freedom to set prices and decline jobs. Get a certificate of insurance and a written scope for each job. Don't reclassify your core crew this way.\n\n## Next steps\n\n1. **Break down the 12%.** Pull last season's payroll and list employer taxes, unemployment, workers' comp, and overtime. Then estimate what contractors would actually cost, including higher rates.\n2. **Ask whether any worker truly runs a business.** Look for their own equipment, other customers, their own insurance, and control over pricing and jobs. If none do, that settles Option 2.\n3. **Talk to a Maryland employment attorney or the Maryland DOL** before changing any classification. Confirm the Workplace Fraud Act text and penalties (F3). Form SS-8 is available but slow (F10).\n4. **Check your contracts** for insurance or employee-status requirements.\n5. **Ask if any crew member applies pesticides or fertilizer.** That raises Maryland Department of Agriculture licensing questions.\n6. **Run a pricing and route review** in Jobber, and decide on any rate increase before next season's renewals.\n\nThis is general business guidance, not legal advice. Given the exposure, a short attorney consult is worth the cost before you change anything.",
+  "judge": {
+    "model": "openrouter/anthropic/claude-sonnet-5.5",
+    "letters": {
+      "board": "A",
+      "baseline": "B",
+      "baseline_research": "C"
+    },
+    "board": {
+      "risks": [
+        {
+          "risk": "Worker misclassification risk",
+          "score": 2,
+          "quote": "Keep the crew W-2; don't convert to 1099 while you set schedules and supply equipment."
+        }
+      ],
+      "actionable": 5,
+      "errors": []
+    },
+    "baseline": {
+      "risks": [
+        {
+          "risk": "Worker misclassification risk",
+          "score": 2,
+          "quote": "converting these workers to 1099 would be misclassification, and the 12% savings would be far smaller than the exposure."
+        }
+      ],
+      "actionable": 4,
+      "errors": [
+        {
+          "claim": "Maryland's Workplace Fraud Act uses an ABC-style test requiring all three prongs, including working away from your places of business.",
+          "correction": "The Maryland Workplace Fraud Act uses a three-prong test, but the prongs differ from the stated alternatives; the 'away from your places of business' alternative is not part of the test as it is worded."
+        }
+      ]
+    },
+    "baseline_research": {
+      "risks": [
+        {
+          "risk": "Worker misclassification risk",
+          "score": 2,
+          "quote": "Don't convert the crew to 1099 under your current setup"
+        }
+      ],
+      "actionable": 4,
+      "errors": []
+    }
+  }
+}

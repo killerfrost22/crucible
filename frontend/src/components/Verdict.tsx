@@ -395,7 +395,7 @@ export function YourCall({ decision, ratification, status, error, local, onSubmi
   if (ratification && editingAt !== ratification.at) {
     const accepted = ratification.action === 'accept'
     return (
-      <section className="yourcall yourcall--done" aria-labelledby={`${ids}-title`}>
+      <section id="your-call" tabIndex={-1} className="yourcall yourcall--done" aria-labelledby={`${ids}-title`}>
         <h2 className="yourcall__title" id={`${ids}-title`}>
           Your call
         </h2>
@@ -434,6 +434,8 @@ export function YourCall({ decision, ratification, status, error, local, onSubmi
 
   return (
     <motion.section
+      id="your-call"
+      tabIndex={-1}
       className="yourcall"
       aria-labelledby={`${ids}-title`}
       initial={{ opacity: 0, y: 16 }}

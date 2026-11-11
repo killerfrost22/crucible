@@ -1,0 +1,693 @@
+{
+  "scenario": {
+    "id": "cleaning-chatbot-binding-quotes",
+    "intake": {
+      "question": "Should we let an AI chatbot on our website give customers final price quotes and book jobs without a human checking?",
+      "leaning": "Yes, it would save me hours every evening",
+      "profile": {
+        "industry": "residential cleaning",
+        "location": "Rockville, Maryland",
+        "size": "12 cleaners",
+        "current_tools": [
+          "Wix",
+          "Google Calendar",
+          "Stripe"
+        ],
+        "budget": "$100/month",
+        "goals": [
+          "answer leads faster"
+        ]
+      }
+    },
+    "must_catch": [
+      {
+        "label": "Business is bound by what its chatbot promises",
+        "any": [
+          "binding",
+          "liab",
+          "honor",
+          "held to",
+          "Air Canada",
+          "bound by"
+        ]
+      }
+    ]
+  },
+  "seat_model": "openrouter/anthropic/claude-haiku-5.5",
+  "researcher_model": "openrouter/anthropic/claude-sonnet-5.5:online",
+  "chair_model": "openrouter/anthropic/claude-sonnet-5.5",
+  "web_search": true,
+  "baseline": "# Recommendation\n\n**Don't give the chatbot unsupervised authority yet, but do automate most of the work.** Your real goal is answering leads faster, and you can get that without removing the human check on everything. Use a \"instant quote, quick confirm\" setup, then loosen oversight for simple jobs once you have data.\n\n## Why not fully autonomous\n\n- **A quote is a commitment.** If the bot invents a price or promises something you don't offer, like \"$99 deep clean for any size home,\" you may have to honor it or absorb an unhappy customer. Courts have held companies to what their chatbots said (the Air Canada case is the well-known example).\n- **Cleaning prices depend on things customers misreport.** Square footage, condition, pets, number of bathrooms, and \"just a light clean\" that turns out to be move-out grime all affect the price. Customers also tend to underestimate.\n- **Booking errors are costly with 12 cleaners.** Double-booking, bad travel time between jobs, or a team without the right skills creates cancellations and bad reviews.\n- **Some jobs shouldn't be auto-accepted.** Examples include hoarding, biohazards, post-construction, mold, and unsafe conditions.\n- **Google Calendar isn't a scheduling engine.** A bot that reads it may not account for crew assignments, drive times, or buffers unless you set that up carefully.\n\n## What I'd do instead\n\n**Tier 1: Auto-handle (no human needed)**\n- Answer FAQs: service area, what's included, supplies, cancellation policy.\n- Collect details: ZIP, home size, bedrooms and bathrooms, pets, condition, frequency, and add-ons.\n- Give an **instant quote from a fixed price table** (not AI-generated). Present it as a range or \"estimated price, final confirmation within X hours\" unless the job fits a narrow standard profile.\n\n**Tier 2: Auto-book only for simple, standard jobs**\n- Examples: recurring or standard cleans under a size cap, in your core ZIP codes, with no red flags.\n- Require a **Stripe deposit or card on file** to confirm the booking.\n- Book only into slots you've pre-approved as open capacity.\n\n**Tier 3: Human review**\n- Anything with red flags, such as large homes, heavy soil, move-out or deep cleans, or unusual requests. The bot says: \"I've sent this to our team. You'll hear from us by [time].\"\n\nYour evening work becomes a **10-15 minute review** of flagged leads and the day's bookings, not hours of back-and-forth.\n\n## Key design rule\n\n**The AI should talk, but your pricing rules should calculate.** Build the price logic as a spreadsheet or form calculation, with the AI only collecting inputs and explaining the result. This removes the biggest risk, which is the bot making up numbers.\n\n## Main risks and mitigations\n\n| Risk | Mitigation |\n|---|---|\n| Wrong or invented price | Fixed price table, with the bot unable to go outside it. Add \"estimate subject to confirmation\" language for non-standard jobs. |\n| Underquoted jobs | Square-footage and condition questions, a minimum charge, and a clause allowing re-quote on arrival. |\n| Double-booking or bad routing | Limit bookable slots, add buffers, and keep a human assigning crews. |\n| Bad-fit or unsafe jobs | Red-flag keywords and answers route to a human. |\n| No-shows and fake leads | Card on file or deposit, plus a clear cancellation policy. |\n| Privacy and security | Collect only necessary info. Don't let the bot store door codes or alarm codes in chat. Use a reputable vendor. |\n| Customer trust | Tell customers they're chatting with an AI and offer an easy \"talk to a person\" option. |\n| Liability | Check that your terms and insurance cover online bookings. A short consult with your attorney or insurer is worthwhile. |\n\n## Next steps\n\n1. **Write down your pricing rules** (this week): base price by size, add-ons, frequency discounts, minimum charge, service-area ZIPs, and \"never auto-quote\" conditions.\n2. **Pick the simplest tool that fits $100/month.** Options include Wix Bookings or forms with Wix automations, Stripe payment links, and Zapier or Make to connect to Google Calendar. If you add an AI chat layer, use one that can follow a fixed script and knowledge base and hand off to a human. Avoid giving a general chatbot freedom to improvise on price.\n3. **Set response-time promises**, such as an instant estimate and human confirmation within 2 hours during business hours. This alone will improve your lead response time.\n4. **Run a 2-4 week pilot** in \"quote plus booking request\" mode with a human confirming each booking. Track:\n   - quote accuracy (quoted vs. actual job time and price)\n   - lead-to-booking conversion rate\n   - response time\n   - customer complaints and re-quotes\n5. **Graduate selectively.** If standard jobs show about 95% or better quote accuracy over 30 days, let those auto-book. Keep complex ones human-reviewed.\n6. **Add safety controls**: a kill switch to pause the bot, weekly review of chat transcripts, and clear terms of service on the quote page.\n\n## Bottom line\n\nYour instinct to automate is right, because speed wins leads in residential cleaning. But full autonomy on pricing and booking is where the downside is. Let the system respond instantly and handle the routine 70-80% of leads, with fixed pricing logic and deposits, and keep a quick human check on the exceptions. You'll save most of those evening hours without risking quotes you can't honor.",
+  "seconds": 76,
+  "board_state": {
+    "intake": {
+      "question": "Should we let an AI chatbot on our website give customers final price quotes and book jobs without a human checking?",
+      "leaning": "Yes, it would save me hours every evening",
+      "profile": {
+        "name": "",
+        "industry": "residential cleaning",
+        "location": "Rockville, Maryland",
+        "size": "12 cleaners",
+        "current_tools": [
+          "Wix",
+          "Google Calendar",
+          "Stripe"
+        ],
+        "budget": "$100/month",
+        "goals": [
+          "answer leads faster"
+        ],
+        "constraints": ""
+      }
+    },
+    "evidence_mode": "web",
+    "evidence": {
+      "decision": "Whether to let an AI chatbot on the company website give residential cleaning customers final, binding price quotes and book jobs with no human review.",
+      "options": [
+        "Do nothing: keep answering leads manually (Wix forms, Google Calendar, Stripe) and accept the evening workload.",
+        "Fully autonomous bot: it gives final quotes, books jobs straight into Google Calendar, and takes payment with no human check.",
+        "Hybrid: the bot gives 'from' prices or ranges from a written rate table, offers real open calendar slots as booking requests, and a person confirms the price and slot, for example the next morning.",
+        "Lead-capture only: the bot collects address, home size, and photos, promises a callback time, and gives no prices or bookings."
+      ],
+      "facts": [
+        {
+          "claim": "One vendor guide on home-service chatbots says a bot can give price ranges from a published rate card, with the factors that move the price and a statement that the business confirms the price before work. It says a bot should never give a firm quote for a job nobody has seen. For cleaning, it says the rate card is prices by home size and type of clean, add-ons, and a minimum visit.",
+          "source": "https://pepochat.com/blog/ai-chatbot-for-home-services",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T03:13:49Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "A cleaning-industry vendor describes the price as coming from a table the owner writes (kind of clean, size band, district, frequency), not from the language model's own reasoning. Anything outside the table, such as a neglected home or mould, goes to a person. The vendor says a business that cannot write its price rules down should write them before building a bot.",
+          "source": "https://proof48.com/en/blog/ai-quote-bot-for-cleaning-companies",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T03:13:51Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "A chatbot connected to a scheduling calendar can offer real free slots and book the one the visitor picks. The calendar re-checks the slot and sends the confirmation. The same source says to route emergencies to the phone.",
+          "source": "https://pepochat.com/blog/ai-chatbot-for-home-services",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T03:13:49Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "A vendor guide says a chat price is an estimate, not the binding contract price. It cites California Business and Professions Code section 7159 and New York General Business Law section 771, which require written, signed home improvement contracts. It states that contract rules vary by state and that these are two examples, not Maryland. Residential cleaning is generally not classed as home improvement, so whether these rules map onto Maryland cleaning work is not established by this source.",
+          "source": "https://galloping.ai/insights/ai-agents/can-ai-agent-quote-a-price/",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T03:13:49Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "The same guide says taking a deposit or card payment through a chat agent carries more risk than stating a number, and recommends a hard cap or a person in the middle. It also cites the FTC bait-advertising guides (16 CFR 238), which concern offers the advertiser does not intend to honor. It says an honest wrong guess is not bait advertising because the rule is about intent.",
+          "source": "https://galloping.ai/insights/ai-agents/can-ai-agent-quote-a-price/",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T03:13:49Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Mercateer's end-user terms, as one example of vendor practice, treat AI-given prices as estimates, with the final price set and confirmed by the business. Appointments are 'booking requests until the business confirms them,' and the assistant 'cannot enter into contracts on the business's behalf.' They also warn that the assistant can make mistakes and that customers can ask for a human.",
+          "source": "https://mercateer.com/legal/end-user-terms",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T03:13:50Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "A July 2025 FIELDBOSS survey of 1,000 US homeowners who had hired an HVAC company found the most common frustration was higher-than-expected costs or surprise fees, at 21.0%. This is HVAC, not cleaning, but it shows how customers react to price surprises.",
+          "source": "https://pepochat.com/blog/ai-chatbot-for-home-services",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T03:13:49Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "A cleaning chatbot vendor says its bot answers quote and scheduling questions from the business's own price list, add-on menu, and service radius, across the website and messaging channels.",
+          "source": "https://hyperleap.ai/blog/ai-chatbot-cleaning-services",
+          "verified": true,
+          "check": {
+            "status": "ok",
+            "checked_at": "2026-11-11T03:13:51Z",
+            "http_status": 200
+          }
+        },
+        {
+          "claim": "Maryland's Consumer Protection Act prohibits unfair, abusive, or deceptive trade practices, which would include misleading price statements. A binding quote that the business later refuses to honor, or a hidden fee, could raise exposure under it. This is general knowledge and was not checked against current statute text.",
+          "source": "",
+          "verified": false
+        },
+        {
+          "claim": "Maryland home improvement licensing (MHIC) generally covers work such as remodeling and repair, not routine residential cleaning. Cleaning companies typically do not need an MHIC license. Rockville and Montgomery County local licensing or registration requirements were not checked in this session and should be confirmed with the county and the city.",
+          "source": "",
+          "verified": false
+        },
+        {
+          "claim": "The Maryland Online Data Privacy Act took effect October 2025 and applies to businesses above certain consumer-volume thresholds. A 12-cleaner local company is probably below them, but a chatbot that stores names, addresses, photos, and chat transcripts still raises privacy-notice and data-handling questions. Maryland is a two-party-consent state for recording communications, so chat or voice logging should be disclosed. This is general knowledge, not verified here.",
+          "source": "",
+          "verified": false
+        },
+        {
+          "claim": "An often-cited industry finding (a 2011 Harvard Business Review study of lead response times) is that leads contacted within an hour are far more likely to be qualified than those contacted later. This supports the goal of faster lead response, but the study was not about cleaning and was not re-checked here.",
+          "source": "",
+          "verified": false
+        }
+      ],
+      "open_questions": [
+        "Does the company have a written rate table (size bands, clean types, add-ons, frequency discounts, minimums) that produces a price with no human judgment? If not, a bot cannot produce a reliable final price.",
+        "What share of jobs fall outside a standard table (move-out cleans, heavily soiled homes, pets, hoarding, mould) and would need a person?",
+        "Can the 12-person crew absorb a wrongly booked job (wrong size, wrong address, double-booking, unstaffed slot), and what does an error cost in cancellations, refunds, or a customer who won't pay the difference?",
+        "Will the bot take deposits or card payments through Stripe? If so, what cap and refund policy apply?",
+        "What do current vendor pricing pages show for chatbot tools that integrate with Wix, Google Calendar, and Stripe? Pricing was not retrieved from vendor pages in this session, so fit within the $100/month budget is unconfirmed.",
+        "Does the company's service agreement or terms of service let a customer be bound by a chat-generated price, and would the owner's attorney or insurer accept that?",
+        "Do Rockville or Montgomery County impose business licensing, advertising, or consumer-disclosure rules on cleaning services that the board has not yet checked?",
+        "Does the company's general liability or bonding insurance say anything about quotes or contracts made by automated systems?",
+        "How many leads arrive in the evening, how many are lost to slow replies, and what would a next-morning human confirmation recover compared with full automation?"
+      ]
+    },
+    "round1": {
+      "industry_expert": {
+        "stance": "conditional",
+        "headline": "Use a hybrid bot: ranges and booking requests, human confirms price and slot.",
+        "summary": "Don't let the bot give final prices or book without a person. Let it quote ranges from your rate table and offer open slots as requests you confirm, usually the next morning. You still get faster replies and fewer evening hours. Only do this once your price rules are written down.",
+        "key_points": [
+          "Vendor guidance says a bot should give ranges from a rate card and that the business confirms price before work (F1).",
+          "Prices should come from a written table, and anything outside it goes to a person (F2).",
+          "A chat price is an estimate, not the binding contract price (F4); appointments are booking requests until confirmed (F6)."
+        ],
+        "risks": [
+          "A wrong binding price on a home with heavy soil, pets, or mould could lead to refunds or a customer refusing to pay the difference.",
+          "Double-booked or unstaffed slots from automatic booking could hit a 12-person crew's schedule.",
+          "Taking deposits through the bot raises risk; keep payments with a person or a hard cap (F5)."
+        ],
+        "pushback": "Do you really have a rate table that produces a price with no judgment? If not, a bot cannot give a reliable final price, and the hours you save may cost more in disputes.",
+        "confidence": 80
+      },
+      "ai_tools_expert": {
+        "stance": "conditional",
+        "headline": "Hybrid bot yes; fully autonomous final quotes and bookings no.",
+        "summary": "Do not let the bot give binding final quotes or take payment unchecked. Let it give ranges from a written rate table, offer real open slots as booking requests, and have a person confirm price and slot, often by next morning. This still cuts evening work and speeds replies. Fully autonomous pricing risks wrong quotes and disputes, and the company has no written rate table yet.",
+        "key_points": [
+          "A chat price is an estimate, not a binding contract price (F4); a person should confirm before work (F1, F6).",
+          "Price should come from a written table of size, clean type, add-ons, and frequency, with anything unusual going to a person (F2).",
+          "A bot booking real open slots as requests, with the calendar re-checking availability, fits the speed goal (F3, F6)."
+        ],
+        "risks": [
+          "Wrong price or wrong slot becomes a binding promise the crew cannot honor, costing refunds or cancellations.",
+          "Taking card payments through a chat agent adds risk without a cap and refund policy (F5).",
+          "Chat logs of names, addresses, and photos raise privacy-notice questions (F11, unverified; confirm with an attorney)."
+        ],
+        "pushback": "Assumes the company can write a rate table that produces a price with no human judgment. If it cannot, even a hybrid bot should only collect leads.",
+        "confidence": 80,
+        "tools": [
+          {
+            "name": "Tidio",
+            "use": "Adds a website chat widget that answers from your rate table and collects lead details for a human to confirm.",
+            "monthly_cost": "$0-39/mo (unverified)",
+            "works_with": "Website builder integration varies; check Wix compatibility before buying.",
+            "caveat": "Confirm Wix embedding and calendar connection; AI answers can still be wrong without a rate table.",
+            "url": "",
+            "price_fact": "",
+            "pilot_test": "Keep it if at least 10 more qualified leads per month are booked as requests within 4 weeks; cancel before the second invoice otherwise."
+          }
+        ]
+      },
+      "realist": {
+        "stance": "conditional",
+        "headline": "Not fully autonomous; a hybrid bot with human confirmation is workable.",
+        "summary": "A bot that gives final binding prices and books jobs with no check is risky. Prices should come from a written rate table, and a person should confirm each price and slot. Without a written rate table, the bot cannot give reliable final prices at all. Hybrid use can still answer leads faster and cut evening work.",
+        "key_points": [
+          "Chat prices are treated as estimates, and a person should confirm the final price (F1, F4, F6).",
+          "A bot can book only real open slots as booking requests, which the business confirms (F3, F6).",
+          "Price should come from the owner's own table, with anything unusual sent to a person (F2, F8)."
+        ],
+        "risks": [
+          "A binding quote the business later refuses to honor could cause Maryland consumer-law exposure (F9, unverified; attorney to confirm).",
+          "Wrong bookings or double-booking could strain the 12-person crew and cost refunds.",
+          "Taking card deposits through a chat agent adds payment risk without a cap or person in the loop (F5)."
+        ],
+        "pushback": "Assume the company can write a complete price table. Most cleaning jobs vary; ask which share falls outside the table before trusting any automated price.",
+        "confidence": 72,
+        "checks": [
+          {
+            "area": "legal",
+            "status": "flag",
+            "note": "A binding bot quote may create consumer-law exposure under Maryland's Consumer Protection Act (F9, unverified); the owner's attorney should confirm before any binding quote is given."
+          },
+          {
+            "area": "compliance",
+            "status": "flag",
+            "note": "Chat logs of names, addresses, and photos need privacy notice and two-party-consent disclosure (F11, unverified); the county and an attorney should confirm licensing and privacy duties (F10, unverified)."
+          },
+          {
+            "area": "financial",
+            "status": "flag",
+            "note": "Fit within the $100/month budget is unconfirmed because vendor pricing was not retrieved (open questions); card or deposit handling through Stripe needs a cap and refund policy."
+          },
+          {
+            "area": "goals",
+            "status": "pass",
+            "note": "Faster lead response is supported by F12 (unverified, not cleaning-specific), and a hybrid bot meets that goal without giving final prices unchecked."
+          },
+          {
+            "area": "operational",
+            "status": "flag",
+            "note": "Wrong slots or sizes could cause double-booking and refunds; the owner needs to know how often jobs fall outside the standard table."
+          }
+        ]
+      },
+      "strategist": {
+        "stance": "conditional",
+        "headline": "Use a hybrid bot: ranges and booking requests, not binding final quotes.",
+        "summary": "Fully autonomous quoting would lock you into prices you cannot easily take back, and a first mistake can reach customers before you notice. A hybrid bot gives price ranges from your own rate table and offers real open slots, while you confirm each job the next morning. This still saves evening hours and answers leads faster.",
+        "key_points": [
+          "A bot should give price ranges from a published rate card, not firm quotes for jobs nobody has seen (F1).",
+          "Price should come from a table you write, with anything unusual sent to a person (F2).",
+          "Booking requests that wait for business confirmation are common vendor practice (F6)."
+        ],
+        "risks": [
+          "Customers may expect the chat price to be final, creating disputes when you adjust it next morning.",
+          "Writing the rate table is a prerequisite; without it, the bot has no reliable numbers to give.",
+          "Once customers learn to book instantly, pulling back to manual confirmation will be hard to explain."
+        ],
+        "pushback": "Assumes you can write a rate table that covers most jobs. If a large share of your work is move-outs or heavily soiled homes, the bot will mostly be handing off to you anyway.",
+        "confidence": 72
+      },
+      "devils_advocate": {
+        "stance": "oppose",
+        "headline": "Fully autonomous final quotes are risky; argue for the hybrid instead.",
+        "summary": "Your leaning is to let the bot quote and book with no human check. Evidence says a bot should give ranges from a written rate table, and a person should confirm the price and slot. Without a written rate table, a bot cannot produce a reliable final price. The hybrid saves most of your evening hours and keeps control of bad bookings.",
+        "key_points": [
+          "Vendors say a bot should never give a firm quote for a job nobody has seen; price ranges from a rate card are the safe version (F1).",
+          "A chat price is an estimate, not the binding contract price, and a vendor recommends a hard cap or a person in the middle for deposits or card payments (F4, F5).",
+          "A calendar-linked bot can offer real open slots as booking requests, which captures the speed you want (F3, F6)."
+        ],
+        "risks": [
+          "A wrong binding quote on a neglected or unusual home could be refused or disputed, costing refunds and reputation.",
+          "Maryland Consumer Protection Act exposure for misleading price statements is unverified; ask your attorney (F9).",
+          "Taking card payments through the bot with no cap could create refund losses across a 12-cleaner crew."
+        ],
+        "pushback": "Assume the evening workload is the main cost. Test whether a next-morning human confirmation loses many leads compared with full automation; if it doesn't, the autonomous risk is not worth taking.",
+        "confidence": 72
+      }
+    },
+    "round2": {
+      "industry_expert": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "devils_advocate",
+            "their_claim": "Assume evening workload is the main cost and test whether next-morning confirmation loses many leads versus full automation.",
+            "response": "Agree on testing, but a peer would also count disputes. One wrong binding quote on a heavily soiled home can cost more than a week of evening hours saved. Measure both."
+          },
+          {
+            "target": "ai_tools_expert",
+            "their_claim": "Tidio at $0-39/month could answer from the rate table and collect lead details, with a 4-week pilot.",
+            "response": "Reasonable pilot, but the price tier is unverified and the Wix and calendar fit is unconfirmed. Test it only after the rate table exists, and check the full cost against the $100 budget."
+          },
+          {
+            "target": "realist",
+            "their_claim": "Chat logs of names, addresses, and photos need privacy notice and two-party-consent disclosure (F11, unverified).",
+            "response": "Agree this needs checking. A small local firm is probably below the Maryland privacy act thresholds, but disclosure is cheap. Have an attorney confirm before launch."
+          }
+        ],
+        "concessions": [
+          "Fully autonomous binding quotes and bookings are not worth the risk before a written rate table exists.",
+          "Faster lead replies can be met with a hybrid bot, so the goal does not require full automation."
+        ],
+        "stance": "conditional",
+        "headline": "Hybrid bot only, after a written rate table; no autonomous binding quotes.",
+        "summary": "Don't let the bot give final prices or book jobs with no person checking. First write your rate table: size, clean type, add-ons, frequency, and minimum. Then let the bot give price ranges and offer open calendar slots as requests you confirm, usually next morning. Anything unusual, like pets, mould, or move-outs, goes to you. Keep card payments and deposits with a person. Ask an attorney about binding chat quotes and chat-log privacy.",
+        "key_points": [
+          "A bot should give ranges, and the business confirms price before work (F1).",
+          "Prices should come from a written table, with anything outside it going to a person (F2).",
+          "Chat prices are estimates, not binding contract prices, and appointments are booking requests until confirmed (F4, F6)."
+        ],
+        "risks": [
+          "A wrong binding price on an unusual home could lead to refunds or a customer refusing to pay the difference.",
+          "Automatic booking of a wrong or double-booked slot could strain a 12-person crew's schedule.",
+          "Card or deposit handling through a chat bot without a cap and refund policy adds loss risk (F5)."
+        ],
+        "pushback": "Do you have a rate table that produces a price with no judgment? If not, the bot cannot give reliable final prices, and the hours saved may be lost to disputes.",
+        "confidence": 80
+      },
+      "ai_tools_expert": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "devils_advocate",
+            "their_claim": "Assume evening workload is the main cost and test whether next-morning confirmation loses leads versus full automation.",
+            "response": "Agree the test matters, but the Devil's Advocate's F3 and F6 citations show booking requests already give instant slot choice. Key risk is binding errors (F4), not lead loss alone."
+          },
+          {
+            "target": "strategist",
+            "their_claim": "Customers may expect a chat price to be final, creating disputes when adjusted next morning.",
+            "response": "Valid risk. Fix it with clear wording: bot says 'estimate from our rate table, confirmed by our team,' as F4 and F6 describe for chat prices and booking requests."
+          },
+          {
+            "target": "realist",
+            "their_claim": "Maryland consumer-law exposure from a binding quote that is later refused (F9, unverified).",
+            "response": "Agree the attorney should confirm. Until then, no binding quote from the bot is the safe default."
+          }
+        ],
+        "concessions": [
+          "The hybrid is the right default until the company proves a rate table covers most jobs.",
+          "Customer expectation of a final price is a real dispute risk, as the Strategist notes."
+        ],
+        "stance": "conditional",
+        "headline": "Hybrid bot only: rate-table ranges and booking requests, human confirms each price.",
+        "summary": "Do not let the bot give final quotes or book without a person. Use it for price ranges from your written rate table and for open slots as requests you confirm, often next morning. First write the rate table; without it the bot cannot price reliably. Keep card payments with a person until a cap and refund policy exist. Your evening hours still drop.",
+        "key_points": [
+          "Vendor guidance says bots give ranges from a rate card and the business confirms price before work (F1).",
+          "Chat prices are estimates, and appointments are booking requests until the business confirms them (F4, F6).",
+          "Price should come from a written table, with unusual jobs sent to a person (F2)."
+        ],
+        "risks": [
+          "A binding wrong price on heavily soiled or unusual homes could lead to refunds or disputes.",
+          "Automatic booking without confirmation could double-book or leave slots unstaffed for a 12-person crew.",
+          "Card or deposit payments through a chat agent need a cap and refund policy (F5)."
+        ],
+        "pushback": "Do you have a written rate table that prices most jobs with no judgment? Ask what share of jobs fall outside it, since move-outs and soiled homes may mean the bot mostly hands off to you.",
+        "confidence": 78,
+        "tools": [
+          {
+            "name": "Tidio",
+            "use": "Adds a website chat widget that can answer from your rate table and collect lead details for a human to confirm.",
+            "monthly_cost": "$0-39/mo (unverified)",
+            "works_with": "Website chat; confirm Wix embedding and Google Calendar connection before buying.",
+            "caveat": "AI answers can be wrong without a complete rate table; pricing not verified against vendor page.",
+            "url": "",
+            "price_fact": "",
+            "pilot_test": "Keep it if at least 10 more qualified leads per month are booked as requests within 4 weeks; cancel before the second invoice otherwise."
+          }
+        ]
+      },
+      "realist": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "ai_tools_expert",
+            "their_claim": "Tidio at $0-39/month can answer from your rate table and collect leads, and a 4-week pilot can decide whether to keep it.",
+            "response": "The Tidio price is unverified and budget fit is unconfirmed. A pilot tests lead volume, not legal exposure. Check the vendor's current price page and whether it embeds in Wix before any trial."
+          },
+          {
+            "target": "devils_advocate",
+            "their_claim": "Test whether a next-morning human confirmation loses many leads compared with full automation.",
+            "response": "The test is useful. But the lead-speed figure in F12 is unverified and not about cleaning, so measure your own lead data first. A lead test cannot settle the consumer-law question."
+          },
+          {
+            "target": "strategist",
+            "their_claim": "Customers may expect the chat price to be final, which creates disputes when you adjust it the next morning.",
+            "response": "This is a real operational risk. Label every chat price as an estimate, confirmed next morning, before the customer books. Wording alone may not cure a binding-price claim; an attorney should confirm (unverified)."
+          }
+        ],
+        "concessions": [
+          "Strategist: customers may read a chat price as final, so the bot's wording must say estimate before booking.",
+          "Devil's Advocate: a lead-loss test of next-morning confirmation is worth running before deciding on full automation.",
+          "Industry Expert: keep deposits and card payments with a person, or under a hard cap."
+        ],
+        "stance": "conditional",
+        "headline": "Conditional yes: hybrid bot only after a written rate table exists.",
+        "summary": "Do not let the bot give final prices or book jobs with no check. A hybrid bot can give ranges from your written rate table and offer open slots as requests you confirm, usually next morning. Start only once your price rules are written, and keep card payments with a person or under a hard cap. The $100/month fit and Maryland rules still need confirming.",
+        "key_points": [
+          "Vendor guidance says chat prices should be ranges from a rate card, with the business confirming before work (F1, F4).",
+          "Appointments should be booking requests until the business confirms them (F6).",
+          "Card or deposit payments through a chat agent carry more risk; use a hard cap or a person in the middle (F5)."
+        ],
+        "risks": [
+          "A binding quote the business later refuses to honor may create Maryland consumer-law exposure (F9, unverified; attorney to confirm).",
+          "Double-booked or unstaffed slots could strain the 12-person crew and cost refunds.",
+          "Chat logs with names, addresses, and photos need privacy notice and two-party-consent disclosure (F11, unverified; attorney to confirm)."
+        ],
+        "pushback": "Do you have a written rate table that produces a price with no judgment? If most of your jobs are move-outs or heavily soiled homes, the bot will mostly hand off to you.",
+        "confidence": 74,
+        "checks": [
+          {
+            "area": "legal",
+            "status": "flag",
+            "note": "A binding bot quote may create consumer-law exposure under Maryland's Consumer Protection Act (F9, unverified); the owner's attorney should confirm before any binding quote is given."
+          },
+          {
+            "area": "compliance",
+            "status": "flag",
+            "note": "Chat logs of names, addresses, and photos may need privacy notice and two-party-consent disclosure (F11, unverified); the county and an attorney should confirm local licensing and privacy duties (F10, unverified)."
+          },
+          {
+            "area": "financial",
+            "status": "flag",
+            "note": "Fit within the $100/month budget is unconfirmed because vendor pricing was not retrieved; card or deposit handling through Stripe needs a cap and refund policy."
+          },
+          {
+            "area": "goals",
+            "status": "pass",
+            "note": "A hybrid bot can answer leads at once with ranges and booking requests (F1, F3), which serves the goal without giving unchecked final prices."
+          },
+          {
+            "area": "operational",
+            "status": "flag",
+            "note": "Wrong sizes or slots could cause double-booking and refunds; the owner must know what share of jobs falls outside the standard table (open question)."
+          }
+        ]
+      },
+      "strategist": {
+        "changed_position": false,
+        "changed_because": "",
+        "rebuttals": [
+          {
+            "target": "devils_advocate",
+            "their_claim": "Assume evening workload is the main cost; test whether next-morning confirmation loses many leads versus full automation.",
+            "response": "Agree the test matters, but the bigger 6-12 month cost is locked-in pricing. Once customers expect instant binding prices, pulling back is hard. Measure lead loss, but also measure dispute counts before expanding scope."
+          },
+          {
+            "target": "ai_tools_expert",
+            "their_claim": "Tidio at $0-39/mo can add a chat widget answering from the rate table, with a 4-week pilot test.",
+            "response": "Good pilot discipline. Strategically, the pilot should be the rate table itself. Fit with the $100 budget and Wix embedding is still unconfirmed, so check vendor pricing before committing."
+          },
+          {
+            "target": "industry_expert",
+            "their_claim": "Do you really have a rate table that produces a price with no judgment? If not, the hours saved may cost more in disputes.",
+            "response": "Yes, this is the right gate. Writing the table is the first move. It also builds the asset a future, more automated bot would need, so it is not wasted effort."
+          }
+        ],
+        "concessions": [
+          "The realist's point that privacy and consumer-law duties need an attorney check before any binding quote is valid."
+        ],
+        "stance": "conditional",
+        "headline": "Hybrid bot now; earn full automation only after the rate table proves itself.",
+        "summary": "Write your price table first. Then let the bot give ranges and offer open slots as requests you confirm, usually next morning. Over the next year, track disputes, refunds, and lead loss. Only if disputes stay near zero should you consider letting the bot give firm prices on standard jobs. Once customers get used to instant bookings, going back to manual confirmation is hard, so do not switch on full automation early. Next move after this: write the rate table, then run a 4-week pilot.",
+        "key_points": [
+          "Price rules must be written before any bot quotes (F2).",
+          "Ranges and booking requests capture speed while keeping a person in the loop (F1, F3, F6).",
+          "Card or deposit handling should stay with a person or a hard cap (F5)."
+        ],
+        "risks": [
+          "Early full automation locks in prices and expectations that are hard to reverse.",
+          "Customers may treat a range as final, causing disputes when a person adjusts it.",
+          "Fit within the $100/month budget and Wix or Stripe compatibility is unconfirmed."
+        ],
+        "pushback": "Assume that a standard table will cover most jobs. If move-outs, heavy soil, and pets make up much of the work, the bot will mostly hand off to you and the savings disappear.",
+        "confidence": 74
+      },
+      "devils_advocate": {
+        "changed_position": true,
+        "changed_because": "Strategist wrote: \"Customers may expect the chat price to be final, creating disputes when you adjust it next morning.\" That point shows the hybrid's next-morning step creates the dispute risk the board says it avoids, so I now argue for final pricing of standard jobs at booking.",
+        "rebuttals": [
+          {
+            "target": "strategist",
+            "their_claim": "Customers may expect the chat price to be final, so adjusting it next morning creates disputes.",
+            "response": "Agreed, but that cuts against the hybrid. A next-morning price change is the dispute. Standard jobs priced from your written table should be final at booking, with only off-table jobs going to a person."
+          },
+          {
+            "target": "realist",
+            "their_claim": "A hybrid bot meets the faster-lead goal (F12, unverified, not cleaning-specific) without giving final prices unchecked.",
+            "response": "F12 is unverified and not about cleaning. Nobody has measured how many evening leads a next-morning reply loses. Test that before calling the hybrid the goal-safe choice."
+          },
+          {
+            "target": "industry_expert",
+            "their_claim": "The hours you save may cost more in disputes than a fully automated bot would recover.",
+            "response": "No evidence in the file sizes either side. F7 is HVAC surprise-cost data, not cleaning. Dispute cost is a guess, and so is the hybrid's lead loss."
+          }
+        ],
+        "concessions": [
+          "Writing the rate table is a prerequisite; without it, no bot should quote (Strategist, Industry Expert).",
+          "Chat logs of names, addresses, and photos need privacy disclosure (Realist, unverified)."
+        ],
+        "stance": "conditional",
+        "headline": "Price standard jobs from your table at booking; skip the next-morning step.",
+        "summary": "The board agrees on a hybrid, but its next-morning step creates the dispute risk it fears. Standard jobs priced from a written table should be final at booking, with no card payments through the bot. Only jobs outside the table go to a person. This holds only if a written table exists and an attorney clears Maryland terms (F9, unverified).",
+        "key_points": [
+          "Vendor guidance says prices should come from the owner's table, with off-table jobs sent to a person (F2).",
+          "Calendar-linked bots re-check real open slots and send confirmations (F3), so direct booking is feasible.",
+          "Card payments through a chat agent carry more risk and need a cap or a person (F5); keep payments out of the bot."
+        ],
+        "risks": [
+          "Table gaps: if many jobs fall outside the table, the bot will hand off most leads anyway.",
+          "Pricing errors on standard jobs would be binding and could cost refunds.",
+          "Maryland consumer-law exposure from a binding quote is unverified; an attorney must confirm (F9)."
+        ],
+        "pushback": "If the next-morning confirmation changes the price a customer already saw, how many disputes will that cause, and is that cost counted against the hours you save?",
+        "confidence": 55
+      }
+    },
+    "verdict": {
+      "decision": "pilot",
+      "headline": "Pilot a hybrid bot: estimates and booking requests, with a person confirming each job.",
+      "confidence": 72,
+      "rationale": "Don't let the bot give final prices or book jobs unchecked. Vendor guidance says a bot should give ranges from a written rate card and the business should confirm before work (F1). Prices should come from your own table, with odd jobs sent to a person (F2). Chat prices are estimates and bookings are requests until confirmed (F4, F6). The hybrid still answers leads at once and cuts your evening hours. First write the rate table. Then run a 4-week test and count disputes and lost leads. The Devil's Advocate's objection to next-morning changes is the main open risk.",
+      "decisive_arguments": [
+        {
+          "seat": "industry_expert",
+          "point": "A bot should give ranges, and the business confirms price before work (F1). Prices should come from a written table, with anything outside it going to a person (F2)."
+        },
+        {
+          "seat": "ai_tools_expert",
+          "point": "Chat prices are estimates and appointments are booking requests until the business confirms them (F4, F6). Real open slots can still be offered at once (F3), which serves the speed goal."
+        },
+        {
+          "seat": "realist",
+          "point": "Card or deposit payments through a chat agent carry more risk and need a hard cap or a person in the middle (F5). Keep payments out of the bot."
+        },
+        {
+          "seat": "strategist",
+          "point": "Price rules must be written before any bot quotes (F2). Early full automation locks in prices and expectations that are hard to reverse."
+        }
+      ],
+      "dissent": [
+        {
+          "seat": "devils_advocate",
+          "point": "A next-morning price change is itself the dispute. Standard jobs priced from a written table should be final at booking, with only off-table jobs going to a person. Nobody has measured how many leads a next-morning reply loses, or what disputes cost."
+        },
+        {
+          "seat": "realist",
+          "point": "Wording a chat price as an estimate may not cure a binding-price claim under Maryland consumer law (F9, unverified). An attorney should confirm."
+        },
+        {
+          "seat": "strategist",
+          "point": "If move-outs, heavy soil, and pets make up much of the work, the bot will mostly hand off to you and the savings disappear."
+        }
+      ],
+      "conditions": [
+        "A written rate table exists (clean type, size band, add-ons, frequency, minimum) that prices standard jobs with no human judgment.",
+        "Every bot price is worded as an estimate from the rate table, confirmed by your team, and shown before the customer books.",
+        "The bot takes no card payments or deposits. If that changes later, add a hard cap and a written refund policy first.",
+        "Jobs outside the table (move-outs, heavy soil, pets, mould, hoarding) go to a person.",
+        "An attorney reviews the bot wording, your service terms, and chat-log privacy and recording disclosure before launch."
+      ],
+      "next_steps": [
+        {
+          "when": "this week",
+          "action": "Write your rate table on one page. Count the last 30 days of leads: how many came in the evening, and how many were move-outs or heavily soiled homes."
+        },
+        {
+          "when": "this week",
+          "action": "Call your insurance agent. Ask whether your general liability or bonding says anything about quotes or bookings made by automated systems."
+        },
+        {
+          "when": "next 30 days",
+          "action": "Book an attorney. Ask about estimate wording, whether a chat price could bind you under Maryland consumer law (F9, unverified), and chat-log privacy and recording disclosure (F11, unverified). Also ask Montgomery County, the City of Rockville, or the Maryland SBDC whether any local cleaning-business rules apply (F10, unverified)."
+        },
+        {
+          "when": "next 30 days",
+          "action": "Check the current Tidio pricing page and whether it embeds in your Wix site and connects to Google Calendar. Confirm the total fits $100 per month before you pay."
+        },
+        {
+          "when": "next 90 days",
+          "action": "Run a 4-week pilot. The bot gives ranges and open slots as booking requests, and you confirm each one by mid-morning. Log every price change, dispute, refund, and lead lost."
+        },
+        {
+          "when": "next 90 days",
+          "action": "Review the log. Only if disputes stay near zero, consider firm prices for standard jobs, and only with your attorney's sign-off."
+        }
+      ],
+      "ai_tools": [
+        {
+          "name": "Tidio",
+          "use": "Adds a website chat widget that answers from your rate table and collects lead details for a person to confirm.",
+          "monthly_cost": "$0-39/mo (unverified)",
+          "works_with": "Wix embedding and Google Calendar connection are unconfirmed; check before trialing.",
+          "caveat": "AI answers can be wrong without a complete rate table, and the price is not checked against the vendor's page.",
+          "url": "",
+          "price_fact": "",
+          "pilot_test": "Start only after the rate table exists. Keep it if, within 4 weeks, at least 10 more qualified leads per month are booked as requests and price disputes stay at zero. Cancel before the second invoice otherwise."
+        }
+      ],
+      "escalate_to": "attorney",
+      "escalation_reason": "Whether a chat-given price could bind you under Maryland's Consumer Protection Act (F9, unverified), and how chat logs, photos, and addresses must be disclosed (F11, unverified), are legal questions. An attorney should confirm them before launch.",
+      "would_change": [
+        "Your lead log shows next-morning confirmation loses many evening leads, which would strengthen the Devil's Advocate case for final prices on standard jobs.",
+        "You cannot write a rate table that prices most jobs without judgment, which would reduce the bot to lead capture only.",
+        "The attorney or your insurer says a chat estimate cannot be safely worded, or the tool will not fit Wix, Calendar, or the $100 budget."
+      ],
+      "no_new_tool": "Without a new tool, set up a Wix form auto-reply that says you will respond by a fixed time. Keep saved quote-reply templates and use Google Calendar's booking page if your plan includes it (unverified). Spend 15-30 minutes each morning confirming requests. Cost: $0 extra if your current plans cover it (unverified), plus your own time."
+    }
+  },
+  "board_error": null,
+  "baseline_research": "# Recommendation: Don't go fully autonomous. Start with the hybrid.\n\nLet the bot answer instantly with price ranges from a written rate table and offer real open calendar slots as booking requests. A person confirms the price and slot, usually the next morning. This gets you most of the speed you want and removes most of the risk.\n\n## Why not fully autonomous\n\n- **The vendors themselves don't do it.** One guide says a bot should never give a firm quote for a job nobody has seen (F1). Mercateer's terms call bot prices estimates and appointments \"booking requests until the business confirms them\" (F6). A bot you can't override isn't standard practice.\n- **Cleaning jobs vary.** Neglected homes, pets, mould, and move-outs fall outside any table and need a person (F2). A bot that confidently quotes a standard price for a non-standard house creates a dispute or a loss-making job.\n- **Payments raise the stakes.** Taking deposits or cards through a chat agent carries more risk than stating a number, and the guidance is a hard cap or a person in the middle (F5).\n- **Price surprises anger customers.** The data is from HVAC, not cleaning, but surprise costs were the top complaint (F7). A bot quote that you later correct would feel like a bait-and-switch, even if it was an honest error (F5).\n- **The legal picture is unsettled.** The statutes cited (F4) are California and New York, not Maryland, and cleaning probably isn't home improvement (F10, unverified). Maryland's Consumer Protection Act could still apply to a misleading or unhonored price (F9, unverified). I'm not claiming you'd be breaking a law. The point is that you'd be taking on exposure to save a few morning minutes.\n\n## Why not do nothing or lead-capture only\n\nYour goal is answering leads faster, and the one research finding on this (F12, unverified, not cleaning-specific) suggests response time matters a lot. Doing nothing leaves evening leads waiting. Lead-capture only is safe but gives people nothing useful in the moment. The hybrid gives an immediate answer and a real slot, and a human only has to approve it.\n\n## Main risks (even with the hybrid)\n\n1. **No written rate table, no bot.** If your pricing lives in your head, write it down first: size bands, clean types, add-ons, frequency discounts, minimum visit (F1, F2). This is probably the biggest piece of work.\n2. **Wrong or double bookings.** Offer only slots that are truly open and staffed, with the calendar re-checking each slot (F3). Twelve cleaners can absorb an occasional error, but a pattern of them won't be absorbed.\n3. **Wording.** The bot must say clearly that prices are estimates, that you confirm the final price, and that customers can ask for a human (F1, F6). Emergencies and unusual jobs should go to a phone call or a person (F2, F3).\n4. **Privacy.** You'd be storing names, addresses, photos, and transcripts. You're probably under the Maryland privacy act's thresholds, but add a privacy notice and disclose chat logging (F11, unverified).\n5. **Budget fit is unconfirmed.** I have no vendor pricing for tools that work with Wix, Google Calendar, and Stripe within $100/month. Check before committing.\n\n## Next steps\n\n1. **This week:** Write your rate table, including what triggers \"needs a person\" (move-out, heavy soil, pets, hoarding, mould).\n2. **Count your evening leads.** Check last month's inquiries: how many came in after hours, and how many went cold? That tells you what the bot is worth.\n3. **Get vendor quotes** from 2\u20133 chatbot tools that work with Wix, Google Calendar, and Stripe. Confirm the total is under $100/month. Require that the price comes from your table, not the model's own reasoning (F2), and that bookings are requests, not confirmed jobs.\n4. **Make two calls:** your insurance agent (does your general liability or bonding policy say anything about quotes made by automated systems?) and the county and city (any licensing or advertising rules for cleaning services?). Consider a short attorney review of your terms of service.\n5. **Skip payments at first,** or limit the bot to a small capped deposit with a clear refund policy (F5).\n6. **Pilot for 30 days,** with you reviewing every booking request each morning. Track how often you change a price or slot.\n7. **Reassess.** If you're approving nearly everything unchanged after a month or two, you could let the bot auto-confirm only the narrowest case: standard recurring cleans of a known size, within a cap, in open slots. Keep everything else human-reviewed.\n\nYour instinct to save evening hours is right. The way to do it is to move the human check to a quick morning approval rather than eliminate it.",
+  "judge": {
+    "model": "openrouter/anthropic/claude-sonnet-5.5",
+    "letters": {
+      "baseline": "A",
+      "board": "B",
+      "baseline_research": "C"
+    },
+    "baseline": {
+      "risks": [
+        {
+          "risk": "Business is bound by what its chatbot promises",
+          "score": 2,
+          "quote": "Courts have held companies to what their chatbots said (the Air Canada case is the well-known example)."
+        }
+      ],
+      "actionable": 5,
+      "errors": []
+    },
+    "board": {
+      "risks": [
+        {
+          "risk": "Business is bound by what its chatbot promises",
+          "score": 2,
+          "quote": "whether a chat price could bind you under Maryland consumer law (unverified)"
+        }
+      ],
+      "actionable": 4,
+      "errors": []
+    },
+    "baseline_research": {
+      "risks": [
+        {
+          "risk": "Business is bound by what its chatbot promises",
+          "score": 2,
+          "quote": "Maryland's Consumer Protection Act could still apply to a misleading or unhonored price (F9, unverified)."
+        }
+      ],
+      "actionable": 4,
+      "errors": []
+    }
+  },
+  "cost_usd": {
+    "baselines": 0.0475,
+    "board": 0.1176,
+    "judge": 0.0142
+  }
+}

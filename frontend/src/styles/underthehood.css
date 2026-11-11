@@ -1833,29 +1833,39 @@ body:has(.uth) {
   font-weight: 600;
 }
 
-.uth-score__pips {
-  display: flex;
-  gap: 6px;
-}
-
-.uth-score__pips i {
-  width: 16px;
-  height: 16px;
-  border: 1.5px solid var(--text-3);
-  border-radius: 50%;
-}
-
-.uth-score__pips i.on {
-  border-color: var(--check-pass);
-  background: var(--check-pass);
-}
-
 .uth-score__n {
   font-size: 1.5rem;
   font-weight: 600;
   letter-spacing: -0.02em;
   text-align: right;
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* The measured run: the name with its note and grades under it, the risk points to the right. */
+.uth-score--eval > div {
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    'who n'
+    'meta n';
+  row-gap: 4px;
+}
+
+.uth-score--eval .uth-score__who {
+  grid-area: who;
+}
+
+.uth-score--eval .uth-score__n {
+  grid-area: n;
+}
+
+.uth-score__meta {
+  grid-area: meta;
+  color: var(--text-3);
+  font: 450 0.75rem/1.45 var(--font-mono);
+}
+
+.uth-score__meta span {
   white-space: nowrap;
 }
 

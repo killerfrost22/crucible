@@ -97,3 +97,24 @@ export const EVAL_SCENARIOS: { business: string; question: string; traps: string
     traps: ['Biometric privacy and notice', 'Misidentification and bias'],
   },
 ]
+
+/**
+ * The latest full eval run, copied by hand from backend/eval/results/20261110-214837/report.md (update it with each
+ * run). Risk points: per planted risk, 2 when the recommendation is built around it, 1 when it's only mentioned.
+ * Errors: claims the judge was confident are wrong, summed over the ten scenarios.
+ */
+export const EVAL_RUN: {
+  date: string
+  judge: string
+  most: number
+  arms: { id: 'baseline' | 'research' | 'board'; label: string; note: string; points: number; actionable: number; errors: number }[]
+} = {
+  date: 'Nov 10, 2026',
+  judge: 'Claude Sonnet 5.5',
+  most: 30,
+  arms: [
+    { id: 'baseline', label: 'One prompt', note: 'no research', points: 28, actionable: 4.1, errors: 4 },
+    { id: 'research', label: 'One prompt + research', note: 'given the board’s own research', points: 30, actionable: 4.3, errors: 3 },
+    { id: 'board', label: 'The board', note: 'the Chairman’s verdict', points: 30, actionable: 4.6, errors: 0 },
+  ],
+}

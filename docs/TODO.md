@@ -139,6 +139,55 @@ Browser review of local `main` (`42c49c4`) at 320, 375, 768, 1440 and 1920 px, b
   - **Where Your call lands (finished replay):** about 900 px down at 1440 (the verdict used to start about 7,150 px down), about 1,250 px at 768, and about 2,500 px on a phone (it used to be past 17,000).
   - **Folding:** research and debate have Show/Hide, open by default.
 - [x] **#9: source labels** (Nov 10).
+### Next: written decision brief and site clarity (Nov 10 live review)
+
+Reviewed the live home page, `/under-the-hood`, and finished bakery/dental recordings; desktop and mobile layouts, both themes. This is a **written reading experience**, not audio narration. Build on the existing brief, citation previews, folding controls and saved decisions rather than duplicating them.
+
+**Order:** decision reading view and complete conditions → print/PDF → lighter intake → homepage trimming → mobile explainer navigation.
+
+- [ ] **High: make the decision brief the default finished-meeting view.**
+  - **Problem:** the bakery's summary alone spans roughly three phone screens; the research and debate separate it from the full verdict.
+  - **Change:** offer **Decision brief** and **Meeting transcript** views. Open the brief after completion and when reopening a finished saved decision; keep the meeting experience while a run is in progress.
+  - **Reading order:**
+    1. Recommendation: outcome, headline and the precise scope of any pilot.
+    2. Why: decisive reasons and the strongest opposing argument.
+    3. Before proceeding: every condition and unresolved blocker.
+    4. Action plan: this week, next 30 days and next 90 days.
+    5. What would change the recommendation: assumptions to revisit.
+    6. Sources: evidence cited by this decision, with existing source-status labels.
+    7. Your decision: accept/override, explanation and date.
+  - **Presentation:** readable single-column layout with short section navigation; remove repeated brief/verdict passages. Keep the transcript available without making owners scroll through it to reach the recommendation.
+  - **Data:** reuse the structured verdict and citations, without a second AI-generated summary. Preserve dissent and caveats; “link checked” must not imply “claim verified”.
+  - **Done when:** finished bakery/dental recordings and a saved decision open into a coherent reading view; switching views preserves the owner's call and starts no new run. An interrupted meeting without a verdict remains clearly incomplete.
+
+- [ ] **High: show every prerequisite before the owner signs off.**
+  - **Problem:** the dental brief offers Accept while three conditions sit behind “more in the full verdict”.
+  - **Change:** keep all conditions and unresolved Realist blocks together in the reading view, before Your decision. Clearly distinguish **approving a conditional plan** from **being cleared to proceed**; accepting must not mark its prerequisites as satisfied.
+  - **Done when:** the dental pilot's full conditions are visible without opening the transcript, and acceptance preserves those conditions and the legal warning.
+
+- [ ] **High: add Print / Save as PDF for the decision brief.**
+  - **Include:** the question, recommendation, reasons and dissent, all conditions, action plan, assumptions to revisit, cited source URLs/statuses, and the owner's call/note/date if signed.
+  - **Exclude:** replay controls, animation, navigation and the full meeting transcript. Clearly label recordings/practice signatures as such.
+  - **Privacy:** export only on the owner's action; keep saved decision links browser-private rather than introducing public sharing.
+  - **Done when:** print preview contains all decision content even if it was never scrolled into view; no faded, clipped or hidden sections, and long text/source links remain readable across page breaks.
+
+- [ ] **Medium: make intake lighter and privacy guidance earlier.**
+  - **Problem:** ten fields are displayed, including eight optional business-context fields.
+  - **Change:** keep the question and leaning prominent; collapse optional context under **Add business details**. Place a short privacy/prototype warning before entry and retain the full data disclosure.
+  - **Done when:** a phone user can submit without scrolling through optional fields; opening/closing details preserves entered values, validation errors reveal the relevant field, and keyboard access works.
+
+- [ ] **Medium: trim repeated proof on the homepage.**
+  - **Problem:** the bakery example repeats across the walkthrough, advisor cards, verdict and recording gallery.
+  - **Change:** keep one strong interactive walkthrough and its actionable outcome. Shorten supporting sections to distinct advisor contributions instead of repeating the same concern.
+  - **Done when:** the product, outcome and next action are easy to scan on a phone; recordings and the question form remain easy to reach. Preserve theme support and the existing example-switching behavior.
+
+- [ ] **Medium: add mobile navigation to the technical explainer.**
+  - **Problem:** the long `/under-the-hood` page loses its desktop section navigation on smaller screens.
+  - **Change:** add a compact sticky **Contents** control or section picker, using the existing section anchors.
+  - **Done when:** any section can be reached without returning to the top at 375 and 768 px; keyboard focus and target headings stay visible below the header, including with reduced motion.
+
+**Review before marking these done:** check changed surfaces at 375/768/1440/1920 px in both themes, keyboard-only navigation and reduced motion. Use the bakery/dental recordings and a seeded saved decision for repeatable checks without paid runs. Keep the current visual identity, citation previews, explicit dissent and owner-final-call framing.
+
   - **Link check:** a new backend node, `check_sources`, opens every source link (SSRF-safe, 8 s cap) and stamps it `ok`/`broken`/`unreachable` with the date.
   - **Labels:** facts read "Link checked Nov 10", "Couldn't open link", "Link broken", "Source found" (older recordings) or "No source". The F-number preview has **Open source**.
   - **What it proves:** "link checked" means the page loaded, not that it backs the claim. The page says so.

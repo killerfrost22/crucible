@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { DECISION_COPY } from '../components/Verdict'
+import { DECISION_COPY } from '../lib/decisionCopy'
 import { existingUserId, listDecisions } from '../lib/api'
 import { navigateOnClick } from '../lib/nav'
 import type { DecisionSummary } from '../types'

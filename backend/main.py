@@ -6,6 +6,7 @@ Public routes (everything else answers 404 CRUCIBLE_NOT_FOUND):
   POST  /run_sse                                              run the board, stream events
   PATCH /apps/crucible/users/{user}/sessions/{session}        owner ratification (stateDelta)
   GET   /apps/crucible/users/{user}/sessions/{session}        reopen one decision (full session)
+  DELETE /apps/crucible/users/{user}/sessions/{session}       the owner deletes a decision
   GET   /apps/crucible/users/{user}/decisions                 the user's decisions, summarised by guard.py
 """
 

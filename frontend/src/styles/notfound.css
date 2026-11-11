@@ -88,6 +88,38 @@
   margin-top: var(--space-6);
 }
 
+.lost__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+
+.lost__detail {
+  margin-top: var(--space-5);
+  font-size: var(--step--1);
+  color: var(--text-3);
+}
+
+.lost__detail summary {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  cursor: pointer;
+}
+
+.lost__detail pre {
+  max-height: 12rem;
+  overflow: auto;
+  padding: var(--space-3);
+  border-radius: 8px;
+  background: var(--sunk);
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
 .lost__replays {
   margin-top: var(--space-8);
 }
@@ -126,6 +158,14 @@
   font-size: var(--step--1);
   color: var(--text-3);
   transition: color var(--dur-quick) var(--ease-out);
+}
+
+/* How the recording was made, in the meeting room's mono. */
+.lost__replay-meta {
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  line-height: 1.6;
+  color: var(--text-3);
 }
 
 .lost__replay:hover .lost__replay-label span {

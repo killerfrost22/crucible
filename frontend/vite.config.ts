@@ -1,5 +1,6 @@
 import react from '@vitejs/plugin-react'
 import { defineConfig, loadEnv } from 'vite'
+import { replaysPlugin } from './replaysPlugin.ts'
 
 // Port 5173 is the origin the backend's CORS allow-list expects.
 export default defineConfig(({ command, mode }) => {
@@ -9,7 +10,7 @@ export default defineConfig(({ command, mode }) => {
     throw new Error('VITE_API_BASE is not set. Set it to the backend URL (see frontend/.env.example) before building.')
   }
   return {
-    plugins: [react()],
+    plugins: [react(), replaysPlugin()],
     server: { port: 5173, strictPort: true },
   }
 })

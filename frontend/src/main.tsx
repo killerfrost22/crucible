@@ -5,13 +5,10 @@ import { createRoot } from 'react-dom/client'
 import { App } from './App'
 import { whenFontsReady } from './lib/fonts'
 import { initTheme } from './lib/theme'
+// Shared and home-page styles. The meeting room and /under-the-hood import their own, in their lazy chunks.
 import './styles/tokens.css'
 import './styles/base.css'
 import './styles/home.css'
-import './styles/underthehood.css'
-import './styles/board.css'
-import './styles/cards.css'
-import './styles/verdict.css'
 import './styles/notfound.css'
 
 initTheme()

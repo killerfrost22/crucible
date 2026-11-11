@@ -1433,6 +1433,64 @@
   text-wrap: balance;
 }
 
+/* ── This decision is saved: what's kept, and delete ─────────────────── */
+
+/* Its own row under everything else; on desktop it stays clear of the crucible column. */
+.forget {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: var(--space-3);
+  justify-items: start;
+  max-width: 48rem;
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--line);
+}
+
+@media (min-width: 1180px) {
+  .board:not([data-empty]) > .forget {
+    grid-column: 2 / -1;
+  }
+}
+
+.forget__title {
+  font-size: var(--step-1);
+  font-weight: 620;
+  letter-spacing: -0.01em;
+}
+
+.forget__body,
+.forget__ask {
+  max-width: 60ch;
+  font-size: var(--step--1);
+  color: var(--text-2);
+}
+
+.forget__ask {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.forget__confirm {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.forget__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+/* Destructive: the reject red, filled, so it can't be mistaken for "Keep it". */
+.forget__danger {
+  background: var(--decision-reject);
+  color: var(--bg);
+}
+
+.forget__danger:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--decision-reject) 88%, var(--text));
+}
+
 .chair-wait__actions {
   display: flex;
   flex-wrap: wrap;
@@ -1593,4 +1651,62 @@
 .peek__close:hover {
   background: var(--line);
   color: var(--text);
+}
+
+/* ── Recording label ──────────────────────────────────────────────────── */
+
+/* A line under the playback controls says how the recording was made. `contain: inline-size` keeps it from widening
+   the group, so the header row keeps exactly the width the controls need and the line fits whatever is left. */
+.replay:has(.replay__meta) {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  row-gap: 2px;
+}
+
+.replay__meta {
+  flex: 1 0 100%;
+  contain: inline-size;
+  overflow: hidden;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: -0.01em;
+  line-height: 1.4;
+  color: var(--text-3);
+  text-align: right;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The narrower the controls, the less of the label shows; all of it stays in the badge's title and accessible text. */
+@media (max-width: 799px) {
+  .replay__meta-models {
+    display: none;
+  }
+}
+
+@media (max-width: 599px) {
+  .replay__meta-search {
+    display: none;
+  }
+}
+
+/* The narrowest phones give the controls a row of their own, with room for the date and web search again. */
+@media (max-width: 359px) {
+  .frame__end .replay:has(.replay__meta) {
+    justify-content: space-between;
+  }
+
+  .replay__meta {
+    text-align: left;
+  }
+
+  .replay__meta-search {
+    display: inline;
+  }
+}
+
+/* With the label under the playback controls, line New and the theme toggle up with the buttons, not the label. */
+.frame__row:has(.replay__meta),
+.frame__end:has(.replay__meta) {
+  align-items: flex-start;
 }

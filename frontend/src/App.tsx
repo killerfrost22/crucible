@@ -1,12 +1,15 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { Board } from './components/Board'
+import { lazy, Suspense, useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
+import { ErrorBoundary } from './components/ErrorBoundary'
 import { NotFound } from './components/NotFound'
 import { Home, type Arrival } from './home/Home'
 import { draftFromIntake, emptyDraft, type IntakeDraft } from './lib/intakeDraft'
 import { navigate, UNDER_THE_HOOD } from './lib/nav'
 import type { RunSource } from './lib/useBoardRun'
 import type { Intake } from './types'
-import { UnderTheHood } from './underthehood/UnderTheHood'
+
+// The meeting room and the explainer load on first visit, with their own styles, so the home page doesn't pay for them.
+const Board = lazy(() => import('./components/Board').then((m) => ({ default: m.Board })))
+const UnderTheHood = lazy(() => import('./underthehood/UnderTheHood').then((m) => ({ default: m.UnderTheHood })))
 
 type View =
   | { kind: 'home'; arrival: Arrival }
@@ -95,20 +98,27 @@ export function App() {
     route.current = routeOf()
   }, [])
 
+  // Each view gets a fresh boundary, so a crash on one page never follows the owner to the next.
+  const shell = (key: string, page: ReactNode) => (
+    <ErrorBoundary key={key}>
+      <Suspense fallback={<div className="page" aria-busy="true" />}>{page}</Suspense>
+    </ErrorBoundary>
+  )
+
   if (view.kind === 'home') {
-    return <Home arrival={view.arrival} draft={draft} onChange={setDraft} onSubmit={startLive} onReplay={openReplay} />
+    return shell('home', <Home arrival={view.arrival} draft={draft} onChange={setDraft} onSubmit={startLive} onReplay={openReplay} />)
   }
   if (view.kind === 'under-the-hood') {
-    return <UnderTheHood onReplay={openReplay} />
+    return shell('under-the-hood', <UnderTheHood onReplay={openReplay} />)
   }
   if (view.kind === 'not-found') {
-    return <NotFound missing={{ kind: 'page' }} />
+    return shell('not-found', <NotFound missing={{ kind: 'page' }} />)
   }
 
   const { source } = view
-  return (
+  return shell(
+    `board-${view.run}`,
     <Board
-      key={view.run}
       source={source}
       onNew={() => navigate('/')}
       onReplay={openReplay}
@@ -130,6 +140,6 @@ export function App() {
             : undefined
       }
       onAskAgain={source.mode === 'saved' ? startLive : undefined}
-    />
+    />,
   )
 }

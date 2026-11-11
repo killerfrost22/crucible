@@ -31,7 +31,7 @@ const COPY: Record<Missing['kind'], { kicker: string; title: string; body: (m: M
     kicker: 'Decision not found',
     title: 'This decision isn’t saved in this browser.',
     body: () =>
-      'A decision opens only in the browser that made it, so nobody else can read it from the link. If you made it on another device, or cleared this browser’s data, it can’t be opened here.',
+      'A decision opens only in the browser that made it, so nobody else can read it from the link. If you made it on another device, cleared this browser’s data or deleted it, it can’t be opened here.',
   },
 }
 
@@ -77,6 +77,7 @@ export function NotFound({ missing }: { missing: Missing }) {
                       <span aria-hidden="true">→</span>
                     </span>
                     <span className="lost__replay-blurb">{r.blurb}</span>
+                    {r.recording && <span className="lost__replay-meta">{r.recording.label}</span>}
                   </a>
                 </li>
               )

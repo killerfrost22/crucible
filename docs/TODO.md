@@ -38,7 +38,7 @@
 - [x] Deploy the backend. It went to Vercel instead of Cloud Run: https://hacks2026-corkboard-api.vercel.app.
 - [x] Deploy the frontend to Vercel: https://smith26-crucible.vercel.app, with `VITE_API_BASE` pointing at the backend above.
 - [ ] Prompt fixes from Ruijie's eval report. One is already known: the five seats open with the same plan (see "the five seats agree from the start" in the website backlog).
-- [x] Re-record the HVAC replay with the final models. Done Nov 10: bakery, dental and HVAC were all re-recorded on the current Claude setup with web search and the link check, and `src/content.ts` (`FEATURED`) and `src/underthehood/recorded.ts` were updated to match. When you re-record again: `python eval/record_replay.py hvac-ai-promo-texts`, then update the same two files. The home page quotes are shortened, not reworded.
+- [x] Re-record the HVAC replay with the final models. Done Nov 10: bakery, dental and HVAC were all re-recorded on the current Claude setup with web search and the link check. When you re-record again (`python eval/record_replay.py hvac-ai-promo-texts`), the home page quotes, the `/under-the-hood` dental data and the recording labels update from the file on their own (see #20 + #21 below).
 **Sun**
 - [ ] Feature freeze at noon; final `AGENTS.md` review pass at 375/768/1440/1920.
 - [x] Put the public prototype link in the submission.
@@ -80,13 +80,21 @@ The challenge requires: MVP proof of concept · how we built it · how we'd use 
 - [ ] Team credits are a separate video, `videos/crucible-credits.mp4` (16.8 s, also appended to the end of the main cut): team cards, then music, voice and tech credits. Yizhan's card is the photo `videos/Retakes/Yizhan.HEIC`; Tiffany and Ruijie show letter tiles until we have their photos or a short clip of each. Still to add: any coaching acknowledgement (rules require it) and the AI tools used to build Crucible. On Nov 10, neither `crucible-credits.mp4` nor `videos/Retakes/` was in the `videos/` folder of the copy that was checked; find them before re-cutting for the finals.
 - [x] Export and upload to the designated Google Drive before Sun 11:59 pm.
 
+## Finals presentation (Tue Nov 17)
+- [x] Deck: `docs/finals/crucible-finals.pptx` (brand fonts embedded) and `crucible-finals.pdf`. 14 slides, about 10 minutes plus a 2–3 minute live demo (slide 6). Each slide's notes have a suggested speaker (Tiffany 1–3 and 12–13, Yizhan 4–6 and 11, Ruijie 7–10) and a script; the last slide's notes list likely judge questions with answers. Numbers and quotes come from the three recordings in `frontend/public/replays/` as of Nov 10.
+- [ ] Slide 10 (Evidence) quotes only the early dental test (one prompt 0 of 2, the board 2 of 2). Replace it with the full table once `eval/results/<timestamp>/report.md` is committed.
+- [ ] Slides 3, 7, 8 and 9 quote the recordings. Re-check them whenever a replay is re-recorded.
+- [ ] Re-check the competitor facts on slide 12 (checked Nov 7).
+- [ ] If the rules require the coaching acknowledgement and the AI-tools credit (see the credits item above), add them to the last slide.
+
 ## After submission: website backlog (review of Mon Nov 9)
 Browser review of local `main` (`42c49c4`) at 320, 375, 768, 1440 and 1920 px, both themes. Numbers (G1, #5…) point to [`WEBSITE_REVIEW.md`](WEBSITE_REVIEW.md), which has the reasoning and full acceptance criteria; **New** items aren't in it.
-- On Nov 9 these were still broken in the browser: G1, #1, #2, #4, #12, #16, #18. These were still broken in the source: G2, G3, G4, #3 wording, #10. All but #12 and G4 were fixed on Nov 10 (see below).
+- On Nov 9 these were still broken in the browser: G1, #1, #2, #4, #12, #16, #18. These were still broken in the source: G2, G3, G4, #3 wording, #10. All of them were fixed on Nov 10 (see below).
 - Fixed since the review: the Postgres driver (#3 storage note). `backend/requirements.txt` has `asyncpg` and `sqlalchemy[asyncio]`, and the README documents `postgresql+asyncpg://`.
 - Good baseline to keep: axe-core 4.10 finds 0 WCAG 2.2 A/AA violations on `/`, `/under-the-hood` and a finished dental replay, in both themes. No page scrolls sideways at any width.
 - **Nov 10:** the "Before finals" list below is done in code, except what still has to be checked on the live deploy or an older iPhone. It was committed as `4335f71`, pushed, and Vercel deployed both projects (see the Live table at the top). Each item says where it was checked (Chromium, both themes). axe-core is still at 0 violations, now also on the not-found page and the "can't reach the server" screen. No credit was spent: the meetings were replays, and the one live run was refused by the guard before any model call.
-- **Nov 10, later:** #3 + #19, #5, #7, #8 and #9 from "Next" are done locally, with a backend link check and three re-recordings. One paid live meeting ran end to end. axe-core is at 0 violations on the finished replay, the saved decision, the home page with **Your decisions** and "Decision not found", in both themes. None of this is committed yet.
+- **Nov 10, later:** #3 + #19, #5, #7, #8 and #9 from "Next" are done, with a backend link check and three re-recordings. One paid live meeting ran end to end. axe-core is at 0 violations on the finished replay, the saved decision, the home page with **Your decisions** and "Decision not found", in both themes. Committed and pushed as `c5e9655`.
+- **Nov 10, last batch:** the rest of "Next" is done: #11, #10, #12, #6, G4, #15, #17 and #20 + #21. No paid runs. Checked in Chromium at 320–1920 px: no page scrolls sideways, and no text overflows except the visually hidden table headers on `/under-the-hood`, which are meant to be clipped. axe-core is at 0 violations on `/` (data notice open), a saved decision (delete confirm open), `/under-the-hood` and "Decision not found", in both themes.
 
 ### Before finals (Tue Nov 17): anything a judge can click
 - [x] **G1: advisor links no longer restart the meeting.** `App.tsx` now compares path and query only, so a `#fragment` never remounts the board. Checked on a finished dental replay: the standings links, the skip link and Back ×2 keep the verdict and a practice signature, and the recording isn't fetched again.
@@ -148,14 +156,44 @@ Browser review of local `main` (`42c49c4`) at 320, 375, 768, 1440 and 1920 px, b
     - give each seat a question only it answers;
     - make the Devil's Advocate argue against whatever plan the others are likely to reach, not only against the owner's leaning.
   - **Check:** re-record and compare the Round 1 headlines.
-- [ ] **#11: a data notice next to Convene.** What goes to OpenRouter and web search, what is stored, and how to delete it. Warn against entering patient, customer or payment data. Since Nov 10, also say that decisions are saved, and can be reopened only from this browser (its owner id is in local storage). Clearing site data loses access to them, but the decisions themselves stay on the server.
-- [ ] **#10: Maryland scope.** The SBDC referral is hard-coded for every location (`Verdict.tsx:19, 179–182`). Call it a Maryland pilot, or route referrals by state.
-- [ ] **#12: sessions grid.** The fourth card leaves two-thirds of a row empty at 1440 and 1920 px.
-- [ ] **#6: hero copy.** Say who it's for (small-business owners) and what they leave with, not only how it works.
-- [ ] **G4: error boundary and event checks.** There is no error boundary anywhere in `src/`, so one malformed event blanks the page.
-- [ ] **#15: a "Skip effect" control** for the cursor build effect on `/under-the-hood`. While the effect runs, axe also flags the advisor-name labels on the cursors for contrast (1.1–1.3:1).
-- [ ] **#17: code-split.** The production build is one 540 KB JS chunk (168 KB gzipped) plus 134 KB of CSS (26 KB gzipped), measured Nov 10. Vite warns about the size. On Nov 9, with a local preview, fast 3G and 4× CPU throttling, LCP was 1.2 s and CLS 0. That's fine today, so lazy-load `/under-the-hood` and the meeting room before adding more effects.
-- [ ] **#20 + #21: replay labels and quotes.** All three recordings are now from Nov 10 on the current setup with web search. Still to do: label each replay with its date and models, and build the home and explainer quotes (`src/content.ts` `FEATURED`, `underthehood/recorded.ts`) from the replay files instead of copying them by hand.
+- [x] **#11: a data notice next to Convene** (Nov 10).
+  - **Above the button:** "Don't enter patient, customer or payment details. Describe the decision, not the people in it."
+  - **"What happens to what you type"** (a disclosure) covers three things:
+    - what goes through OpenRouter to Anthropic's Claude models and to web search, with a link to OpenRouter's data policy;
+    - what Crucible keeps: the decision, keyed only by a random id in this browser, and a redeploy can wipe it;
+    - how to delete it.
+  - **Deleting:** every saved decision now ends with **Delete this decision**, a two-step confirm that calls the new guard-allowed `DELETE` session route.
+  - **Checked on a seeded local store:** the decision disappears from **Your decisions** and its link then shows "Decision not found". Another owner id's `DELETE` changes nothing.
+- [x] **#10: SBDC by state** (Nov 10). `lib/sbdc.ts` sends a Maryland location to the Maryland SBDC and everywhere else (or no location) to America's SBDC locator. The escalation heading now reads "Talk to a Small Business Development Center advisor".
+  - **Checked:** a replay edited to `sbdc_advisor` linked to marylandsbdc.org for Silver Spring, MD and to americassbdc.org for Austin, TX.
+  - **Footers:** both footers now say Crucible was built and tested on Maryland businesses and point to your local SBDC (in Maryland, the Maryland SBDC). The Chairman's prompt already asks for "the local SBDC".
+- [x] **#12: sessions grid** (Nov 10). The three recordings stay in one row. From 768 px the fourth card, "Your business · your question", is a full-width strip in the same three columns: its thumbnail under the first card, the text in the middle, and a 44 px **Convene your board** pill on the right. Mobile order is unchanged. Checked at 1440 and 1920 px.
+- [x] **#6: hero copy** (Nov 10). "For small-business owners with a call to make. Five AI advisors research it and argue it out, and you leave with a recommendation, what it depends on, and what to do this week. The final call stays yours." The meta description names the audience too.
+- [x] **G4: event checks and an error boundary** (Nov 10).
+  - **Checks:** every model answer and saved-state key is checked against the schema (`lib/validate.ts`) before it reaches the board. A misfit is left out with a "Part of this meeting couldn't be read" notice; nothing is invented to fill it.
+  - **Boundary:** each view sits in an `ErrorBoundary` with a "This page cracked in the mould." screen offering Reload / Go to the home page.
+  - **Checked:**
+    - a saved decision whose verdict says `decision: "maybe"` keeps its research and seats and shows the notice;
+    - a real render crash (mid-edit `Sessions` code) showed the recovery screen instead of a blank page.
+- [x] **#15: Skip effect** (Nov 10). While the build effect runs, the corner button reads **Skip effect**. Any section link (header nav, the index, the skip link) also ends the effect, with every part visible at once. Checked: jumping to Evaluation mid-effect showed all 7 parts immediately, with focus on the section.
+- [x] **#17: code-split** (Nov 10). The meeting room and `/under-the-hood` are lazy chunks with their own CSS. The home page now loads one 312 KB JS file (96 KB gzipped) and 57 KB of CSS (12 KB gzipped).
+
+  | Chunk | JS (gzipped) | CSS (gzipped) | Loaded |
+  |---|---|---|---|
+  | Home + shared | 96 KB | 12 KB | always |
+  | Meeting room (`Board`) | 63 KB | 9 KB | first meeting, replay or saved decision |
+  | `/under-the-hood` | 17 KB | 7 KB | first visit to it |
+  | Before, all in one | 168 KB | 26 KB | always |
+
+  - **Measured** on a local preview with fast 3G and 4× CPU throttling: LCP 1.2 s, CLS 0, no long tasks. That's unchanged from Nov 9; the first paint here is dominated by latency, not bytes.
+  - **Verified:** the home page fetched only `index.js` and `index.css`, and opening a replay then fetched `Board.js` and `Board.css`.
+  - [ ] Every build prints a warning from Vite's upcoming native config loader about extensionless imports (`src/lib/sse.ts`, `recording.ts`, `featured.ts`), because `replaysPlugin.ts` pulls them into the config. It's harmless today; adding `.ts` extensions to those imports (with `allowImportingTsExtensions`) would silence it.
+- [x] **#20 + #21: replay labels and quotes from the files** (Nov 10).
+  - **The plugin:** `frontend/replaysPlugin.ts` reads every `public/replays/*.sse` at dev and build time and serves it as virtual modules.
+  - **Home page quotes:** picked at build time by rules in `src/lib/featured.ts`, e.g. the first fact of each link outcome, or the Devil's Advocate's first rebuttal and the answers to it. They are shortened only by keeping whole leading sentences, and `(Fn)` is dropped from verdict excerpts.
+  - **`/under-the-hood`:** `underthehood/recorded.ts` takes the dental data from the same source. The result figure now shows the recorded verdict headline.
+  - **Labels:** each recording shows "Recorded Nov 10, 2026 · Claude Sonnet 5.5 + Haiku 5.5 · web search on": on the home cards, the `/under-the-hood` list, the not-found list, and under the meeting-room controls (shortened on phones; the full text is in the badge's accessible name). The old error recording reads "Recorded Nov 6, 2026 · gemini-3.5-flash-lite · web search off".
+  - **Checked:** editing a sentence in a `.sse` changed the page with no change to `content.ts` (then reverted). Some home excerpts changed because the rules now pick them (e.g. bakery F2 replaces F7).
 
 ### Keep improving: make every change checkable
 - [ ] **New: CI.** There is no `.github/`, no test and no lint script. Add a GitHub Action that runs `npm ci && npm run build` in `frontend/` and builds the backend app with `python -c "import main"` in `backend/` (this passes locally today) on every push and PR. Turn on Vercel preview deploys for PRs.

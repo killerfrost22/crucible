@@ -2155,6 +2155,7 @@ button.hm-mbtn:active {
 /* ── Recorded sessions ───────────────────────────────────────────────── */
 
 .hm-replays {
+  --hm-replay-pad: clamp(1.25rem, 0.8rem + 1.6vw, 2.5rem);
   display: grid;
   gap: 1px;
   padding-inline: 0;
@@ -2163,7 +2164,7 @@ button.hm-mbtn:active {
 
 @media (min-width: 48rem) {
   .hm-replays {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
@@ -2177,7 +2178,7 @@ button.hm-mbtn:active {
   flex-direction: column;
   align-items: flex-start;
   width: 100%;
-  padding: clamp(1.25rem, 0.8rem + 1.6vw, 2.5rem);
+  padding: var(--hm-replay-pad);
   border: 0;
   background: transparent;
   text-align: left;
@@ -2220,6 +2221,7 @@ button.hm-mbtn:active {
 
 /* Five seats around the table above the play button, the Chairman at its head below. */
 .hm-replay__table {
+  --hm-ring: clamp(2.25rem, 21cqi, 5.5rem);
   position: absolute;
   inset: 0;
 }
@@ -2229,7 +2231,7 @@ button.hm-mbtn:active {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: calc(2 * clamp(2.25rem, 21cqi, 5.5rem));
+  width: calc(2 * var(--hm-ring));
   aspect-ratio: 1;
   border: 1px dashed var(--line-strong);
   border-radius: 50%;
@@ -2246,7 +2248,7 @@ button.hm-mbtn:active {
   margin: -0.35rem 0 0 -0.35rem;
   border-radius: 2px;
   background: var(--k);
-  transform: rotate(var(--a)) translateX(clamp(2.25rem, 21cqi, 5.5rem)) rotate(calc(var(--a) * -1));
+  transform: rotate(var(--a)) translateX(var(--hm-ring)) rotate(calc(var(--a) * -1));
 }
 
 .hm-replay__thumb {
@@ -2309,6 +2311,47 @@ button.hm-mbtn:active {
   border-left-style: solid;
 }
 
+/* Your own meeting: the same table with its seats still empty. They fill, one by one, on hover. */
+.hm-replay__table--empty i {
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px var(--k);
+}
+
+.hm-replay__table--empty i::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--k);
+  opacity: 0;
+  transition: opacity var(--dur-base) var(--ease-out);
+}
+
+.hm-replay:hover .hm-replay__table--empty i::after,
+.hm-replay:focus-visible .hm-replay__table--empty i::after {
+  opacity: 1;
+}
+
+.hm-replay__table--empty i:nth-child(2)::after {
+  transition-delay: 40ms;
+}
+
+.hm-replay__table--empty i:nth-child(3)::after {
+  transition-delay: 80ms;
+}
+
+.hm-replay__table--empty i:nth-child(4)::after {
+  transition-delay: 120ms;
+}
+
+.hm-replay__table--empty i:nth-child(5)::after {
+  transition-delay: 160ms;
+}
+
+.hm-replay__table--empty i:nth-child(6)::after {
+  transition-delay: 240ms;
+}
+
 .hm-replay__q {
   font-family: var(--font-mono);
   font-size: 3rem;
@@ -2352,6 +2395,103 @@ button.hm-mbtn:active {
 
 .hm-replay:hover .hm-replay__cta svg {
   transform: translateX(3px);
+}
+
+/* How the recording was made: when and with web search on one line, the models on the next. */
+.hm-replay__meta {
+  display: flex;
+  flex-direction: column;
+  margin-top: var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  line-height: 1.6;
+  color: var(--text-3);
+}
+
+.hm-replay__text {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 48rem) {
+  /*
+   * The fourth card is a full-width strip under the three recordings, laid on the same column lines: its column gap is
+   * two paddings plus the 1px rule, so the thumb sits exactly under the first card's.
+   */
+  .hm-replays > li:has(.hm-replay--own) {
+    grid-column: 1 / -1;
+  }
+
+  .hm-replay--own {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: 1fr auto;
+    column-gap: calc(2 * var(--hm-replay-pad) + 1px);
+  }
+
+  .hm-replay--own .hm-replay__thumb {
+    grid-row: 1 / -1;
+    align-self: stretch;
+    aspect-ratio: auto;
+    min-height: 10rem;
+    margin-bottom: 0;
+  }
+
+  /* A band, not a frame: the table shrinks to the band's height. */
+  .hm-replay__table--empty {
+    --hm-ring: min(4rem, 21cqi);
+  }
+
+  .hm-replay--own .hm-replay__text {
+    grid-column: 2 / -1;
+    align-self: end;
+  }
+
+  /* The strip's way in is a pill, so the one card that starts a live meeting reads as an action. */
+  .hm-replay--own .hm-replay__cta {
+    grid-column: 2 / -1;
+    justify-self: start;
+    align-self: start;
+    min-height: 44px;
+    margin-top: var(--space-4);
+    padding: 0 1.1rem;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    transition:
+      background-color var(--dur-base) var(--ease-out),
+      border-color var(--dur-base) var(--ease-out),
+      color var(--dur-base) var(--ease-out);
+  }
+
+  .hm-replay--own:hover .hm-replay__cta,
+  .hm-replay--own:focus-visible .hm-replay__cta {
+    border-color: var(--text);
+    background: var(--text);
+    color: var(--bg);
+  }
+
+  .hm-replay--own:active .hm-replay__cta {
+    transform: scale(0.98);
+  }
+}
+
+/* Wide: the text under the second recording, the call to action under the third. */
+@media (min-width: 64rem) {
+  .hm-replay--own {
+    grid-template-rows: auto;
+    align-items: center;
+  }
+
+  .hm-replay--own .hm-replay__text {
+    grid-column: 2;
+    align-self: center;
+  }
+
+  .hm-replay--own .hm-replay__cta {
+    grid-column: 3;
+    align-self: center;
+    margin-top: 0;
+  }
 }
 
 /* ── Convene ─────────────────────────────────────────────────────────── */
@@ -2558,6 +2698,72 @@ button.hm-mbtn:active {
   .hm-field--wide {
     grid-column: 1 / -1;
   }
+}
+
+/* Read before the button, so it sits above it: one warning line, the details one click away. */
+.hm-privacy {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-4) var(--space-3);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--check-flag);
+  border-radius: 10px;
+  background: var(--surface-2);
+  font-size: var(--step--1);
+  line-height: 1.5;
+  color: var(--text-2);
+}
+
+.hm-privacy__title {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.hm-privacy__warn b {
+  font-weight: 650;
+  color: var(--text);
+}
+
+.hm-privacy__more summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  min-height: 44px;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 3px;
+}
+
+.hm-privacy__more summary:hover {
+  text-decoration-color: currentColor;
+}
+
+.hm-privacy__more dl {
+  display: grid;
+  gap: var(--space-3);
+  padding-bottom: var(--space-2);
+}
+
+.hm-privacy__more dt {
+  font-weight: 650;
+  color: var(--text);
+}
+
+.hm-privacy__more dd {
+  max-width: 62ch;
+  margin-top: 0.15rem;
+}
+
+.hm-privacy__more a {
+  color: var(--text);
+  text-underline-offset: 3px;
 }
 
 .hm-form__submit {

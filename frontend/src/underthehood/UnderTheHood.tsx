@@ -1,4 +1,4 @@
-import { memo, useLayoutEffect, useRef, type CSSProperties, type MouseEvent, type ReactNode } from 'react'
+import { memo, useLayoutEffect, useRef, useState, type CSSProperties, type MouseEvent, type ReactNode } from 'react'
 import { SeatArt } from '../components/SeatArt'
 import { ThemeToggle } from '../components/ThemeToggle'
 import { Wordmark } from '../components/Wordmark'
@@ -6,6 +6,7 @@ import { MEMBERS } from '../content'
 import { whenFontsReady } from '../lib/fonts'
 import { navigateOnClick } from '../lib/nav'
 import { REPLAYS } from '../lib/replay'
+import { FIND_YOUR_SBDC, MARYLAND_SBDC } from '../lib/sbdc'
 import { SEAT_BY_ID, SEATS } from '../seats'
 import { startBuildFx, type FxAdvisor } from './buildFx'
 import { Pipeline } from './Pipeline'
@@ -13,11 +14,15 @@ import {
   DENTAL_CHECKS,
   DENTAL_FACTS,
   DENTAL_REPLAY,
+  DENTAL_RECORDING,
   DENTAL_STREAM,
   DENTAL_CHECKED,
+  DENTAL_VERDICT,
   EVAL_SCENARIOS,
   REALIST_R2_TARGETS,
 } from './recorded'
+// Ships with this page's chunk (App lazy-loads it).
+import '../styles/underthehood.css'
 
 interface UnderTheHoodProps {
   onReplay: (name: string) => void
@@ -83,6 +88,8 @@ const SECTION = Object.fromEntries(SECTIONS.map((s) => [s.id, s])) as Record<Sec
 export function UnderTheHood({ onReplay }: UnderTheHoodProps) {
   const rootRef = useRef<HTMLDivElement>(null)
   const stopFx = useRef<(() => void) | null>(null)
+  /** The build effect is assembling the page; the corner control offers to skip it. */
+  const [building, setBuilding] = useState(false)
 
   const runFx = () => {
     const root = rootRef.current
@@ -91,10 +98,19 @@ export function UnderTheHood({ onReplay }: UnderTheHoodProps) {
     stopFx.current = null
     try {
       stopFx.current = startBuildFx(root, FX_ADVISORS)
+      setBuilding(true)
     } catch (error) {
       root.classList.remove('fx', 'fx-reset')
       console.error('Build effect failed to start', error)
     }
+  }
+
+  /** Ends the effect where it is; its cleanup leaves every part of the page visible. */
+  const skipFx = () => {
+    stopFx.current?.()
+    stopFx.current = null
+    rootRef.current?.classList.remove('fx')
+    setBuilding(false)
   }
 
   useLayoutEffect(() => {
@@ -117,6 +133,7 @@ export function UnderTheHood({ onReplay }: UnderTheHoodProps) {
       if (!motion.matches) return
       stopFx.current?.()
       stopFx.current = null
+      setBuilding(false)
     }
     motion.addEventListener('change', onMotion)
     return () => {
@@ -136,8 +153,13 @@ export function UnderTheHood({ onReplay }: UnderTheHoodProps) {
     runFx()
   }
 
+  // A jump to a section (header nav, the index, the skip link) wants to read it now, not watch it get built.
+  const onClickCapture = (event: MouseEvent) => {
+    if (building && event.target instanceof Element && event.target.closest('a[href^="#"]')) skipFx()
+  }
+
   return (
-    <div className="uth" ref={rootRef}>
+    <div className="uth" ref={rootRef} onClickCapture={onClickCapture}>
       <a className="uth-skip" href="#top" onClick={jump('top')}>
         Skip to content
       </a>
@@ -147,13 +169,22 @@ export function UnderTheHood({ onReplay }: UnderTheHoodProps) {
       </main>
       <Footer />
       <div className="uth-fxctl">
-        <button type="button" className="uth-fxctl__btn" onClick={replayFx}>
-          <svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true">
-            <path d="M13.5 8a5.5 5.5 0 1 1-1.7-4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-            <path d="M12.4 1.2v3.4H9" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-          <span>Replay effect</span>
-        </button>
+        {building ? (
+          <button type="button" className="uth-fxctl__btn" onClick={skipFx}>
+            <svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true">
+              <path d="M3 3.2v9.6L9.5 8zM10.5 3.2h2.2v9.6h-2.2z" fill="currentColor" />
+            </svg>
+            <span>Skip effect</span>
+          </button>
+        ) : (
+          <button type="button" className="uth-fxctl__btn" onClick={replayFx}>
+            <svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true">
+              <path d="M13.5 8a5.5 5.5 0 1 1-1.7-4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+              <path d="M12.4 1.2v3.4H9" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            <span>Replay effect</span>
+          </button>
+        )}
       </div>
     </div>
   )
@@ -693,17 +724,18 @@ function Evaluation({ onReplay }: { onReplay: (name: string) => void }) {
           </figure>
 
           <figure className="uth-result" data-part>
-            <figcaption>Current Claude setup · recorded dental meeting</figcaption>
+            <figcaption>{DENTAL_RECORDING ? `${DENTAL_RECORDING.models} · ` : ''}recorded dental meeting</figcaption>
             <p className="uth-result__big">
               <b>
                 {DENTAL_CHECKED} of {DENTAL_FACTS.length}
               </b>{' '}
               facts with a source link that opened.
             </p>
-            <p>
-              The verdict was to pilot after-hours and overflow calls only, once Maryland’s all-party recording consent and a signed BAA on
-              the exact plan are in place.
-            </p>
+            {DENTAL_VERDICT && (
+              <p>
+                The Chairman’s call: <b>{DENTAL_VERDICT.decision}</b>. “{DENTAL_VERDICT.headline}”
+              </p>
+            )}
             <button type="button" className="uth-link" onClick={() => onReplay(DENTAL_REPLAY)}>
               Watch that meeting
               <ArrowIcon />
@@ -822,10 +854,20 @@ function Frontend({ onReplay }: { onReplay: (name: string) => void }) {
             <ul className="uth-replays">
               {REPLAYS.map((r) => (
                 <li key={r.name}>
-                  <button type="button" className="uth-link" onClick={() => onReplay(r.name)}>
+                  <button
+                    type="button"
+                    className="uth-link"
+                    onClick={() => onReplay(r.name)}
+                    aria-describedby={r.recording ? `uth-replay-${r.name}` : undefined}
+                  >
                     <PlayIcon />
                     {r.label}
                   </button>
+                  {r.recording && (
+                    <span className="uth-replays__meta" id={`uth-replay-${r.name}`}>
+                      {r.recording.label}
+                    </span>
+                  )}
                 </li>
               ))}
             </ul>
@@ -892,11 +934,16 @@ const Footer = memo(function Footer() {
       <div className="uth-wrap uth-foot__row">
         <Wordmark />
         <p>
-          Crucible is a hackathon prototype. The advisors are AI and can be wrong. The final call is always yours. For free one-on-one help, the{' '}
-          <a href="https://www.marylandsbdc.org/" target="_blank" rel="noreferrer">
-            Maryland SBDC
+          Crucible is a hackathon prototype, built and tested on Maryland businesses. The advisors are AI and can be wrong. The final call is
+          always yours. For free one-on-one help, your local{' '}
+          <a href={FIND_YOUR_SBDC.url} target="_blank" rel="noreferrer">
+            Small Business Development Center
           </a>{' '}
-          is a good next stop.
+          is a good next stop (in Maryland, the{' '}
+          <a href={MARYLAND_SBDC.url} target="_blank" rel="noreferrer">
+            Maryland SBDC
+          </a>
+          ).
         </p>
       </div>
     </footer>

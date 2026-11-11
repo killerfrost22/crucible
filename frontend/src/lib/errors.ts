@@ -6,6 +6,8 @@ import type { BoardError } from './board'
 export const CLIENT_NETWORK = 'CLIENT_NETWORK'
 export const CLIENT_INCOMPLETE = 'CLIENT_INCOMPLETE'
 export const CLIENT_REPLAY = 'CLIENT_REPLAY'
+/** An answer that doesn't fit its schema (lib/validate.ts): it isn't shown, and the meeting goes on without it. */
+export const CLIENT_INVALID = 'CLIENT_INVALID'
 /** `?replay=<name>` names a recording we don't ship: Board shows the not-found page, not a meeting. */
 export const CLIENT_REPLAY_MISSING = 'CLIENT_REPLAY_MISSING'
 /** `?decision=<id>` that this browser doesn't own (or that no longer exists): Board shows the not-found page. */
@@ -90,6 +92,15 @@ export function humanizeErrors(errors: BoardError[]): HumanError | null {
       kind: 'incomplete',
       title: 'The meeting ended early.',
       body: 'The connection closed before the Chairman gave a recommendation.',
+      detail,
+    }
+  }
+  // Only unreadable answers (anything else matched above): the board itself didn't fail.
+  if (errors.every((e) => e.code === CLIENT_INVALID)) {
+    return {
+      kind: 'failed',
+      title: 'Part of this meeting couldn’t be read.',
+      body: `${seat ? `${seat}’s answer` : 'One of the board’s answers'} came back in a shape Crucible doesn’t recognise, so it isn’t shown, and there is no recommendation to show without it. You can ask the question again.`,
       detail,
     }
   }

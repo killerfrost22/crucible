@@ -129,6 +129,47 @@ export function IntakeForm({ draft, onChange, onSubmit }: IntakeFormProps) {
         </div>
       </fieldset>
 
+      <aside className="hm-privacy" aria-labelledby={`${ids}-privacy`}>
+        <p className="hm-privacy__title" id={`${ids}-privacy`}>
+          Before you convene
+        </p>
+        <p className="hm-privacy__warn">
+          <b>Don’t enter patient, customer or payment details.</b> Describe the decision, not the people in it.
+        </p>
+        <details className="hm-privacy__more">
+          <summary>What happens to what you type</summary>
+          <dl>
+            <div>
+              <dt>Sent to the AI</dt>
+              <dd>
+                Your question and business details go through OpenRouter to Anthropic’s Claude models, which run all twelve calls, and the
+                web search runs on your question, industry and location. OpenRouter says it doesn’t keep prompts unless an account opts in (
+                <a href="https://openrouter.ai/docs/guides/privacy/data-collection" target="_blank" rel="noreferrer">
+                  its policy
+                  <span className="visually-hidden"> (opens in a new tab)</span>
+                </a>
+                ). Anthropic and the search provider handle requests under their own policies.
+              </dd>
+            </div>
+            <div>
+              <dt>Kept by Crucible</dt>
+              <dd>
+                The decision (your question and details, the whole meeting, and your signed call) is saved on Crucible’s server so you can
+                reopen it. The only key to it is a random id in this browser’s storage: no account, name or email. This is a prototype, so a
+                redeploy can also wipe saved decisions.
+              </dd>
+            </div>
+            <div>
+              <dt>Deleting it</dt>
+              <dd>
+                Open the decision (it’s under <b>Your decisions</b> on this page) and choose <b>Delete this decision</b>. Clearing this
+                browser’s data only loses the key; the decision stays on the server until it’s deleted.
+              </dd>
+            </div>
+          </dl>
+        </details>
+      </aside>
+
       <div className="hm-form__submit">
         <button type="submit" className="hm-btn hm-btn--primary hm-btn--lg">
           Convene the board

@@ -1,21 +1,27 @@
 import { MotionConfig } from 'motion/react'
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import { CLIENT_DECISION_MISSING, CLIENT_REPLAY_MISSING, humanizeErrors } from '../lib/errors'
-import { REPLAYS } from '../lib/replay'
+import { DECISION_COPY } from '../lib/decisionCopy'
+import { CLIENT_DECISION_MISSING, CLIENT_INVALID, CLIENT_REPLAY_MISSING, humanizeErrors } from '../lib/errors'
+import { recordingFacts, REPLAYS } from '../lib/replay'
 import { REPLAY_SPEEDS, useBoardRun, type RunSource } from '../lib/useBoardRun'
 import { SEATS } from '../seats'
 import type { Intake, SeatId } from '../types'
 import { EvidenceSheet, QuestionCard } from './Brief'
 import { Crucible, Standings, type Filament } from './Crucible'
+import { DeleteDecision } from './DeleteDecision'
 import { FactProvider } from './facts'
 import { FoldToggle } from './Fold'
 import { NotFound, type Missing } from './NotFound'
 import { ErrorNotice, FactPeek } from './Notices'
 import { PHASE_STEPS, PhaseRail } from './PhaseRail'
 import { SeatCard } from './SeatCard'
-import { DECISION_COPY, DecisionBrief, VerdictCard, YourCall } from './Verdict'
+import { DecisionBrief, VerdictCard, YourCall } from './Verdict'
 import { ThemeToggle } from './ThemeToggle'
 import { Wordmark } from './Wordmark'
+// The meeting room's styles ship with its chunk (App lazy-loads this component).
+import '../styles/board.css'
+import '../styles/cards.css'
+import '../styles/verdict.css'
 
 interface BoardProps {
   source: RunSource
@@ -36,7 +42,8 @@ export function Board({ source, onNew, onEdit, onRetry, onAskAgain, onReplay, on
   const replay = source.mode === 'replay'
   const saved = source.mode === 'saved'
   const error = humanizeErrors(board.errors)
-  const stopped = !board.verdict && (board.errors.length > 0 || transport === 'done')
+  // An unreadable answer is left out but doesn't end the meeting; any other error does.
+  const stopped = !board.verdict && (board.errors.some((e) => e.code !== CLIENT_INVALID) || transport === 'done')
   const missing: Missing | null =
     source.mode === 'replay' && board.errors.some((e) => e.code === CLIENT_REPLAY_MISSING)
       ? { kind: 'recording', name: source.name }
@@ -119,6 +126,8 @@ export function Board({ source, onNew, onEdit, onRetry, onAskAgain, onReplay, on
   }, [hasVerdict, saved])
 
   const replayInfo = replay ? REPLAYS.find((r) => r.name === source.name) : undefined
+  // Read from the file itself, so a recording outside REPLAYS (the error-screen test) is labelled too.
+  const recording = replay ? recordingFacts(source.name) : undefined
   const otherReplay = REPLAYS.find((r) => r.name !== (replay ? source.name : ''))
   const twoRounds = board.phase === 'rebuttals' || Object.keys(board.round2).length > 0
   const nextSpeed = REPLAY_SPEEDS[(REPLAY_SPEEDS.indexOf(run.speed) + 1) % REPLAY_SPEEDS.length]
@@ -145,8 +154,9 @@ export function Board({ source, onNew, onEdit, onRetry, onAskAgain, onReplay, on
               <div className="frame__end">
                 {replay ? (
                   <div className="replay" role="group" aria-label="Recorded session controls">
-                    <span className="replay__badge" title={replayInfo?.label}>
+                    <span className="replay__badge" title={[replayInfo?.label, recording?.label].filter(Boolean).join('. ') || undefined}>
                       Recorded
+                      {recording && <span className="visually-hidden">: {recording.label.replace(/^Recorded\s/, '')}</span>}
                     </span>
                     <button
                       type="button"
@@ -185,6 +195,19 @@ export function Board({ source, onNew, onEdit, onRetry, onAskAgain, onReplay, on
                     <button type="button" className="replay__skip" onClick={run.skipToEnd} disabled={transport === 'done'}>
                       Skip<span className="frame__long"> to end</span>
                     </button>
+                    {recording && (
+                      <p className="replay__meta" aria-hidden="true">
+                        {recording.date || 'Recorded'}
+                        <span className="replay__meta-models">
+                          {'\u00a0· '}
+                          {recording.models}
+                        </span>
+                        <span className="replay__meta-search">
+                          {'\u00a0· '}
+                          {recording.search}
+                        </span>
+                      </p>
+                    )}
                   </div>
                 ) : saved ? (
                   <span className="replay__badge replay__badge--saved" title="Reopened from what was saved. Nothing reruns.">
@@ -291,7 +314,7 @@ export function Board({ source, onNew, onEdit, onRetry, onAskAgain, onReplay, on
                 {empty ? 'The meeting' : 'The verdict'}
               </h2>
               {board.verdict ? (
-                <VerdictCard verdict={board.verdict} />
+                <VerdictCard verdict={board.verdict} location={intake?.profile.location} />
               ) : error ? (
                 <ErrorNotice
                   error={error}
@@ -335,6 +358,8 @@ export function Board({ source, onNew, onEdit, onRetry, onAskAgain, onReplay, on
                 </div>
               )}
             </section>
+
+            {run.stored && transport === 'done' && <DeleteDecision onDelete={run.remove} onDeleted={onNew} />}
           </main>
           <FactPeek />
         </div>

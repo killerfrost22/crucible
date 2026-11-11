@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useReducer, useRef, useState } from 'react'
 import type { AdkEvent, Intake, Ratification } from '../types'
-import { ApiError, createSession, existingUserId, getSessionState, ratify, runBoard, userId } from './api'
-import { boardFromState, initialBoard, isObject, reduceBoard, type BoardState } from './board'
+import { ApiError, createSession, deleteDecision, existingUserId, getSessionState, ratify, runBoard, userId } from './api'
+import { boardFromState, initialBoard, reduceBoard, type BoardState } from './board'
+import { isObject } from './validate'
 import { CLIENT_DECISION_MISSING, CLIENT_INCOMPLETE, CLIENT_NETWORK, CLIENT_REPLAY, CLIENT_REPLAY_MISSING } from './errors'
 import { loadReplay, ReplayMissingError, ReplayPlayer } from './replay'
 
@@ -25,6 +26,10 @@ export interface BoardRun {
   ratifyStatus: RatifyStatus
   ratifyError: string | null
   submitRatification: (action: Ratification['action'], note: string) => Promise<void>
+  /** This meeting is saved on the server (a live or reopened decision, once its session exists). */
+  stored: boolean
+  /** Deletes the saved decision for good. Rejects with the server's error. */
+  remove: () => Promise<void>
 }
 
 function transportError(error: unknown): AdkEvent {
@@ -61,6 +66,7 @@ export function useBoardRun(source: RunSource, onSession?: (id: string) => void)
   const pausedRef = useRef(false)
   const player = useRef<ReplayPlayer | null>(null)
   const session = useRef<{ user: string; id: string } | null>(null)
+  const [stored, setStored] = useState(false)
   const speedRef = useRef(speed)
 
   useEffect(() => {
@@ -103,6 +109,7 @@ export function useBoardRun(source: RunSource, onSession?: (id: string) => void)
         .then((state) => {
           if (signal.aborted) return
           session.current = { user, id: source.id }
+          setStored(true)
           dispatch({ restore: boardFromState(state) })
           setRatification(savedRatification(state.ratification))
           setTransport('done')
@@ -125,6 +132,7 @@ export function useBoardRun(source: RunSource, onSession?: (id: string) => void)
         // Never start a (quota-spending) run for a meeting that was already torn down.
         if (signal.aborted) return
         session.current = { user, id }
+        setStored(true)
         onSessionRef.current?.(id)
         setTransport('streaming')
         for await (const event of runBoard(user, id, intake, signal)) {
@@ -194,5 +202,26 @@ export function useBoardRun(source: RunSource, onSession?: (id: string) => void)
     [source.mode],
   )
 
-  return { board, transport, speed, setSpeed, skipToEnd, paused, togglePause, ratification, ratifyStatus, ratifyError, submitRatification }
+  const remove = useCallback(async () => {
+    if (!session.current) return
+    await deleteDecision(session.current.user, session.current.id)
+    session.current = null
+    setStored(false)
+  }, [])
+
+  return {
+    board,
+    transport,
+    speed,
+    setSpeed,
+    skipToEnd,
+    paused,
+    togglePause,
+    ratification,
+    ratifyStatus,
+    ratifyError,
+    submitRatification,
+    stored,
+    remove,
+  }
 }

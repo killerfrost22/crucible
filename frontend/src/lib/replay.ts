@@ -1,11 +1,57 @@
+import { RECORDINGS } from 'virtual:crucible-replays'
 import type { AdkEvent } from '../types'
 import { nodeName } from './board'
 import { parseSseText } from './sse'
+
+/** How a recording was made, read from its file (replaysPlugin.ts). */
+export interface RecordingFacts {
+  /** "Nov 10, 2026": the UTC day of the first event; empty if no event has a timestamp. */
+  date: string
+  /** The Researcher's, the seats' and the Chairman's models, a family named once: "Claude Sonnet 5.5 + Haiku 5.5". */
+  models: string
+  /** "web search on" or "web search off". */
+  search: string
+  /** All of it in one line: "Recorded Nov 10, 2026 · Claude Sonnet 5.5 + Haiku 5.5 · web search on". */
+  label: string
+}
+
+const DAY = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' })
+
+/** "anthropic/claude-sonnet-5.5" → "Claude Sonnet 5.5". Other models (Gemini) keep the name they report. */
+function modelName(version: string): string {
+  const id = version.split('/').pop() ?? version
+  if (!id.startsWith('claude-')) return id
+  return id
+    .split('-')
+    .map((word) => word[0].toUpperCase() + word.slice(1))
+    .join(' ')
+}
+
+/**
+ * A label piece with no-break spaces, so a narrow line breaks only between pieces: after "·", before "+"
+ * ("Recorded Nov 10, 2026 ·" / "Claude Sonnet 5.5" / "+ Haiku 5.5 ·" / "web search on").
+ */
+const piece = (text: string) => text.replaceAll(' ', '\u00a0')
+
+/** Undefined for a name with no file in public/replays/. */
+export function recordingFacts(name: string): RecordingFacts | undefined {
+  const recording = RECORDINGS[name]
+  if (!recording) return undefined
+  const names = recording.models.map(modelName)
+  // A family is named once: "Claude Sonnet 5.5 + Haiku 5.5".
+  const models = names
+    .map((n, i) => piece(i > 0 && n.includes(' ') && n.split(' ')[0] === names[i - 1].split(' ')[0] ? n.slice(n.indexOf(' ') + 1) : n))
+    .join(' +\u00a0')
+  const date = recording.recorded === null ? '' : piece(DAY.format(recording.recorded * 1000))
+  const search = piece(`web search ${recording.web ? 'on' : 'off'}`)
+  return { date, models, search, label: [date && `Recorded\u00a0${date}`, models, search].filter(Boolean).join('\u00a0· ') }
+}
 
 export interface ReplayInfo {
   name: string
   label: string
   blurb: string
+  recording: RecordingFacts | undefined
 }
 
 /** Recorded real runs shipped in public/replays/. */
@@ -25,7 +71,7 @@ export const REPLAYS: ReplayInfo[] = [
     label: 'HVAC company · AI promo texts',
     blurb: 'A Frederick HVAC shop wants an AI tool to text every past customer a fall tune-up deal.',
   },
-]
+].map((r) => ({ ...r, recording: recordingFacts(r.name) }))
 
 /** No such recording. Static hosts answer a missing file with the app shell (200, text/html), so `ok` alone proves nothing. */
 export class ReplayMissingError extends Error {}

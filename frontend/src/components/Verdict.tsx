@@ -1,22 +1,17 @@
 import { AnimatePresence, motion, useReducedMotion, type Transition } from 'motion/react'
 import { useEffect, useId, useRef, useState, type CSSProperties, type FormEvent, type ReactNode, type Ref } from 'react'
+import { DECISION_COPY } from '../lib/decisionCopy'
+import { sbdcFor } from '../lib/sbdc'
 import type { RatifyStatus } from '../lib/useBoardRun'
 import { SEAT_BY_ID } from '../seats'
 import type { Check, Decision, EscalateTo, Ratification, SeatPoint, StepWhen, ToolPick, Verdict } from '../types'
 import { FactText, hostOf, SourceTag, useFacts } from './facts'
 import { EASE_IN_OUT, EASE_OUT, EASE_STRIKE } from './motion'
 
-export const DECISION_COPY: Record<Decision, { stamp: string; gloss: string }> = {
-  proceed: { stamp: 'Proceed', gloss: 'Go ahead.' },
-  pilot: { stamp: 'Pilot', gloss: 'Try it small first.' },
-  defer: { stamp: 'Defer', gloss: 'Not yet.' },
-  reject: { stamp: 'Reject', gloss: "Don't do it." },
-}
-
 const ESCALATION: Record<Exclude<EscalateTo, 'none'>, string> = {
   attorney: 'Talk to an attorney',
   accountant: 'Talk to an accountant',
-  sbdc_advisor: 'Talk to a Maryland SBDC advisor',
+  sbdc_advisor: 'Talk to a Small Business Development Center advisor',
   regulator: 'Check with the regulator',
 }
 
@@ -43,7 +38,9 @@ function Points({ points }: { points: SeatPoint[] }) {
   )
 }
 
-export function VerdictCard({ verdict }: { verdict: Verdict }) {
+/** `location` is the owner's, from the intake: it picks which SBDC the referral links to. */
+export function VerdictCard({ verdict, location }: { verdict: Verdict; location?: string }) {
+  const sbdc = sbdcFor(location)
   const copy = DECISION_COPY[verdict.decision]
   const timing = useTiming()
   const steps = WHEN_ORDER.map((when) => ({ when, items: verdict.next_steps.filter((s) => s.when === when) })).filter((g) => g.items.length)
@@ -172,8 +169,9 @@ export function VerdictCard({ verdict }: { verdict: Verdict }) {
           <h3 id="escalate-title">{ESCALATION[verdict.escalate_to]}</h3>
           {verdict.escalation_reason && <p>{verdict.escalation_reason}</p>}
           {verdict.escalate_to === 'sbdc_advisor' && (
-            <a className="escalate__link" href="https://www.marylandsbdc.org/" target="_blank" rel="noreferrer">
-              Find free help at the Maryland SBDC<span aria-hidden="true"> ↗</span>
+            <a className="escalate__link" href={sbdc.url} target="_blank" rel="noreferrer">
+              Find free, confidential help at {sbdc.name}
+              <span aria-hidden="true"> ↗</span>
               <span className="visually-hidden"> (opens in a new tab)</span>
             </a>
           )}

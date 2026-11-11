@@ -50,7 +50,7 @@ One meeting is **12 model calls** (Researcher + 5 + 5 + Chairman) plus a link ch
 flowchart TB
   UI["React frontend"]
   API["FastAPI + Google ADK"]
-  UI -- "POST /run_sse (intake JSON)<br>PATCH session (ratification)<br>GET session · GET decisions" --> API
+  UI -- "POST /run_sse (intake JSON)<br>PATCH session (ratification)<br>GET / DELETE session · GET decisions" --> API
   API -. "SSE: one event per finished node" .-> UI
   API --> W
   subgraph W["ADK graph workflow"]
@@ -95,9 +95,9 @@ After the Researcher, every fact whose source is an http(s) URL is opened and ge
 <summary><b>Request guard</b> · <code>guard.py</code></summary>
 <br>
 
-All routes come from ADK (sessions, `/run_sse`, session PATCH/GET) except the past-decisions list. The guard sits in front of them:
+All routes come from ADK (sessions, `/run_sse`, session PATCH/GET/DELETE) except the past-decisions list. The guard sits in front of them:
 
-- Only the six routes the frontend and `record_replay.py` use are public. ADK's raw session listing stays closed.
+- Only the seven routes the frontend and `record_replay.py` use are public; one of them is `DELETE` on a session, so an owner can delete a decision. ADK's raw session listing stays closed.
 - Intakes and ratifications are validated, and runs are rate-limited before any model is called (see [guard limits](#configuration)).
 - Rejections are JSON: `{"code": "CRUCIBLE_…", "detail": "…"}`.
 - `GET /apps/crucible/users/{user}/decisions` is served by the guard from ADK's session listing: id, time, question, decision, headline, signed, finished; newest 50.
@@ -111,10 +111,13 @@ All routes come from ADK (sessions, `/run_sse`, session PATCH/GET) except the pa
 
 - **Meeting room** (`Board.tsx`, `Crucible.tsx`): seat cards arrive as each SSE event lands. In the crucible, each opening position adds to the melt and rebuttals refine it; glowing lines connect seats, and concessions throw sparks. The Chairman's verdict pours out as a cast bar stamped with the decision, and the owner's call is stamped next to it.
 - **The brief** (`DecisionBrief` in `Verdict.tsx`): once the verdict lands, a card under the question shows the decision, up to three reasons, the strongest objection, the open gates (including any Realist block), the first next step and **Your call**. The research and the debate stay open below it, each with a Show/Hide toggle.
-- **Saved decisions:** as soon as a live meeting's session exists, the URL becomes `/?decision=<session id>`. Reloading or reopening that link rebuilds the board from the saved session state (`boardFromState` in `lib/board.ts`) and shows the signed call; nothing reruns. The link only opens in the browser that holds the owner id, and anywhere else it shows "Decision not found". The home page lists this browser's decisions under **Your decisions**.
-- **Honest labels:** a fact says *Link checked (date)*, *Couldn't open link*, *Link broken*, *Source found* (recordings from before the link check) or *No source*. Its F-number preview has an **Open source** link. The confidence is shown as the Chairman's own estimate. Tools are compared side by side: official link, where the price came from (a fact, or "AI estimate"), a pilot test, and the no-new-tool option.
+- **Saved decisions:** as soon as a live meeting's session exists, the URL becomes `/?decision=<session id>`. Reloading or reopening that link rebuilds the board from the saved session state (`boardFromState` in `lib/board.ts`) and shows the signed call; nothing reruns. The link only opens in the browser that holds the owner id, and anywhere else it shows "Decision not found". The home page lists this browser's decisions under **Your decisions**, and each saved decision ends with **Delete this decision** (a two-step confirm).
+- **Data notice:** above **Convene the board**, a short warning against entering patient, customer or payment details, and a "What happens to what you type" disclosure: what goes to OpenRouter, Anthropic and web search, what Crucible keeps, and how to delete it.
+- **Honest labels:** a fact says *Link checked (date)*, *Couldn't open link*, *Link broken*, *Source found* (recordings from before the link check) or *No source*. Its F-number preview has an **Open source** link. The confidence is shown as the Chairman's own estimate. Tools are compared side by side: official link, where the price came from (a fact, or "AI estimate"), a pilot test, and the no-new-tool option. SBDC referrals link to the Maryland SBDC for a Maryland business and to America's SBDC locator anywhere else (`lib/sbdc.ts`).
+- **Safety net:** every answer, live, recorded or saved, is checked against the schema in `lib/validate.ts` before it reaches the page. A misfit is left out and reported ("Part of this meeting couldn't be read"); nothing is invented to fill it. A render error anywhere in a view shows a recovery screen (`ErrorBoundary.tsx`) instead of a blank page.
+- **Loading:** the meeting room and `/under-the-hood` are lazy chunks with their own CSS, so the home page doesn't download them.
 - **Themes:** every colour is a token in `frontend/src/styles/tokens.css`, defined once for dark and once for light. `index.html` picks the theme before first paint (saved choice, else the OS setting), and `ThemeToggle` switches it on every page.
-- **"Built by many hands"** (`underthehood/buildFx.ts`): one cursor per advisor assembles the `/under-the-hood` page. It is skipped under reduced motion.
+- **"Built by many hands"** (`underthehood/buildFx.ts`): one cursor per advisor assembles the `/under-the-hood` page. It is skipped under reduced motion; **Skip effect** in the corner, or any section link, ends it at once with everything visible.
 
 </details>
 
@@ -228,6 +231,7 @@ cd backend   # the API must be running
 - **Input:** a scenario id from `eval/scenarios.json`, or a demo intake file under `eval/demos/`.
 - **Output:** `frontend/public/replays/<name>.sse`, or `<name>-error.sse` if the run failed.
 - **Show it on the home page:** add it to `REPLAYS` in `frontend/src/lib/replay.ts` to list it under "Watch a recorded session".
+- **Quotes and labels follow the file:** `frontend/replaysPlugin.ts` reads every `public/replays/*.sse` at dev and build time. The home page quotes (`src/lib/featured.ts`, picked by rule and shortened only by whole sentences) and the `/under-the-hood` dental data (`src/underthehood/recorded.ts`) come from it, and so does each recording's label: its date, models and whether web search was on. Re-recording updates them all, with no copy to edit; in dev the page reloads on its own.
 - **Open any replay directly:** `http://localhost:5173/?replay=<name>`. The meeting header has pause, 1×/2×/4×, and skip-to-end controls.
 - **Test the error screen:** `dental-ai-receptionist-error` is a real failed run, where the Chairman hit a quota limit.
 

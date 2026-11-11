@@ -6,6 +6,7 @@ import { Wordmark } from '../components/Wordmark'
 import type { IntakeDraft } from '../lib/intakeDraft'
 import { navigateOnClick, UNDER_THE_HOOD } from '../lib/nav'
 import { REPLAYS } from '../lib/replay'
+import { FIND_YOUR_SBDC, MARYLAND_SBDC } from '../lib/sbdc'
 import { SEAT_BY_ID, STANCE_LABEL } from '../seats'
 import type { Intake } from '../types'
 import { BrandMark, SeatRule } from './BrandMark'
@@ -27,7 +28,7 @@ interface HomeProps {
   onReplay: (name: string) => void
 }
 
-const SBDC_URL = 'https://www.marylandsbdc.org/'
+const external = <span className="visually-hidden"> (opens in a new tab)</span>
 const k = (color: string) => ({ '--k': color }) as CSSProperties
 
 /**
@@ -108,8 +109,8 @@ export function Home({ arrival, draft, onChange, onSubmit, onReplay }: HomeProps
               <br className="hm-br" /> argued from five&nbsp;sides.
             </h1>
             <p className="hm-hero__lede">
-              Five AI advisors research your question and argue it over two rounds. Then the Chairman recommends what to do. The final call
-              stays yours.
+              For small-business owners with a call to make. Five AI advisors research it and argue it out, and you leave with a
+              recommendation, what it depends on, and what to do this week. The final call stays yours.
             </p>
             <div className="hm-hero__actions">
               <form
@@ -485,6 +486,13 @@ const Sessions = memo(function Sessions({ onReplay, onConvene }: { onReplay: (na
               </span>
               <span className="hm-replay__label">{r.label}</span>
               <span className="hm-replay__blurb">{r.blurb}</span>
+              {r.recording && (
+                <span className="hm-replay__meta">
+                  <span>{[r.recording.date && `Recorded\u00a0${r.recording.date}`, r.recording.search].filter(Boolean).join('\u00a0· ')}</span>
+                  <span className="visually-hidden"> · </span>
+                  <span>{r.recording.models}</span>
+                </span>
+              )}
               <span className="hm-replay__cta">
                 Watch the meeting
                 <Arrow />
@@ -495,10 +503,17 @@ const Sessions = memo(function Sessions({ onReplay, onConvene }: { onReplay: (na
         <li data-reveal>
           <a className="hm-replay hm-replay--own" href="#convene" onClick={onConvene}>
             <span className="hm-replay__thumb hm-replay__thumb--own" aria-hidden="true">
+              <span className="hm-replay__table hm-replay__table--empty">
+                {MEMBERS.map((m) => (
+                  <i key={m.id} style={k(m.color)} />
+                ))}
+              </span>
               <span className="hm-replay__q">?</span>
             </span>
-            <span className="hm-replay__label">Your business · your question</span>
-            <span className="hm-replay__blurb">Bring a decision of your own. The board meets live and reaches a recommendation in about 90 seconds.</span>
+            <span className="hm-replay__text">
+              <span className="hm-replay__label">Your business · your question</span>
+              <span className="hm-replay__blurb">Bring a decision of your own. The board meets live and reaches a recommendation in about 90 seconds.</span>
+            </span>
             <span className="hm-replay__cta">
               Convene your board
               <Arrow />
@@ -518,12 +533,18 @@ const Footer = memo(function Footer({ onWatch }: { onWatch: () => void }) {
         <div className="hm-foot__brand">
           <Wordmark />
           <p>
-            Crucible is a hackathon prototype. The advisors are AI and can be wrong; the final call is yours. For free one-on-one help, the{' '}
-            <a href={SBDC_URL} target="_blank" rel="noreferrer">
-              Maryland SBDC
-              <span className="visually-hidden"> (opens in a new tab)</span>
+            Crucible is a hackathon prototype, built and tested on Maryland businesses. The advisors are AI and can be wrong, and nothing
+            here is legal or financial advice; the final call is yours. For free one-on-one help, your local{' '}
+            <a href={FIND_YOUR_SBDC.url} target="_blank" rel="noreferrer">
+              Small Business Development Center
+              {external}
             </a>{' '}
-            is a good next stop.
+            is a good next stop (in Maryland, the{' '}
+            <a href={MARYLAND_SBDC.url} target="_blank" rel="noreferrer">
+              Maryland SBDC
+              {external}
+            </a>
+            ).
           </p>
         </div>
         <nav className="hm-foot__nav" aria-label="More">
@@ -533,9 +554,9 @@ const Footer = memo(function Footer({ onWatch }: { onWatch: () => void }) {
           <button type="button" onClick={onWatch}>
             Watch a session
           </button>
-          <a href={SBDC_URL} target="_blank" rel="noreferrer">
-            Maryland SBDC <span aria-hidden="true">↗</span>
-            <span className="visually-hidden"> (opens in a new tab)</span>
+          <a href={FIND_YOUR_SBDC.url} target="_blank" rel="noreferrer">
+            Find your SBDC <span aria-hidden="true">↗</span>
+            {external}
           </a>
         </nav>
       </div>

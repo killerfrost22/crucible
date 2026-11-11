@@ -9,6 +9,7 @@ scripts use:
   POST  /run_sse                                       one Intake, validated before any model call
   PATCH /apps/crucible/users/{user}/sessions/{session} ratification only; `at` is set by the server
   GET   /apps/crucible/users/{user}/sessions/{session} reopen one decision (ADK's route, unchanged)
+  DELETE /apps/crucible/users/{user}/sessions/{session} the owner deletes a decision (ADK's route, unchanged)
   GET   /apps/crucible/users/{user}/decisions          the user's decisions, summarised (served here)
 
 plus OPTIONS on those paths. The user id is a random UUID kept in the owner's browser and acts as
@@ -539,7 +540,7 @@ def _route(method: str, path: str) -> str | None:
     elif _SESSIONS_PATH.fullmatch(path):
         kinds = {"POST": "session"}
     elif _SESSION_PATH.fullmatch(path):
-        kinds = {"GET": "pass", "PATCH": "ratify"}
+        kinds = {"GET": "pass", "PATCH": "ratify", "DELETE": "pass"}
     elif _DECISIONS_PATH.fullmatch(path):
         kinds = {"GET": "decisions"}
     else:

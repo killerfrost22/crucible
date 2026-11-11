@@ -1,5 +1,5 @@
 import type { AdkEvent, DecisionSummary, Intake, Ratification } from '../types'
-import { isObject } from './board'
+import { isObject } from './validate'
 import { SseParser, toAdkEvent } from './sse'
 
 export const API_BASE = (import.meta.env.VITE_API_BASE ?? 'http://localhost:8000').replace(/\/+$/, '')
@@ -65,6 +65,11 @@ export async function listDecisions(user: string, signal?: AbortSignal): Promise
   const body: unknown = await response.json()
   const decisions: DecisionSummary[] = isObject(body) && Array.isArray(body.decisions) ? body.decisions : []
   return decisions
+}
+
+/** Deletes a saved decision for good: its state and every event. Only the owner id that made it can. */
+export async function deleteDecision(user: string, sessionId: string): Promise<void> {
+  await fetch(`${sessionsUrl(user)}/${encodeURIComponent(sessionId)}`, { method: 'DELETE' }).then(expectOk)
 }
 
 async function expectOk(response: Response): Promise<Response> {

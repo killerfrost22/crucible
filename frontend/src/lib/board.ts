@@ -9,6 +9,8 @@ import {
   type SeatId,
   type Verdict,
 } from '../types'
+import { CLIENT_INVALID } from './errors'
+import { checkEvidence, checkIntake, checkRound1, checkRound2, checkVerdict, isObject } from './validate'
 
 /** What the owner is waiting on. Inferred from node names; the backend sends no "started" events. */
 export type Phase = 'waiting' | 'researching' | 'round1' | 'rebuttals' | 'chairman' | 'ratify'
@@ -50,10 +52,6 @@ export function nodeName(event: AdkEvent): string | null {
   return event.author ?? null
 }
 
-/** The app's one plain-object guard; fields stay `unknown` until checked. */
-export const isObject = (value: unknown): value is Record<string, unknown> =>
-  typeof value === 'object' && value !== null && !Array.isArray(value)
-
 const isSeat = (value: string): value is SeatId => (SEAT_IDS as readonly string[]).includes(value)
 
 function seatRound(node: string): { seat: SeatId; round: 1 | 2 } | null {
@@ -73,17 +71,54 @@ function impliedPhase(node: string): Phase | null {
   return null
 }
 
-function seatMap<T>(value: unknown): Partial<Record<SeatId, T>> {
-  const out: Partial<Record<SeatId, T>> = {}
-  if (!isObject(value)) return out
-  for (const [key, opinion] of Object.entries(value)) {
-    if (isSeat(key) && isObject(opinion)) out[key] = opinion as T
-  }
-  return out
-}
+const invalid = (node: string | null, at: string): BoardError => ({
+  node,
+  code: CLIENT_INVALID,
+  message: `Unreadable answer: ${at} doesn't match what Crucible expects.`,
+})
 
 function addError(errors: BoardError[], error: BoardError): BoardError[] {
   return errors.some((e) => e.message === error.message && e.node === error.node) ? errors : [...errors, error]
+}
+
+/** One seat's answer for a round, checked; a misfit is reported and left out. */
+function takeSeat(next: BoardState, seat: SeatId, round: 1 | 2, value: unknown, node: string | null) {
+  const checked = round === 1 ? checkRound1(value) : checkRound2(value)
+  if (!checked.ok) next.errors = addError(next.errors, invalid(node, `${seat} ${checked.at}`))
+  else if (round === 1) next.round1 = { ...next.round1, [seat]: checked.value }
+  else next.round2 = { ...next.round2, [seat]: checked.value }
+}
+
+/**
+ * Session state keys (agent.py) onto the board, each checked. A key that doesn't fit is reported, and the board
+ * keeps what it had for it: no defaults are invented to keep the page rendering.
+ */
+function applyState(next: BoardState, state: Record<string, unknown>, node: string | null) {
+  if (state.intake !== undefined) {
+    const checked = checkIntake(state.intake)
+    if (checked.ok) next.intake = checked.value
+    else next.errors = addError(next.errors, invalid(node, checked.at))
+  }
+  if (state.evidence_mode === 'web' || state.evidence_mode === 'model_knowledge') next.evidenceMode = state.evidence_mode
+  if (state.evidence !== undefined) {
+    const checked = checkEvidence(state.evidence)
+    if (checked.ok) next.evidence = checked.value
+    else next.errors = addError(next.errors, invalid(node, checked.at))
+  }
+  for (const [key, round] of [
+    ['round1', 1],
+    ['round2', 2],
+  ] as const) {
+    const seats = state[key]
+    if (seats === undefined) continue
+    if (!isObject(seats)) next.errors = addError(next.errors, invalid(node, key))
+    else for (const [id, value] of Object.entries(seats)) if (isSeat(id)) takeSeat(next, id, round, value, node)
+  }
+  if (state.verdict !== undefined) {
+    const checked = checkVerdict(state.verdict)
+    if (checked.ok) next.verdict = checked.value
+    else next.errors = addError(next.errors, invalid(node, checked.at))
+  }
 }
 
 /** The single pure reducer shared by live and replay mode. */
@@ -92,16 +127,15 @@ export function reduceBoard(state: BoardState, event: AdkEvent): BoardState {
   const next: BoardState = { ...state }
 
   const delta = event.actions?.stateDelta
-  if (isObject(delta)) Object.assign(next, fromState(delta, next))
+  if (isObject(delta)) applyState(next, delta, node)
 
-  if (node && isObject(event.output)) {
-    const output = event.output
+  // Workflow nodes (convene, round1…) output prompt strings; only model nodes output answers.
+  if (node && event.output != null && typeof event.output !== 'string') {
     const seat = seatRound(node)
     // check_sources re-emits the evidence with each source link's check result.
-    if (node === 'researcher' || node === 'check_sources') next.evidence = output as unknown as Evidence
-    else if (node === 'chairman') next.verdict = output as unknown as Verdict
-    else if (seat?.round === 1) next.round1 = { ...next.round1, [seat.seat]: output as unknown as Round1Opinion }
-    else if (seat?.round === 2) next.round2 = { ...next.round2, [seat.seat]: output as unknown as Round2Opinion }
+    if (node === 'researcher' || node === 'check_sources') applyState(next, { evidence: event.output }, node)
+    else if (node === 'chairman') applyState(next, { verdict: event.output }, node)
+    else if (seat) takeSeat(next, seat.seat, seat.round, event.output, node)
   }
 
   if (event.errorCode || event.errorMessage) {
@@ -121,24 +155,13 @@ export function reduceBoard(state: BoardState, event: AdkEvent): BoardState {
   return next
 }
 
-/** Session state keys (agent.py) → board fields; anything missing keeps `base`'s value. */
-function fromState(state: Record<string, unknown>, base: BoardState): Partial<BoardState> {
-  const out: Partial<BoardState> = {}
-  if (isObject(state.intake)) out.intake = state.intake as unknown as Intake
-  if (state.evidence_mode === 'web' || state.evidence_mode === 'model_knowledge') out.evidenceMode = state.evidence_mode
-  if (isObject(state.evidence)) out.evidence = state.evidence as unknown as Evidence
-  if (state.round1) out.round1 = { ...base.round1, ...seatMap<Round1Opinion>(state.round1) }
-  if (state.round2) out.round2 = { ...base.round2, ...seatMap<Round2Opinion>(state.round2) }
-  if (isObject(state.verdict)) out.verdict = state.verdict as unknown as Verdict
-  return out
-}
-
 /**
  * A saved decision, rebuilt from its session state alone: no events, no model calls. The phase is the furthest
  * one the state proves; a meeting that stopped early shows what it finished.
  */
 export function boardFromState(state: Record<string, unknown>): BoardState {
-  const board: BoardState = { ...initialBoard, ...fromState(state, initialBoard) }
+  const board: BoardState = { ...initialBoard }
+  applyState(board, state, null)
   board.phase = board.verdict
     ? 'ratify'
     : Object.keys(board.round2).length

@@ -1,65 +1,47 @@
-// Real data behind the under-the-hood page, copied from the recorded dental meeting
-// (public/replays/dental-ai-receptionist.sse, re-recorded Nov 10 on the current Claude setup) and from backend/eval/scenarios.json.
-import type { SeatId, SourceCheck } from '../types'
+// Real data behind the under-the-hood page. The dental exports are read from the recorded dental meeting
+// (public/replays/dental-ai-receptionist.sse) when the site is built (replaysPlugin.ts), so a re-recorded file updates the
+// page. Quotes are not reworded: the blocking note and the headline are whole, with straight quotes set as curly ones
+// (lib/quote.ts). EVAL_SCENARIOS is a hand-written summary of backend/eval/scenarios.json.
+import { checks, facts, rebuttals, stream, verdict } from 'virtual:crucible-replays/dental-ai-receptionist'
+import { typeset } from '../lib/quote'
+import { recordingFacts } from '../lib/replay'
+import type { CheckStatus, SeatId, SourceCheck } from '../types'
 
 export const DENTAL_REPLAY = 'dental-ai-receptionist'
 
+/** When and with which models the dental meeting was recorded. */
+export const DENTAL_RECORDING = recordingFacts(DENTAL_REPLAY)
+
 /** The Researcher's facts in the dental meeting: the host of each source link and what the link check found. */
-export const DENTAL_FACTS: { id: string; source: string | null; status: SourceCheck['status'] | null }[] = [
-  { id: 'F1', source: 'dentalbase.ai', status: 'ok' },
-  { id: 'F2', source: 'dentalbase.ai', status: 'ok' },
-  { id: 'F3', source: 'dentalbase.ai', status: 'ok' },
-  { id: 'F4', source: 'legendnt.com', status: 'ok' },
-  { id: 'F5', source: 'legendnt.com', status: 'ok' },
-  { id: 'F6', source: 'legendnt.com', status: 'ok' },
-  { id: 'F7', source: 'legendnt.com', status: 'ok' },
-  { id: 'F8', source: 'hillflare.com', status: 'ok' },
-  { id: 'F9', source: 'agentzap.ai', status: 'ok' },
-  { id: 'F10', source: null, status: null },
-  { id: 'F11', source: null, status: null },
-  { id: 'F12', source: null, status: null },
-]
+export const DENTAL_FACTS: { id: string; source: string | null; status: SourceCheck['status'] | null }[] = facts.map((f, i) => ({
+  id: `F${i + 1}`,
+  source: f.host,
+  status: f.status,
+}))
 
 export const DENTAL_CHECKED = DENTAL_FACTS.filter((f) => f.status === 'ok').length
 
-/** The Realist's Round 1 checks in the dental meeting; the blocking note verbatim. */
-export const DENTAL_CHECKS: { area: string; status: 'pass' | 'flag' | 'block'; note?: string }[] = [
-  {
-    area: 'legal',
-    status: 'block',
-    note: 'Maryland all-party consent (F1) and a signed BAA on the exact purchased plan (F2, F4) must be in place before recording or patient data flows; have a healthcare attorney confirm, and check any Montgomery County or Maryland Board of Dental Examiners rules (unverified).',
-  },
-  { area: 'compliance', status: 'flag' },
-  { area: 'financial', status: 'flag' },
-  { area: 'goals', status: 'pass' },
-  { area: 'operational', status: 'flag' },
-]
+/** The Realist's Round 1 checks in the dental meeting; the blocking notes verbatim. */
+export const DENTAL_CHECKS: { area: string; status: CheckStatus; note?: string }[] = checks.map((c) => ({
+  area: c.area,
+  status: c.status,
+  note: c.status === 'block' ? typeset(c.note) : undefined,
+}))
 
 /** Whom the Realist rebutted in Round 2. */
-export const REALIST_R2_TARGETS: SeatId[] = ['ai_tools_expert', 'strategist', 'devils_advocate']
+export const REALIST_R2_TARGETS: SeatId[] = rebuttals.realist.map((r) => r.target)
 
 /** The dental meeting's stream: node name and the session state it wrote, in arrival order. */
-export const DENTAL_STREAM: { node: string; state?: string }[] = [
-  { node: 'intake', state: 'intake, evidence_mode' },
-  { node: 'researcher', state: 'evidence' },
-  { node: 'check_sources', state: 'evidence' },
-  { node: 'convene' },
-  { node: 'devils_advocate_r1' },
-  { node: 'realist_r1' },
-  { node: 'strategist_r1' },
-  { node: 'industry_expert_r1' },
-  { node: 'ai_tools_expert_r1' },
-  { node: 'round1' },
-  { node: 'open_rebuttal', state: 'round1' },
-  { node: 'realist_r2' },
-  { node: 'industry_expert_r2' },
-  { node: 'strategist_r2' },
-  { node: 'ai_tools_expert_r2' },
-  { node: 'devils_advocate_r2' },
-  { node: 'round2' },
-  { node: 'close_debate', state: 'round2' },
-  { node: 'chairman', state: 'verdict' },
-]
+export const DENTAL_STREAM: { node: string; state?: string }[] = stream.map((e) => ({
+  node: e.node,
+  state: e.state.length ? e.state.join(', ') : undefined,
+}))
+
+/** The Chairman's call in the dental meeting. */
+export const DENTAL_VERDICT = verdict && {
+  decision: verdict.decision[0].toUpperCase() + verdict.decision.slice(1),
+  headline: typeset(verdict.headline),
+}
 
 /** The ten eval scenarios and the risks planted in each (`must_catch`). */
 export const EVAL_SCENARIOS: { business: string; question: string; traps: string[]; control?: boolean }[] = [

@@ -4,6 +4,10 @@
 !.env.example
 node_modules
 dist
+# Playwright runs (frontend/e2e)
+test-results/
+playwright-report/
+blob-report/
 .venv
 __pycache__
 # ADK local session storage

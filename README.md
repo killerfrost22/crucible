@@ -153,6 +153,20 @@ All routes come from ADK (sessions, `/run_sse`, session PATCH/GET/DELETE) except
 > `adk` launcher fails with "Unable to create process" (the `.venv` was created in another folder), run
 > `.venv/Scripts/python.exe -m google.adk.cli web --port 8001 agents` instead.
 
+### Test
+
+Browser smoke tests live in `frontend/e2e/` (Playwright, Chromium). They build the site against a fake API (`http://api.test`), answer every API call themselves, and take about 25 seconds; no backend, key or AI credit is needed.
+
+```bash
+cd frontend
+npx.cmd playwright install chromium   # once
+npm.cmd run test:e2e
+```
+
+They cover `/`, `/under-the-hood` and each recorded meeting skipped to its verdict, at 375/768/1440/1920 px in both themes: no sideways scroll, no clipped text in the header, walkthrough, decision brief and tool cards, and 0 axe WCAG 2.2 A/AA violations. They also check that the standings links keep the verdict, that unknown recordings and decisions show "not found", and that a saved decision reopens with its signed call. Any test fails if a page posts to `/run_sse`, throws, or reports a front-end error.
+
+GitHub Actions (`.github/workflows/ci.yml`) runs the frontend build and these tests, and imports the backend app (`python -c "import main"`), on every push and pull request. If the tests fail, the Playwright report is uploaded.
+
 ### Configuration
 
 Settings live in the repo-root `.env` locally, or in environment variables when deployed.

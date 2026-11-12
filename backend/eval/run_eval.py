@@ -14,7 +14,9 @@ gated on it or changed by it; plus actionability and confident factual errors. S
 (keyword): regex hits anywhere in the text, kept as a cheap diagnostic.
 
 Cost: 14 model calls per scenario run (12 board + 2 baselines) plus 1 judge call. The report gives
-what OpenRouter charged per call (`usage.cost`), summed for the board and for everything else.
+what OpenRouter charged per call (`usage.cost`), summed for the board and for everything else. Calls
+whose response carries no `usage.cost` are left out, and on Nov 12 a live meeting cost $0.55 by the
+key's spend counter against about $0.12 here, so budget from the key's spend (openrouter.ai), not this.
 Writes eval/results/<timestamp>/{report.md,<scenario>.json}.
 """
 
@@ -387,8 +389,9 @@ def write_report(out_dir: Path, records: list[tuple[str, dict[str, Any]]]) -> No
         for r in rows
     )
     footer = (
-        "\nSeconds is the board alone, in-process. Cost is what OpenRouter charged per call: the board's 12 calls, "
-        "then everything in the scenario (both baselines and the judge too).\n"
+        "\nSeconds is the board alone, in-process. Cost is what OpenRouter reported per call (`usage.cost`): the board's 12 "
+        "calls, then everything in the scenario (both baselines and the judge too). Calls that report no cost are left out, "
+        "so this can undercount; the key's spend counter on openrouter.ai is the real total.\n"
     )
     (out_dir / "report.md").write_text(header + judged + keyword_table + footer, encoding="utf-8")
 

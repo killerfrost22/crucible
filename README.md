@@ -42,7 +42,7 @@
 | **Devil's Advocate** | The strongest honest case against the leading option |
 | **Chairman** | Weighs the debate and recommends: *proceed / pilot / defer / reject* |
 
-One meeting is **12 model calls** (Researcher + 5 + 5 + Chairman) plus a link check. With the default models a meeting costs about **$0.12**, summed from OpenRouter's per-call charges for two eval meetings on Nov 10. It takes **70–120 s**: the board alone took 72–120 s in 22 eval runs, and one live meeting took 103 s end to end. Most of it is the Researcher's web search and the Chairman.
+One meeting is **12 model calls** (Researcher + 5 + 5 + Chairman) plus a link check. With the default models a meeting costs **$0.12–0.55**. The eval's per-call charges summed to about $0.12 a board on Nov 10, but one live meeting on Nov 12 cost $0.55 by the key's own spend counter: $0.37 of it was the Researcher's Sonnet call, which read about 165K tokens of web-search results. It takes **70–120 s**: the board alone took 72–120 s in 22 eval runs, and live meetings took 103 s (Nov 10) and 68 s server-side (Nov 12). Most of it is the Researcher's web search and the Chairman.
 
 ## How it works
 

@@ -564,7 +564,7 @@ function Models() {
             <dl className="uth-meter__stats">
               <div>
                 <dt>Cost per meeting, measured</dt>
-                <dd>about $0.12</dd>
+                <dd>$0.12–0.55</dd>
               </div>
               <div>
                 <dt>Time per meeting, measured</dt>

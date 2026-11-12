@@ -97,6 +97,8 @@
   overflow-x: auto;
   overscroll-behavior-x: contain;
   scrollbar-width: none;
+  /* Solid first: Safari before 16.2 drops color-mix(), and a see-through sticky bar would sit on the content. */
+  background: var(--bg);
   background: color-mix(in srgb, var(--bg) 88%, transparent);
   -webkit-backdrop-filter: saturate(140%) blur(14px);
   backdrop-filter: saturate(140%) blur(14px);

@@ -100,6 +100,8 @@
   /* Content lines up with the board, which stops growing at 2000px. */
   padding: var(--space-2) max(var(--gutter), calc((100% - 2000px) / 2 + var(--gutter))) var(--space-3);
   color: var(--text);
+  /* Solid first: Safari before 16.2 drops color-mix(), and a see-through sticky bar would sit on the content. */
+  background: var(--bg);
   background: color-mix(in srgb, var(--bg) 86%, transparent);
   -webkit-backdrop-filter: saturate(140%) blur(14px);
   backdrop-filter: saturate(140%) blur(14px);

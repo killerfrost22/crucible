@@ -9,10 +9,10 @@ Items marked **Before Sun Nov 8** matter for the submission. Everything else is 
 ## 1. Proof that the board catches real risks
 **Why it's hard to copy:** prompts can be copied. A scored track record has to be built and run, and both owners and judges trust numbers.
 
-**What we have:** `backend/eval/run_eval.py` and `scenarios.json`. That's 10 scenarios with planted risks, one of them a control. Each is scored three ways: a single prompt vs. the full board vs. the Chairman alone. The full run hasn't been done yet.
+**What we have:** `backend/eval/run_eval.py` and `scenarios.json`. That's 10 scenarios with planted risks, one of them a control. Each final answer (one plain prompt, one prompt given the board's research, and the board's verdict) is graded blind by a judge model, with a keyword check as a second column. The full run is in [`results/20261110-214837/report.md`](../../backend/eval/results/20261110-214837/report.md).
 
-- [ ] **For the finals (Nov 8 passed):** run all 10 scenarios and commit `report.md` (already in `TODO.md` for Ruijie).
-- [ ] **For the finals:** put the board-vs-single-prompt table in the finals video or pitch. It wasn't in the Nov 8 cut, because the eval hadn't run.
+- [x] **For the finals:** run all 10 scenarios and commit `report.md` (Nov 10, Ruijie's item in `TODO.md`).
+- [x] **For the finals:** put the board-vs-single-prompt table in the pitch. Slide 10 of `docs/finals/crucible-finals.pptx` (Nov 12) shows it as measured: one prompt catches most traps too (28 of 30 risk points against the board's 30); the board makes fewer confident errors (0 against 4) and more actionable plans (4.6 against 4.1).
 - [ ] Grow to 100+ scenarios across industries and states. Have a professional (attorney, CPA, SBDC advisor) write or check each trap.
 - [ ] Keep a held-out set that never goes into the repo or the prompts, so the score can't be gamed and nobody can tune to it.
 - [ ] Re-run after every prompt or model change, and publish the score with the date and model names.
@@ -91,8 +91,8 @@ The verdict also has a no-new-tool option. In the Nov 10 recordings only the bak
 
 - [ ] Keep scenarios, the rule base, the catalog and the prompts on the server. Never bundle them into the frontend.
 - [x] Rate-limit the public demo link so nobody can scrape verdicts in bulk. `backend/guard.py` (live since Nov 10):
-  - per IP, 10 runs and 30 sessions an hour; 100 runs a day in total; at most 3 at once
-  - routes that would list or read sessions are closed
+  - per IP, 40 runs and 60 sessions an hour (10 and 30 until Nov 10, raised so a room of judges behind one venue IP isn't cut off); 100 runs a day in total; at most 3 at once
+  - ADK's raw session listing is closed; a decision opens only with the owner's random id, and the decisions list returns summaries only
   - the per-IP part needs `CRUCIBLE_CLIENT_IP_HEADER` on Vercel; see `TODO.md`
 - [ ] Before the finals, decide with the organizers what the team can show publicly, given that UMD owns the submission.
 

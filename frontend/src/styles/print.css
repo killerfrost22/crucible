@@ -1,0 +1,159 @@
+/* ── Print / Save as PDF: the decision brief on paper ────────────────── */
+
+/*
+ * A finished meeting prints its decision brief, whichever view is showing: the question, the recommendation, why,
+ * every prerequisite, the plan, what would change it, the sources with their links, and the owner's call. No header,
+ * controls, crucible or transcript. Board.tsx switches to the light tokens while printing, so paper gets dark ink.
+ */
+
+@media screen {
+  .print-only {
+    display: none !important;
+  }
+}
+
+@media print {
+  @page {
+    margin: 16mm 15mm;
+  }
+
+  html {
+    scroll-padding-top: 0;
+  }
+
+  body {
+    background: none;
+    font-size: 11pt;
+  }
+
+  /* Everything that only works on a screen. */
+  .page--board:has(.board[data-finished]) :is(.skip, .frame, .peek, .feedback, .forget),
+  .board[data-finished] > :is(.viewbar, .board__forge, .assay, .board__seats, .board__outcome),
+  .board[data-finished] :is(.brief-nav, .yourcall__actions, .yourcall__override, .yourcall__lede, .yourcall--done .btn) {
+    display: none !important;
+  }
+
+  .board[data-finished] {
+    display: block;
+    width: auto;
+    padding: 0;
+  }
+
+  /* Printed from the transcript view too. */
+  .board[data-finished] > .brief-view {
+    display: block !important;
+    margin-top: 8mm;
+  }
+
+  .board[data-finished] .brief-view__in {
+    display: block;
+  }
+
+  /* Whatever was never scrolled into view, or is mid-animation, prints in its final state. */
+  .board[data-finished] :is(.question, .brief-view),
+  .board[data-finished] :is(.question, .brief-view) * {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+    transition: none !important;
+  }
+
+  /* The molten glow over the ingot has cooled on paper. */
+  .board[data-finished] .ingot-bar__hot {
+    display: none !important;
+  }
+
+  .board[data-finished] .ingot-bar {
+    border: 1px solid var(--line-strong);
+    box-shadow: none;
+  }
+
+  /* Plain blocks on paper: Chromium ignores break-after: avoid inside grid, which left headings alone at a page foot. */
+  .board[data-finished] .brief {
+    display: block;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+  }
+
+  .board[data-finished] :is(.brief__sec, .brief .verdict__section, .brief .compare) {
+    display: block;
+  }
+
+  .board[data-finished] .brief :is(.verdict__section, .compare) > * + * {
+    margin-top: 3mm;
+  }
+
+  .board[data-finished] .brief > * + * {
+    margin-top: 9mm;
+  }
+
+  .board[data-finished] .brief__sec > * + * {
+    margin-top: 4mm;
+  }
+
+  .board__provenance {
+    margin-bottom: 6mm;
+    padding-bottom: 3mm;
+    border-bottom: 1px solid var(--line);
+    font-family: var(--font-mono);
+    font-size: 8.5pt;
+    color: var(--text-3);
+  }
+
+  .board[data-finished] .brief__sec + .brief__sec {
+    padding-top: 7mm;
+  }
+
+  .board[data-finished] .brief__sec > h2 {
+    font-size: 17pt;
+  }
+
+  .board[data-finished] .brief__headline {
+    font-size: 21pt;
+  }
+
+  .board[data-finished] .question__title {
+    font-size: 22pt;
+  }
+
+  /* Headings stay with what follows; short items don't split across pages. */
+  .brief h2,
+  .brief h3,
+  .brief .kicker {
+    break-after: avoid;
+  }
+
+  .brief :is(li, .check, .compare__opt, .escalate, .brief__gate-lede, .yourcall, .ingot-bar) {
+    break-inside: avoid;
+  }
+
+  .brief__lead,
+  .brief p {
+    orphans: 3;
+    widows: 3;
+  }
+
+  .board[data-finished] .yourcall {
+    padding: 5mm;
+    background: none;
+  }
+
+  /* Links can't be clicked on paper: the sources print their full address, in ink, wrapping anywhere. */
+  .brief a {
+    color: var(--text);
+  }
+
+  .brief .fact__source {
+    overflow-wrap: anywhere;
+  }
+
+  .brief .fref {
+    background: none;
+  }
+
+  .brief .compare__opt {
+    background: none;
+  }
+}

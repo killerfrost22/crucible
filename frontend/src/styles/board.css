@@ -558,7 +558,13 @@
   grid-area: seats;
 }
 
-.board > .brief {
+/* The view bar belongs to what follows it: it sits closer to the view than to the question. */
+.board > .viewbar {
+  grid-area: bar;
+  margin-bottom: calc(var(--space-5) - var(--space-7));
+}
+
+.board > .brief-view {
   grid-area: brief;
 }
 
@@ -628,6 +634,19 @@
   scroll-margin-top: calc(var(--frame-h) + var(--space-4));
 }
 
+/* From the end of the transcript back to the brief, where the owner signs. */
+.board__to-call {
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  gap: 0.4em;
+  min-height: 44px;
+  font-size: var(--step--1);
+  font-weight: 600;
+  color: var(--text);
+  text-underline-offset: 3px;
+}
+
 /* Nothing came back (the server never answered): the question and the notice in one centred column, at every width. */
 .board[data-empty] {
   grid-template-columns: minmax(0, 48rem);
@@ -638,15 +657,30 @@
   justify-content: center;
 }
 
-/* Finished: the brief (decision, reasons, objection, gates, next step, your call) comes straight after the question. */
-.board[data-finished] {
+/* Finished: under the question, a bar picks the view. The brief (the decision as one document) opens first; the
+   transcript is the meeting as it ran. Each view hides the other's parts, so switching never reruns anything. */
+.board[data-view='brief'] {
   grid-template-areas:
     'question'
-    'brief'
+    'bar'
+    'brief';
+}
+
+.board[data-view='transcript'] {
+  grid-template-areas:
+    'question'
+    'bar'
     'forge'
     'assay'
     'seats'
     'outcome';
+}
+
+/* Below desktop the brief's own cast ingot carries the crucible's moment, so the recommendation comes right after the
+   question; on desktop the crucible keeps its column beside the brief. */
+.board[data-view='brief'] > :is(.board__forge, .assay, .board__seats, .board__outcome),
+.board[data-view='transcript'] > .brief-view {
+  display: none;
 }
 
 /* Tablet: the question and the crucible share the opening row. */
@@ -662,10 +696,17 @@
     align-items: start;
   }
 
-  .board[data-finished] {
+  .board[data-view='brief'] {
+    grid-template-areas:
+      'question question'
+      'bar bar'
+      'brief brief';
+  }
+
+  .board[data-view='transcript'] {
     grid-template-areas:
       'question forge'
-      'brief brief'
+      'bar bar'
       'assay assay'
       'seats seats'
       'outcome outcome';
@@ -686,11 +727,23 @@
     padding-top: var(--space-7);
   }
 
-  /* The question, then the brief across both columns (it splits itself into decision + reasons), then the research. */
-  .board[data-finished] {
+  /* The crucible keeps the left edge in both views; the question, the bar, then the view. */
+  .board[data-view='brief'] {
     grid-template-areas:
       'forge question question'
-      'forge brief brief'
+      'forge bar bar'
+      'forge brief brief';
+    grid-template-rows: auto auto 1fr;
+  }
+
+  .board[data-view='brief'] > .board__forge {
+    display: grid;
+  }
+
+  .board[data-view='transcript'] {
+    grid-template-areas:
+      'forge question question'
+      'forge bar bar'
       'forge assay assay'
       'forge seats seats'
       'forge outcome outcome';
@@ -1433,9 +1486,10 @@
   text-wrap: balance;
 }
 
-/* ── This decision is saved: what's kept, and delete ─────────────────── */
+/* ── After a saved decision: was it useful, what's kept, and delete ──── */
 
-/* Its own row under everything else; on desktop it stays clear of the crucible column. */
+/* Their own rows under everything else; on desktop they stay clear of the crucible column. */
+.feedback,
 .forget {
   grid-column: 1 / -1;
   display: grid;
@@ -1447,9 +1501,47 @@
 }
 
 @media (min-width: 1180px) {
-  .board:not([data-empty]) > .forget {
+  .board:not([data-empty]) > :is(.feedback, .forget) {
     grid-column: 2 / -1;
   }
+}
+
+.feedback__title {
+  font-size: var(--step-1);
+  font-weight: 620;
+  letter-spacing: -0.01em;
+}
+
+.feedback__choices,
+.feedback__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+/* The chosen answer reads as chosen: filled, like a pressed key. */
+.feedback__choice[aria-pressed='true'] {
+  border-color: var(--text);
+  background: var(--text);
+  color: var(--bg);
+}
+
+.feedback__status {
+  max-width: 60ch;
+  font-size: var(--step--1);
+  color: var(--text-2);
+}
+
+.feedback__note {
+  display: grid;
+  gap: var(--space-2);
+  width: 100%;
+  max-width: 36rem;
+}
+
+.feedback__note label {
+  font-size: var(--step--1);
+  font-weight: 600;
 }
 
 .forget__title {

@@ -42,6 +42,8 @@ export function FactProvider({ facts, children }: { facts: Fact[]; children: Rea
 export const useFacts = () => useContext(FactContext)
 
 export const factId = (n: number) => `fact-${n}`
+/** The same fact in the decision brief's source list. */
+export const briefFactId = (n: number) => `brief-fact-${n}`
 
 /** `https://www.example.gov/x` → `example.gov`; anything that isn't an http(s) URL → null, shown as plain text. */
 export function hostOf(source: string): string | null {

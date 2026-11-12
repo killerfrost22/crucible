@@ -7,13 +7,15 @@ scripts use:
   GET   /list-apps                                     deploy check
   POST  /apps/crucible/users/{user}/sessions           body ignored (no client-chosen ids or state)
   POST  /run_sse                                       one Intake, validated before any model call
-  PATCH /apps/crucible/users/{user}/sessions/{session} ratification only; `at` is set by the server
+  PATCH /apps/crucible/users/{user}/sessions/{session} ratification or feedback only; `at` is set by the server
   GET   /apps/crucible/users/{user}/sessions/{session} reopen one decision (ADK's route, unchanged)
   DELETE /apps/crucible/users/{user}/sessions/{session} the owner deletes a decision (ADK's route, unchanged)
   GET   /apps/crucible/users/{user}/decisions          the user's decisions, summarised (served here)
+  POST  /client-errors                                 a front-end error report, logged here (never stored)
 
-plus OPTIONS on those paths. The user id is a random UUID kept in the owner's browser and acts as
-its secret; ADK's raw session listing stays closed and `decisions` returns only small summaries.
+plus OPTIONS on those paths. The user id must be a random (version 4) UUID; it is kept in the
+owner's browser and acts as its secret, so a guessable id like "test" is refused (404). ADK's raw
+session listing stays closed and `decisions` returns only small summaries.
 Rejections are JSON `{"code", "detail"}` (and `retry_after_s` with a `Retry-After` header on 429s).
 `Guard` is pure ASGI, so SSE streams pass through unbuffered, and it must sit inside ADK's CORS
 middleware so that browsers can read its errors (see main.py).
@@ -53,20 +55,26 @@ DAY = 86400.0
 SWEEP_EVERY = 300.0
 
 _ID = r"[^/]{1,128}"
-_SESSIONS_PATH = re.compile(rf"/apps/{APP_NAME}/users/{_ID}/sessions")
-_SESSION_PATH = re.compile(rf"/apps/{APP_NAME}/users/{_ID}/sessions/{_ID}")
-_DECISIONS_PATH = re.compile(rf"/apps/{APP_NAME}/users/{_ID}/decisions")
+# crypto.randomUUID() in the browser, uuid.uuid4() in the scripts: 122 random bits, lower-case hex.
+_OWNER = r"[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}"
+_SESSIONS_PATH = re.compile(rf"/apps/{APP_NAME}/users/{_OWNER}/sessions")
+_SESSION_PATH = re.compile(rf"/apps/{APP_NAME}/users/{_OWNER}/sessions/{_ID}")
+_DECISIONS_PATH = re.compile(rf"/apps/{APP_NAME}/users/{_OWNER}/decisions")
 MAX_DECISIONS = 50
 _DECISION_KINDS = ("proceed", "pilot", "defer", "reject")
 _HISTORY_UNAVAILABLE = "Crucible couldn't load your past decisions. Try again in a minute."
+# A broken page can throw on every frame; past this many reports an hour from one network, the rest are dropped.
+REPORTS_PER_IP_PER_HOUR = 20
 
 
 @dataclass(frozen=True)
 class Limits:
     """Guard settings; 0 disables a limit."""
 
-    runs_per_ip_per_hour: int = 10
-    sessions_per_ip_per_hour: int = 30
+    # Loose per IP, because a room of judges can share one venue IP; the daily cap and the concurrency cap are the
+    # spend ceiling. Sessions are free, but every run needs one.
+    runs_per_ip_per_hour: int = 40
+    sessions_per_ip_per_hour: int = 60
     runs_per_day: int = 100
     max_concurrent_runs: int = 3
     max_body_bytes: int = 16384
@@ -146,7 +154,7 @@ class _NewMessage(_Strict):
 
 class _RunRequest(_Strict):
     appName: Literal["crucible"]
-    userId: str = Field(min_length=1, max_length=128)
+    userId: str = Field(pattern=rf"^{_OWNER}$")
     sessionId: str = Field(min_length=1, max_length=128)
     newMessage: _NewMessage
     streaming: bool = False
@@ -170,6 +178,30 @@ class _StateDelta(_Strict):
 
 class _RatifyRequest(_Strict):
     stateDelta: _StateDelta
+
+
+class _Feedback(_Strict):
+    """The owner's answer to "Was this useful?", saved on the decision."""
+
+    useful: bool
+    note: str = Field("", max_length=1000)
+
+
+class _FeedbackDelta(_Strict):
+    feedback: _Feedback
+
+
+class _FeedbackRequest(_Strict):
+    stateDelta: _FeedbackDelta
+
+
+class _ClientError(_Strict):
+    """What the page sends when it breaks: the error and where, never what the owner typed."""
+
+    kind: Literal["render", "error", "rejection"]
+    message: str = Field(max_length=500)
+    stack: str = Field("", max_length=4000)
+    path: str = Field(max_length=200, pattern=r"^/")
 
 
 _FIELD_LABELS = {
@@ -298,6 +330,7 @@ class Guard:
         self.runs_per_ip = SlidingWindow(self.limits.runs_per_ip_per_hour, HOUR)
         self.sessions_per_ip = SlidingWindow(self.limits.sessions_per_ip_per_hour, HOUR)
         self.runs_per_day = SlidingWindow(self.limits.runs_per_day, DAY)
+        self.reports_per_ip = SlidingWindow(REPORTS_PER_IP_PER_HOUR, HOUR)
         self.active_runs = 0
         self._last_sweep = time.monotonic()
 
@@ -332,15 +365,17 @@ class Guard:
         now = time.monotonic()
         if now - self._last_sweep > SWEEP_EVERY:
             self._last_sweep = now
-            for window in (self.runs_per_ip, self.sessions_per_ip, self.runs_per_day):
+            for window in (self.runs_per_ip, self.sessions_per_ip, self.runs_per_day, self.reports_per_ip):
                 window.sweep(now)
 
         if route == "session":
             await self._create_session(scope, receive, send, now)
         elif route == "ratify":
-            await self._ratify(scope, receive, send, body)
+            await self._patch(scope, receive, send, body)
         elif route == "decisions":
             await self._decisions(scope, receive, send)
+        elif route == "report":
+            await self._client_error(scope, send, body, now)
         else:
             await self._run(scope, receive, send, body, now)
 
@@ -380,18 +415,47 @@ class Guard:
         # The client may not choose the session id, initial state or events.
         await self.app(_with_body(scope, b"{}"), _replay(b"{}", receive), send)
 
-    async def _ratify(self, scope: Scope, receive: Receive, send: Send, body: bytes) -> None:
-        try:
-            request = _RatifyRequest.model_validate(_parse_json(body))
-        except ValidationError as error:
-            await _reject(send, 422, "CRUCIBLE_RATIFICATION_INVALID", _ratification_problem(error))
-            return
-        ratification = request.stateDelta.ratification
+    async def _patch(self, scope: Scope, receive: Receive, send: Send, body: bytes) -> None:
+        """A ratification or a feedback answer, each with the server's own `at`; nothing else reaches the state."""
         at = datetime.now(UTC).isoformat(timespec="milliseconds").replace("+00:00", "Z")
-        forwarded = json.dumps(
-            {"stateDelta": {"ratification": {"action": ratification.action, "note": ratification.note, "at": at}}}
-        ).encode()
+        parsed = _parse_json(body)
+        delta = parsed.get("stateDelta") if isinstance(parsed, dict) else None
+        if isinstance(delta, dict) and "feedback" in delta:
+            try:
+                feedback = _FeedbackRequest.model_validate(parsed).stateDelta.feedback
+            except ValidationError as error:
+                too_long = error.errors()[0]["type"] == "string_too_long"
+                await _reject(
+                    send, 422, "CRUCIBLE_FEEDBACK_INVALID",
+                    "Your note is too long: keep it to 1,000 characters or fewer." if too_long
+                    else "Crucible couldn't save your answer. Reload the page and try again.",
+                )
+                return
+            update: dict[str, Any] = {"feedback": {"useful": feedback.useful, "note": feedback.note.strip(), "at": at}}
+        else:
+            try:
+                ratification = _RatifyRequest.model_validate(parsed).stateDelta.ratification
+            except ValidationError as error:
+                await _reject(send, 422, "CRUCIBLE_RATIFICATION_INVALID", _ratification_problem(error))
+                return
+            update = {"ratification": {"action": ratification.action, "note": ratification.note, "at": at}}
+        forwarded = json.dumps({"stateDelta": update}).encode()
         await self.app(_with_body(scope, forwarded), _replay(forwarded, receive), send)
+
+    async def _client_error(self, scope: Scope, send: Send, body: bytes, now: float) -> None:
+        """Logs a front-end error (stderr, i.e. the host's logs) and answers 204; a flood from one network is dropped."""
+        ip = self.client_ip(scope)
+        if self.reports_per_ip.retry_after(ip, now) is not None:
+            await _send_empty(send, 204)
+            return
+        try:
+            report = _ClientError.model_validate(_parse_json(body))
+        except ValidationError:
+            await _reject(send, 422, "CRUCIBLE_REPORT_INVALID", _UNREADABLE)
+            return
+        self.reports_per_ip.record(ip, now)
+        log.warning("client error (%s) on %s: %s%s", report.kind, report.path, report.message, f"\n{report.stack}" if report.stack else "")
+        await _send_empty(send, 204)
 
     async def _decisions(self, scope: Scope, receive: Receive, send: Send) -> None:
         """Lists the user's sessions through ADK's own route, then answers with one summary per decision."""
@@ -532,11 +596,13 @@ class Guard:
 
 
 def _route(method: str, path: str) -> str | None:
-    """"pass", "session", "ratify", "decisions" or "run" for an allowlisted request, else None."""
+    """"pass", "session", "ratify", "decisions", "report" or "run" for an allowlisted request, else None."""
     if path == "/list-apps":
         kinds = {"GET": "pass"}
     elif path == "/run_sse":
         kinds = {"POST": "run"}
+    elif path == "/client-errors":
+        kinds = {"POST": "report"}
     elif _SESSIONS_PATH.fullmatch(path):
         kinds = {"POST": "session"}
     elif _SESSION_PATH.fullmatch(path):
@@ -625,3 +691,8 @@ async def _send_json(send: Send, status: int, payload: Any, extra_headers: list[
     ]
     await send({"type": "http.response.start", "status": status, "headers": headers})
     await send({"type": "http.response.body", "body": body})
+
+
+async def _send_empty(send: Send, status: int) -> None:
+    await send({"type": "http.response.start", "status": status, "headers": [(b"cache-control", b"no-store")]})
+    await send({"type": "http.response.body", "body": b""})

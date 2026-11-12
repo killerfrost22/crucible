@@ -1,6 +1,6 @@
 // What the pages quote from a recorded meeting (public/replays/<name>.sse), read at build time by replaysPlugin.ts.
 // Runs in Node as well as the browser, so it imports nothing that touches the DOM.
-import { SEAT_IDS, type AdkEvent, type Check, type EvidenceMode, type Fact, type Intake, type SeatId, type SeatPoint, type SourceCheck, type Stance, type Step, type Verdict } from '../types'
+import { SEAT_IDS, type AdkEvent, type Check, type EvidenceMode, type Fact, type Intake, type SeatId, type SeatPoint, type SourceCheck, type Stance, type Step, type Verdict } from '../types.ts'
 
 /** How a recording was made. */
 export interface RecordingMeta {

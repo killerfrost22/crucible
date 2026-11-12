@@ -4,10 +4,11 @@ Public routes (everything else answers 404 CRUCIBLE_NOT_FOUND):
   GET   /list-apps                                            deploy check
   POST  /apps/crucible/users/{user}/sessions                  create a decision session
   POST  /run_sse                                              run the board, stream events
-  PATCH /apps/crucible/users/{user}/sessions/{session}        owner ratification (stateDelta)
+  PATCH /apps/crucible/users/{user}/sessions/{session}        owner ratification or feedback (stateDelta)
   GET   /apps/crucible/users/{user}/sessions/{session}        reopen one decision (full session)
   DELETE /apps/crucible/users/{user}/sessions/{session}       the owner deletes a decision
   GET   /apps/crucible/users/{user}/decisions                 the user's decisions, summarised by guard.py
+  POST  /client-errors                                        a front-end error report, logged by guard.py
 """
 
 from __future__ import annotations

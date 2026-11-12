@@ -1,127 +1,274 @@
-/* ── The brief: the decision on one card, right after the question ───── */
+/* ── View bar: the decision brief or the meeting transcript ──────────── */
 
-.brief {
-  --decision: var(--decision-defer);
-  container: brief / inline-size;
-  min-width: 0;
-  padding: var(--space-6) clamp(1.25rem, 0.8rem + 1.8vw, 2.25rem);
-  border: 1px solid var(--line);
-  border-top: 3px solid var(--decision);
-  border-radius: var(--radius-card);
-  background: var(--surface);
-  scroll-margin-top: calc(var(--frame-h) + var(--space-4));
-}
-
-.brief__in,
-.brief__lead {
-  display: grid;
-  gap: var(--space-5);
-  align-content: start;
-  min-width: 0;
-}
-
-.brief__lead {
-  gap: var(--space-4);
-}
-
-/* From tablet width: the decision and your call on the left, the reasons beside them, so signing never waits behind
-   the transcript. */
-@container brief (min-width: 40rem) {
-  .brief__in {
-    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-    grid-template-rows: auto auto 1fr;
-    column-gap: var(--space-7);
-  }
-
-  .brief__lead {
-    grid-column: 1;
-    grid-row: 1;
-  }
-
-  .brief__rows {
-    grid-column: 2;
-    grid-row: 1 / span 3;
-  }
-
-  .brief .yourcall {
-    grid-column: 1;
-    grid-row: 2;
-  }
-
-  .brief__more {
-    grid-column: 1;
-    grid-row: 3;
-    align-self: start;
-  }
-}
-
-.brief[data-decision='proceed'] {
-  --decision: var(--decision-proceed);
-}
-
-.brief[data-decision='pilot'] {
-  --decision: var(--decision-pilot);
-}
-
-.brief[data-decision='reject'] {
-  --decision: var(--decision-reject);
-}
-
-.brief__head {
+.viewbar {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-2) var(--space-4);
+  gap: var(--space-3) var(--space-4);
+  padding-block: var(--space-3);
+  border-block: 1px solid var(--line);
+  scroll-margin-top: var(--space-2);
 }
 
-/* The Chairman's hallmark, small: the full cast ingot is in the verdict below. */
-.brief__stamp {
-  padding: 0.25em 0.7em;
-  border: 1.5px solid var(--decision);
-  border-radius: 6px;
-  font-family: var(--font-mono);
+.viewbar__views {
+  display: inline-flex;
+  min-width: 0;
+  padding: 3px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--sunk);
+}
+
+.viewbar__views button {
+  min-height: 44px;
+  padding: 0 var(--space-4);
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--text-2);
   font-size: var(--step--1);
   font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--decision);
+  cursor: pointer;
+  transition:
+    background-color var(--dur-quick) var(--ease-out),
+    color var(--dur-quick) var(--ease-out);
 }
 
-.brief__headline {
-  max-width: 30ch;
-  font-size: clamp(1.375rem, 1.1rem + 1.2vw, 2.125rem);
-  font-weight: 620;
-  line-height: 1.1;
-  letter-spacing: -0.025em;
-  text-wrap: balance;
-}
-
-.brief__estimate {
-  max-width: 60ch;
-  font-size: var(--step--1);
-  color: var(--text-3);
-}
-
-.brief__estimate b {
-  font-family: var(--font-mono);
-  font-weight: 600;
+.viewbar__views button:hover {
   color: var(--text);
 }
 
-.brief__rows {
-  display: grid;
-  border-top: 1px solid var(--line);
+.viewbar__views button[aria-pressed='true'] {
+  background: var(--surface-2);
+  box-shadow: inset 0 0 0 1px var(--line-strong);
+  color: var(--text);
 }
 
-.brief__rows > div {
+.viewbar__print {
+  font-size: var(--step--1);
+}
+
+/* Phones: the two views share the full width, the print action under them. */
+@media (max-width: 559px) {
+  .viewbar__views {
+    flex: 1 1 100%;
+  }
+
+  .viewbar__views button {
+    flex: 1;
+    padding-inline: var(--space-2);
+  }
+}
+
+/* ── The decision brief: the finished meeting as one document ────────── */
+
+.brief-view {
+  --decision: var(--decision-defer);
+  container: brief-view / inline-size;
+  min-width: 0;
+}
+
+.brief-view[data-decision='proceed'] {
+  --decision: var(--decision-proceed);
+}
+
+.brief-view[data-decision='pilot'] {
+  --decision: var(--decision-pilot);
+}
+
+.brief-view[data-decision='reject'] {
+  --decision: var(--decision-reject);
+}
+
+/* Narrow: the section links ride under the header as one row that scrolls sideways. */
+.brief-view__in {
+  --brief-nav-h: 3.875rem;
   display: grid;
-  gap: var(--space-2);
-  padding-block: var(--space-4);
+  gap: var(--space-5);
+}
+
+.brief-nav {
+  position: sticky;
+  z-index: 5;
+  top: var(--frame-h);
+  margin-inline: calc(var(--gutter) * -1);
+  padding-inline: var(--gutter);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  -webkit-backdrop-filter: saturate(140%) blur(14px);
+  backdrop-filter: saturate(140%) blur(14px);
   border-bottom: 1px solid var(--line);
 }
 
-.brief__rows dt {
+.brief-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.brief-nav__title {
+  display: none;
+}
+
+.brief-nav ol {
+  display: flex;
+  gap: var(--space-2);
+  width: max-content;
+  padding-block: var(--space-2);
+}
+
+.brief-nav a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55em;
+  min-height: 44px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--text-2);
+  font-size: var(--step--1);
+  font-weight: 560;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    color var(--dur-quick) var(--ease-out),
+    border-color var(--dur-quick) var(--ease-out),
+    background-color var(--dur-quick) var(--ease-out);
+}
+
+.brief-nav a:hover {
+  border-color: var(--text-3);
+  color: var(--text);
+}
+
+.brief-nav a[aria-current] {
+  border-color: var(--decision);
+  background: var(--surface);
+  color: var(--text);
+}
+
+.brief-nav__n {
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  font-weight: 500;
+  color: var(--text-3);
+}
+
+.brief-nav a[aria-current] .brief-nav__n {
+  color: var(--decision);
+}
+
+/* Wide: one reading column, the section list beside it, following the reader down. */
+@container brief-view (min-width: 54rem) {
+  .brief-view__in {
+    --brief-nav-h: 0px;
+    grid-template-columns: minmax(0, 46rem) minmax(11rem, 14rem);
+    column-gap: clamp(var(--space-6), 5cqi, var(--space-8));
+    align-items: start;
+  }
+
+  .brief-nav {
+    grid-column: 2;
+    grid-row: 1;
+    top: calc(var(--frame-h) + var(--space-6));
+    display: grid;
+    gap: var(--space-3);
+    margin: 0;
+    padding: 0;
+    overflow: visible;
+    background: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    border: 0;
+  }
+
+  .brief-nav__title {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: var(--step--2);
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-3);
+  }
+
+  .brief-nav ol {
+    display: grid;
+    gap: 0;
+    width: auto;
+    padding: 0;
+    border-left: 1px solid var(--line);
+  }
+
+  .brief-nav a {
+    display: flex;
+    margin-left: -1px;
+    padding: 0 var(--space-4);
+    border: 0;
+    border-left: 2px solid transparent;
+    border-radius: 0;
+    white-space: normal;
+  }
+
+  .brief-nav a[aria-current] {
+    border-left-color: var(--decision);
+    background: none;
+  }
+
+  .brief {
+    grid-column: 1;
+    grid-row: 1;
+  }
+}
+
+/* The sheet: one column of reading, edged in the decision's colour. */
+.brief {
+  display: grid;
+  gap: var(--space-8);
+  min-width: 0;
+  padding: var(--space-6) clamp(var(--space-4), 3.5cqi, var(--space-7)) var(--space-7);
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--decision);
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  overflow-wrap: break-word;
+}
+
+.brief__sec {
+  display: grid;
+  gap: var(--space-4);
+  align-content: start;
+  min-width: 0;
+  scroll-margin-top: var(--brief-nav-h);
+}
+
+.brief__sec + .brief__sec {
+  padding-top: var(--space-7);
+  border-top: 1px solid var(--line);
+}
+
+.brief__sec > h2 {
+  font-size: var(--step-3);
+  font-weight: 620;
+  line-height: 1.12;
+  letter-spacing: -0.022em;
+  text-wrap: balance;
+}
+
+.brief__part {
+  display: grid;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.brief__part + .brief__part {
+  margin-top: var(--space-3);
+}
+
+.brief__part > h3 {
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--line);
   font-family: var(--font-mono);
   font-size: var(--step--2);
   font-weight: 500;
@@ -130,55 +277,111 @@
   color: var(--text-3);
 }
 
-.brief__rows dd {
-  display: grid;
-  gap: var(--space-2);
-  min-width: 0;
+.brief__rec {
+  gap: var(--space-5);
+}
+
+.brief__rec .ingot-bar {
+  min-height: clamp(4.75rem, 3.5rem + 3vw, 6.5rem);
+}
+
+.brief__rec .hallmark-mark--verdict {
+  font-size: var(--step-3);
+}
+
+.brief__headline {
+  font-size: clamp(1.625rem, 1.2rem + 1.5vw, 2.625rem);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.brief__meta {
+  font-size: var(--step--1);
+  color: var(--text-3);
+}
+
+.brief__gloss {
+  margin-right: 0.35em;
+  font-weight: 650;
+  color: var(--decision);
+}
+
+.brief__meta b {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--text);
+}
+
+.brief__lead {
+  max-width: 66ch;
+  font-size: var(--step-1);
+  line-height: 1.55;
+  color: var(--text-2);
+  text-wrap: pretty;
+}
+
+.brief__note {
+  max-width: 66ch;
+  font-size: var(--step--1);
+  line-height: 1.5;
+  color: var(--text-3);
+}
+
+.brief__note b {
+  font-weight: 600;
+  color: var(--check-pass);
+}
+
+/* Before you proceed: the gate. What it costs to accept is said before anything else in the section. */
+.brief__gate-lede {
+  max-width: 66ch;
+  padding: var(--space-3) var(--space-4);
+  border-left: 3px solid var(--decision);
+  border-radius: 0 8px 8px 0;
+  background: var(--surface-2);
   color: var(--text-2);
 }
 
-.brief__rows dd > b {
+.brief__gate-lede b {
+  font-weight: 650;
   color: var(--text);
 }
 
-/* Labels beside their rows when there's room: a one-column brief from 34rem, or a two-column one from 60rem. */
-@container brief (34rem <= width < 40rem) or (min-width: 60rem) {
-  .brief__rows > div {
-    grid-template-columns: 9rem minmax(0, 1fr);
-    gap: var(--space-4);
+.brief .checks {
+  margin: 0;
+}
+
+@container brief-view (min-width: 34rem) {
+  .brief .check {
+    grid-template-columns: 9.5rem minmax(0, 1fr);
+    align-items: baseline;
+    gap: var(--space-3);
   }
 }
 
-.brief__block {
-  color: var(--check-block);
+/* The reading column is narrow enough that the three horizons read best one under another. */
+.brief .steps {
+  grid-template-columns: none;
 }
 
-.brief__block b {
-  font-weight: 600;
+.brief__sources {
+  display: grid;
+  border-top: 1px solid var(--line);
 }
 
-.brief__more-link,
-.brief__more {
-  display: inline-flex;
-  align-items: center;
-  justify-self: start;
-  min-height: 44px;
-  font-size: var(--step--1);
-  font-weight: 600;
-  color: var(--text);
-  text-underline-offset: 3px;
+/* The tools follow the timeline as their own block. */
+.brief .verdict__section {
+  margin-top: var(--space-4);
 }
 
-.brief__more {
-  gap: 0.35em;
-}
-
-/* "Your call" sits inside the brief: a raised panel, no longer a sticky column. */
 .brief .yourcall {
-  padding: var(--space-5);
+  padding: var(--space-6) var(--space-5);
+  scroll-margin-top: var(--brief-nav-h);
 }
 
-/* ── Verdict card: the cast ingot ─────────────────────────────────────── */
+/* ── Verdict card (the meeting transcript): the cast ingot ───────────── */
 
 .verdict {
   --decision: var(--decision-defer);
@@ -587,4 +790,23 @@
 
 .yourcall--done .btn--quiet {
   justify-self: start;
+}
+
+/* Accepted with conditions: the plan is approved, the prerequisites are not. */
+.yourcall__open {
+  padding: var(--space-3) var(--space-4);
+  border-left: 3px solid var(--decision);
+  border-radius: 0 8px 8px 0;
+  background: var(--sunk);
+  color: var(--text-2);
+}
+
+.yourcall__open b {
+  font-weight: 650;
+  color: var(--text);
+}
+
+.yourcall__open a {
+  color: var(--text);
+  text-underline-offset: 3px;
 }

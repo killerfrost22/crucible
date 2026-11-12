@@ -16,7 +16,7 @@
 ## ✅ Quota blocker resolved: OpenRouter ($25 prepaid)
 - [x] The board now runs through OpenRouter: Claude Haiku 5.5 for the five seats, and Claude Sonnet 5.5 with web search for the Researcher and Chairman. A meeting costs about $0.12, summed from OpenRouter's per-call charges for two eval meetings on Nov 10. The board alone takes 72–120 s. $25 covers roughly 200 meetings. The credit is a hard cap, so a public demo link can't overspend.
 - [x] Web search works, and since Nov 10 `check_sources` also opens every source link and dates it. In the current dental recording, 9 of 12 facts have a source link that opened. The board and the verdict both name Maryland's all-party recording consent and the HIPAA BAA, and the verdict requires both before any live pilot call. Leaked prompt tags (Claude Haiku once wrote `</reasoning_effort>` into an answer) are now stripped from every model answer before anyone sees it.
-- [ ] Watch the balance at https://openrouter.ai/settings/credits before judging. When the credit is gone the board shows "out of AI credit". At the end of Nov 10, **$13.19 of $25 was left** (about 100 meetings). Nov 10 used three re-recordings, two live meetings, the 10-scenario eval twice with its grading, and a two-scenario retest.
+- [ ] Watch the balance at https://openrouter.ai/settings/credits before judging. When the credit is gone the board shows "out of AI credit". On Nov 12, **$13.03 of the key's $25 cap was left** (about 100 meetings). **The key expires Nov 22**, after the finals; renew it if the site should keep working.
 
 ## ✅ Done (Fri)
 - [x] Backend: ADK 2.13 graph workflow — Researcher → 5 seats (Round 1) → 5 rebuttals (Round 2) → Chairman, all with structured output; FastAPI app with CORS; owner ratification stored via session PATCH. Full run verified end to end (~20–65 s on flash-lite models).
@@ -125,68 +125,32 @@ Browser review of local `main` (`42c49c4`) at 320, 375, 768, 1440 and 1920 px, b
 - [x] **G2: no blank page without newer APIs.** `fonts.ts` uses `new Promise`, and `Brief.tsx` parses source URLs in a `try`. Checked in Chromium with both APIs deleted: home and the sourced dental replay render, with 9 source links.
   - [ ] Still check on a real older iPhone (iOS 16) or BrowserStack.
 - [x] **G3: the API has a front door** (`backend/guard.py`, wired inside ADK's CORS middleware in `main.py`).
-  - **Routes:** only `GET /list-apps`, session create, ratification PATCH, `/run_sse`, and (since Nov 10) `GET` one session and `GET …/decisions` are open. Everything else returns 404 `CRUCIBLE_NOT_FOUND`.
-  - **Input checks:** a body cap (413) and strict intake and ratification checks (422). The server sets the ratification time.
-  - **Limits:** per IP, 10 runs and 30 sessions an hour; 100 runs a day in total; at most 3 runs at once. All are set in `.env` (see the README table).
+  - **Routes:** `GET /list-apps`, session create, a session's PATCH (ratification or feedback), `GET` and `DELETE`, `/run_sse`, `GET …/decisions` and (since Nov 10) `POST /client-errors` are open. Everything else returns 404 `CRUCIBLE_NOT_FOUND`.
+  - **Input checks:** a body cap (413) and strict intake, ratification and feedback checks (422). The server sets the `at` times.
+  - **Limits:** per IP, 40 runs and 60 sessions an hour; 100 runs a day in total; at most 3 runs at once; 20 error reports an hour. All but the last are set in `.env` (see the README table).
   - **Frontend:** it shows the server's sentence, e.g. "That's a lot of meetings from one network." The form's `maxLength` values match the caps.
-  - [ ] **Now, the guard is live on Vercel:** in the API project, set `CRUCIBLE_CLIENT_IP_HEADER=x-vercel-forwarded-for` and redeploy. Without it the limits key on the socket peer, which on Vercel is probably the platform's proxy rather than the visitor. If so, the 10-runs-an-hour limit is shared by everyone. Then check that two networks get separate limits. Also remember that Vercel counts limits per function instance.
-  - [ ] **Before finals:** decide whether 10 runs an hour per IP is enough for a room of judges behind one venue IP.
-  - [ ] **Still open from G3:** server-issued ownership of sessions. Since Nov 10 a decision link carries only the session id, and reading or changing a decision needs the owner id from the browser that made it. The owner id is still client-chosen, though, so anyone who learns both IDs can read or PATCH that session.
+  - [ ] **Now, the guard is live on Vercel:** in the API project, set `CRUCIBLE_CLIENT_IP_HEADER=x-vercel-forwarded-for` and redeploy. Without it the limits key on the socket peer, which on Vercel is probably the platform's proxy rather than the visitor. If so, the per-IP limit is shared by everyone. Then check that two networks get separate limits. Also remember that Vercel counts limits per function instance.
+  - [x] **Decided (Nov 10): 40 runs an hour per IP, up from 10,** so a room of judges behind one venue IP isn't cut off. The spend ceiling is the 100-runs-a-day cap and the 3-at-once cap.
+  - [ ] **Still open from G3:** server-issued ownership of sessions. Since Nov 10 the owner id must be a random version-4 UUID (`test` or any other guessable id gets 404), and reading or changing a decision needs that id. It is still made by the browser, though, so anyone who learns both IDs can read or PATCH that session.
 - [ ] **New: one hosting story, written down.** Done: hosting is Vercel for both projects, the README diagram shows OpenRouter → Claude, and `npm run build` fails without `VITE_API_BASE` (`vite.config.ts`).
-  - [ ] Commit and push the later Nov 10 batch, then check it on https://smith26-crucible.vercel.app: the decision card, a reload of `/?decision=…`, **Your decisions**, and "Link checked" labels on a replay.
+  - [ ] Push the Nov 10–12 batch (decision brief, print, lighter intake, feedback, error reports), then check it on https://smith26-crucible.vercel.app: a replay opens as a decision brief, `/?decision=…` reloads, **Your decisions**, and the API answers `POST /client-errors` (204) and refuses `/apps/crucible/users/test/sessions` (404). On Nov 12 the live API still had the older guard.
   - [ ] Confirm `CRUCIBLE_SESSION_DB` (Neon, `postgresql+asyncpg://…`) is set on the API project. Without it, a session created on one function instance may be missing on the one that runs the meeting.
   - [ ] Run one paid live meeting on https://smith26-crucible.vercel.app before the finals. No live meeting has been run through the deployed guard yet.
   - [x] Write the live URLs (Live table above) in the README.
-  - [ ] Make the Deploy section of `/under-the-hood` match Vercel (it still says Cloud Run + Secret Manager), and list Cloud Run in the README as the alternative.
+  - [x] The Deploy section of `/under-the-hood` describes the two Vercel projects and Neon, with Cloud Run as the alternative, and the README lists Cloud Run as the alternative too.
 
 ### Next: written decision brief and site clarity (Nov 10 live review)
 
 Reviewed the live home page, `/under-the-hood`, and finished bakery/dental recordings; desktop and mobile layouts, both themes. This is a **written reading experience**, not audio narration. Build on the existing brief, citation previews, folding controls and saved decisions rather than duplicating them.
 
-**Order:** decision reading view and complete conditions → print/PDF → lighter intake → homepage trimming → mobile explainer navigation.
+**All six are done** (Nov 10, verified Nov 12). Checked on a production build against a scratch API with seeded saved decisions (the bakery and dental final states), so no paid runs: 375, 768, 1440 and 1920 px, both themes, keyboard, reduced motion. axe-core 4.10 reports 0 WCAG 2.2 A/AA violations on a saved decision (brief and transcript views), the home page with business details open, and `/under-the-hood` with Contents open.
 
-- [ ] **High: make the decision brief the default finished-meeting view.**
-  - **Problem:** the bakery's summary alone spans roughly three phone screens; the research and debate separate it from the full verdict.
-  - **Change:** offer **Decision brief** and **Meeting transcript** views. Open the brief after completion and when reopening a finished saved decision; keep the meeting experience while a run is in progress.
-  - **Reading order:**
-    1. Recommendation: outcome, headline and the precise scope of any pilot.
-    2. Why: decisive reasons and the strongest opposing argument.
-    3. Before proceeding: every condition and unresolved blocker.
-    4. Action plan: this week, next 30 days and next 90 days.
-    5. What would change the recommendation: assumptions to revisit.
-    6. Sources: evidence cited by this decision, with existing source-status labels.
-    7. Your decision: accept/override, explanation and date.
-  - **Presentation:** readable single-column layout with short section navigation; remove repeated brief/verdict passages. Keep the transcript available without making owners scroll through it to reach the recommendation.
-  - **Data:** reuse the structured verdict and citations, without a second AI-generated summary. Preserve dissent and caveats; “link checked” must not imply “claim verified”.
-  - **Done when:** finished bakery/dental recordings and a saved decision open into a coherent reading view; switching views preserves the owner's call and starts no new run. An interrupted meeting without a verdict remains clearly incomplete.
-
-- [ ] **High: show every prerequisite before the owner signs off.**
-  - **Problem:** the dental brief offers Accept while three conditions sit behind “more in the full verdict”.
-  - **Change:** keep all conditions and unresolved Realist blocks together in the reading view, before Your decision. Clearly distinguish **approving a conditional plan** from **being cleared to proceed**; accepting must not mark its prerequisites as satisfied.
-  - **Done when:** the dental pilot's full conditions are visible without opening the transcript, and acceptance preserves those conditions and the legal warning.
-
-- [ ] **High: add Print / Save as PDF for the decision brief.**
-  - **Include:** the question, recommendation, reasons and dissent, all conditions, action plan, assumptions to revisit, cited source URLs/statuses, and the owner's call/note/date if signed.
-  - **Exclude:** replay controls, animation, navigation and the full meeting transcript. Clearly label recordings/practice signatures as such.
-  - **Privacy:** export only on the owner's action; keep saved decision links browser-private rather than introducing public sharing.
-  - **Done when:** print preview contains all decision content even if it was never scrolled into view; no faded, clipped or hidden sections, and long text/source links remain readable across page breaks.
-
-- [ ] **Medium: make intake lighter and privacy guidance earlier.**
-  - **Problem:** ten fields are displayed, including eight optional business-context fields.
-  - **Change:** keep the question and leaning prominent; collapse optional context under **Add business details**. Place a short privacy/prototype warning before entry and retain the full data disclosure.
-  - **Done when:** a phone user can submit without scrolling through optional fields; opening/closing details preserves entered values, validation errors reveal the relevant field, and keyboard access works.
-
-- [ ] **Medium: trim repeated proof on the homepage.**
-  - **Problem:** the bakery example repeats across the walkthrough, advisor cards, verdict and recording gallery.
-  - **Change:** keep one strong interactive walkthrough and its actionable outcome. Shorten supporting sections to distinct advisor contributions instead of repeating the same concern.
-  - **Done when:** the product, outcome and next action are easy to scan on a phone; recordings and the question form remain easy to reach. Preserve theme support and the existing example-switching behavior.
-
-- [ ] **Medium: add mobile navigation to the technical explainer.**
-  - **Problem:** the long `/under-the-hood` page loses its desktop section navigation on smaller screens.
-  - **Change:** add a compact sticky **Contents** control or section picker, using the existing section anchors.
-  - **Done when:** any section can be reached without returning to the top at 375 and 768 px; keyboard focus and target headings stay visible below the header, including with reduced motion.
-
-**Review before marking these done:** check changed surfaces at 375/768/1440/1920 px in both themes, keyboard-only navigation and reduced motion. Use the bakery/dental recordings and a seeded saved decision for repeatable checks without paid runs. Keep the current visual identity, citation previews, explicit dissent and owner-final-call framing.
+- [x] **The decision brief is the finished-meeting view** (`DecisionBrief.tsx`). A finished replay and a reopened saved decision open as **Decision brief** (a live meeting goes through the same code when its verdict lands; no paid run was done to check it); **Meeting transcript** shows the research, debate and full verdict. The brief reads recommendation → why (with the strongest objection) → before you proceed → action plan and AI tools → what would change it → sources → your call, with a section list beside it (a sticky row of chips on phones). It is built only from the structured verdict and facts; the sources say "Link checked means the page opened … not that anyone checked it backs the claim." Switching views keeps the signed call and fetches nothing. Links into the other view (a seat in the standings, "Make your call in the decision brief") switch views first.
+- [x] **Every prerequisite comes before the call.** "Before you proceed" holds the Realist's open blocks, every condition and the escalation note (dental: 1 block, 6 conditions, "Talk to an attorney"). The button reads **Accept the conditional plan**; once accepted, the call says "Not cleared to proceed yet. 7 prerequisites … are still open. Accepting doesn't mark them done." Checked: accept → reload keeps that text.
+- [x] **Print / Save as PDF** (`styles/print.css`). Prints the brief in the light theme from either view: question, recommendation, reasons and dissent, prerequisites, plan, tools, what would change it, sources with their full addresses, and the signed call. No header, controls, crucible, transcript or feedback. The first line says "Crucible decision brief · Saved decision" (or "Recorded example, not your decision · Recorded Nov 10 …") and the print date. Checked by printing the dental (8 pages) and bakery (7 pages) decisions to PDF: nothing faded or cut off. **Fixed Nov 12:** a heading could sit alone at a page foot ("Action plan", "AI tools, side by side") because Chromium ignores `break-after: avoid` inside grid; on paper those sections are now plain blocks.
+- [x] **Lighter intake.** Only the question and leaning show; the eight business fields sit under **Add business details** ("Optional · 1 of 8 added" once you fill one). The prototype warning comes before the first field. Checked at 375: values survive closing and reopening, an empty question is refused with focus on it, and Tab goes question → leaning → details → **Convene the board**.
+- [x] **Homepage trimmed.** The walkthrough keeps the recorded example. The board section now says what each seat contributes in general, and the verdict section shows the four possible calls instead of repeating the bakery verdict.
+- [x] **Contents on `/under-the-hood`.** Below 1200 px a sticky **Contents** button names the section being read ("06 Evaluation") and opens a list of every section. Checked at 375 and 768, by mouse and keyboard, with and without reduced motion: the jump lands the heading below the header and focus moves to the section; Escape closes the list and returns focus to the button.
 
 ### Next: a decision worth coming back to
 - [x] **#3 + #19: decision history** (Nov 10).
@@ -247,7 +211,7 @@ Reviewed the live home page, `/under-the-hood`, and finished bakery/dental recor
 
   - **Measured** on a local preview with fast 3G and 4× CPU throttling: LCP 1.2 s, CLS 0, no long tasks. That's unchanged from Nov 9; the first paint here is dominated by latency, not bytes.
   - **Verified:** the home page fetched only `index.js` and `index.css`, and opening a replay then fetched `Board.js` and `Board.css`.
-  - [ ] Every build prints a warning from Vite's upcoming native config loader about extensionless imports (`src/lib/sse.ts`, `recording.ts`, `featured.ts`), because `replaysPlugin.ts` pulls them into the config. It's harmless today; adding `.ts` extensions to those imports (with `allowImportingTsExtensions`) would silence it.
+  - [x] The Vite warning about extensionless imports in `replaysPlugin.ts` is gone (`.ts` extensions on those imports); `npm run build` prints no warnings.
 - [x] **#20 + #21: replay labels and quotes from the files** (Nov 10).
   - **The plugin:** `frontend/replaysPlugin.ts` reads every `public/replays/*.sse` at dev and build time and serves it as virtual modules.
   - **Home page quotes:** picked at build time by rules in `src/lib/featured.ts`, e.g. the first fact of each link outcome, or the Devil's Advocate's first rebuttal and the answers to it. They are shortened only by keeping whole leading sentences, and `(Fn)` is dropped from verdict excerpts.
@@ -282,4 +246,4 @@ Reviewed the live home page, `/under-the-hood`, and finished bakery/dental recor
     - a saved decision (seeded with `CRUCIBLE_SESSION_DB=memory://`) reopens with its signed call and starts no `/run_sse`;
     - axe stays at 0 violations.
   - **Why:** this automates the render step of the `AGENTS.md` review loop and most of Ruijie's UI matrix; the critique step stays human.
-- [ ] **New: learn from real visitors.** There are no analytics, no feedback and no error reports today. Add cookieless page analytics (e.g., Vercel Web Analytics) and the funnel hero → form → convene → verdict → signed; a one-tap "Was this useful?" with an optional note, saved on the decision; and frontend error reporting. List all of it in the data notice (#11).
+- [ ] **Learn from real visitors.** Done Nov 10: "Was this useful?" (one tap, then an optional note) is saved on each saved decision, and front-end errors go to `POST /client-errors`, which logs them on the server (checked: a thrown error and an unhandled rejection both reached the API log, 204). The data notice lists both. **Still open:** page analytics and the funnel (hero → form → convene → verdict → signed). Turning on Vercel Web Analytics (cookieless) is a switch in the Vercel dashboard plus one script; update the data notice, which now says "There are no analytics, cookies or third-party trackers", if you do.

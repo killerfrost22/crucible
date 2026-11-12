@@ -1,10 +1,10 @@
 import { AnimatePresence, motion, useReducedMotion, type Transition } from 'motion/react'
-import { useEffect, useId, useRef, useState, type CSSProperties, type FormEvent, type ReactNode, type Ref } from 'react'
+import { useEffect, useId, useRef, useState, type CSSProperties, type FormEvent } from 'react'
 import { DECISION_COPY } from '../lib/decisionCopy'
 import { sbdcFor } from '../lib/sbdc'
 import type { RatifyStatus } from '../lib/useBoardRun'
 import { SEAT_BY_ID } from '../seats'
-import type { Check, Decision, EscalateTo, Ratification, SeatPoint, StepWhen, ToolPick, Verdict } from '../types'
+import type { Decision, EscalateTo, Ratification, SeatPoint, Step, StepWhen, ToolPick, Verdict } from '../types'
 import { FactText, hostOf, SourceTag, useFacts } from './facts'
 import { EASE_IN_OUT, EASE_OUT, EASE_STRIKE } from './motion'
 
@@ -23,7 +23,7 @@ function useTiming() {
   return (t: Transition): Transition => (reduce ? { duration: 0 } : t)
 }
 
-function Points({ points }: { points: SeatPoint[] }) {
+export function Points({ points }: { points: SeatPoint[] }) {
   return (
     <ul className="points">
       {points.map((p, i) => (
@@ -38,18 +38,101 @@ function Points({ points }: { points: SeatPoint[] }) {
   )
 }
 
-/** `location` is the owner's, from the intake: it picks which SBDC the referral links to. */
-export function VerdictCard({ verdict, location }: { verdict: Verdict; location?: string }) {
-  const sbdc = sbdcFor(location)
+/** The cast ingot: poured glowing, it cools to metal and the decision is struck into it. */
+export function IngotBar({ verdict }: { verdict: Verdict }) {
   const copy = DECISION_COPY[verdict.decision]
   const timing = useTiming()
-  const steps = WHEN_ORDER.map((when) => ({ when, items: verdict.next_steps.filter((s) => s.when === when) })).filter((g) => g.items.length)
+  return (
+    <div className="ingot-bar">
+      <motion.span
+        className="ingot-bar__hot"
+        aria-hidden="true"
+        initial={{ opacity: 1 }}
+        whileInView={{ opacity: 0 }}
+        viewport={{ once: true, amount: 0.6 }}
+        transition={timing({ duration: 2.4, delay: 0.5, ease: EASE_IN_OUT })}
+      />
+      <motion.p
+        className="hallmark-mark hallmark-mark--verdict"
+        initial={{ opacity: 0, scale: 1.35 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        viewport={{ once: true, amount: 0.6 }}
+        transition={timing({ duration: 0.26, delay: 1.5, ease: EASE_STRIKE })}
+      >
+        {copy.stamp}
+        <span className="visually-hidden">: {copy.gloss}</span>
+      </motion.p>
+      <motion.p
+        className="ingot-bar__reading"
+        aria-hidden="true"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true, amount: 0.6 }}
+        transition={timing({ duration: 0.5, delay: 1.9, ease: EASE_OUT })}
+      >
+        {Math.round(verdict.confidence)}%
+      </motion.p>
+    </div>
+  )
+}
+
+/** The next steps by when: this week, the next 30 days, the next 90 days. */
+export function StepGroups({ steps, heading: Heading = 'h4' }: { steps: Step[]; heading?: 'h3' | 'h4' }) {
+  const groups = WHEN_ORDER.map((when) => ({ when, items: steps.filter((s) => s.when === when) })).filter((g) => g.items.length)
+  if (!groups.length) return null
+  return (
+    <ol className="steps">
+      {groups.map((g) => (
+        <li key={g.when} className="steps__group">
+          <Heading className="steps__when">{g.when}</Heading>
+          <ul>
+            {g.items.map((s) => (
+              <li key={s.action}>
+                <FactText text={s.action} />
+              </li>
+            ))}
+          </ul>
+        </li>
+      ))}
+    </ol>
+  )
+}
+
+/** Who to see before acting (the legal warning, when it's an attorney), and why. */
+export function Escalation({ verdict, location }: { verdict: Verdict; location?: string }) {
+  const id = useId()
+  if (verdict.escalate_to === 'none') return null
+  const sbdc = sbdcFor(location)
+  return (
+    <section className="escalate" aria-labelledby={id}>
+      <h3 id={id}>{ESCALATION[verdict.escalate_to]}</h3>
+      {verdict.escalation_reason && (
+        <p>
+          <FactText text={verdict.escalation_reason} />
+        </p>
+      )}
+      {verdict.escalate_to === 'sbdc_advisor' && (
+        <a className="escalate__link" href={sbdc.url} target="_blank" rel="noreferrer">
+          Find free, confidential help at {sbdc.name}
+          <span aria-hidden="true"> ↗</span>
+          <span className="visually-hidden"> (opens in a new tab)</span>
+        </a>
+      )}
+    </section>
+  )
+}
+
+/** The full verdict, in the meeting transcript. `location` is the owner's, from the intake: it picks the SBDC. */
+export function VerdictCard({ verdict, location }: { verdict: Verdict; location?: string }) {
+  const copy = DECISION_COPY[verdict.decision]
+  const timing = useTiming()
+  const titleId = useId()
   const confidence = Math.round(verdict.confidence)
   return (
     <motion.article
       className="verdict"
       data-decision={verdict.decision}
-      aria-labelledby="verdict-title"
+      aria-labelledby={titleId}
       initial={{ opacity: 0, y: 24 }}
       // Arrives once it is on screen, so the scroll to it never swallows the moment.
       whileInView={{ opacity: 1, y: 0 }}
@@ -58,38 +141,8 @@ export function VerdictCard({ verdict, location }: { verdict: Verdict; location?
     >
       <header className="verdict__head">
         <p className="kicker">The Chairman recommends</p>
-        {/* The cast ingot: poured glowing, it cools to metal and the decision is struck into it. */}
-        <div className="ingot-bar">
-          <motion.span
-            className="ingot-bar__hot"
-            aria-hidden="true"
-            initial={{ opacity: 1 }}
-            whileInView={{ opacity: 0 }}
-            viewport={{ once: true, amount: 0.6 }}
-            transition={timing({ duration: 2.4, delay: 0.5, ease: EASE_IN_OUT })}
-          />
-          <motion.p
-            className="hallmark-mark hallmark-mark--verdict"
-            initial={{ opacity: 0, scale: 1.35 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true, amount: 0.6 }}
-            transition={timing({ duration: 0.26, delay: 1.5, ease: EASE_STRIKE })}
-          >
-            {copy.stamp}
-            <span className="visually-hidden">: {copy.gloss}</span>
-          </motion.p>
-          <motion.p
-            className="ingot-bar__reading"
-            aria-hidden="true"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true, amount: 0.6 }}
-            transition={timing({ duration: 0.5, delay: 1.9, ease: EASE_OUT })}
-          >
-            {confidence}%
-          </motion.p>
-        </div>
-        <h2 id="verdict-title" className="verdict__headline">
+        <IngotBar verdict={verdict} />
+        <h2 id={titleId} className="verdict__headline">
           {verdict.headline}
         </h2>
         <p className="verdict__meta">
@@ -142,41 +195,16 @@ export function VerdictCard({ verdict, location }: { verdict: Verdict; location?
         </section>
       )}
 
-      {steps.length > 0 && (
+      {verdict.next_steps.length > 0 && (
         <section className="verdict__section">
           <h3>Next steps</h3>
-          <ol className="steps">
-            {steps.map((g) => (
-              <li key={g.when} className="steps__group">
-                <h4 className="steps__when">{g.when}</h4>
-                <ul>
-                  {g.items.map((s) => (
-                    <li key={s.action}>
-                      <FactText text={s.action} />
-                    </li>
-                  ))}
-                </ul>
-              </li>
-            ))}
-          </ol>
+          <StepGroups steps={verdict.next_steps} />
         </section>
       )}
 
       <ToolComparison tools={verdict.ai_tools} noNewTool={verdict.no_new_tool?.trim() ?? ''} />
 
-      {verdict.escalate_to !== 'none' && (
-        <section className="escalate" aria-labelledby="escalate-title">
-          <h3 id="escalate-title">{ESCALATION[verdict.escalate_to]}</h3>
-          {verdict.escalation_reason && <p>{verdict.escalation_reason}</p>}
-          {verdict.escalate_to === 'sbdc_advisor' && (
-            <a className="escalate__link" href={sbdc.url} target="_blank" rel="noreferrer">
-              Find free, confidential help at {sbdc.name}
-              <span aria-hidden="true"> ↗</span>
-              <span className="visually-hidden"> (opens in a new tab)</span>
-            </a>
-          )}
-        </section>
-      )}
+      <Escalation verdict={verdict} location={location} />
     </motion.article>
   )
 }
@@ -199,7 +227,7 @@ function PriceBasis({ tool }: { tool: ToolPick }) {
 }
 
 /** The endorsed tools side by side, and the option of buying nothing new. */
-function ToolComparison({ tools, noNewTool }: { tools: ToolPick[]; noNewTool: string }) {
+export function ToolComparison({ tools, noNewTool }: { tools: ToolPick[]; noNewTool: string }) {
   if (!tools.length && !noNewTool) return null
   return (
     <section className="verdict__section">
@@ -258,105 +286,10 @@ function ToolComparison({ tools, noNewTool }: { tools: ToolPick[]; noNewTool: st
   )
 }
 
-interface DecisionBriefProps {
-  verdict: Verdict
-  /** The Realist's latest checks; any still at "block" is an open gate. */
-  checks: Check[]
-  /** "Your call": the owner signs here, at the top, not after the transcript. */
-  call: ReactNode
-  ref?: Ref<HTMLElement>
-}
-
-/** The decision on one card: what to do, why, the strongest objection, what must hold, the next step, and the call. */
-export function DecisionBrief({ verdict, checks, call, ref }: DecisionBriefProps) {
-  const copy = DECISION_COPY[verdict.decision]
-  const reasons = verdict.decisive_arguments.slice(0, 3)
-  const objection = verdict.dissent[0]
-  const gates = verdict.conditions.slice(0, 3)
-  const moreGates = verdict.conditions.length - gates.length
-  const blocks = checks.filter((c) => c.status === 'block').map((c) => c.area)
-  const next = WHEN_ORDER.flatMap((when) => verdict.next_steps.filter((s) => s.when === when))[0]
-  return (
-    <section ref={ref} className="brief" data-decision={verdict.decision} aria-labelledby="brief-title">
-      <div className="brief__in">
-        <div className="brief__lead">
-          <header className="brief__head">
-            <p className="kicker">The decision, on one card</p>
-            <p className="brief__stamp">
-              {copy.stamp}
-              <span className="visually-hidden">: {copy.gloss}</span>
-            </p>
-          </header>
-          <h2 id="brief-title" className="brief__headline">
-            {verdict.headline}
-          </h2>
-          <p className="brief__estimate">
-            The Chairman puts its own confidence at <b>{Math.round(verdict.confidence)}%</b>. That’s the AI’s estimate, not a measured
-            probability.
-          </p>
-        </div>
-        <dl className="brief__rows">
-          {reasons.length > 0 && (
-            <div>
-              <dt>Why</dt>
-              <dd>
-                <Points points={reasons} />
-              </dd>
-            </div>
-          )}
-          <div>
-            <dt>Strongest objection</dt>
-            <dd>{objection ? <Points points={[objection]} /> : <p className="seat__muted">No seat is still objecting.</p>}</dd>
-          </div>
-          {(gates.length > 0 || blocks.length > 0) && (
-            <div>
-              <dt>Open gates</dt>
-              <dd>
-                {blocks.length > 0 && (
-                  <p className="brief__block">
-                    The Realist still blocks on <b>{blocks.join(', ')}</b>.
-                  </p>
-                )}
-                {gates.length > 0 && (
-                  <ul className="conditions">
-                    {gates.map((c) => (
-                      <li key={c}>
-                        <FactText text={c} />
-                      </li>
-                    ))}
-                  </ul>
-                )}
-                {moreGates > 0 && (
-                  <a className="brief__more-link" href="#verdict-title">
-                    {moreGates} more in the full verdict
-                  </a>
-                )}
-              </dd>
-            </div>
-          )}
-          {next && (
-            <div>
-              <dt>Next step</dt>
-              <dd>
-                <p>
-                  <b>{next.when.charAt(0).toUpperCase() + next.when.slice(1)}.</b> <FactText text={next.action} />
-                </p>
-              </dd>
-            </div>
-          )}
-        </dl>
-        {call}
-        <a className="brief__more" href="#verdict-title">
-          Read the full verdict
-          <span aria-hidden="true">↓</span>
-        </a>
-      </div>
-    </section>
-  )
-}
-
 interface YourCallProps {
   decision: Decision
+  /** Conditions plus unresolved Realist blocks: accepting approves the plan with these still open. */
+  prerequisites: number
   ratification: Ratification | null
   status: RatifyStatus
   error: string | null
@@ -365,9 +298,9 @@ interface YourCallProps {
 }
 
 const formatAt = (iso: string) =>
-  new Date(iso).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })
+  new Date(iso).toLocaleString(undefined, { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })
 
-export function YourCall({ decision, ratification, status, error, local, onSubmit }: YourCallProps) {
+export function YourCall({ decision, prerequisites, ratification, status, error, local, onSubmit }: YourCallProps) {
   const [mode, setMode] = useState<'choose' | 'override'>('choose')
   /** `at` of the ratification being revised; a newer signature ends the edit. */
   const [editingAt, setEditingAt] = useState<string | null>(null)
@@ -381,6 +314,7 @@ export function YourCall({ decision, ratification, status, error, local, onSubmi
   const ids = useId()
   const saving = status === 'saving'
   const stamp = DECISION_COPY[decision].stamp.toLowerCase()
+  const openCount = `${prerequisites} ${prerequisites === 1 ? 'prerequisite' : 'prerequisites'}`
 
   const submitOverride = async (event: FormEvent) => {
     event.preventDefault()
@@ -410,8 +344,17 @@ export function YourCall({ decision, ratification, status, error, local, onSubmi
           {accepted ? 'Accepted' : 'Overridden'}
         </motion.p>
         <p className="yourcall__summary">
-          {accepted ? `You accepted the recommendation to ${stamp}.` : `You overrode the recommendation to ${stamp}.`}
+          {accepted
+            ? `You accepted the recommendation to ${stamp}${prerequisites > 0 ? ', as a conditional plan' : ''}.`
+            : `You overrode the recommendation to ${stamp}.`}
         </p>
+        {accepted && prerequisites > 0 && (
+          <p className="yourcall__open">
+            <b>Not cleared to proceed yet.</b> {openCount} under{' '}
+            <a href="#brief-before">Before you proceed</a> {prerequisites === 1 ? 'is' : 'are'} still open. Accepting doesn’t mark
+            them done.
+          </p>
+        )}
         {ratification.note && <blockquote className="yourcall__note">{ratification.note}</blockquote>}
         <p className="yourcall__meta">
           Signed {formatAt(ratification.at)}
@@ -446,10 +389,18 @@ export function YourCall({ decision, ratification, status, error, local, onSubmi
       <h2 className="yourcall__title" id={`${ids}-title`}>
         Your call
       </h2>
-      <p className="yourcall__lede">The board advises. You decide. Sign off on the recommendation, or overrule it and say why.</p>
+      {prerequisites > 0 ? (
+        <p className="yourcall__lede">
+          The board advises. You decide. Accepting approves this plan with its {openCount}{' '}
+          still open: you’re cleared to go ahead only once each one is met. Or overrule it and say why.
+        </p>
+      ) : (
+        <p className="yourcall__lede">The board advises. You decide. Sign off on the recommendation, or overrule it and say why.</p>
+      )}
+      <p className="yourcall__unsigned print-only">Not signed. No call had been made on this recommendation when it was printed.</p>
       <div className="yourcall__actions">
         <button type="button" className="btn btn--primary" disabled={saving} aria-busy={saving && mode !== 'override'} onClick={() => onSubmit('accept', '')}>
-          {saving && mode !== 'override' ? 'Saving…' : 'Accept recommendation'}
+          {saving && mode !== 'override' ? 'Saving…' : prerequisites > 0 ? 'Accept the conditional plan' : 'Accept recommendation'}
         </button>
         <button
           type="button"

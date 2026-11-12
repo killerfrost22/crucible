@@ -1,8 +1,8 @@
 // Real session content for the home page. The quotes are selected from the recorded meetings in public/replays/ when the
 // site is built (lib/featured.ts, served by replaysPlugin.ts), so a re-recorded file updates every quote. They are
 // shortened but not reworded: whole leading sentences are kept and the rest dropped, (Fn) citations are dropped from the
-// verdict excerpts and the board-card lines, and straight quotes are set as curly ones. Only the labels below are
-// written by hand. MEMBERS is also used by the under-the-hood page.
+// verdict excerpts, and straight quotes are set as curly ones. Only the labels below are written by hand. MEMBERS is also
+// used by the under-the-hood page.
 import bakery from 'virtual:crucible-featured/bakery-second-location'
 import hvac from 'virtual:crucible-featured/hvac-ai-promo-texts'
 import type { FeaturedQuotes } from './lib/featured'
@@ -29,7 +29,7 @@ export const CHAIRMAN: Member = {
 /** The five seats in table order, then the Chairman. */
 export const MEMBERS: Member[] = [...SEATS.map((s) => ({ ...s, color: `var(--seat-${s.id})` })), CHAIRMAN]
 
-/** A recorded meeting the home page walks through: the showcase, the board cards and the example verdict. */
+/** A recorded meeting the home page's walkthrough steps through. */
 export interface FeaturedSession extends FeaturedQuotes {
   /** Replay name in public/replays/. */
   replay: string

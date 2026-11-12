@@ -1,17 +1,17 @@
 import { memo, useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type MouseEvent } from 'react'
-import { CHAIRMAN, FEATURED, MEMBERS, type FeaturedSession } from '../content'
+import { FEATURED, MEMBERS } from '../content'
 import { SeatArt } from '../components/SeatArt'
 import { ThemeToggle } from '../components/ThemeToggle'
 import { Wordmark } from '../components/Wordmark'
+import { DECISION_COPY } from '../lib/decisionCopy'
 import type { IntakeDraft } from '../lib/intakeDraft'
 import { navigateOnClick, UNDER_THE_HOOD } from '../lib/nav'
 import { REPLAYS } from '../lib/replay'
 import { FIND_YOUR_SBDC, MARYLAND_SBDC } from '../lib/sbdc'
-import { SEAT_BY_ID, STANCE_LABEL } from '../seats'
-import type { Intake } from '../types'
+import type { Decision, Intake } from '../types'
 import { BrandMark, SeatRule } from './BrandMark'
 import { Decisions } from './Decisions'
-import { STATS } from './homeContent'
+import { CONTRIBUTIONS, STATS, VERDICT_PARTS } from './homeContent'
 import { IntakeForm } from './IntakeForm'
 import { Showcase } from './Showcase'
 import { Arrow, Chevron, Play } from './icons'
@@ -32,16 +32,18 @@ const external = <span className="visually-hidden"> (opens in a new tab)</span>
 const k = (color: string) => ({ '--k': color }) as CSSProperties
 
 /**
- * Scroll to the form and put the caret at the end of the question. Wide screens show the section (heading beside the
- * form); phones stack the intro above the form, so there the question's own label goes to the top instead.
+ * Scroll to the form and put the caret at the end of the question. Show as much as fits with the question still on
+ * screen: the whole section (heading beside the form on wide screens), else the form card from its privacy note down,
+ * else the question's own label at the top.
  */
 function goToForm(behavior: ScrollBehavior) {
   const section = document.getElementById('convene')
   const question = document.getElementById('question') as HTMLTextAreaElement | null
   if (!section || !question) return
-  const below = question.getBoundingClientRect().bottom - section.getBoundingClientRect().top
+  const bottom = question.getBoundingClientRect().bottom
   const room = window.innerHeight - parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop || '0')
-  const target = below <= room ? section : (question.closest('.hm-field') ?? question)
+  const candidates = [section, section.querySelector('.hm-convene__card'), question.closest('.hm-field') ?? question]
+  const target = candidates.find((el) => el && bottom - el.getBoundingClientRect().top <= room) ?? question
   target.scrollIntoView({ block: 'start', behavior })
   question.focus({ preventScroll: true })
   question.setSelectionRange(question.value.length, question.value.length)
@@ -49,7 +51,7 @@ function goToForm(behavior: ScrollBehavior) {
 
 export function Home({ arrival, draft, onChange, onSubmit, onReplay }: HomeProps) {
   const rootRef = useRef<HTMLDivElement>(null)
-  // The recorded meeting the page shows: the showcase switches it, and the board cards, verdict and watch buttons follow.
+  // The recorded meeting the page shows: the showcase switches it, and the pill and watch buttons follow.
   const [featured, setFeatured] = useState(0)
   const session = FEATURED[featured]
 
@@ -159,9 +161,9 @@ export function Home({ arrival, draft, onChange, onSubmit, onReplay }: HomeProps
           </div>
         </section>
 
+        <VerdictSection onWatch={watch} onConvene={convene} />
         <Stats />
-        <Board session={session} />
-        <VerdictSection session={session} onWatch={watch} onConvene={convene} />
+        <Board />
         <Sessions onReplay={onReplay} onConvene={convene} />
 
         <section className="hm-sec hm-convene" id="convene" aria-labelledby="convene-title">
@@ -169,10 +171,7 @@ export function Home({ arrival, draft, onChange, onSubmit, onReplay }: HomeProps
             <div className="hm-convene__intro">
               <p className="hm-eyebrow">Convene</p>
               <h2 id="convene-title">Bring the decision you keep putting&nbsp;off.</h2>
-              <p>
-                Ask it the way you would ask a mentor. The board researches it, argues it over two rounds, and the Chairman recommends what to do.
-                The final call stays yours.
-              </p>
+              <p>Ask it the way you’d ask a mentor. Only the question is required, and the final call stays yours.</p>
               <ol className="hm-convene__flow" aria-label="What happens after you submit">
                 {['Research', 'Opening positions', 'Rebuttals', 'Verdict'].map((s, i) => (
                   <li key={s}>
@@ -226,14 +225,17 @@ const Header = memo(function Header({ onConvene, onWatch }: { onConvene: (e?: Mo
   const close = () => setOpen(false)
   const sections = (
     <>
-      <a href="#board" onClick={close}>
-        The board
-      </a>
       <a href="#how" onClick={close}>
         How it works
       </a>
       <a href="#verdict" onClick={close}>
         Verdicts
+      </a>
+      <a href="#board" onClick={close}>
+        The board
+      </a>
+      <a href="#sessions" onClick={close}>
+        Recordings
       </a>
     </>
   )
@@ -322,66 +324,45 @@ const Stats = memo(function Stats() {
   )
 })
 
-const Board = memo(function Board({ session }: { session: FeaturedSession }) {
-  const stanceBySeat = Object.fromEntries(session.stances.map((s) => [s.seat, STANCE_LABEL[s.stance]]))
-  const v = session.verdict
+/** What each member contributes, not what it said in one meeting: the walkthrough above already carries the example. */
+const Board = memo(function Board() {
   return (
     <section className="hm-sec" id="board" aria-labelledby="board-title">
       <div className="hm-col hm-band hm-band--head">
         <div className="hm-head-block" data-reveal>
           <p className="hm-eyebrow">The board</p>
           <h2 id="board-title">Five seats. One chair.</h2>
-          <p>
-            Each advisor argues from one job, so every side of your decision has someone committed to it. The lines on each card are theirs,
-            from the recorded {session.noun} meeting.
-          </p>
+          <p>Each advisor argues from one job, so every side of your decision has someone committed to it. Here is what each one brings.</p>
         </div>
       </div>
       <ul className="hm-col hm-bento" aria-label="The members">
-        {MEMBERS.map((m) => {
-          const isChair = m.id === CHAIRMAN.id
-          return (
-            <li key={m.id} className="hm-cell" style={k(m.color)} data-reveal>
-              <div className="hm-thumb" aria-hidden="true">
-                <SeatArt id={m.id} className="hm-thumb__art" />
-                <div className="hm-thumb__card">
-                  <p className="hm-thumb__who">
-                    <span className="hm-who">{m.title}</span>
-                    <span className="hm-thumb__stance">{isChair ? `${v.decision} · ${v.confidence}%` : stanceBySeat[m.id]}</span>
-                  </p>
-                  <p className="hm-thumb__line">{session.lines[m.id]}</p>
-                </div>
-              </div>
+        {MEMBERS.map((m) => (
+          <li key={m.id} className="hm-cell" style={k(m.color)} data-reveal>
+            <div className="hm-thumb" aria-hidden="true">
+              <SeatArt id={m.id} className="hm-thumb__art" />
+            </div>
+            <div className="hm-cell__text">
               <h3>{m.title}</h3>
-              <p>{m.role}</p>
-            </li>
-          )
-        })}
+              <p>{CONTRIBUTIONS[m.id]}</p>
+            </div>
+          </li>
+        ))}
       </ul>
     </section>
   )
 })
 
-const VerdictSection = memo(function VerdictSection({
-  session,
-  onWatch,
-  onConvene,
-}: {
-  session: FeaturedSession
-  onWatch: () => void
-  onConvene: (e?: MouseEvent) => void
-}) {
-  const v = session.verdict
+const CALLS = Object.keys(DECISION_COPY) as Decision[]
+
+/** The outcome every meeting reaches, laid out once; the walkthrough shows a real one. */
+const VerdictSection = memo(function VerdictSection({ onWatch, onConvene }: { onWatch: () => void; onConvene: (e?: MouseEvent) => void }) {
   return (
     <section className="hm-sec" id="verdict" aria-labelledby="verdict-title">
       <div className="hm-col hm-split">
         <div className="hm-split__text" data-reveal>
           <p className="hm-eyebrow">Verdicts</p>
           <h2 id="verdict-title">A decision you can act&nbsp;on</h2>
-          <p>
-            Every session ends with the Chairman’s recommendation: what to do, why the board landed there, who still disagrees, what has to
-            hold true, and what to do this week.
-          </p>
+          <p>Every meeting ends the same way: one call from the Chairman, the reasons behind it, and the steps to act on it.</p>
           <div className="hm-split__btns">
             <a className="hm-btn hm-btn--primary" href="#convene" onClick={onConvene}>
               Convene your board
@@ -393,66 +374,27 @@ const VerdictSection = memo(function VerdictSection({
           </div>
         </div>
         <div className="hm-split__art hm-paper">
-          <figure className="hm-vcard" aria-label={`Example verdict from the recorded ${session.noun} session`} data-reveal>
-            <div className="hm-vcard__top">
-              <span className="hallmark-mark hm-vcard__mark">{v.decision}</span>
-              <span className="hm-vcard__meta">
-                Chairman’s estimate: {v.confidence}%
-                <br />
-                {session.place}
-              </span>
-            </div>
-            <p className="hm-vcard__call">{v.headline}</p>
+          <div className="hm-vcard" data-reveal>
+            <p className="hm-vcard__kicker" id="verdict-calls">
+              The call: one of four
+            </p>
+            <ul className="hm-vcard__calls" aria-labelledby="verdict-calls">
+              {CALLS.map((d) => (
+                <li key={d} data-decision={d}>
+                  <span className="hallmark-mark hm-vcard__mark">{DECISION_COPY[d].stamp}</span>
+                  <span className="hm-vcard__gloss">{DECISION_COPY[d].gloss}</span>
+                </li>
+              ))}
+            </ul>
             <dl className="hm-vcard__dl">
-              <div>
-                <dt>Why</dt>
-                <dd>{v.why}</dd>
-              </div>
-              <div>
-                <dt>Dissent</dt>
-                <dd>
-                  <span className="hm-who" style={k(`var(--seat-${v.dissent.seat})`)}>
-                    {SEAT_BY_ID[v.dissent.seat].title}
-                  </span>{' '}
-                  “{v.dissent.text}”
-                </dd>
-              </div>
-              <div>
-                <dt>Only if</dt>
-                <dd>
-                  <ul>
-                    {v.conditions.map((c) => (
-                      <li key={c}>{c}</li>
-                    ))}
-                  </ul>
-                </dd>
-              </div>
-              <div>
-                <dt>Next steps</dt>
-                <dd>
-                  <ul>
-                    {v.steps.map((s) => (
-                      <li key={s.when}>
-                        <b>{s.when}.</b> {s.action}
-                      </li>
-                    ))}
-                  </ul>
-                </dd>
-              </div>
-              <div>
-                <dt>Ask</dt>
-                <dd>{v.escalate}</dd>
-              </div>
+              {VERDICT_PARTS.map((p) => (
+                <div key={p.term}>
+                  <dt>{p.term}</dt>
+                  <dd>{p.detail}</dd>
+                </div>
+              ))}
             </dl>
-            <div className="hm-vcard__foot">
-              <span className="hm-who" style={k(CHAIRMAN.color)}>
-                Your call
-              </span>
-              <span className="hm-vcard__how">
-                <b>Accept</b> it, or <b>override</b> it with a note.
-              </span>
-            </div>
-          </figure>
+          </div>
         </div>
       </div>
     </section>

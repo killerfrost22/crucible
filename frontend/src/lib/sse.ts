@@ -1,4 +1,4 @@
-import type { AdkEvent } from '../types'
+import type { AdkEvent } from '../types.ts'
 
 /**
  * Incremental text/event-stream parser shared by live mode (fetch chunks) and replay (whole file).

@@ -1,4 +1,4 @@
-import { memo, useLayoutEffect, useRef, useState, type CSSProperties, type MouseEvent, type ReactNode } from 'react'
+import { memo, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type FocusEvent, type MouseEvent, type ReactNode } from 'react'
 import { SeatArt } from '../components/SeatArt'
 import { ThemeToggle } from '../components/ThemeToggle'
 import { Wordmark } from '../components/Wordmark'
@@ -34,12 +34,14 @@ const FX_ADVISORS: FxAdvisor[] = MEMBERS.map((m) => ({ id: m.id, name: m.title, 
 const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
 const dot = (color: string) => ({ '--k': color }) as CSSProperties
 
-/** Where the window has to scroll for a section's top to sit under the sticky header (the root's `scroll-padding-top`). */
+/** The root's `scroll-padding-top`: how far below the viewport's top the sticky header ends, plus breathing room. */
+const scrollPad = () => parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0
+
+/** Where the window has to scroll for a section's top to sit under the sticky header. */
 function sectionTop(id: string) {
   const target = document.getElementById(id)
   if (!target) return window.scrollY
-  const pad = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0
-  return Math.max(0, target.getBoundingClientRect().top + window.scrollY - pad)
+  return Math.max(0, target.getBoundingClientRect().top + window.scrollY - scrollPad())
 }
 
 /**
@@ -80,11 +82,25 @@ const SECTIONS = [
   { id: 'streaming', n: '05', label: 'Streaming', nav: 'Streaming', blurb: 'One event per node, one reducer for live and replay.' },
   { id: 'eval', n: '06', label: 'Evaluation', nav: 'Evaluation', blurb: 'Ten planted traps: the board against one prompt.' },
   { id: 'frontend', n: '07', label: 'The frontend', nav: 'Frontend', blurb: 'React 19, two themes, and the effect on this page.' },
-  { id: 'deploy', n: '08', label: 'Deploy', nav: 'Deploy', blurb: 'Vercel in front, Cloud Run behind.' },
+  { id: 'deploy', n: '08', label: 'Deploy', nav: 'Deploy', blurb: 'Two Vercel projects, sessions in Neon Postgres.' },
 ] as const
 
 type SectionId = (typeof SECTIONS)[number]['id']
 const SECTION = Object.fromEntries(SECTIONS.map((s) => [s.id, s])) as Record<SectionId, (typeof SECTIONS)[number]>
+
+/** The Contents panel also leads back to the hero. */
+const CONTENTS = [{ id: 'top', n: '01', label: 'Under the hood', nav: 'Intro', blurb: 'One decision, built by many hands.' }, ...SECTIONS]
+
+/** The section being read: the last one whose top has passed under the sticky header, or the hero before the first. */
+function currentSection() {
+  const line = scrollPad() + 2
+  let id = 'top'
+  for (const s of SECTIONS) {
+    const el = document.getElementById(s.id)
+    if (el && el.getBoundingClientRect().top <= line) id = s.id
+  }
+  return id
+}
 
 export function UnderTheHood({ onReplay }: UnderTheHoodProps) {
   const rootRef = useRef<HTMLDivElement>(null)
@@ -154,9 +170,10 @@ export function UnderTheHood({ onReplay }: UnderTheHoodProps) {
     runFx()
   }
 
-  // A jump to a section (header nav, the index, the skip link) wants to read it now, not watch it get built.
+  // A jump to a section (header nav, Contents, the index, the skip link) wants to read it now, not watch it get built.
+  // Opening Contents counts too: the effect's cursors and guides would draw over the list.
   const onClickCapture = (event: MouseEvent) => {
-    if (building && event.target instanceof Element && event.target.closest('a[href^="#"]')) skipFx()
+    if (building && event.target instanceof Element && event.target.closest('a[href^="#"], .uth-toc__btn')) skipFx()
   }
 
   return (
@@ -212,10 +229,117 @@ const Header = memo(function Header() {
           </a>
           <ThemeToggle />
         </div>
+        <Contents />
       </div>
     </header>
   )
 })
+
+/**
+ * Below 1200 px, where the header's section links are hidden: a Contents disclosure with the same targets, labelled
+ * with the section being read. The links use `jump`, and the root's click capture ends the build effect first.
+ */
+function Contents() {
+  const [open, setOpen] = useState(false)
+  const [current, setCurrent] = useState('top')
+  const rootRef = useRef<HTMLDivElement>(null)
+  const buttonRef = useRef<HTMLButtonElement>(null)
+
+  // Follows the reader: a one-pixel band just under the header fires whenever a section crosses it.
+  useEffect(() => {
+    let io: IntersectionObserver | undefined
+    const update = () => setCurrent(currentSection())
+    const watch = () => {
+      io?.disconnect()
+      const line = scrollPad() + 2
+      io = new IntersectionObserver(update, { rootMargin: `-${line}px 0px -${Math.max(0, window.innerHeight - line - 1)}px 0px` })
+      for (const s of SECTIONS) {
+        const el = document.getElementById(s.id)
+        if (el) io.observe(el)
+      }
+    }
+    watch()
+    window.addEventListener('resize', watch)
+    return () => {
+      io?.disconnect()
+      window.removeEventListener('resize', watch)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!open) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return
+      setOpen(false)
+      buttonRef.current?.focus()
+    }
+    const onDown = (e: PointerEvent) => {
+      if (!rootRef.current?.contains(e.target as Node)) setOpen(false)
+    }
+    // Widening past the breakpoint hides the control; don't leave it open behind the header nav.
+    const wide = window.matchMedia('(min-width: 1200px)')
+    const onWide = () => {
+      if (wide.matches) setOpen(false)
+    }
+    document.addEventListener('keydown', onKey)
+    document.addEventListener('pointerdown', onDown)
+    wide.addEventListener('change', onWide)
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      document.removeEventListener('pointerdown', onDown)
+      wide.removeEventListener('change', onWide)
+    }
+  }, [open])
+
+  const toggle = () => {
+    if (!open) setCurrent(currentSection())
+    setOpen(!open)
+  }
+  // Tabbing out of the list closes it.
+  const onBlur = (e: FocusEvent) => {
+    if (e.relatedTarget instanceof Node && !rootRef.current?.contains(e.relatedTarget)) setOpen(false)
+  }
+  const go = (id: string) => (event: MouseEvent) => {
+    setOpen(false)
+    jump(id)(event)
+  }
+  const now = current === 'top' ? undefined : SECTION[current as SectionId]
+
+  return (
+    <div className="uth-toc" ref={rootRef} onBlur={onBlur}>
+      <button ref={buttonRef} type="button" className="uth-toc__btn" aria-expanded={open} aria-controls="uth-toc" onClick={toggle} data-part>
+        <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+          <path d="M6 4h7.5M6 8h7.5M6 12h7.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+          <path d="M2.6 4h.2M2.6 8h.2M2.6 12h.2" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        </svg>
+        <span className="uth-toc__label">Contents</span>
+        {now && (
+          <span className="uth-toc__now">
+            <span className="uth-sec__n">{now.n}</span> {now.nav}
+          </span>
+        )}
+        <svg className="uth-toc__chev" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
+          <path d="M2.5 4.5 6 8l3.5-3.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </button>
+      <nav id="uth-toc" className="uth-toc__panel" aria-label="Contents" hidden={!open}>
+        <div className="uth-wrap">
+          <ol>
+            {CONTENTS.map((s) => (
+              <li key={s.id}>
+                <a href={`#${s.id}`} onClick={go(s.id)} aria-current={s.id === current ? 'location' : undefined}>
+                  <span className="uth-sec__n">{s.n}</span>
+                  <span className="uth-toc__name">{s.label}</span>
+                  <span className="uth-toc__blurb">{s.blurb}</span>
+                </a>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </nav>
+    </div>
+  )
+}
 
 const ArrowIcon = () => (
   <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
@@ -465,7 +589,8 @@ function Models() {
           <div className="uth-note" data-part>
             <h3>Any seat, any provider</h3>
             <p>Each seat reads its model from one environment variable, so a single seat can argue on another provider’s model.</p>
-            <pre className="uth-code uth-code--sm">
+            {/* Code scrolls sideways on phones; tabIndex lets a keyboard scroll it too. */}
+            <pre className="uth-code uth-code--sm" tabIndex={0}>
               <code>
                 <span className="k">CRUCIBLE_SEAT_MODEL</span>=openrouter/anthropic/claude-haiku-5.5{'\n'}
                 <span className="k">CRUCIBLE_DEVILS_ADVOCATE_MODEL</span>=openrouter/<span className="c">&lt;provider&gt;</span>/
@@ -534,7 +659,7 @@ function Outputs() {
               <span>schemas.py</span> → the Realist’s Round 2 JSON schema
             </figcaption>
             <div className="uth-panel__split">
-              <pre className="uth-code">
+              <pre className="uth-code" tabIndex={0}>
                 <code>
                   <span className="k">def</span> <span className="f">rebuttal_schema</span>(opinion, seat_id):{'\n'}
                   {'    '}others = <span className="f">tuple</span>(s <span className="k">for</span> s <span className="k">in</span>{' '}
@@ -547,7 +672,7 @@ function Outputs() {
                   <span className="c">…</span>
                 </code>
               </pre>
-              <pre className="uth-code">
+              <pre className="uth-code" tabIndex={0}>
                 <code>
                   <span className="s">"target"</span>: {'{'}
                   {'\n'}
@@ -913,31 +1038,83 @@ function Deploy({ onReplay }: { onReplay: (name: string) => void }) {
   return (
     <section className="uth-sec uth-sec--last" id="deploy" tabIndex={-1} aria-labelledby="deploy-title">
       <div className="uth-wrap">
-        <SectionHead id="deploy" file="backend/Dockerfile · frontend/vercel.json" title="Two hosts, one spend cap.">
-          The frontend is a static build on Vercel. The backend is one Docker container on Cloud Run. The only per-meeting cost is
-          OpenRouter, and its prepaid credit is the ceiling.
+        <SectionHead id="deploy" file="frontend/vite.config.ts · backend/main.py" title="Two Vercel projects, one spend cap.">
+          Both halves deploy from this repo to Vercel: the frontend as a static build, the backend as a Python function, with sessions in
+          Neon Postgres. The only per-meeting cost is OpenRouter, and its prepaid credit is the ceiling.
         </SectionHead>
 
         <ol className="uth-deploy" data-rail="h">
           <li className="uth-host" data-part>
             <span className="uth-box__kicker">Frontend</span>
             <h3>Vercel</h3>
-            <p>The Vite build, served static. Every path rewrites to index.html, so /under-the-hood and replay links load directly.</p>
+            <p className="uth-host__url">smith26-crucible.vercel.app</p>
+            <p>
+              Root directory <code>frontend</code>. The Vite build, served static; every path rewrites to index.html, so /under-the-hood and
+              replay links load directly. <code>VITE_API_BASE</code> is inlined at build time, and <code>npm run build</code> fails without it,
+              so a deploy can’t silently point visitors at localhost.
+            </p>
           </li>
           <li className="uth-host" data-part>
             <span className="uth-box__kicker">Backend</span>
-            <h3>Cloud Run</h3>
+            <h3>Vercel</h3>
+            <p className="uth-host__url">hacks2026-corkboard-api.vercel.app</p>
             <p>
-              <code>backend/Dockerfile</code>: ADK’s FastAPI app on one instance, so every session lives in one place. The OpenRouter key
-              comes from Secret Manager.
+              Root directory <code>backend</code>. Vercel detects FastAPI and serves ADK’s app from <code>main.py</code> on Python&nbsp;3.14.
+              Each request can land on a different function instance, so sessions live in Neon Postgres.
             </p>
           </li>
           <li className="uth-host" data-part>
             <span className="uth-box__kicker">Models</span>
             <h3>OpenRouter</h3>
-            <p>Claude Haiku&nbsp;5.5, Claude Sonnet&nbsp;5.5 and Exa web search, paid from prepaid credit.</p>
+            <p>
+              Claude Haiku&nbsp;5.5, Claude Sonnet&nbsp;5.5 and Exa web search, paid from prepaid credit. The key is a Vercel environment
+              variable.
+            </p>
           </li>
         </ol>
+
+        <div className="uth-notes">
+          <div className="uth-note" data-part>
+            <h3>Sessions in Postgres</h3>
+            <p>
+              <code>CRUCIBLE_SESSION_DB</code> is Neon’s unpooled connection string, since asyncpg’s prepared-statement cache doesn’t mix
+              with transaction pooling. It is rewritten as <code>postgresql+asyncpg://…?ssl=require</code>: ADK needs the{' '}
+              <code>+asyncpg</code> driver, and asyncpg rejects <code>sslmode</code> and <code>channel_binding</code>. Tables are created on
+              first use.
+            </p>
+          </div>
+          <div className="uth-note" data-part>
+            <h3>Four environment variables</h3>
+            <dl className="uth-env">
+              <dt>
+                <code>OPENROUTER_API_KEY</code>
+              </dt>
+              <dd>The OpenRouter key.</dd>
+              <dt>
+                <code>CRUCIBLE_SESSION_DB</code>
+              </dt>
+              <dd>The Neon URL.</dd>
+              <dt>
+                <code>CRUCIBLE_ALLOW_ORIGINS</code>
+              </dt>
+              <dd>The frontend’s origin.</dd>
+              <dt>
+                <code>CRUCIBLE_CLIENT_IP_HEADER</code>
+              </dt>
+              <dd>
+                <code>x-vercel-forwarded-for</code>, which Vercel sets, so a caller can’t choose the IP its limits count. The limits are kept
+                per function instance, so on Vercel the real ceilings are a multiple of the settings.
+              </dd>
+            </dl>
+          </div>
+          <div className="uth-note" data-part>
+            <h3>Cloud Run, the alternative</h3>
+            <p>
+              <code>backend/Dockerfile</code> on one instance keeps ADK’s sessions consistent and the limits exact. The key comes from
+              Secret Manager. Without <code>CRUCIBLE_SESSION_DB</code>, ADK keeps sessions in memory, so they reset on redeploy.
+            </p>
+          </div>
+        </div>
 
         <div className="uth-end" data-part>
           <p>

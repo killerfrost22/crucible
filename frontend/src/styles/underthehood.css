@@ -3,8 +3,11 @@
    and its build effect follow the light and dark themes; the few theme-specific values sit next to their rule. */
 
 html:has(.uth) {
+  /* The sticky header's height, hairline included (phones add the Contents row), and the room a target gets below it. */
+  --uth-top-h: 65px;
+  --uth-scroll-pad: calc(var(--uth-top-h) + 23px);
   scroll-behavior: smooth;
-  scroll-padding-top: 88px;
+  scroll-padding-top: var(--uth-scroll-pad);
 }
 
 body:has(.uth) {
@@ -131,6 +134,13 @@ body:has(.uth) {
   border-bottom: 1px solid var(--line);
 }
 
+/* The header sits inside the root's scroll padding, so Chromium would scroll the page to "reveal" each header control
+   as it takes focus. Pulling their snap area down by that padding tells it they are already in view. */
+.uth-top a,
+.uth-top button {
+  scroll-margin-top: calc(-1 * var(--uth-scroll-pad));
+}
+
 .uth-top__row {
   display: flex;
   align-items: center;
@@ -184,15 +194,213 @@ body:has(.uth) {
   .uth-nav {
     display: none;
   }
+
+  .uth-top__row {
+    gap: 10px;
+  }
 }
 
 @media (max-width: 380px) {
-  .uth-top__row {
-    gap: 12px;
-  }
-
   .uth-brand .wordmark {
     height: 1.15rem;
+  }
+}
+
+/* Contents: takes over from the section links below 1200 px. Beside the header actions on tablets, its own header row
+   on phones, where it names the section being read. */
+.uth-toc {
+  display: none;
+}
+
+.uth-toc__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--text);
+  font: 600 0.875rem/1 var(--font-sans);
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color var(--dur-quick) var(--ease-out),
+    border-color var(--dur-quick) var(--ease-out);
+}
+
+.uth-toc__btn:hover,
+.uth-toc__btn[aria-expanded='true'] {
+  border-color: var(--text-3);
+  background: var(--surface-2);
+}
+
+.uth-toc__btn svg {
+  flex: none;
+}
+
+.uth-toc__now {
+  display: none;
+  align-items: baseline;
+  gap: 6px;
+  padding-left: 10px;
+  border-left: 1px solid var(--line-strong);
+  color: var(--text-2);
+  font-weight: 500;
+}
+
+.uth-toc__now .uth-sec__n {
+  font-size: 0.75rem;
+}
+
+.uth-toc__chev {
+  color: var(--text-3);
+  transition: transform var(--dur-base) var(--ease-out);
+}
+
+.uth-toc__btn[aria-expanded='true'] .uth-toc__chev {
+  transform: rotate(180deg);
+}
+
+/* Drops from the header's lower edge, full width; scrolls on its own if the screen is short. */
+.uth-toc__panel {
+  position: absolute;
+  top: calc(100% + 1px);
+  right: 0;
+  left: 0;
+  max-height: calc(100dvh - var(--uth-top-h));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-block: 8px 24px;
+  border-bottom: 1px solid var(--line-strong);
+  background: var(--bg);
+  box-shadow: 0 24px 40px -28px rgb(0 0 0 / 0.5);
+  animation: uth-toc-drop var(--dur-base) var(--ease-out);
+}
+
+@keyframes uth-toc-drop {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+.uth-toc__panel ol {
+  display: grid;
+}
+
+.uth-toc__panel a {
+  position: relative;
+  display: grid;
+  grid-template-columns: 2.5rem minmax(0, 1fr);
+  align-items: baseline;
+  gap: 2px 0;
+  min-height: 48px;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--line);
+  color: var(--text);
+  text-decoration: none;
+}
+
+.uth-toc__name {
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.3em;
+  transition: text-decoration-color var(--dur-quick) var(--ease-out);
+}
+
+.uth-toc__panel a:hover .uth-toc__name {
+  text-decoration-color: currentColor;
+}
+
+.uth-toc__blurb {
+  grid-column: 2;
+  color: var(--text-3);
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+/* The section being read: the inspector's guide line beside it. */
+.uth-toc__panel a[aria-current]::before {
+  content: '';
+  position: absolute;
+  top: 12px;
+  bottom: 12px;
+  left: -12px;
+  width: 2px;
+  border-radius: 1px;
+  background: var(--guide);
+}
+
+@media (max-width: 1199px) {
+  .uth-toc {
+    display: block;
+  }
+}
+
+@media (min-width: 640px) {
+  .uth-toc__panel ol {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 32px;
+  }
+}
+
+@media (min-width: 760px) {
+  .uth-toc__now {
+    display: inline-flex;
+  }
+}
+
+@media (max-width: 560px) {
+  html:has(.uth) {
+    --uth-top-h: 116px;
+  }
+
+  .uth-top__row {
+    flex-wrap: wrap;
+    height: auto;
+    padding-top: 10px;
+    column-gap: 12px;
+    row-gap: 0;
+  }
+
+  .uth-toc {
+    flex: 1 0 100%;
+    margin-top: 10px;
+    padding-block: 3px;
+    border-top: 1px solid var(--line);
+  }
+
+  .uth-toc__btn {
+    width: 100%;
+    padding: 0;
+    border: 0;
+    border-radius: 6px;
+    background: none;
+  }
+
+  .uth-toc__btn:hover,
+  .uth-toc__btn[aria-expanded='true'] {
+    background: none;
+  }
+
+  .uth-toc__btn:focus-visible {
+    outline-offset: 0;
+  }
+
+  .uth-toc__now {
+    display: inline-flex;
+  }
+
+  .uth-toc__chev {
+    margin-left: auto;
+  }
+
+  .uth-toc__blurb {
+    display: none;
   }
 }
 
@@ -2170,6 +2378,33 @@ body:has(.uth) {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 48px;
   margin-top: clamp(48px, 6vw, 72px);
+}
+
+.uth-host .uth-host__url {
+  margin-top: -4px;
+  color: var(--text-3);
+  font: 450 0.8125rem/1.4 var(--font-mono);
+  overflow-wrap: anywhere;
+}
+
+.uth-env {
+  margin-top: 8px;
+  font-size: 0.9375rem;
+}
+
+.uth-env dt {
+  margin-top: 12px;
+}
+
+.uth-env dt:first-child {
+  margin-top: 4px;
+}
+
+.uth-env dd {
+  max-width: 62ch;
+  margin-top: 4px;
+  color: var(--text-2);
+  text-wrap: pretty;
 }
 
 .uth-host {

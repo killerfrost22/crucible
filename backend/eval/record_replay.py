@@ -16,6 +16,7 @@ import json
 import sys
 import time
 import urllib.request
+import uuid
 from pathlib import Path
 
 EVAL_DIR = Path(__file__).resolve().parent
@@ -46,10 +47,11 @@ def main() -> None:
         intake, name = scenarios[args.intake]["intake"], args.intake
     name = args.out or name
 
-    with urllib.request.urlopen(post(f"{args.api}/apps/crucible/users/replay/sessions", {})) as r:
+    user = str(uuid.uuid4())  # the guard only admits random UUID owners
+    with urllib.request.urlopen(post(f"{args.api}/apps/crucible/users/{user}/sessions", {})) as r:
         session_id = json.load(r)["id"]
     run = post(f"{args.api}/run_sse", {
-        "appName": "crucible", "userId": "replay", "sessionId": session_id, "streaming": False,
+        "appName": "crucible", "userId": user, "sessionId": session_id, "streaming": False,
         "newMessage": {"role": "user", "parts": [{"text": json.dumps(intake)}]},
     })
 

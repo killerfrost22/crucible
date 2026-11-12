@@ -1,4 +1,5 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react'
+import { reportRenderError } from '../lib/errorReport'
 import { ThemeToggle } from './ThemeToggle'
 import { Wordmark } from './Wordmark'
 
@@ -20,6 +21,7 @@ export class ErrorBoundary extends Component<{ children: ReactNode }, State> {
 
   componentDidCatch(error: Error, info: ErrorInfo) {
     console.error('Crucible view crashed', error, info.componentStack)
+    reportRenderError(error, info.componentStack)
   }
 
   render() {

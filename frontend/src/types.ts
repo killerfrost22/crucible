@@ -171,6 +171,13 @@ export interface Ratification {
 
 // ── Saved decisions (GET /apps/crucible/users/{user}/decisions, served by backend/guard.py) ─
 
+/** The owner's answer to "Was this useful?"; `at` is set by the server. */
+export interface Feedback {
+  useful: boolean
+  note: string
+  at: string
+}
+
 export interface DecisionSummary {
   id: string
   /** UTC ISO-8601. */

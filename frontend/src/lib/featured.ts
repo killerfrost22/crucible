@@ -1,10 +1,10 @@
 // The home page's quotes from a recorded meeting, selected at build time by replaysPlugin.ts (virtual:crucible-featured/
 // <name>), so the home bundle carries only the sentences it shows. Quotes are shortened but not reworded: whole leading
-// sentences are kept and the rest dropped, (Fn) citations are dropped from the verdict excerpts and the board-card
-// lines, and straight quotes are set as curly ones (lib/quote.ts). Runs in Node as well as the browser.
-import { SEAT_IDS, type EscalateTo, type Intake, type SeatId, type SourceCheck, type Stance } from '../types'
-import { lead, typeset, uncite } from './quote'
-import type { RecordingData } from './recording'
+// sentences are kept and the rest dropped, (Fn) citations are dropped from the verdict excerpts, and straight quotes
+// are set as curly ones (lib/quote.ts). Runs in Node as well as the browser.
+import { SEAT_IDS, type EscalateTo, type Intake, type SeatId, type SourceCheck, type Stance } from '../types.ts'
+import { lead, typeset, uncite } from './quote.ts'
+import type { RecordingData } from './recording.ts'
 
 export type Said = { seat: SeatId; text: string }
 
@@ -37,8 +37,6 @@ export interface FeaturedQuotes {
     steps: { when: string; action: string }[]
     escalate: string
   }
-  /** One real line per member, for the board cards. */
-  lines: Record<SeatId | 'chairman', string>
 }
 
 /** The Round 1 openings shown: the practitioner, the gatekeeper and the contrarian. */
@@ -60,7 +58,7 @@ const sentenceCase = (text: string) => text[0].toUpperCase() + text.slice(1)
  * Selection rules, so the panels follow the recording rather than a hand pick:
  * - Evidence: the first fact of each link outcome (checked, failed, no source), topped up in fact order to three.
  * - Open question: the Researcher's first.
- * - Openings: OPENING_SEATS' Round 1 summaries. Board cards: each seat's first Round 1 sentence; the Chairman's headline.
+ * - Openings: OPENING_SEATS' Round 1 summaries.
  * - Rebuttals: the Devil's Advocate's first rebuttal, then the other seats' answers to the Devil's Advocate in table
  *   order, then other seats' first rebuttals, one per seat, four in all.
  * - Verdict: the rationale's lead, the first dissent, the first two conditions, the first step of each of the first two
@@ -112,10 +110,6 @@ export function selectFeatured(name: string, rec: RecordingData): FeaturedQuotes
       })),
       escalate:
         verdict.escalate_to === 'none' ? ESCALATE_TO.none : `${ESCALATE_TO[verdict.escalate_to]}. ${lead(uncite(rec.escalationReason), 1)}`,
-    },
-    lines: {
-      ...(Object.fromEntries(SEAT_IDS.map((seat) => [seat, lead(uncite(opened(seat).summary), 1)])) as Record<SeatId, string>),
-      chairman: headline,
     },
   }
 }

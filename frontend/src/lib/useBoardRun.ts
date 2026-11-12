@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useReducer, useRef, useState } from 'react'
-import type { AdkEvent, Intake, Ratification } from '../types'
-import { ApiError, createSession, deleteDecision, existingUserId, getSessionState, ratify, runBoard, userId } from './api'
+import type { AdkEvent, Feedback, Intake, Ratification } from '../types'
+import { ApiError, createSession, deleteDecision, existingUserId, getSessionState, ratify, runBoard, saveFeedback, userId } from './api'
 import { boardFromState, initialBoard, reduceBoard, type BoardState } from './board'
 import { isObject } from './validate'
 import { CLIENT_DECISION_MISSING, CLIENT_INCOMPLETE, CLIENT_NETWORK, CLIENT_REPLAY, CLIENT_REPLAY_MISSING } from './errors'
@@ -30,6 +30,10 @@ export interface BoardRun {
   stored: boolean
   /** Deletes the saved decision for good. Rejects with the server's error. */
   remove: () => Promise<void>
+  /** The owner's "Was this useful?" answer on a saved decision. */
+  feedback: Feedback | null
+  /** Saves it; rejects with a sentence for the owner. */
+  submitFeedback: (useful: boolean, note: string) => Promise<void>
 }
 
 function transportError(error: unknown): AdkEvent {
@@ -44,6 +48,11 @@ const boardReducer = (state: BoardState, action: BoardAction) => ('restore' in a
 function savedRatification(value: unknown): Ratification | null {
   if (!isObject(value) || (value.action !== 'accept' && value.action !== 'override')) return null
   return { action: value.action, note: typeof value.note === 'string' ? value.note : '', at: typeof value.at === 'string' ? value.at : '' }
+}
+
+function savedFeedback(value: unknown): Feedback | null {
+  if (!isObject(value) || typeof value.useful !== 'boolean') return null
+  return { useful: value.useful, note: typeof value.note === 'string' ? value.note : '', at: typeof value.at === 'string' ? value.at : '' }
 }
 
 /**
@@ -67,6 +76,7 @@ export function useBoardRun(source: RunSource, onSession?: (id: string) => void)
   const player = useRef<ReplayPlayer | null>(null)
   const session = useRef<{ user: string; id: string } | null>(null)
   const [stored, setStored] = useState(false)
+  const [feedback, setFeedback] = useState<Feedback | null>(null)
   const speedRef = useRef(speed)
 
   useEffect(() => {
@@ -112,6 +122,7 @@ export function useBoardRun(source: RunSource, onSession?: (id: string) => void)
           setStored(true)
           dispatch({ restore: boardFromState(state) })
           setRatification(savedRatification(state.ratification))
+          setFeedback(savedFeedback(state.feedback))
           setTransport('done')
         })
         .catch((error: unknown) => {
@@ -209,6 +220,21 @@ export function useBoardRun(source: RunSource, onSession?: (id: string) => void)
     setStored(false)
   }, [])
 
+  const submitFeedback = useCallback(async (useful: boolean, note: string) => {
+    if (!session.current) return
+    const next = { useful, note: note.trim() }
+    try {
+      await saveFeedback(session.current.user, session.current.id, next)
+    } catch (error) {
+      throw new Error(
+        error instanceof ApiError
+          ? (error.detail ?? `The server didn't save your answer (error ${error.status}). Try again.`)
+          : "We couldn't reach the server to save your answer. Check the connection and try again.",
+      )
+    }
+    setFeedback({ ...next, at: new Date().toISOString() })
+  }, [])
+
   return {
     board,
     transport,
@@ -223,5 +249,7 @@ export function useBoardRun(source: RunSource, onSession?: (id: string) => void)
     submitRatification,
     stored,
     remove,
+    feedback,
+    submitFeedback,
   }
 }

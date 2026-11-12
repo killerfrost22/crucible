@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from 'motion/react'
 import { useCallback, useEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
 import type { HumanError } from '../lib/errors'
-import { factId, hostOf, SourceLink, SourceTag, useFacts } from './facts'
+import { briefFactId, factId, hostOf, SourceLink, SourceTag, useFacts } from './facts'
 import { EASE_OUT } from './motion'
 
 interface ErrorNoticeProps {
@@ -77,10 +77,21 @@ export function FactPeek() {
 
   useEffect(() => {
     if (active === null) return
-    const el = document.getElementById(factId(active))
-    if (!el) return
-    const r = el.getBoundingClientRect()
-    setOffscreen(r.bottom < 72 || r.top > window.innerHeight - 24)
+    // The fact is listed in the research sheet and, once there's a verdict, in the brief's sources; whichever view is
+    // showing has the one with a layout box.
+    const shownRows = [factId(active), briefFactId(active)]
+      .map((id) => document.getElementById(id))
+      .filter((el): el is HTMLElement => el !== null && el.getClientRects().length > 0)
+    if (!shownRows.length) {
+      setOffscreen(true)
+      return
+    }
+    setOffscreen(
+      shownRows.every((el) => {
+        const r = el.getBoundingClientRect()
+        return r.bottom < 72 || r.top > window.innerHeight - 24
+      }),
+    )
   }, [active])
 
   const close = useCallback(() => {

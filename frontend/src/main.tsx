@@ -3,6 +3,7 @@ import '@fontsource-variable/geist-mono/wght.css'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { App } from './App'
+import { installErrorReporting } from './lib/errorReport'
 import { whenFontsReady } from './lib/fonts'
 import { initTheme } from './lib/theme'
 // Shared and home-page styles. The meeting room and /under-the-hood import their own, in their lazy chunks.
@@ -11,6 +12,7 @@ import './styles/base.css'
 import './styles/home.css'
 import './styles/notfound.css'
 
+installErrorReporting()
 initTheme()
 // Every view sets its own scroll (top, or the home form after a meeting); the browser's restore would fight it.
 window.history.scrollRestoration = 'manual'

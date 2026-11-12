@@ -1,5 +1,6 @@
 import { MotionConfig } from 'motion/react'
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type MouseEvent } from 'react'
+import { flushSync } from 'react-dom'
 import { DECISION_COPY } from '../lib/decisionCopy'
 import { CLIENT_DECISION_MISSING, CLIENT_INVALID, CLIENT_REPLAY_MISSING, humanizeErrors } from '../lib/errors'
 import { recordingFacts, REPLAYS } from '../lib/replay'
@@ -8,20 +9,29 @@ import { SEATS } from '../seats'
 import type { Intake, SeatId } from '../types'
 import { EvidenceSheet, QuestionCard } from './Brief'
 import { Crucible, Standings, type Filament } from './Crucible'
+import { DecisionBrief } from './DecisionBrief'
 import { DeleteDecision } from './DeleteDecision'
+import { Feedback } from './Feedback'
 import { FactProvider } from './facts'
 import { FoldToggle } from './Fold'
 import { NotFound, type Missing } from './NotFound'
 import { ErrorNotice, FactPeek } from './Notices'
 import { PHASE_STEPS, PhaseRail } from './PhaseRail'
 import { SeatCard } from './SeatCard'
-import { DecisionBrief, VerdictCard, YourCall } from './Verdict'
+import { VerdictCard, YourCall } from './Verdict'
 import { ThemeToggle } from './ThemeToggle'
 import { Wordmark } from './Wordmark'
 // The meeting room's styles ship with its chunk (App lazy-loads this component).
 import '../styles/board.css'
 import '../styles/cards.css'
 import '../styles/verdict.css'
+import '../styles/print.css'
+
+/** A finished meeting reads as the decision brief; the transcript (research, debate, full verdict) is one click away. */
+type View = 'brief' | 'transcript'
+
+/** What lives only in the transcript view, so a link into it (a standing, a skip link) shows that view first. */
+const TRANSCRIPT_PARTS = '.assay, .board__seats, .board__outcome'
 
 interface BoardProps {
   source: RunSource
@@ -55,7 +65,8 @@ export function Board({ source, onNew, onEdit, onRetry, onAskAgain, onReplay, on
   const [activeSeat, setActiveSeat] = useState<SeatId | null>(null)
   const [researchOpen, setResearchOpen] = useState(true)
   const [debateOpen, setDebateOpen] = useState(true)
-  const briefRef = useRef<HTMLElement>(null)
+  const barRef = useRef<HTMLDivElement>(null)
+  const [view, setView] = useState<View>('brief')
   const intake = board.intake
   const frameRef = useRef<HTMLElement>(null)
 
@@ -117,13 +128,59 @@ export function Board({ source, onNew, onEdit, onRetry, onAskAgain, onReplay, on
     } else if (stopped) document.title = 'Meeting stopped — Crucible'
   }, [missing?.kind, board.verdict, question, stopped])
 
-  // When the verdict lands mid-meeting, bring the owner to the brief. A reopened decision already starts there.
+  // When the verdict lands mid-meeting, the brief opens in place of the transcript: bring the owner to it.
+  // A reopened decision already starts there.
   const hasVerdict = Boolean(board.verdict)
   useEffect(() => {
     if (!hasVerdict || saved) return
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    briefRef.current?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' })
+    barRef.current?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' })
   }, [hasVerdict, saved])
+
+  // Paper is light: whatever the screen theme, print with the light tokens, then put the owner's theme back.
+  // `beforeprint` fires for Print, Ctrl+P and Save as PDF in every current browser.
+  useEffect(() => {
+    const root = document.documentElement
+    let screenTheme: string | undefined | null = null
+    const toPaper = () => {
+      if (screenTheme !== null) return
+      screenTheme = root.dataset.theme
+      root.dataset.theme = 'light'
+    }
+    const toScreen = () => {
+      if (screenTheme === null) return
+      if (screenTheme === undefined) delete root.dataset.theme
+      else root.dataset.theme = screenTheme
+      screenTheme = null
+    }
+    window.addEventListener('beforeprint', toPaper)
+    window.addEventListener('afterprint', toScreen)
+    return () => {
+      window.removeEventListener('beforeprint', toPaper)
+      window.removeEventListener('afterprint', toScreen)
+      toScreen()
+    }
+  }, [])
+
+  const showView = (next: View) => {
+    if (next === view) return
+    setView(next)
+    // Start the other view at its top, not wherever the last one was scrolled to.
+    const bar = barRef.current
+    if (bar && bar.getBoundingClientRect().top < 0) bar.scrollIntoView({ block: 'start' })
+  }
+
+  // A link into the view that isn't showing (Skip to your call, a seat in the standings) switches views first, so the
+  // browser's own jump to the fragment lands on something visible. The URL keeps its route: nothing remounts.
+  const onLinkClick = (event: MouseEvent) => {
+    if (!board.verdict) return
+    const href = (event.target as Element).closest('a')?.getAttribute('href')
+    if (!href?.startsWith('#') || href.length < 2) return
+    const target = document.getElementById(decodeURIComponent(href.slice(1)))
+    if (!target) return
+    if (view === 'brief' && target.closest(TRANSCRIPT_PARTS)) flushSync(() => setView('transcript'))
+    else if (view === 'transcript' && target.closest('.brief-view')) flushSync(() => setView('brief'))
+  }
 
   const replayInfo = replay ? REPLAYS.find((r) => r.name === source.name) : undefined
   // Read from the file itself, so a recording outside REPLAYS (the error-screen test) is labelled too.
@@ -132,13 +189,16 @@ export function Board({ source, onNew, onEdit, onRetry, onAskAgain, onReplay, on
   const twoRounds = board.phase === 'rebuttals' || Object.keys(board.round2).length > 0
   const nextSpeed = REPLAY_SPEEDS[(REPLAY_SPEEDS.indexOf(run.speed) + 1) % REPLAY_SPEEDS.length]
   const realist = board.round2.realist ?? board.round1.realist
+  // The printed brief says what it is: a recording is an example, not the owner's decision.
+  const provenance = replay ? `Recorded example, not your decision${recording ? ` · ${recording.label}` : ''}` : saved ? 'Saved decision' : 'Live meeting'
+  const verdict = board.verdict
 
   if (missing) return <NotFound missing={missing} />
 
   return (
     <MotionConfig reducedMotion="user">
       <FactProvider facts={board.evidence?.facts ?? []}>
-        <div className="page page--board">
+        <div className="page page--board" onClickCapture={onLinkClick}>
           <a className="skip" href="#board-main">
             Skip to the board
           </a>
@@ -233,25 +293,65 @@ export function Board({ source, onNew, onEdit, onRetry, onAskAgain, onReplay, on
             {announcement}
           </p>
 
-          <main id="board-main" className="board" tabIndex={-1} data-empty={empty || undefined} data-finished={hasVerdict || undefined}>
+          <main
+            id="board-main"
+            className="board"
+            tabIndex={-1}
+            data-empty={empty || undefined}
+            data-finished={hasVerdict || undefined}
+            data-view={hasVerdict ? view : undefined}
+          >
+            {verdict && (
+              <p className="board__provenance print-only">
+                Crucible decision brief · {provenance} · Printed{' '}
+                {new Date().toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
+              </p>
+            )}
             <QuestionCard intake={board.intake} />
 
-            {board.verdict && (
-              <DecisionBrief
-                ref={briefRef}
-                verdict={board.verdict}
-                checks={realist?.checks ?? []}
-                call={
-                  <YourCall
-                    decision={board.verdict.decision}
-                    ratification={run.ratification}
-                    status={run.ratifyStatus}
-                    error={run.ratifyError}
-                    local={replay}
-                    onSubmit={run.submitRatification}
-                  />
-                }
-              />
+            {verdict && (
+              <>
+                <div className="viewbar" ref={barRef}>
+                  <div className="viewbar__views" role="group" aria-label="Read this meeting as">
+                    <button type="button" aria-pressed={view === 'brief'} onClick={() => showView('brief')}>
+                      Decision brief
+                    </button>
+                    <button type="button" aria-pressed={view === 'transcript'} onClick={() => showView('transcript')}>
+                      Meeting transcript
+                    </button>
+                  </div>
+                  <button type="button" className="btn btn--secondary viewbar__print" onClick={() => window.print()}>
+                    <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false">
+                      <path
+                        d="M4.5 6V2.5h7V6M4.5 11.5h-2v-5h11v5h-2M4.5 9.5h7v4h-7z"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.4"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                    Print / Save as PDF
+                  </button>
+                </div>
+
+                <DecisionBrief
+                  verdict={verdict}
+                  checks={realist?.checks ?? []}
+                  evidenceMode={board.evidenceMode}
+                  location={intake?.profile.location}
+                  call={(prerequisites) => (
+                    <YourCall
+                      decision={verdict.decision}
+                      prerequisites={prerequisites}
+                      ratification={run.ratification}
+                      status={run.ratifyStatus}
+                      error={run.ratifyError}
+                      local={replay}
+                      onSubmit={run.submitRatification}
+                    />
+                  )}
+                />
+              </>
             )}
 
             {!empty && (
@@ -319,7 +419,14 @@ export function Board({ source, onNew, onEdit, onRetry, onAskAgain, onReplay, on
                 {empty ? 'The meeting' : 'The verdict'}
               </h2>
               {board.verdict ? (
-                <VerdictCard verdict={board.verdict} location={intake?.profile.location} />
+                <>
+                  <VerdictCard verdict={board.verdict} location={intake?.profile.location} />
+                  {/* The call lives in the brief, after every prerequisite; this link switches views on the way. */}
+                  <a className="board__to-call" href="#your-call">
+                    {run.ratification ? 'See your call in the decision brief' : 'Make your call in the decision brief'}
+                    <span aria-hidden="true">→</span>
+                  </a>
+                </>
               ) : error ? (
                 <ErrorNotice
                   error={error}
@@ -364,6 +471,7 @@ export function Board({ source, onNew, onEdit, onRetry, onAskAgain, onReplay, on
               )}
             </section>
 
+            {run.stored && transport === 'done' && verdict && <Feedback feedback={run.feedback} onSubmit={run.submitFeedback} />}
             {run.stored && transport === 'done' && <DeleteDecision onDelete={run.remove} onDeleted={onNew} />}
           </main>
           <FactPeek />

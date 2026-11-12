@@ -1,10 +1,12 @@
-import type { AdkEvent, DecisionSummary, Intake, Ratification } from '../types'
+import type { AdkEvent, DecisionSummary, Feedback, Intake, Ratification } from '../types'
 import { isObject } from './validate'
 import { SseParser, toAdkEvent } from './sse'
 
 export const API_BASE = (import.meta.env.VITE_API_BASE ?? 'http://localhost:8000').replace(/\/+$/, '')
 const APP = 'crucible'
 const USER_KEY = 'crucible.userId'
+/** The only owner ids the API admits (backend/guard.py `_OWNER`): what `crypto.randomUUID()` makes. */
+const OWNER = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/
 
 /**
  * Anonymous owner id, stable per browser. It is the only key to this browser's decisions: never put it in a URL the
@@ -12,7 +14,7 @@ const USER_KEY = 'crucible.userId'
  */
 export function userId(): string {
   let id = localStorage.getItem(USER_KEY)
-  if (!id) {
+  if (!id || !OWNER.test(id)) {
     id = crypto.randomUUID()
     localStorage.setItem(USER_KEY, id)
   }
@@ -22,7 +24,8 @@ export function userId(): string {
 /** This browser's owner id, without minting one: a browser that never convened the board owns no decisions. */
 export function existingUserId(): string | null {
   try {
-    return localStorage.getItem(USER_KEY)
+    const id = localStorage.getItem(USER_KEY)
+    return id && OWNER.test(id) ? id : null
   } catch {
     return null
   }
@@ -129,4 +132,30 @@ export async function ratify(user: string, sessionId: string, ratification: Rati
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ stateDelta: { ratification } }),
   }).then(expectOk)
+}
+
+export async function saveFeedback(user: string, sessionId: string, feedback: Omit<Feedback, 'at'>): Promise<void> {
+  await fetch(`${sessionsUrl(user)}/${encodeURIComponent(sessionId)}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ stateDelta: { feedback } }),
+  }).then(expectOk)
+}
+
+export interface ClientErrorReport {
+  kind: 'render' | 'error' | 'rejection'
+  message: string
+  stack: string
+  /** The page's path only: a query string can hold a decision id. */
+  path: string
+}
+
+/** Fire-and-forget: `keepalive` lets it finish even if the page is being unloaded. Failures are dropped. */
+export function reportClientError(report: ClientErrorReport): void {
+  void fetch(`${API_BASE}/client-errors`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(report),
+    keepalive: true,
+  }).catch(() => {})
 }

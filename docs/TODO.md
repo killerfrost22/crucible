@@ -203,7 +203,8 @@ Reviewed the live home page, `/under-the-hood`, and finished bakery/dental recor
   - **Checked:**
     - a saved decision whose verdict says `decision: "maybe"` keeps its research and seats and shows the notice;
     - a real render crash (mid-edit `Sessions` code) showed the recovery screen instead of a blank page.
-- [x] **#15: Skip effect** (Nov 10). While the build effect runs, the corner button reads **Skip effect**. Any section link (header nav, the index, the skip link) also ends the effect, with every part visible at once. Checked: jumping to Evaluation mid-effect showed all 7 parts immediately, with focus on the section.
+- [x] **#15: Skip effect** (Nov 10). While the build effect runs, the corner button reads **Skip effect**. Checked: jumping to Evaluation mid-effect showed all 7 parts immediately, with focus on the section.
+  - Nov 16: a section link (header nav, Contents, the index, the skip link) no longer ends the effect for the rest of the visit. What the jump passes and lands on appears as it is, and building carries on once the scroll ends (`BuildFx.jump`). Open, Contents lifts the header above the effect's overlay instead of stopping it.
 - [x] **#17: code-split** (Nov 10). The meeting room and `/under-the-hood` are lazy chunks with their own CSS. The home page now loads one 312 KB JS file (96 KB gzipped) and 57 KB of CSS (12 KB gzipped).
 
   | Chunk | JS (gzipped) | CSS (gzipped) | Loaded |

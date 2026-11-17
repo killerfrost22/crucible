@@ -136,6 +136,12 @@ body:has(.uth) {
   border-bottom: 1px solid var(--line);
 }
 
+/* Contents open: the header and its panel rise above the build effect's overlay (60), so no cursor or guide crosses
+   the list. Closed, the header stays under it, where the effect builds the header's own parts. */
+.uth-top:has(.uth-toc__btn[aria-expanded='true']) {
+  z-index: 61;
+}
+
 /* The header sits inside the root's scroll padding, so Chromium would scroll the page to "reveal" each header control
    as it takes focus. Pulling their snap area down by that padding tells it they are already in view. */
 .uth-top a,

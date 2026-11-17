@@ -119,7 +119,7 @@ All routes come from ADK (sessions, `/run_sse`, session PATCH/GET/DELETE) except
 - **Safety net:** every answer, live, recorded or saved, is checked against the schema in `lib/validate.ts` before it reaches the page. A misfit is left out and reported ("Part of this meeting couldn't be read"); nothing is invented to fill it. A render error anywhere in a view shows a recovery screen (`ErrorBoundary.tsx`) instead of a blank page.
 - **Loading:** the meeting room and `/under-the-hood` are lazy chunks with their own CSS, so the home page doesn't download them.
 - **Themes:** every colour is a token in `frontend/src/styles/tokens.css`, defined once for dark and once for light. `index.html` picks the theme before first paint (saved choice, else the OS setting), and `ThemeToggle` switches it on every page.
-- **"Built by many hands"** (`underthehood/buildFx.ts`): one cursor per advisor assembles the `/under-the-hood` page. It is skipped under reduced motion; **Skip effect** in the corner, or any section link, ends it at once with everything visible. Below 1200 px, where the header's section links are hidden, a sticky **Contents** control names the section being read and jumps to any other.
+- **"Built by many hands"** (`underthehood/buildFx.ts`): one cursor per advisor assembles the `/under-the-hood` page. It is skipped under reduced motion, and **Skip effect** in the corner ends it at once with everything visible. A section link shows what it lands on as it is, and the effect carries on from there. Below 1200 px, where the header's section links are hidden, a sticky **Contents** control names the section being read and jumps to any other.
 
 </details>
 

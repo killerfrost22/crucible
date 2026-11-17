@@ -8,7 +8,7 @@ import { navigateOnClick } from '../lib/nav'
 import { REPLAYS } from '../lib/replay'
 import { FIND_YOUR_SBDC, MARYLAND_SBDC } from '../lib/sbdc'
 import { SEAT_BY_ID, SEATS } from '../seats'
-import { startBuildFx, type FxAdvisor } from './buildFx'
+import { startBuildFx, type BuildFx, type FxAdvisor } from './buildFx'
 import { Pipeline } from './Pipeline'
 import {
   DENTAL_CHECKS,
@@ -104,17 +104,17 @@ function currentSection() {
 
 export function UnderTheHood({ onReplay }: UnderTheHoodProps) {
   const rootRef = useRef<HTMLDivElement>(null)
-  const stopFx = useRef<(() => void) | null>(null)
+  const fx = useRef<BuildFx | null>(null)
   /** The build effect is assembling the page; the corner control offers to skip it. */
   const [building, setBuilding] = useState(false)
 
   const runFx = () => {
     const root = rootRef.current
     if (!root) return
-    stopFx.current?.()
-    stopFx.current = null
+    fx.current?.stop()
+    fx.current = null
     try {
-      stopFx.current = startBuildFx(root, FX_ADVISORS)
+      fx.current = startBuildFx(root, FX_ADVISORS)
       setBuilding(true)
     } catch (error) {
       root.classList.remove('fx', 'fx-reset')
@@ -124,8 +124,8 @@ export function UnderTheHood({ onReplay }: UnderTheHoodProps) {
 
   /** Ends the effect where it is; its cleanup leaves every part of the page visible. */
   const skipFx = () => {
-    stopFx.current?.()
-    stopFx.current = null
+    fx.current?.stop()
+    fx.current = null
     rootRef.current?.classList.remove('fx')
     setBuilding(false)
   }
@@ -140,7 +140,7 @@ export function UnderTheHood({ onReplay }: UnderTheHoodProps) {
     let cancelled = false
     let startTimer = 0
     const fallback = window.setTimeout(() => {
-      if (!stopFx.current) root.classList.remove('fx')
+      if (!fx.current) root.classList.remove('fx')
     }, 3000)
     void whenFontsReady().then(() => {
       if (!cancelled) startTimer = window.setTimeout(runFx, 120)
@@ -148,8 +148,8 @@ export function UnderTheHood({ onReplay }: UnderTheHoodProps) {
     const motion = window.matchMedia('(prefers-reduced-motion: reduce)')
     const onMotion = () => {
       if (!motion.matches) return
-      stopFx.current?.()
-      stopFx.current = null
+      fx.current?.stop()
+      fx.current = null
       setBuilding(false)
     }
     motion.addEventListener('change', onMotion)
@@ -158,8 +158,8 @@ export function UnderTheHood({ onReplay }: UnderTheHoodProps) {
       clearTimeout(fallback)
       clearTimeout(startTimer)
       motion.removeEventListener('change', onMotion)
-      stopFx.current?.()
-      stopFx.current = null
+      fx.current?.stop()
+      fx.current = null
       root.classList.remove('fx')
     }
     // The effect runs once per mount.
@@ -170,10 +170,10 @@ export function UnderTheHood({ onReplay }: UnderTheHoodProps) {
     runFx()
   }
 
-  // A jump to a section (header nav, Contents, the index, the skip link) wants to read it now, not watch it get built.
-  // Opening Contents counts too: the effect's cursors and guides would draw over the list.
+  // A jump to a section (header nav, Contents, the index, the skip link) wants to read it now, not watch it get built:
+  // what the jump passes and lands on appears as it is, and the effect carries on once the scroll ends.
   const onClickCapture = (event: MouseEvent) => {
-    if (building && event.target instanceof Element && event.target.closest('a[href^="#"], .uth-toc__btn')) skipFx()
+    if (event.target instanceof Element && event.target.closest('a[href^="#"]')) fx.current?.jump()
   }
 
   return (
@@ -237,7 +237,7 @@ const Header = memo(function Header() {
 
 /**
  * Below 1200 px, where the header's section links are hidden: a Contents disclosure with the same targets, labelled
- * with the section being read. The links use `jump`, and the root's click capture ends the build effect first.
+ * with the section being read. The links use `jump`, and the root's click capture quiets the build effect for it.
  */
 function Contents() {
   const [open, setOpen] = useState(false)

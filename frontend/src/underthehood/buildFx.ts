@@ -8,12 +8,12 @@
  *   named cursors flying over to do the work. `data-cursor="<advisor id>"` makes that advisor build the part.
  * - `data-rail="v|h|vh"` elements throw red alignment rails while the page scrolls down, and scrolling down sets off
  *   ambient "editing" bursts on parts already built. Scrolling back up stays quiet: no rails, no bursts, and parts
- *   not built yet simply appear.
+ *   not built yet simply appear. So does a jump to a section, until its scroll ends; then the effect carries on.
  *
  * Everything moves with transform and opacity. Sizes are written only when a target's size changes. Colours come
  * from the theme tokens in CSS, so the overlay follows the light and dark themes.
- * `startBuildFx` returns a cleanup that cancels the frame loop, timers and listeners, removes the overlay, and leaves
- * every part visible.
+ * `startBuildFx` returns its controls: `jump()` before an in-page jump, and `stop()`, which cancels the frame loop,
+ * timers and listeners, removes the overlay, and leaves every part visible.
  */
 
 export interface FxAdvisor {
@@ -24,6 +24,13 @@ export interface FxAdvisor {
   color: string
   /** The Chairman's name tag is molten. */
   molten?: boolean
+}
+
+export interface BuildFx {
+  /** A jump to a section is starting: until its scroll ends, what comes into view appears as it is, unbuilt and quiet. */
+  jump(): void
+  /** Ends the effect, leaving every part visible. */
+  stop(): void
 }
 
 interface FxObject {
@@ -58,7 +65,7 @@ const envl = (age: number, life: number, fin: number, fout: number) => (age < 0 
 const px = Math.round
 const move = (x: number, y: number) => `translate3d(${x}px,${y}px,0)`
 
-export function startBuildFx(root: HTMLElement, advisors: FxAdvisor[]): () => void {
+export function startBuildFx(root: HTMLElement, advisors: FxAdvisor[]): BuildFx {
   const now = () => performance.now()
   const timers = new Set<number>()
   const later = (fn: () => void, ms: number) => {
@@ -448,6 +455,8 @@ export function startBuildFx(root: HTMLElement, advisors: FxAdvisor[]): () => vo
   let lastScroll = -1e9
   let lastAmb = 0
   let scrollingUp = false
+  /** While a jump scrolls (bounded like `goTo`'s smooth scroll, 1.5 s), the page reads as if scrolling back up. */
+  let jumpUntil = 0
 
   function updRail(rl: Rail, t: number) {
     const r = R(rl.target)
@@ -524,13 +533,13 @@ export function startBuildFx(root: HTMLElement, advisors: FxAdvisor[]): () => vo
       const r = R(p)
       const visible = r.width > 0 && r.height > 0 && r.top < VH * 0.98 && r.bottom > VH * 0.02
       if (visible) {
-        if (scrollingUp) revealQuietly(p)
+        if (scrollingUp || now() < jumpUntil) revealQuietly(p)
         else enqueue(p)
       }
       return !visible
     })
   }
-  /** Parts reached by scrolling back up are shown as they are, without the build. */
+  /** Parts reached by scrolling back up, or by a jump, are shown as they are, without the build. */
   function revealQuietly(p: HTMLElement) {
     p.classList.add('quiet')
     markBuilt(p)
@@ -620,15 +629,19 @@ export function startBuildFx(root: HTMLElement, advisors: FxAdvisor[]): () => vo
     lastT = t
     lastScroll = t
     if (dy !== 0) scrollingUp = dy < 0
-    if (scrollingUp) act = actTarget = 0
+    if (scrollingUp || t < jumpUntil) act = actTarget = 0
     else actTarget = Math.max(actTarget * 0.6, clamp(((Math.abs(dy) / dt) * 1000) / 1400))
     kick()
+  }
+  const onScrollEnd = () => {
+    jumpUntil = 0
   }
   const onResize = () => {
     setViewport()
     kick()
   }
   addEventListener('scroll', onScroll, { passive: true })
+  addEventListener('scrollend', onScrollEnd)
   addEventListener('resize', onResize)
 
   // Two frames with the reset in place, then start building from the top.
@@ -641,16 +654,23 @@ export function startBuildFx(root: HTMLElement, advisors: FxAdvisor[]): () => vo
     })
   })
 
-  return () => {
-    cancelAnimationFrame(startRaf)
-    cancelAnimationFrame(raf)
-    raf = 0
-    for (const id of timers) clearTimeout(id)
-    timers.clear()
-    removeEventListener('scroll', onScroll)
-    removeEventListener('resize', onResize)
-    layer.remove()
-    root.classList.remove('fx', 'fx-reset')
-    for (const p of parts) p.classList.remove('built', 'done', 'quiet')
+  return {
+    jump() {
+      jumpUntil = now() + 1500
+      act = actTarget = 0
+    },
+    stop() {
+      cancelAnimationFrame(startRaf)
+      cancelAnimationFrame(raf)
+      raf = 0
+      for (const id of timers) clearTimeout(id)
+      timers.clear()
+      removeEventListener('scroll', onScroll)
+      removeEventListener('scrollend', onScrollEnd)
+      removeEventListener('resize', onResize)
+      layer.remove()
+      root.classList.remove('fx', 'fx-reset')
+      for (const p of parts) p.classList.remove('built', 'done', 'quiet')
+    },
   }
 }

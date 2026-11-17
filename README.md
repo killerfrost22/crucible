@@ -265,6 +265,7 @@ cd backend   # the API must be running
 - **Quotes and labels follow the file:** `frontend/replaysPlugin.ts` reads every `public/replays/*.sse` at dev and build time. The home page quotes (`src/lib/featured.ts`, picked by rule and shortened only by whole sentences) and the `/under-the-hood` dental data (`src/underthehood/recorded.ts`) come from it, and so does each recording's label: its date, models and whether web search was on. Re-recording updates them all, with no copy to edit; in dev the page reloads on its own.
 - **Open any replay directly:** `http://localhost:5173/?replay=<name>`. The meeting header has pause, 1×/2×/4×, and skip-to-end controls.
 - **Test the error screen:** `dental-ai-receptionist-error` is a real failed run, where the Chairman hit a quota limit.
+- **A proceed verdict:** `bakery-route1-lease` is the bakery's follow-up meeting after the 90-day test the first verdict asked for (intake `eval/demos/bakery-route1-lease.json`), and the board recommends proceed. It is the second take: the first, with a thinner intake, came back defer. It isn't in `REPLAYS`, since the home page grid is laid out for three recordings; open it with `?replay=bakery-route1-lease`.
 
 ## Demo video
 

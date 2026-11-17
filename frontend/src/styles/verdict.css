@@ -161,11 +161,11 @@
   color: var(--decision);
 }
 
-/* Wide: one reading column, the section list beside it, following the reader down. */
+/* Wide: the reading column takes every spare inch; the section list sits at the right edge, following the reader down. */
 @container brief-view (min-width: 54rem) {
   .brief-view__in {
     --brief-nav-h: 0px;
-    grid-template-columns: minmax(0, 46rem) minmax(11rem, 14rem);
+    grid-template-columns: minmax(0, 1fr) minmax(11rem, 14rem);
     column-gap: clamp(var(--space-6), 5cqi, var(--space-8));
     align-items: start;
   }
